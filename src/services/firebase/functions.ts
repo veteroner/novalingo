@@ -6,8 +6,76 @@
  * başarı durumunda direkt veriyi döndürür.
  */
 
+import type { AgeGroup } from '@/types/user';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { httpsCallable, type HttpsCallableResult } from 'firebase/functions';
-import { functions } from './app';
+import { auth, db, functions } from './app';
+
+function requireCurrentUserId(): string {
+  const uid = auth.currentUser?.uid;
+  if (!uid) {
+    throw new Error('Authentication required');
+  }
+  return uid;
+}
+
+function validateChildName(name: string): string {
+  const trimmed = name.trim();
+  if (trimmed.length < 2 || trimmed.length > 20) {
+    throw new Error('Name must be 2-20 characters');
+  }
+  return trimmed;
+}
+
+function validateAgeGroup(ageGroup: string): AgeGroup {
+  if (ageGroup === 'cubs' || ageGroup === 'stars' || ageGroup === 'legends') {
+    return ageGroup;
+  }
+  throw new Error('Invalid age group');
+}
+
+function validateAvatarId(avatarId?: string): string {
+  const trimmed = avatarId?.trim();
+  return trimmed && trimmed.length > 0 ? trimmed : 'nova_default';
+}
+
+async function getOwnedChild(childId: string, uid: string) {
+  const childRef = doc(db, 'children', childId);
+  const childSnap = await getDoc(childRef);
+
+  if (!childSnap.exists()) {
+    throw new Error('Child profile not found');
+  }
+
+  if (childSnap.data().parentUid !== uid) {
+    throw new Error('Not authorized to access this child profile');
+  }
+
+  return { childRef, childSnap };
+}
+
+interface StoredChildProfile {
+  parentUid?: string;
+  name?: string;
+  avatarId?: string;
+}
+
+interface StoredUserProfile {
+  isPremium?: boolean;
+  activeChildId?: string | null;
+}
 
 // ===== GENERIC CALLER =====
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
@@ -52,8 +120,98 @@ export interface CreateChildProfileRes {
   onboardingCompleted: boolean;
 }
 
-export function createChildProfile(data: CreateChildProfileReq) {
-  return callFunction<CreateChildProfileReq, CreateChildProfileRes>('createChildProfile', data);
+export async function createChildProfile(
+  data: CreateChildProfileReq,
+): Promise<CreateChildProfileRes> {
+  const uid = requireCurrentUserId();
+  const name = validateChildName(data.name);
+  const ageGroup = validateAgeGroup(data.ageGroup);
+  const avatarId = validateAvatarId(data.avatarId);
+
+  const userRef = doc(db, 'users', uid);
+  const childrenQuery = query(collection(db, 'children'), where('parentUid', '==', uid));
+
+  const [userSnap, childrenSnap] = await Promise.all([getDoc(userRef), getDocs(childrenQuery)]);
+  const userData = userSnap.data() as StoredUserProfile | undefined;
+  const isPremium = Boolean(userData?.isPremium);
+  const maxChildren = isPremium ? 5 : 1;
+
+  if (childrenSnap.size >= maxChildren) {
+    throw new Error(
+      isPremium ? 'Maximum 5 child profiles' : 'Upgrade to Premium for more profiles',
+    );
+  }
+
+  const childRef = doc(collection(db, 'children'));
+  const childData = {
+    parentUid: uid,
+    name,
+    ageGroup,
+    avatarId,
+    level: 1,
+    totalXP: 0,
+    currentLevelXP: 0,
+    nextLevelXP: 100,
+    stars: 0,
+    gems: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    lastActivityDate: '',
+    streakFreezes: 1,
+    novaStage: 'egg',
+    novaHappiness: 100,
+    novaOutfitId: null,
+    leagueId: 'bronze_default',
+    leagueTier: 'bronze',
+    weeklyXP: 0,
+    currentWorldId: 'w1',
+    currentUnitId: 'u1',
+    completedLessons: 0,
+    totalPlayTimeMinutes: 0,
+    wordsLearned: 0,
+    onboardingCompleted: false,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+
+  await setDoc(childRef, childData);
+
+  if (childrenSnap.empty) {
+    await setDoc(
+      userRef,
+      {
+        activeChildId: childRef.id,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  }
+
+  return {
+    childId: childRef.id,
+    parentUid: uid,
+    name,
+    ageGroup,
+    avatarId,
+    level: 1,
+    totalXP: 0,
+    currentXP: 0,
+    currency: { stars: 0, gems: 0 },
+    streak: {
+      current: 0,
+      longest: 0,
+      lastActivityDate: null,
+      freezesAvailable: 1,
+    },
+    stats: {
+      lessonsCompleted: 0,
+      perfectLessons: 0,
+      wordsLearned: 0,
+      totalTimeSeconds: 0,
+    },
+    novaStage: 'egg',
+    onboardingCompleted: false,
+  };
 }
 
 // --- Progress ---
@@ -221,8 +379,30 @@ export interface UpdateChildProfileRes {
   avatarId: string;
 }
 
-export function updateChildProfile(data: UpdateChildProfileReq) {
-  return callFunction<UpdateChildProfileReq, UpdateChildProfileRes>('updateChildProfile', data);
+export async function updateChildProfile(
+  data: UpdateChildProfileReq,
+): Promise<UpdateChildProfileRes> {
+  const uid = requireCurrentUserId();
+  const { childRef, childSnap } = await getOwnedChild(data.childId, uid);
+  const childData = childSnap.data() as StoredChildProfile;
+
+  const nextName = data.name !== undefined ? validateChildName(data.name) : (childData.name ?? '');
+  const nextAvatarId =
+    data.avatarId !== undefined
+      ? validateAvatarId(data.avatarId)
+      : (childData.avatarId ?? 'nova_default');
+
+  await updateDoc(childRef, {
+    ...(data.name !== undefined ? { name: nextName } : {}),
+    ...(data.avatarId !== undefined ? { avatarId: nextAvatarId } : {}),
+    updatedAt: serverTimestamp(),
+  });
+
+  return {
+    childId: data.childId,
+    name: nextName,
+    avatarId: nextAvatarId,
+  };
 }
 
 // --- Delete Child Profile ---
@@ -235,8 +415,40 @@ export interface DeleteChildProfileRes {
   newActiveChildId: string | null;
 }
 
-export function deleteChildProfile(data: DeleteChildProfileReq) {
-  return callFunction<DeleteChildProfileReq, DeleteChildProfileRes>('deleteChildProfile', data);
+export async function deleteChildProfile(
+  data: DeleteChildProfileReq,
+): Promise<DeleteChildProfileRes> {
+  const uid = requireCurrentUserId();
+  const { childRef } = await getOwnedChild(data.childId, uid);
+  const userRef = doc(db, 'users', uid);
+
+  await deleteDoc(childRef);
+
+  const [userSnap, remainingSnap] = await Promise.all([
+    getDoc(userRef),
+    getDocs(query(collection(db, 'children'), where('parentUid', '==', uid), limit(1))),
+  ]);
+  const userData = userSnap.data() as StoredUserProfile | undefined;
+
+  let newActiveChildId: string | null = userData?.activeChildId ?? null;
+
+  if (newActiveChildId === data.childId) {
+    const nextActiveChild = remainingSnap.docs[0];
+    newActiveChildId = nextActiveChild?.id ?? null;
+    await setDoc(
+      userRef,
+      {
+        activeChildId: newActiveChildId,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  }
+
+  return {
+    deletedChildId: data.childId,
+    newActiveChildId,
+  };
 }
 
 // --- Parent PIN ---

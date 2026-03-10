@@ -26,6 +26,70 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Timestamp } from 'firebase/firestore';
 import { useEffect, useRef } from 'react';
 
+type RawChildProfile = Record<string, unknown> & { id: string };
+
+function getStringValue(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+function getNumberValue(value: unknown, fallback = 0): number {
+  return typeof value === 'number' ? value : fallback;
+}
+
+function normalizeChildProfile(child: RawChildProfile): ChildProfile {
+  const currency = (child.currency as { stars?: number; gems?: number } | undefined) ?? {};
+  const streak =
+    (child.streak as
+      | {
+          current?: number;
+          longest?: number;
+          lastActivityDate?: string | null;
+          freezesAvailable?: number;
+        }
+      | undefined) ?? {};
+  const stats =
+    (child.stats as
+      | { wordsLearned?: number; lessonsCompleted?: number; totalTimeSeconds?: number }
+      | undefined) ?? {};
+
+  return {
+    id: child.id,
+    parentUid: getStringValue(child.parentUid),
+    name: getStringValue(child.name),
+    avatarId: getStringValue(child.avatarId, 'nova_default'),
+    ageGroup: child.ageGroup as ChildProfile['ageGroup'],
+    createdAt: child.createdAt instanceof Timestamp ? child.createdAt : Timestamp.now(),
+    level: getNumberValue(child.level, 1),
+    totalXP: getNumberValue(child.totalXP),
+    currentLevelXP: getNumberValue(child.currentLevelXP ?? child.currentXP),
+    nextLevelXP: getNumberValue(child.nextLevelXP, 100),
+    stars: getNumberValue(child.stars ?? currency.stars),
+    gems: getNumberValue(child.gems ?? currency.gems),
+    currentStreak: getNumberValue(child.currentStreak ?? streak.current),
+    longestStreak: getNumberValue(child.longestStreak ?? streak.longest),
+    lastActivityDate: getStringValue(child.lastActivityDate ?? streak.lastActivityDate),
+    streakFreezes: getNumberValue(child.streakFreezes ?? streak.freezesAvailable),
+    novaStage: (typeof child.novaStage === 'string'
+      ? child.novaStage
+      : 'egg') as ChildProfile['novaStage'],
+    novaHappiness: getNumberValue(child.novaHappiness, 100),
+    novaOutfitId: (child.novaOutfitId as string | null | undefined) ?? null,
+    leagueId: getStringValue(child.leagueId, 'bronze_default'),
+    leagueTier: (typeof child.leagueTier === 'string'
+      ? child.leagueTier
+      : 'bronze') as ChildProfile['leagueTier'],
+    weeklyXP: getNumberValue(child.weeklyXP),
+    currentWorldId: getStringValue(child.currentWorldId, 'w1'),
+    currentUnitId: getStringValue(child.currentUnitId, 'u1'),
+    completedLessons: getNumberValue(child.completedLessons ?? stats.lessonsCompleted),
+    totalPlayTimeMinutes: getNumberValue(
+      child.totalPlayTimeMinutes,
+      Math.floor(getNumberValue(stats.totalTimeSeconds) / 60),
+    ),
+    wordsLearned: getNumberValue(child.wordsLearned ?? stats.wordsLearned),
+  };
+}
+
 // ===== QUERY KEYS =====
 export const childKeys = {
   all: ['children'] as const,
@@ -44,11 +108,11 @@ export function useChildren() {
     queryKey: childKeys.list(uid ?? ''),
     queryFn: async () => {
       if (!uid) return [];
-      const children = await queryCollection<ChildProfile>(
+      const children = await queryCollection<RawChildProfile>(
         collections.children(),
         where('parentUid', '==', uid),
       );
-      return children;
+      return children.map(normalizeChildProfile);
     },
     enabled: !!uid,
     staleTime: 5 * 60 * 1000,
@@ -75,7 +139,8 @@ export function useChild(childId: string | undefined) {
     queryKey: childKeys.detail(childId ?? ''),
     queryFn: async () => {
       if (!childId) return null;
-      return getDocument<ChildProfile>(docs.child(childId));
+      const child = await getDocument<RawChildProfile>(docs.child(childId));
+      return child ? normalizeChildProfile(child) : null;
     },
     enabled: !!childId,
     staleTime: 2 * 60 * 1000,

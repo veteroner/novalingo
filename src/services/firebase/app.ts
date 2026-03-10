@@ -84,7 +84,7 @@ function initializeFirebase() {
       provider: new ReCaptchaV3Provider(recaptchaSiteKey),
       isTokenAutoRefreshEnabled: true,
     });
-  } else if (!useEmulators) {
+  } else if (!useEmulators && import.meta.env.DEV) {
     console.warn('[Firebase] App Check skipped because VITE_RECAPTCHA_SITE_KEY is missing.');
   }
 

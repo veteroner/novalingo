@@ -5,6 +5,7 @@
  * COPPA uyumlu — çocuklara doğrudan bildirim gönderilmez.
  */
 
+import { getPlatform } from '@/types/common';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { docs, updateDocument } from '@services/firebase/firestore';
 
@@ -14,6 +15,10 @@ let initialized = false;
  * Push bildirimlerini başlat ve FCM token'ı Firestore'a kaydet
  */
 export async function initializeNotifications(uid?: string): Promise<string | null> {
+  if (getPlatform() === 'web') {
+    return null;
+  }
+
   try {
     const permission = await PushNotifications.requestPermissions();
 
@@ -41,7 +46,6 @@ export async function initializeNotifications(uid?: string): Promise<string | nu
 
     return token;
   } catch {
-    console.warn('Push notifications not available');
     return null;
   }
 }

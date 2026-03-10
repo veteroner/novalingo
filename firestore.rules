@@ -25,6 +25,101 @@ service cloud.firestore {
       return field is string && field.size() <= maxLen;
     }
 
+    function isValidAgeGroup(value) {
+      return value == 'cubs' || value == 'stars' || value == 'legends';
+    }
+
+    function isValidLeagueTier(value) {
+      return value == 'bronze'
+        || value == 'silver'
+        || value == 'gold'
+        || value == 'platinum'
+        || value == 'diamond'
+        || value == 'legend';
+    }
+
+    function isValidChildCreate(data) {
+      return data.keys().hasOnly([
+          'parentUid',
+          'name',
+          'ageGroup',
+          'avatarId',
+          'level',
+          'totalXP',
+          'currentLevelXP',
+          'nextLevelXP',
+          'stars',
+          'gems',
+          'currentStreak',
+          'longestStreak',
+          'lastActivityDate',
+          'streakFreezes',
+          'novaStage',
+          'novaHappiness',
+          'novaOutfitId',
+          'leagueId',
+          'leagueTier',
+          'weeklyXP',
+          'currentWorldId',
+          'currentUnitId',
+          'completedLessons',
+          'totalPlayTimeMinutes',
+          'wordsLearned',
+          'onboardingCompleted',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.parentUid == request.auth.uid
+        && isValidString(data.name, 20)
+        && data.name.size() >= 2
+        && isValidAgeGroup(data.ageGroup)
+        && isValidString(data.avatarId, 50)
+        && data.level is int && data.level >= 1
+        && data.totalXP is int && data.totalXP >= 0
+        && data.currentLevelXP is int && data.currentLevelXP >= 0
+        && data.nextLevelXP is int && data.nextLevelXP >= 0
+        && data.stars is int && data.stars >= 0
+        && data.gems is int && data.gems >= 0
+        && data.currentStreak is int && data.currentStreak >= 0
+        && data.longestStreak is int && data.longestStreak >= 0
+        && data.lastActivityDate is string
+        && data.streakFreezes is int && data.streakFreezes >= 0
+        && isValidString(data.novaStage, 20)
+        && data.novaHappiness is int && data.novaHappiness >= 0 && data.novaHappiness <= 100
+        && (data.novaOutfitId == null || isValidString(data.novaOutfitId, 50))
+        && isValidString(data.leagueId, 50)
+        && isValidLeagueTier(data.leagueTier)
+        && data.weeklyXP is int && data.weeklyXP >= 0
+        && isValidString(data.currentWorldId, 50)
+        && isValidString(data.currentUnitId, 50)
+        && data.completedLessons is int && data.completedLessons >= 0
+        && data.totalPlayTimeMinutes is int && data.totalPlayTimeMinutes >= 0
+        && data.wordsLearned is int && data.wordsLearned >= 0
+        && data.onboardingCompleted is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidChildUpdate() {
+      return request.resource.data.parentUid == resource.data.parentUid
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'name',
+          'avatarId',
+          'updatedAt'
+        ])
+        && (
+          request.resource.data.name == resource.data.name || (
+            isValidString(request.resource.data.name, 20)
+            && request.resource.data.name.size() >= 2
+          )
+        )
+        && (
+          request.resource.data.avatarId == resource.data.avatarId
+          || isValidString(request.resource.data.avatarId, 50)
+        )
+        && request.resource.data.updatedAt is timestamp;
+    }
+
     // ===== USERS COLLECTION =====
     match /users/{userId} {
       allow read: if isOwner(userId);
@@ -44,9 +139,11 @@ service cloud.firestore {
     // Client can read/update own children.
     match /children/{childId} {
       allow read: if isAuthenticated() && resource.data.parentUid == request.auth.uid;
-      allow create: if false; // Sadece Cloud Functions
-      allow update: if false; // Sadece Cloud Functions
-      allow delete: if false;
+      allow create: if isAuthenticated() && isValidChildCreate(request.resource.data);
+      allow update: if isAuthenticated()
+        && resource.data.parentUid == request.auth.uid
+        && isValidChildUpdate();
+      allow delete: if isAuthenticated() && resource.data.parentUid == request.auth.uid;
 
       // Alt koleksiyonlar
       match /lessonProgress/{lessonId} {
