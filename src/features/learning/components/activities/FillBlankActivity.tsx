@@ -40,10 +40,13 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
   const beforeBlank = parts[0] ?? '';
   const afterBlank = parts[1] ?? '';
 
-  // TTS via centralized speechService
-  const speak = useCallback((text: string) => {
-    void ttsSpeak(text, { rate: 0.8, pitch: 1.05 });
-  }, []);
+  // TTS via centralized speechService — prefer audioUrl when available
+  const speak = useCallback(
+    (text: string) => {
+      void ttsSpeak(text, { rate: 0.8, pitch: 1.05, audioUrl: data.audioUrl || undefined });
+    },
+    [data.audioUrl],
+  );
 
   const handleSelect = useCallback(
     (option: string) => {

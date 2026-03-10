@@ -57,10 +57,13 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
     [targetWord, data.acceptableVariations],
   );
 
-  // TTS via centralized speechService
-  const speak = useCallback((text: string) => {
-    void ttsSpeak(text, { rate: 0.8 });
-  }, []);
+  // TTS via centralized speechService — prefer audioUrl when available
+  const speak = useCallback(
+    (text: string) => {
+      void ttsSpeak(text, { rate: 0.8, audioUrl: data.audioUrl || undefined });
+    },
+    [data.audioUrl],
+  );
 
   // Otomatik olarak kelimeyi bir kez söyle
   useEffect(() => {

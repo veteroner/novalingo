@@ -25,10 +25,13 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
   const [hasSeenBack, setHasSeenBack] = useState(false);
   const startTime = useRef(Date.now());
 
-  // TTS via centralized speechService
-  const speak = useCallback((text: string, slow = false) => {
-    void ttsSpeak(text, { rate: slow ? 0.6 : 0.85 });
-  }, []);
+  // TTS via centralized speechService — prefer audioUrl when available
+  const speak = useCallback(
+    (text: string, slow = false) => {
+      void ttsSpeak(text, { rate: slow ? 0.6 : 0.85, audioUrl: data.audioUrl || undefined });
+    },
+    [data.audioUrl],
+  );
 
   // Auto-play pronunciation on mount
   useEffect(() => {

@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Tests for submitLessonResult callable.
  */
 const vitest_1 = require("vitest");
-const { MockHttpsError, mockChildGet, mockBatchUpdate, mockBatchSet, mockBatchCommit, mockChildRef, } = vitest_1.vi.hoisted(() => {
+const { MockHttpsError, mockChildGet, mockBatchUpdate, mockBatchSet, mockChildRef } = vitest_1.vi.hoisted(() => {
     class MockHttpsError extends Error {
         code;
         constructor(code, message) {
@@ -15,14 +15,12 @@ const { MockHttpsError, mockChildGet, mockBatchUpdate, mockBatchSet, mockBatchCo
     const mockChildGet = vitest_1.vi.fn();
     const mockBatchUpdate = vitest_1.vi.fn();
     const mockBatchSet = vitest_1.vi.fn();
-    const mockBatchCommit = vitest_1.vi.fn().mockResolvedValue(undefined);
     const mockChildRef = { get: mockChildGet, update: vitest_1.vi.fn() };
     return {
         MockHttpsError,
         mockChildGet,
         mockBatchUpdate,
         mockBatchSet,
-        mockBatchCommit,
         mockChildRef,
     };
 });
@@ -34,16 +32,17 @@ vitest_1.vi.mock('../utils/admin', () => ({
     db: {
         doc: vitest_1.vi.fn((path) => {
             if (path.includes('lessonProgress'))
-                return { id: 'progress-ref' };
+                return { id: 'progress-ref', set: mockBatchSet };
             return mockChildRef;
         }),
-        batch: vitest_1.vi.fn(() => ({
+        runTransaction: vitest_1.vi.fn(async (fn) => fn({
+            get: vitest_1.vi.fn(async () => mockChildGet()),
             update: mockBatchUpdate,
             set: mockBatchSet,
-            commit: mockBatchCommit,
         })),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');
@@ -239,10 +238,9 @@ function makeReq(data) {
         await handler(makeReq({ childId: 'c1', lessonId: 'l1', activities, totalTimeMs: 30000 }));
         (0, vitest_1.expect)(mockBatchUpdate).toHaveBeenCalledTimes(1);
         (0, vitest_1.expect)(mockBatchSet).toHaveBeenCalledTimes(1);
-        (0, vitest_1.expect)(mockBatchCommit).toHaveBeenCalledTimes(1);
-        // Check batch.set was called with lesson progress data
+        // Check progressRef.set was called with lesson progress data
         const setArgs = mockBatchSet.mock.calls[0];
-        (0, vitest_1.expect)(setArgs[1]).toEqual(vitest_1.expect.objectContaining({
+        (0, vitest_1.expect)(setArgs[0]).toEqual(vitest_1.expect.objectContaining({
             lessonId: 'l1',
             stars: 3,
             accuracy: 1.0,

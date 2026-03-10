@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Tests for purchaseShopItem callable.
  */
 const vitest_1 = require("vitest");
-const { MockHttpsError, mockItemGet, mockChildGet, mockRunTransaction } = vitest_1.vi.hoisted(() => {
+const { MockHttpsError, mockItemGet, mockChildGet } = vitest_1.vi.hoisted(() => {
     class MockHttpsError extends Error {
         code;
         constructor(code, message) {
@@ -14,8 +14,7 @@ const { MockHttpsError, mockItemGet, mockChildGet, mockRunTransaction } = vitest
     }
     const mockItemGet = vitest_1.vi.fn();
     const mockChildGet = vitest_1.vi.fn();
-    const mockRunTransaction = vitest_1.vi.fn();
-    return { MockHttpsError, mockItemGet, mockChildGet, mockRunTransaction };
+    return { MockHttpsError, mockItemGet, mockChildGet };
 });
 vitest_1.vi.mock('firebase-functions/v2/https', () => ({
     HttpsError: MockHttpsError,
@@ -26,11 +25,18 @@ vitest_1.vi.mock('../utils/admin', () => ({
         doc: vitest_1.vi.fn((path) => {
             if (path.startsWith('shopItems/'))
                 return { get: mockItemGet };
-            return { get: mockChildGet, id: 'child-ref' }; // childRef
+            return { id: 'child-ref' }; // childRef
         }),
-        runTransaction: mockRunTransaction,
+        runTransaction: vitest_1.vi.fn(async (fn) => fn({
+            get: vitest_1.vi.fn(async () => {
+                const val = await mockChildGet();
+                return { exists: true, ...val };
+            }),
+            update: vitest_1.vi.fn(),
+        })),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');
@@ -56,7 +62,6 @@ function makeReq(childId, itemId) {
         mockChildGet.mockResolvedValue({
             data: () => ({ currency: { stars: 200, gems: 0 }, ownedItems: [] }),
         });
-        mockRunTransaction.mockImplementation(async (fn) => fn({ update: vitest_1.vi.fn() }));
         const result = await handler(makeReq('c1', 'item1'));
         (0, vitest_1.expect)(result.itemId).toBe('item1');
         (0, vitest_1.expect)(result.itemName).toBe('Fox Hat');
@@ -71,7 +76,6 @@ function makeReq(childId, itemId) {
         mockChildGet.mockResolvedValue({
             data: () => ({ currency: { stars: 0, gems: 100 }, ownedItems: [] }),
         });
-        mockRunTransaction.mockImplementation(async (fn) => fn({ update: vitest_1.vi.fn() }));
         const result = await handler(makeReq('c1', 'item1'));
         (0, vitest_1.expect)(result.currencyType).toBe('gems');
     });

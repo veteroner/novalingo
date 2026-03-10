@@ -39,17 +39,177 @@ interface SpeakOptions {
   pitch?: number;
   /** Volume 0–1 (default: 1) */
   volume?: number;
+  /** Pre-recorded audio URL — if provided, plays this instead of TTS */
+  audioUrl?: string;
+}
+
+// ===== CLOUD TTS (Google Neural2 via Netlify Function) =====
+
+const CLOUD_TTS_URL = '/api/tts';
+const TTS_CACHE_NAME = 'novalingo-tts-v1';
+
+/** After first failure, skip cloud TTS for rest of session */
+let cloudTTSDisabled = false;
+
+/** Currently playing audio element — tracked for stop/cancel */
+let currentAudio: HTMLAudioElement | null = null;
+
+function stopCurrentAudio(): void {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+}
+
+/** Fetch TTS audio from Netlify Function (Google Cloud TTS Neural2) with Cache API */
+async function fetchCloudTTS(text: string, rate: number, pitch: number): Promise<Blob> {
+  const cacheKey = `${CLOUD_TTS_URL}?t=${encodeURIComponent(text)}&r=${rate}&p=${pitch}`;
+  const cacheReq = new Request(new URL(cacheKey, window.location.origin).href);
+
+  // Check cache first
+  if ('caches' in window) {
+    try {
+      const cache = await caches.open(TTS_CACHE_NAME);
+      const cached = await cache.match(cacheReq);
+      if (cached) return await cached.blob();
+    } catch {
+      /* cache miss */
+    }
+  }
+
+  const res = await fetch(CLOUD_TTS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, rate, pitch }),
+  });
+
+  if (!res.ok) throw new Error(`Cloud TTS: ${res.status}`);
+
+  const blob = await res.blob();
+
+  // Store in cache for next time
+  if ('caches' in window) {
+    try {
+      const cache = await caches.open(TTS_CACHE_NAME);
+      await cache.put(
+        cacheReq,
+        new Response(blob.slice(), { headers: { 'Content-Type': 'audio/mpeg' } }),
+      );
+    } catch {
+      /* caching failed, not critical */
+    }
+  }
+
+  return blob;
+}
+
+/** Play audio from URL with tracking for stop/cancel */
+function playAudio(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    stopCurrentAudio();
+    if (synthAvailable) window.speechSynthesis.cancel();
+    const audio = new Audio(src);
+    currentAudio = audio;
+    audio.onended = () => {
+      currentAudio = null;
+      resolve();
+    };
+    audio.onerror = () => {
+      currentAudio = null;
+      resolve();
+    };
+    audio.play().catch(() => {
+      currentAudio = null;
+      resolve();
+    });
+  });
+}
+
+/** Play audio from Blob with tracking for stop/cancel */
+function playBlob(blob: Blob): Promise<void> {
+  const url = URL.createObjectURL(blob);
+  return new Promise((resolve) => {
+    stopCurrentAudio();
+    if (synthAvailable) window.speechSynthesis.cancel();
+    const audio = new Audio(url);
+    currentAudio = audio;
+    const cleanup = () => {
+      URL.revokeObjectURL(url);
+      currentAudio = null;
+    };
+    audio.onended = () => {
+      cleanup();
+      resolve();
+    };
+    audio.onerror = () => {
+      cleanup();
+      resolve();
+    };
+    audio.play().catch(() => {
+      cleanup();
+      resolve();
+    });
+  });
+}
+
+// ===== WEB SPEECH API FALLBACK =====
+
+// Cached English voice — resolved once, reused across calls
+let cachedEnglishVoice: SpeechSynthesisVoice | null = null;
+let voiceResolved = false;
+
+/**
+ * Find the best English voice available on this device.
+ * Prefers: Google/Samantha/Daniel high-quality voices > any en-US > any en-*
+ */
+function findBestEnglishVoice(): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices();
+  if (voices.length === 0) return null;
+
+  const enVoices = voices.filter((v) => v.lang.startsWith('en'));
+  if (enVoices.length === 0) return null;
+
+  // Prefer high-quality voices (Google, Apple Samantha/Daniel, Microsoft)
+  const preferredNames = ['google', 'samantha', 'daniel', 'karen', 'moira', 'enhanced'];
+  const preferred = enVoices.find((v) =>
+    preferredNames.some((name) => v.name.toLowerCase().includes(name)),
+  );
+  if (preferred) return preferred;
+
+  // Prefer en-US
+  const enUS = enVoices.find((v) => v.lang === 'en-US');
+  if (enUS) return enUS;
+
+  // Any English voice
+  return enVoices[0] ?? null;
+}
+
+function resolveEnglishVoice(): SpeechSynthesisVoice | null {
+  if (voiceResolved) return cachedEnglishVoice;
+  cachedEnglishVoice = findBestEnglishVoice();
+  if (cachedEnglishVoice) voiceResolved = true;
+  return cachedEnglishVoice;
+}
+
+// Voices load asynchronously on some browsers — pre-resolve when ready
+if (synthAvailable) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    voiceResolved = false;
+    resolveEnglishVoice();
+  };
+  // Eager attempt (voices may already be loaded)
+  resolveEnglishVoice();
 }
 
 /**
- * Kelime/cümle seslendir.
- * Resolve: seslendirme tamamlandığında.
- * Reject: hata oluşursa.
+ * Web Speech API fallback — used only when cloud TTS is unavailable.
+ * Explicitly selects an English voice to avoid Turkish pronunciation.
  */
-export function speak(text: string, options: SpeakOptions = {}): Promise<void> {
+function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!synthAvailable) {
-      resolve(); // Sessizce geç — çocuğun akışı bozulmasın
+      resolve();
       return;
     }
 
@@ -61,11 +221,13 @@ export function speak(text: string, options: SpeakOptions = {}): Promise<void> {
     utterance.pitch = options.pitch ?? 1.1;
     utterance.volume = options.volume ?? 1;
 
+    const voice = resolveEnglishVoice();
+    if (voice) utterance.voice = voice;
+
     utterance.onend = () => {
       resolve();
     };
     utterance.onerror = (e) => {
-      // 'interrupted' and 'canceled' are not real errors
       if (e.error === 'interrupted' || e.error === 'canceled') {
         resolve();
       } else {
@@ -78,9 +240,39 @@ export function speak(text: string, options: SpeakOptions = {}): Promise<void> {
 }
 
 /**
+ * Kelime/cümle seslendir — 3 katmanlı:
+ * 1. Önceden üretilmiş audioUrl (varsa)
+ * 2. Google Cloud TTS Neural2 (Netlify Function) + Cache API
+ * 3. Web Speech API fallback (telefonun sesi — son çare)
+ */
+export async function speak(text: string, options: SpeakOptions = {}): Promise<void> {
+  // Priority 1: Pre-recorded audio
+  if (options.audioUrl) {
+    return playAudio(options.audioUrl);
+  }
+
+  // Priority 2: Cloud TTS (Google Neural2) with browser caching
+  if (!cloudTTSDisabled) {
+    try {
+      const gcpPitch = options.pitch != null ? (options.pitch - 1) * 20 : 0;
+      const blob = await fetchCloudTTS(text, options.rate ?? 0.9, gcpPitch);
+      await playBlob(blob);
+      return;
+    } catch {
+      // Cloud TTS unavailable — disable for this session
+      cloudTTSDisabled = true;
+    }
+  }
+
+  // Priority 3: Web Speech API (explicit English voice — last resort)
+  await speakWithWebSpeechAPI(text, options);
+}
+
+/**
  * Seslendirmeyi durdur.
  */
 export function stopSpeaking(): void {
+  stopCurrentAudio();
   if (synthAvailable) {
     window.speechSynthesis.cancel();
   }

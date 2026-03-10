@@ -16,9 +16,9 @@ interface StoryTimeActivityProps extends ActivityCallbacks {
   data: StoryTimeData;
 }
 
-/** TTS ile metni seslendir */
-function speak(text: string, lang = 'en-US') {
-  void ttsSpeak(text, { lang });
+/** TTS ile metni seslendir — prefer audioUrl when available */
+function speak(text: string, audioUrl?: string, lang = 'en-US') {
+  void ttsSpeak(text, { lang, audioUrl: audioUrl || undefined });
 }
 
 /** Emoji haritası — basit tema ipuçları */
@@ -101,10 +101,10 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
     }
   }, [currentPage]);
 
-  // Sayfayı dinle
+  // Sayfayı dinle — prefer page audioUrl
   const handleListenPage = useCallback(() => {
     if (page) {
-      speak(page.text);
+      speak(page.text, page.audioUrl);
     }
   }, [page]);
 

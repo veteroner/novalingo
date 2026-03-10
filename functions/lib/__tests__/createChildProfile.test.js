@@ -30,6 +30,7 @@ vitest_1.vi.mock('../utils/admin', () => ({
         doc: vitest_1.vi.fn(() => ({
             get: mockUserDocGet,
             update: mockUserDocUpdate,
+            set: mockUserDocUpdate,
         })),
         collection: vitest_1.vi.fn(() => ({
             where: vitest_1.vi.fn().mockReturnValue({
@@ -44,6 +45,7 @@ vitest_1.vi.mock('../utils/admin', () => ({
         })),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Authentication required');

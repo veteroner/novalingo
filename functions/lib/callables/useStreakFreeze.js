@@ -13,18 +13,23 @@ exports.useStreakFreeze = (0, https_1.onCall)(admin_1.callableOpts, async (reque
     const { childId } = request.data;
     await (0, admin_1.requireChildOwnership)(uid, childId);
     const childRef = admin_1.db.doc(`children/${childId}`);
-    const childDoc = await childRef.get();
-    const child = childDoc.data();
-    if (child.streak.freezesAvailable <= 0) {
-        throw new https_1.HttpsError('failed-precondition', 'No streak freezes available');
-    }
-    await childRef.update({
-        'streak.freezesAvailable': (0, admin_1.increment)(-1),
-        'streak.frozenToday': true,
-        updatedAt: (0, admin_1.serverTimestamp)(),
+    const result = await admin_1.db.runTransaction(async (tx) => {
+        const childSnap = await tx.get(childRef);
+        if (!childSnap.exists) {
+            throw new https_1.HttpsError('not-found', 'Child profile not found');
+        }
+        const child = childSnap.data();
+        const available = child.streak?.freezesAvailable ?? 0;
+        if (available <= 0) {
+            throw new https_1.HttpsError('failed-precondition', 'No streak freezes available');
+        }
+        tx.update(childRef, {
+            'streak.freezesAvailable': available - 1,
+            'streak.frozenToday': true,
+            updatedAt: (0, admin_1.serverTimestamp)(),
+        });
+        return { freezesRemaining: available - 1 };
     });
-    return {
-        freezesRemaining: child.streak.freezesAvailable - 1,
-    };
+    return result;
 });
 //# sourceMappingURL=useStreakFreeze.js.map

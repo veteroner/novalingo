@@ -87,10 +87,13 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
     return letter === expected ? 'correct' : 'wrong';
   });
 
-  // TTS via centralized speechService
-  const speak = useCallback((text: string) => {
-    void ttsSpeak(text, { rate: 0.8 });
-  }, []);
+  // TTS via centralized speechService — prefer audioUrl when available
+  const speak = useCallback(
+    (text: string) => {
+      void ttsSpeak(text, { rate: 0.8, audioUrl: data.audioUrl || undefined });
+    },
+    [data.audioUrl],
+  );
 
   // Speak word on mount
   useEffect(() => {

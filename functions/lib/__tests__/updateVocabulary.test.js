@@ -32,6 +32,7 @@ vitest_1.vi.mock('../utils/admin', () => ({
         })),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');

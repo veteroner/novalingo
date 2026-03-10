@@ -57,6 +57,7 @@ vitest_1.vi.mock('../utils/admin', () => ({
         })),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');
@@ -85,9 +86,17 @@ function makeReq(childId) {
     });
     (0, vitest_1.it)('deletes child and subcollections successfully', async () => {
         const mockSubDoc = { ref: { path: 'children/c1/vocabulary/w1' } };
+        // Each subcollection returns one batch of docs, then empty on next call
+        let subCallCount = 0;
         mockChildCollection.mockReturnValue({
             limit: vitest_1.vi.fn(() => ({
-                get: vitest_1.vi.fn().mockResolvedValue({ empty: false, docs: [mockSubDoc] }),
+                get: vitest_1.vi.fn(() => {
+                    subCallCount++;
+                    if (subCallCount <= 6) {
+                        return Promise.resolve({ empty: false, docs: [mockSubDoc] });
+                    }
+                    return Promise.resolve({ empty: true, docs: [] });
+                }),
             })),
         });
         // User had this child as active, no remaining children

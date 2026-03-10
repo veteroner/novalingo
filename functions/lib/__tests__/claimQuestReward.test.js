@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Tests for claimQuestReward callable.
  */
 const vitest_1 = require("vitest");
-const { MockHttpsError, mockQuestGet, mockBatchUpdate, mockBatchCommit, mockQuestRef } = vitest_1.vi.hoisted(() => {
+const { MockHttpsError, mockQuestGet, mockTxUpdate, mockQuestRef, mockChildRef } = vitest_1.vi.hoisted(() => {
     class MockHttpsError extends Error {
         code;
         constructor(code, message) {
@@ -13,10 +13,10 @@ const { MockHttpsError, mockQuestGet, mockBatchUpdate, mockBatchCommit, mockQues
         }
     }
     const mockQuestGet = vitest_1.vi.fn();
-    const mockBatchUpdate = vitest_1.vi.fn();
-    const mockBatchCommit = vitest_1.vi.fn().mockResolvedValue(undefined);
-    const mockQuestRef = { get: mockQuestGet, id: 'q1' };
-    return { MockHttpsError, mockQuestGet, mockBatchUpdate, mockBatchCommit, mockQuestRef };
+    const mockTxUpdate = vitest_1.vi.fn();
+    const mockQuestRef = { id: 'q1' };
+    const mockChildRef = { id: 'child-ref' };
+    return { MockHttpsError, mockQuestGet, mockTxUpdate, mockQuestRef, mockChildRef };
 });
 vitest_1.vi.mock('firebase-functions/v2/https', () => ({
     HttpsError: MockHttpsError,
@@ -27,14 +27,18 @@ vitest_1.vi.mock('../utils/admin', () => ({
         doc: vitest_1.vi.fn((path) => {
             if (path.includes('/quests/'))
                 return mockQuestRef;
-            return { id: 'child-ref' }; // childRef
+            return mockChildRef;
         }),
-        batch: vitest_1.vi.fn(() => ({
-            update: mockBatchUpdate,
-            commit: mockBatchCommit,
-        })),
+        runTransaction: vitest_1.vi.fn(async (fn) => {
+            const tx = {
+                get: mockQuestGet,
+                update: mockTxUpdate,
+            };
+            return fn(tx);
+        }),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');
@@ -64,8 +68,7 @@ function makeReq(childId, questId) {
         const result = await handler(makeReq('c1', 'q1'));
         (0, vitest_1.expect)(result.reward).toEqual({ type: 'stars', amount: 50 });
         (0, vitest_1.expect)(result.questId).toBe('q1');
-        (0, vitest_1.expect)(mockBatchUpdate).toHaveBeenCalledTimes(2); // child + quest
-        (0, vitest_1.expect)(mockBatchCommit).toHaveBeenCalledTimes(1);
+        (0, vitest_1.expect)(mockTxUpdate).toHaveBeenCalledTimes(2); // child + quest
     });
     (0, vitest_1.it)('claims gems reward successfully', async () => {
         mockQuestGet.mockResolvedValue({

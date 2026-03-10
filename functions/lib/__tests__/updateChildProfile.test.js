@@ -23,6 +23,7 @@ vitest_1.vi.mock('firebase-functions/v2/https', () => ({
 vitest_1.vi.mock('../utils/admin', () => ({
     db: { doc: vitest_1.vi.fn(() => mockDocRef) },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');

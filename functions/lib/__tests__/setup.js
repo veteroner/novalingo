@@ -27,6 +27,16 @@ vitest_1.vi.mock('firebase-admin', () => {
     };
     return { ...mod, default: mod };
 });
+// Mock firebase-admin/firestore separately (admin.ts imports from this path)
+vitest_1.vi.mock('firebase-admin/firestore', () => ({
+    getFirestore: vitest_1.vi.fn(() => ({})),
+    FieldValue: {
+        serverTimestamp: () => 'SERVER_TIMESTAMP',
+        increment: (n) => n,
+        arrayUnion: (...args) => args,
+        arrayRemove: (...args) => args,
+    },
+}));
 // Mock rate limiter globally — no-op in tests
 vitest_1.vi.mock('../utils/rateLimit', () => ({
     checkRateLimit: vitest_1.vi.fn().mockResolvedValue(undefined),

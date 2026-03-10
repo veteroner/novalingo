@@ -26,29 +26,58 @@ exports.syncOfflineProgress = (0, https_1.onCall)(admin_1.callableOpts, async (r
     for (const action of sorted) {
         try {
             switch (action.type) {
-                case 'lessonComplete':
-                    // Save lesson progress directly (XP calc already done client-side)
-                    await admin_1.db.doc(`children/${childId}/lessonProgress/${action.payload.lessonId}`).set({
-                        ...action.payload,
+                case 'lessonComplete': {
+                    const p = action.payload;
+                    const lessonId = typeof p.lessonId === 'string' ? p.lessonId : null;
+                    if (!lessonId) {
+                        errors++;
+                        break;
+                    }
+                    await admin_1.db.doc(`children/${childId}/lessonProgress/${lessonId}`).set({
+                        lessonId,
+                        stars: Math.min(Math.max(Number(p.stars) || 0, 0), 3),
+                        accuracy: Math.min(Math.max(Number(p.accuracy) || 0, 0), 1),
+                        xpEarned: Math.min(Math.max(Number(p.xpEarned) || 0, 0), 500),
+                        timeSpentMs: Math.min(Math.max(Number(p.timeSpentMs) || 0, 0), 600_000),
                         syncedAt: (0, admin_1.serverTimestamp)(),
                         offlineSync: true,
                     }, { merge: true });
                     synced++;
                     break;
-                case 'vocabularyReview':
-                    await admin_1.db.doc(`children/${childId}/vocabulary/${action.payload.wordId}`).set({
-                        ...action.payload,
+                }
+                case 'vocabularyReview': {
+                    const p = action.payload;
+                    const wordId = typeof p.wordId === 'string' ? p.wordId : null;
+                    if (!wordId) {
+                        errors++;
+                        break;
+                    }
+                    await admin_1.db.doc(`children/${childId}/vocabulary/${wordId}`).set({
+                        wordId,
+                        interval: Math.min(Math.max(Number(p.interval) || 1, 1), 365),
+                        easeFactor: Math.min(Math.max(Number(p.easeFactor) || 2.5, 1.3), 5),
+                        repetitions: Math.min(Math.max(Number(p.repetitions) || 0, 0), 100),
+                        nextReviewDate: typeof p.nextReviewDate === 'string' ? p.nextReviewDate : null,
                         syncedAt: (0, admin_1.serverTimestamp)(),
                     }, { merge: true });
                     synced++;
                     break;
-                case 'questProgress':
-                    await admin_1.db.doc(`children/${childId}/quests/${action.payload.questId}`).update({
-                        currentProgress: action.payload.progress,
+                }
+                case 'questProgress': {
+                    const p = action.payload;
+                    const questId = typeof p.questId === 'string' ? p.questId : null;
+                    const progress = Math.min(Math.max(Number(p.progress) || 0, 0), 1000);
+                    if (!questId) {
+                        errors++;
+                        break;
+                    }
+                    await admin_1.db.doc(`children/${childId}/quests/${questId}`).update({
+                        currentProgress: progress,
                         updatedAt: (0, admin_1.serverTimestamp)(),
                     });
                     synced++;
                     break;
+                }
                 default:
                     errors++;
             }

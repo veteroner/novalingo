@@ -21,16 +21,19 @@ exports.deleteChildProfile = (0, https_1.onCall)(admin_1.callableOpts, async (re
     const childId = (0, validators_1.validateId)(request.data.childId, 'childId');
     await (0, admin_1.requireChildOwnership)(uid, childId);
     const childRef = admin_1.db.doc(`children/${childId}`);
-    // Delete all subcollections first
+    // Delete all subcollections first (loop until fully drained)
     for (const sub of SUBCOLLECTIONS) {
-        const snap = await childRef.collection(sub).limit(500).get();
-        if (!snap.empty) {
-            const batch = admin_1.db.batch();
-            for (const doc of snap.docs) {
-                batch.delete(doc.ref);
+        let snap;
+        do {
+            snap = await childRef.collection(sub).limit(500).get();
+            if (!snap.empty) {
+                const batch = admin_1.db.batch();
+                for (const doc of snap.docs) {
+                    batch.delete(doc.ref);
+                }
+                await batch.commit();
             }
-            await batch.commit();
-        }
+        } while (!snap.empty);
     }
     // Delete the child document
     await childRef.delete();

@@ -35,36 +35,36 @@ exports.spinDailyWheel = (0, https_1.onCall)(admin_1.callableOpts, async (reques
     await (0, admin_1.requireChildOwnership)(uid, childId);
     const today = (0, admin_1.getTodayTR)();
     const spinRef = admin_1.db.doc(`children/${childId}/dailySpins/${today}`);
-    const spinDoc = await spinRef.get();
-    if (spinDoc.exists) {
-        throw new https_1.HttpsError('already-exists', 'Already spun today');
-    }
-    // Pick reward
-    const reward = weightedRandom();
-    // Award and record
-    const batch = admin_1.db.batch();
     const childRef = admin_1.db.doc(`children/${childId}`);
-    switch (reward.type) {
-        case 'stars':
-            batch.update(childRef, { 'currency.stars': (0, admin_1.increment)(reward.amount) });
-            break;
-        case 'gems':
-            batch.update(childRef, { 'currency.gems': (0, admin_1.increment)(reward.amount) });
-            break;
-        case 'xp':
-            batch.update(childRef, { totalXP: (0, admin_1.increment)(reward.amount) });
-            break;
-        case 'streak_freeze':
-            batch.update(childRef, {
-                'streak.freezesAvailable': (0, admin_1.increment)(reward.amount),
-            });
-            break;
-    }
-    batch.set(spinRef, {
-        reward,
-        spunAt: (0, admin_1.serverTimestamp)(),
+    // Pick reward before transaction (no Firestore dependency)
+    const reward = weightedRandom();
+    // Transaction: check-and-write atomically to prevent double-spin
+    await admin_1.db.runTransaction(async (tx) => {
+        const spinDoc = await tx.get(spinRef);
+        if (spinDoc.exists) {
+            throw new https_1.HttpsError('already-exists', 'Already spun today');
+        }
+        switch (reward.type) {
+            case 'stars':
+                tx.update(childRef, { 'currency.stars': (0, admin_1.increment)(reward.amount) });
+                break;
+            case 'gems':
+                tx.update(childRef, { 'currency.gems': (0, admin_1.increment)(reward.amount) });
+                break;
+            case 'xp':
+                tx.update(childRef, { totalXP: (0, admin_1.increment)(reward.amount) });
+                break;
+            case 'streak_freeze':
+                tx.update(childRef, {
+                    'streak.freezesAvailable': (0, admin_1.increment)(reward.amount),
+                });
+                break;
+        }
+        tx.set(spinRef, {
+            reward,
+            spunAt: (0, admin_1.serverTimestamp)(),
+        });
     });
-    await batch.commit();
     return {
         segmentId: reward.id,
         reward: { type: reward.type, amount: reward.amount },

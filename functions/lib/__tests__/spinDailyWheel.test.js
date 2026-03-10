@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Tests for spinDailyWheel callable.
  */
 const vitest_1 = require("vitest");
-const { MockHttpsError, mockSpinGet, mockBatchUpdate, mockBatchSet, mockBatchCommit } = vitest_1.vi.hoisted(() => {
+const { MockHttpsError, mockSpinGet, mockBatchUpdate, mockBatchSet } = vitest_1.vi.hoisted(() => {
     class MockHttpsError extends Error {
         code;
         constructor(code, message) {
@@ -15,8 +15,7 @@ const { MockHttpsError, mockSpinGet, mockBatchUpdate, mockBatchSet, mockBatchCom
     const mockSpinGet = vitest_1.vi.fn();
     const mockBatchUpdate = vitest_1.vi.fn();
     const mockBatchSet = vitest_1.vi.fn();
-    const mockBatchCommit = vitest_1.vi.fn().mockResolvedValue(undefined);
-    return { MockHttpsError, mockSpinGet, mockBatchUpdate, mockBatchSet, mockBatchCommit };
+    return { MockHttpsError, mockSpinGet, mockBatchUpdate, mockBatchSet };
 });
 vitest_1.vi.mock('firebase-functions/v2/https', () => ({
     HttpsError: MockHttpsError,
@@ -26,16 +25,21 @@ vitest_1.vi.mock('../utils/admin', () => ({
     db: {
         doc: vitest_1.vi.fn((path) => {
             if (path.includes('/dailySpins/'))
-                return { get: mockSpinGet };
+                return { id: 'spin-ref' };
             return { id: 'child-ref' }; // childRef
         }),
-        batch: vitest_1.vi.fn(() => ({
+        runTransaction: vitest_1.vi.fn(async (fn) => fn({
+            get: vitest_1.vi.fn(async (ref) => {
+                if (ref.id === 'spin-ref')
+                    return mockSpinGet();
+                return { exists: true, data: () => ({}) };
+            }),
             update: mockBatchUpdate,
             set: mockBatchSet,
-            commit: mockBatchCommit,
         })),
     },
     REGION: 'europe-west1',
+    callableOpts: { region: 'europe-west1', enforceAppCheck: false },
     requireAuth: vitest_1.vi.fn((req) => {
         if (!req.auth?.uid)
             throw new MockHttpsError('unauthenticated', 'Auth required');
@@ -63,7 +67,6 @@ function makeReq(childId) {
         (0, vitest_1.expect)(result.reward).toEqual({ type: 'stars', amount: 10 });
         (0, vitest_1.expect)(mockBatchUpdate).toHaveBeenCalledTimes(1);
         (0, vitest_1.expect)(mockBatchSet).toHaveBeenCalledTimes(1);
-        (0, vitest_1.expect)(mockBatchCommit).toHaveBeenCalledTimes(1);
         vitest_1.vi.restoreAllMocks();
     });
     (0, vitest_1.it)('rejects when already spun today', async () => {

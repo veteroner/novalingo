@@ -37,10 +37,13 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
     };
   }, []);
 
-  // TTS via centralized speechService
-  const speak = useCallback((text: string) => {
-    void ttsSpeak(text, { rate: 0.8 });
-  }, []);
+  // TTS via centralized speechService — prefer audioUrl when available
+  const speak = useCallback(
+    (text: string) => {
+      void ttsSpeak(text, { rate: 0.8, audioUrl: data.audioUrl || undefined });
+    },
+    [data.audioUrl],
+  );
 
   // Auto-play on mount
   useEffect(() => {
