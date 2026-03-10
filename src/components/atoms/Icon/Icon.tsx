@@ -11,7 +11,12 @@ type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
 interface IconProps {
   /** Phosphor icon component */
-  icon: ComponentType<{ size?: number; weight?: string; className?: string; style?: CSSProperties }>;
+  icon: ComponentType<{
+    size?: number;
+    weight?: string;
+    className?: string;
+    style?: CSSProperties;
+  }>;
   size?: IconSize;
   color?: string;
   weight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
@@ -40,7 +45,7 @@ export function Icon({
     <span
       role={label ? 'img' : 'presentation'}
       aria-label={label}
-      className={clsx('inline-flex items-center justify-center shrink-0', className)}
+      className={clsx('inline-flex shrink-0 items-center justify-center', className)}
       style={color ? { color } : undefined}
     >
       <IconComponent size={sizeValues[size]} weight={weight} />

@@ -65,8 +65,12 @@ export function NovaCompanion({
   useEffect(() => {
     if (message) {
       setShowBubble(true);
-      const timer = setTimeout(() => { setShowBubble(false); }, 5000);
-      return () => { clearTimeout(timer); };
+      const timer = setTimeout(() => {
+        setShowBubble(false);
+      }, 5000);
+      return () => {
+        clearTimeout(timer);
+      };
     }
     setShowBubble(false);
   }, [message]);
@@ -78,8 +82,8 @@ export function NovaCompanion({
         {showBubble && message && (
           <motion.div
             className={clsx(
-              'absolute bottom-full mb-2 right-0 min-w-30 max-w-50',
-              'bg-white rounded-2xl rounded-br-sm px-3 py-2 shadow-lg border border-gray-100',
+              'absolute right-0 bottom-full mb-2 max-w-50 min-w-30',
+              'rounded-2xl rounded-br-sm border border-gray-100 bg-white px-3 py-2 shadow-lg',
             )}
             initial={{ opacity: 0, scale: 0.5, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -96,9 +100,9 @@ export function NovaCompanion({
       {/* Nova character */}
       <motion.button
         className={clsx(
-          'rounded-full bg-nova-blue/10 border-3 border-nova-blue/30',
+          'bg-nova-blue/10 border-nova-blue/30 rounded-full border-3',
           'flex items-center justify-center shadow-lg',
-          'touch-manipulation select-none cursor-pointer',
+          'cursor-pointer touch-manipulation select-none',
           sizeStyles[size],
         )}
         animate={moodAnimations[mood]}

@@ -73,7 +73,7 @@ export const devFeatureFlags: Partial<FeatureFlags> = {
  */
 export function resolveFeatureFlags(
   env: 'development' | 'production' | 'test' = 'production',
-  remoteOverrides?: Partial<FeatureFlags>
+  remoteOverrides?: Partial<FeatureFlags>,
 ): FeatureFlags {
   const base = { ...defaultFeatureFlags };
 

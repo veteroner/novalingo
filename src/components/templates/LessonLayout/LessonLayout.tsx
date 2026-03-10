@@ -34,12 +34,12 @@ export function LessonLayout({
   className,
 }: LessonLayoutProps) {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background-primary safe-area-top safe-area-bottom">
+    <div className="bg-background-primary safe-area-top safe-area-bottom fixed inset-0 z-50 flex flex-col">
       {/* Header bar */}
-      <div className="shrink-0 flex items-center gap-3 px-4 py-3">
+      <div className="flex shrink-0 items-center gap-3 px-4 py-3">
         {/* Close button */}
         <motion.button
-          className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500"
           whileTap={{ scale: 0.85 }}
           onClick={onClose}
         >
@@ -52,7 +52,7 @@ export function LessonLayout({
         </div>
 
         {/* Counter / Timer */}
-        <div className="shrink-0 flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Text variant="caption" weight="bold" className="text-text-secondary">
             {currentQuestion}/{totalQuestions}
           </Text>
@@ -65,9 +65,7 @@ export function LessonLayout({
       </div>
 
       {/* Content */}
-      <div className={clsx('flex-1 overflow-y-auto px-4 pb-8', className)}>
-        {children}
-      </div>
+      <div className={clsx('flex-1 overflow-y-auto px-4 pb-8', className)}>{children}</div>
     </div>
   );
 }

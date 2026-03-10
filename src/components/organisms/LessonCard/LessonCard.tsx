@@ -81,12 +81,12 @@ export function LessonCard({
       {/* Node */}
       <motion.button
         className={clsx(
-          'relative h-16 w-16 rounded-full border-4 flex items-center justify-center',
-          'transition-all touch-manipulation select-none',
+          'relative flex h-16 w-16 items-center justify-center rounded-full border-4',
+          'touch-manipulation transition-all select-none',
           styles.bg,
           styles.border,
           styles.shadow,
-          isLocked && 'opacity-60 cursor-not-allowed',
+          isLocked && 'cursor-not-allowed opacity-60',
           !isLocked && 'cursor-pointer',
         )}
         whileTap={!isLocked ? { scale: 0.9 } : undefined}
@@ -96,15 +96,13 @@ export function LessonCard({
         {isLocked ? (
           <span className="text-xl opacity-40">🔒</span>
         ) : (
-          <span className="text-2xl">
-            {lessonTypeIcons[lesson.type] ?? '📚'}
-          </span>
+          <span className="text-2xl">{lessonTypeIcons[lesson.type] ?? '📚'}</span>
         )}
 
         {/* Active pulse ring */}
         {status === 'active' && (
           <motion.div
-            className="absolute inset-0 rounded-full border-4 border-nova-blue"
+            className="border-nova-blue absolute inset-0 rounded-full border-4"
             animate={{ scale: [1, 1.3], opacity: [0.6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           />
@@ -113,14 +111,11 @@ export function LessonCard({
 
       {/* Stars */}
       {(status === 'completed' || status === 'perfect') && (
-        <div className="flex gap-0.5 mt-1">
+        <div className="mt-1 flex gap-0.5">
           {[1, 2, 3].map((i) => (
             <span
               key={i}
-              className={clsx(
-                'text-xs',
-                i <= stars ? 'opacity-100' : 'opacity-20 grayscale',
-              )}
+              className={clsx('text-xs', i <= stars ? 'opacity-100' : 'opacity-20 grayscale')}
             >
               ⭐
             </span>
@@ -129,11 +124,7 @@ export function LessonCard({
       )}
 
       {/* Label */}
-      <Text
-        variant="caption"
-        weight="bold"
-        className={clsx('mt-1', isLocked && 'opacity-40')}
-      >
+      <Text variant="caption" weight="bold" className={clsx('mt-1', isLocked && 'opacity-40')}>
         {lesson.name}
       </Text>
     </motion.div>

@@ -64,10 +64,13 @@ export const useUIStore = create<UIState>((set) => ({
   loadingMessage: null,
   activeTab: 'home',
 
-  openModal: (activeModal, modalData) =>
-    { set({ activeModal, modalData: modalData ?? null }); },
+  openModal: (activeModal, modalData) => {
+    set({ activeModal, modalData: modalData ?? null });
+  },
 
-  closeModal: () => { set({ activeModal: null, modalData: null }); },
+  closeModal: () => {
+    set({ activeModal: null, modalData: null });
+  },
 
   showToast: (toast) => {
     const id = crypto.randomUUID();
@@ -84,13 +87,17 @@ export const useUIStore = create<UIState>((set) => ({
     }, duration);
   },
 
-  removeToast: (id) =>
-    { set((state) => ({
+  removeToast: (id) => {
+    set((state) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
-    })); },
+    }));
+  },
 
-  setGlobalLoading: (isGlobalLoading, loadingMessage) =>
-    { set({ isGlobalLoading, loadingMessage: loadingMessage ?? null }); },
+  setGlobalLoading: (isGlobalLoading, loadingMessage) => {
+    set({ isGlobalLoading, loadingMessage: loadingMessage ?? null });
+  },
 
-  setActiveTab: (activeTab) => { set({ activeTab }); },
+  setActiveTab: (activeTab) => {
+    set({ activeTab });
+  },
 }));

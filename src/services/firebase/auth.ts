@@ -50,9 +50,7 @@ export async function signInAnonymousUser(): Promise<FirebaseUser> {
 /**
  * Anonim hesabı kalıcı hesaba bağla
  */
-export async function linkAnonymousAccount(
-  provider: 'google' | 'apple',
-): Promise<FirebaseUser> {
+export async function linkAnonymousAccount(provider: 'google' | 'apple'): Promise<FirebaseUser> {
   const currentUser = auth.currentUser;
   if (!currentUser?.isAnonymous) {
     throw new Error('Current user is not anonymous');
@@ -73,9 +71,7 @@ export async function signOut(): Promise<void> {
 /**
  * Auth state değişikliklerini dinle
  */
-export function onAuthChanged(
-  callback: (user: FirebaseUser | null) => void,
-): Unsubscribe {
+export function onAuthChanged(callback: (user: FirebaseUser | null) => void): Unsubscribe {
   return onAuthStateChanged(auth, callback);
 }
 

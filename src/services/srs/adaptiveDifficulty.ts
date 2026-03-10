@@ -149,8 +149,7 @@ export function getAdaptiveDifficulty(
   }
 
   // If hint-heavy, reduce hints to encourage independence
-  const avgHints =
-    recentLessons.reduce((sum, l) => sum + l.hintsUsed, 0) / recentLessons.length;
+  const avgHints = recentLessons.reduce((sum, l) => sum + l.hintsUsed, 0) / recentLessons.length;
   if (avgHints > 2 && profile.maxHints > 1) {
     profile.maxHints = Math.max(1, profile.maxHints - 1);
   }
@@ -167,8 +166,8 @@ export function getAdaptiveActivityCount(
   ageGroup: 'cubs' | 'stars' | 'legends' = 'stars',
 ): number {
   const baseByAge = {
-    cubs: 6,    // 4-6 year olds: shorter attention
-    stars: 8,   // 7-9 year olds: standard
+    cubs: 6, // 4-6 year olds: shorter attention
+    stars: 8, // 7-9 year olds: standard
     legends: 10, // 10-12 year olds: can handle more
   };
 

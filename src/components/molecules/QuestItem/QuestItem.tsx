@@ -36,22 +36,20 @@ export function QuestItem({ quest, onClaim, className }: QuestItemProps) {
     <motion.div
       layout
       className={clsx(
-        'flex items-center gap-3 p-3 rounded-2xl border-2 transition-colors',
+        'flex items-center gap-3 rounded-2xl border-2 p-3 transition-colors',
         isClaimed
-          ? 'bg-gray-50 border-gray-200 opacity-60'
+          ? 'border-gray-200 bg-gray-50 opacity-60'
           : isCompleted
             ? 'bg-success/5 border-success/30'
-            : 'bg-white border-gray-100',
+            : 'border-gray-100 bg-white',
         className,
       )}
     >
       {/* Icon */}
-      <div className="text-2xl shrink-0">
-        {questIcons[quest.definition.type] ?? '🎯'}
-      </div>
+      <div className="shrink-0 text-2xl">{questIcons[quest.definition.type] ?? '🎯'}</div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 space-y-1">
+      <div className="min-w-0 flex-1 space-y-1">
         <Text variant="bodySmall" weight="bold" truncate>
           {quest.definition.title}
         </Text>
@@ -60,7 +58,7 @@ export function QuestItem({ quest, onClaim, className }: QuestItemProps) {
           <div className="flex-1">
             <ProgressBar value={progress} size="xs" />
           </div>
-          <Text variant="caption" weight="semibold" className="shrink-0 text-text-secondary">
+          <Text variant="caption" weight="semibold" className="text-text-secondary shrink-0">
             {quest.progress}/{quest.target}
           </Text>
         </div>
@@ -73,7 +71,7 @@ export function QuestItem({ quest, onClaim, className }: QuestItemProps) {
             Al!
           </Button>
         ) : (
-          <div className="flex items-center gap-1 text-xs font-bold text-text-secondary">
+          <div className="text-text-secondary flex items-center gap-1 text-xs font-bold">
             {quest.definition.reward.xp > 0 && <span>+{quest.definition.reward.xp} XP</span>}
             {quest.definition.reward.stars > 0 && <span>+{quest.definition.reward.stars} ⭐</span>}
             {quest.definition.reward.gems > 0 && <span>+{quest.definition.reward.gems} 💎</span>}

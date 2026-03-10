@@ -31,8 +31,8 @@ export function ListItem({
   return (
     <Component
       className={clsx(
-        'flex items-center gap-3 w-full px-4 py-3',
-        onClick && 'active:bg-gray-50 transition-colors cursor-pointer',
+        'flex w-full items-center gap-3 px-4 py-3',
+        onClick && 'cursor-pointer transition-colors active:bg-gray-50',
         divider && 'border-b border-gray-100',
         className,
       )}
@@ -40,11 +40,9 @@ export function ListItem({
     >
       {leading && <div className="shrink-0">{leading}</div>}
 
-      <div className="flex-1 min-w-0 text-left">
-        <p className="text-sm font-semibold text-text-primary truncate">{title}</p>
-        {subtitle && (
-          <p className="text-xs text-text-secondary truncate mt-0.5">{subtitle}</p>
-        )}
+      <div className="min-w-0 flex-1 text-left">
+        <p className="text-text-primary truncate text-sm font-semibold">{title}</p>
+        {subtitle && <p className="text-text-secondary mt-0.5 truncate text-xs">{subtitle}</p>}
       </div>
 
       {trailing && <div className="shrink-0">{trailing}</div>}

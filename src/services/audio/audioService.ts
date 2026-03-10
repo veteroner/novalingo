@@ -66,8 +66,12 @@ export function playWord(audioUrl: string): Promise<void> {
     const howl = new Howl({
       src: [audioUrl],
       volume: 1.0,
-      onend: () => { resolve(); },
-      onloaderror: () => { resolve(); },
+      onend: () => {
+        resolve();
+      },
+      onloaderror: () => {
+        resolve();
+      },
     });
     howl.play();
   });

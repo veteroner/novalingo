@@ -63,7 +63,7 @@ export function XPDisplay({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className="text-sm font-extrabold text-nova-blue"
+              className="text-nova-blue text-sm font-extrabold"
             >
               +{xpGain} XP
             </motion.span>

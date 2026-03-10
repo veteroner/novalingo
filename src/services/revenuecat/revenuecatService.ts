@@ -102,7 +102,9 @@ export async function purchasePackage(packageId: string): Promise<boolean> {
 
   try {
     const offerings = await Purchases.getOfferings();
-    const pkg = offerings.current?.availablePackages.find((p: { identifier: string }) => p.identifier === packageId);
+    const pkg = offerings.current?.availablePackages.find(
+      (p: { identifier: string }) => p.identifier === packageId,
+    );
 
     if (!pkg) {
       throw new Error(`Package not found: ${packageId}`);

@@ -47,8 +47,8 @@ export function Badge({
   return (
     <span
       className={clsx(
-        'inline-flex items-center justify-center font-bold rounded-full border',
-        'select-none whitespace-nowrap',
+        'inline-flex items-center justify-center rounded-full border font-bold',
+        'whitespace-nowrap select-none',
         variantStyles[variant],
         sizeStyles[size],
         pulse && 'animate-pulse',

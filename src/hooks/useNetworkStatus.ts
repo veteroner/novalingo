@@ -20,11 +20,13 @@ export function useNetworkStatus(): NetworkInfo {
 
   useEffect(() => {
     // İlk durumu al
-    Network.getStatus().then((s) => {
-      setStatus({ connected: s.connected, connectionType: s.connectionType });
-    }).catch(() => {
-      // Capacitor yoksa browser API kullan
-    });
+    Network.getStatus()
+      .then((s) => {
+        setStatus({ connected: s.connected, connectionType: s.connectionType });
+      })
+      .catch(() => {
+        // Capacitor yoksa browser API kullan
+      });
 
     // Değişiklikleri dinle
     const handler = Network.addListener('networkStatusChange', (s) => {
@@ -32,8 +34,12 @@ export function useNetworkStatus(): NetworkInfo {
     });
 
     // Fallback: browser events
-    const onOnline = () => { setStatus((prev) => ({ ...prev, connected: true })); };
-    const onOffline = () => { setStatus((prev) => ({ ...prev, connected: false })); };
+    const onOnline = () => {
+      setStatus((prev) => ({ ...prev, connected: true }));
+    };
+    const onOffline = () => {
+      setStatus((prev) => ({ ...prev, connected: false }));
+    };
 
     window.addEventListener('online', onOnline);
     window.addEventListener('offline', onOffline);

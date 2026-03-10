@@ -37,10 +37,10 @@ export function Leaderboard({ entries, currentUserId, className }: LeaderboardPr
           <motion.div
             key={entry.childId}
             className={clsx(
-              'flex items-center gap-3 px-4 py-3 rounded-2xl',
+              'flex items-center gap-3 rounded-2xl px-4 py-3',
               isCurrentUser
-                ? 'bg-nova-blue/10 border-2 border-nova-blue/30'
-                : 'bg-white border border-gray-100',
+                ? 'bg-nova-blue/10 border-nova-blue/30 border-2'
+                : 'border border-gray-100 bg-white',
               rank <= 3 && 'shadow-md',
             )}
             initial={{ opacity: 0, x: -20 }}
@@ -48,7 +48,7 @@ export function Leaderboard({ entries, currentUserId, className }: LeaderboardPr
             transition={{ delay: index * 0.05 }}
           >
             {/* Rank */}
-            <div className="w-8 text-center shrink-0">
+            <div className="w-8 shrink-0 text-center">
               {medal ? (
                 <span className="text-xl">{medal}</span>
               ) : (
@@ -67,12 +67,10 @@ export function Leaderboard({ entries, currentUserId, className }: LeaderboardPr
             />
 
             {/* Name */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <Text variant="bodySmall" weight="bold" truncate>
                 {entry.displayName}
-                {isCurrentUser && (
-                  <span className="ml-1 text-nova-blue">(Sen)</span>
-                )}
+                {isCurrentUser && <span className="text-nova-blue ml-1">(Sen)</span>}
               </Text>
             </div>
 

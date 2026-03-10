@@ -37,7 +37,7 @@ export function chunk<T>(array: T[], size: number): T[][] {
  */
 export function unique<T>(array: T[], keyFn?: (item: T) => string): T[] {
   if (!keyFn) return [...new Set(array)];
-  
+
   const seen = new Set<string>();
   return array.filter((item) => {
     const key = keyFn(item);

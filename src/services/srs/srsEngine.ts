@@ -44,8 +44,7 @@ export function calculateNextReview(input: ReviewInput): ReviewOutput {
   let { repetitions, easeFactor, interval } = input;
 
   // SM-2 ease factor update
-  const newEase =
-    easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+  const newEase = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
 
   // Clamp ease factor
   easeFactor = Math.max(SRS.MIN_FACTOR, Math.min(SRS.MAX_FACTOR, newEase));
@@ -154,10 +153,7 @@ export interface SRSStats {
   averageEase: number;
 }
 
-export function calculateSRSStats(
-  cards: VocabularyCard[],
-  now: Date = new Date(),
-): SRSStats {
+export function calculateSRSStats(cards: VocabularyCard[], now: Date = new Date()): SRSStats {
   const nowMs = now.getTime();
   const stats: SRSStats = {
     totalCards: cards.length,
@@ -172,10 +168,18 @@ export function calculateSRSStats(
   let easeSum = 0;
   for (const card of cards) {
     switch (card.masteryLevel) {
-      case 'new': stats.newCards++; break;
-      case 'learning': stats.learningCards++; break;
-      case 'reviewing': stats.reviewingCards++; break;
-      case 'mastered': stats.masteredCards++; break;
+      case 'new':
+        stats.newCards++;
+        break;
+      case 'learning':
+        stats.learningCards++;
+        break;
+      case 'reviewing':
+        stats.reviewingCards++;
+        break;
+      case 'mastered':
+        stats.masteredCards++;
+        break;
     }
     const nextReview = card.nextReviewAt.toMillis();
     if (nextReview <= nowMs) stats.dueToday++;

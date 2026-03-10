@@ -29,14 +29,9 @@ export function CurrencyDisplay({
   return (
     <div className={clsx('flex items-center', compact ? 'gap-3' : 'gap-4', className)}>
       {/* Stars */}
-      <div className="flex items-center gap-1 relative">
+      <div className="relative flex items-center gap-1">
         <span className={compact ? 'text-base' : 'text-xl'}>⭐</span>
-        <span
-          className={clsx(
-            'font-bold text-nova-yellow-dark',
-            compact ? 'text-xs' : 'text-sm',
-          )}
-        >
+        <span className={clsx('text-nova-yellow-dark font-bold', compact ? 'text-xs' : 'text-sm')}>
           {formatNumber(stars)}
         </span>
         <AnimatePresence>
@@ -58,14 +53,9 @@ export function CurrencyDisplay({
       </div>
 
       {/* Gems */}
-      <div className="flex items-center gap-1 relative">
+      <div className="relative flex items-center gap-1">
         <span className={compact ? 'text-base' : 'text-xl'}>💎</span>
-        <span
-          className={clsx(
-            'font-bold text-nova-purple',
-            compact ? 'text-xs' : 'text-sm',
-          )}
-        >
+        <span className={clsx('text-nova-purple font-bold', compact ? 'text-xs' : 'text-sm')}>
           {formatNumber(gems)}
         </span>
         <AnimatePresence>

@@ -35,18 +35,27 @@ const initialState = {
 export const useAuthStore = create<AuthState>((set) => ({
   ...initialState,
 
-  setFirebaseUser: (firebaseUser) =>
-    { set({
+  setFirebaseUser: (firebaseUser) => {
+    set({
       firebaseUser,
       isAuthenticated: !!firebaseUser,
       isLoading: false,
-    }); },
+    });
+  },
 
-  setUser: (user) => { set({ user }); },
+  setUser: (user) => {
+    set({ user });
+  },
 
-  setLoading: (isLoading) => { set({ isLoading }); },
+  setLoading: (isLoading) => {
+    set({ isLoading });
+  },
 
-  setError: (error) => { set({ error, isLoading: false }); },
+  setError: (error) => {
+    set({ error, isLoading: false });
+  },
 
-  reset: () => { set(initialState); },
+  reset: () => {
+    set(initialState);
+  },
 }));

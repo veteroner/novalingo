@@ -56,8 +56,8 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
           {/* Content */}
           <motion.div
             className={clsx(
-              'relative bg-white rounded-3xl p-8 max-w-sm w-full',
-              'text-center shadow-2xl overflow-hidden',
+              'relative w-full max-w-sm rounded-3xl bg-white p-8',
+              'overflow-hidden text-center shadow-2xl',
             )}
             initial={{ scale: 0.5, y: 50 }}
             animate={{ scale: 1, y: 0 }}
@@ -65,11 +65,11 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
             {/* Glow background */}
-            <div className="absolute inset-0 bg-linear-to-b from-nova-yellow/20 to-transparent" />
+            <div className="from-nova-yellow/20 absolute inset-0 bg-linear-to-b to-transparent" />
 
             {/* Trophy emoji - bouncing */}
             <motion.div
-              className="relative text-6xl mb-4"
+              className="relative mb-4 text-6xl"
               animate={{
                 scale: [1, 1.2, 1],
                 rotate: [0, -10, 10, 0],
@@ -108,7 +108,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
             >
               <span
                 className={clsx(
-                  'text-xs font-extrabold uppercase tracking-widest',
+                  'text-xs font-extrabold tracking-widest uppercase',
                   rarityColors[achievement.rarity],
                 )}
               >
@@ -118,19 +118,25 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
 
             {/* Reward */}
             <motion.div
-              className="flex items-center justify-center gap-3 mb-6"
+              className="mb-6 flex items-center justify-center gap-3"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, type: 'spring' }}
             >
               {achievement.reward.xp > 0 && (
-                <Badge variant="xp" size="lg">+{achievement.reward.xp} XP</Badge>
+                <Badge variant="xp" size="lg">
+                  +{achievement.reward.xp} XP
+                </Badge>
               )}
               {achievement.reward.stars > 0 && (
-                <Badge variant="xp" size="lg">+{achievement.reward.stars} ⭐</Badge>
+                <Badge variant="xp" size="lg">
+                  +{achievement.reward.stars} ⭐
+                </Badge>
               )}
               {achievement.reward.gems > 0 && (
-                <Badge variant="xp" size="lg">+{achievement.reward.gems} 💎</Badge>
+                <Badge variant="xp" size="lg">
+                  +{achievement.reward.gems} 💎
+                </Badge>
               )}
             </motion.div>
 

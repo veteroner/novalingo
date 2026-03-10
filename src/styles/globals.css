@@ -10,47 +10,47 @@
 /* ─── Custom Design Tokens ────────────────────────────────── */
 @theme {
   /* Nova Brand Colors */
-  --color-nova-blue: #6C5CE7;
-  --color-nova-purple: #A29BFE;
-  --color-nova-orange: #FDCB6E;
-  --color-nova-red: #FF6B6B;
-  --color-nova-green: #6BCB77;
-  --color-nova-cyan: #4ECDC4;
-  --color-nova-pink: #FD79A8;
-  --color-nova-yellow: #FFD93D;
+  --color-nova-blue: #6c5ce7;
+  --color-nova-purple: #a29bfe;
+  --color-nova-orange: #fdcb6e;
+  --color-nova-red: #ff6b6b;
+  --color-nova-green: #6bcb77;
+  --color-nova-cyan: #4ecdc4;
+  --color-nova-pink: #fd79a8;
+  --color-nova-yellow: #ffd93d;
 
   /* Semantic Colors (overridden by theme) */
-  --color-primary: var(--theme-primary, #6C5CE7);
-  --color-primary-light: var(--theme-primary-light, #A29BFE);
-  --color-primary-dark: var(--theme-primary-dark, #5A4BD1);
-  --color-secondary: var(--theme-secondary, #00B894);
-  --color-accent: var(--theme-accent, #FDCB6E);
+  --color-primary: var(--theme-primary, #6c5ce7);
+  --color-primary-light: var(--theme-primary-light, #a29bfe);
+  --color-primary-dark: var(--theme-primary-dark, #5a4bd1);
+  --color-secondary: var(--theme-secondary, #00b894);
+  --color-accent: var(--theme-accent, #fdcb6e);
 
-  --color-background: var(--theme-background, #F8F9FE);
-  --color-surface: var(--theme-surface, #FFFFFF);
-  --color-surface-elevated: var(--theme-surface-elevated, #FFFFFF);
+  --color-background: var(--theme-background, #f8f9fe);
+  --color-surface: var(--theme-surface, #ffffff);
+  --color-surface-elevated: var(--theme-surface-elevated, #ffffff);
 
-  --color-text: var(--theme-text, #2D3436);
-  --color-text-secondary: var(--theme-text-secondary, #636E72);
-  --color-text-inverse: var(--theme-text-inverse, #FFFFFF);
+  --color-text: var(--theme-text, #2d3436);
+  --color-text-secondary: var(--theme-text-secondary, #636e72);
+  --color-text-inverse: var(--theme-text-inverse, #ffffff);
 
-  --color-border: var(--theme-border, #E0E0F0);
-  --color-success: var(--theme-success, #6BCB77);
-  --color-warning: var(--theme-warning, #FDCB6E);
-  --color-error: var(--theme-error, #FF6B6B);
-  --color-info: var(--theme-info, #74B9FF);
+  --color-border: var(--theme-border, #e0e0f0);
+  --color-success: var(--theme-success, #6bcb77);
+  --color-warning: var(--theme-warning, #fdcb6e);
+  --color-error: var(--theme-error, #ff6b6b);
+  --color-info: var(--theme-info, #74b9ff);
 
   /* Gamification */
-  --color-xp: var(--theme-xp, #FDCB6E);
-  --color-star: var(--theme-star, #FFD93D);
-  --color-gem: var(--theme-gem, #A29BFE);
-  --color-streak: var(--theme-streak, #FF6348);
+  --color-xp: var(--theme-xp, #fdcb6e);
+  --color-star: var(--theme-star, #ffd93d);
+  --color-gem: var(--theme-gem, #a29bfe);
+  --color-streak: var(--theme-streak, #ff6348);
 
   /* Rarity Colors */
-  --color-rarity-common: #B2BEC3;
-  --color-rarity-rare: #74B9FF;
-  --color-rarity-epic: #A29BFE;
-  --color-rarity-legendary: #FDCB6E;
+  --color-rarity-common: #b2bec3;
+  --color-rarity-rare: #74b9ff;
+  --color-rarity-epic: #a29bfe;
+  --color-rarity-legendary: #fdcb6e;
 
   /* Custom Spacing */
   --spacing-safe-top: env(safe-area-inset-top, 0px);
@@ -338,38 +338,38 @@
 
 /* ─── Age Group Theme Overrides ───────────────────────────── */
 [data-theme='cubs'] {
-  --theme-primary: #FF6B6B;
-  --theme-primary-light: #FF9B9B;
-  --theme-primary-dark: #E94848;
-  --theme-secondary: #FFD93D;
-  --theme-accent: #6BCB77;
-  --theme-background: #FFF8F0;
+  --theme-primary: #ff6b6b;
+  --theme-primary-light: #ff9b9b;
+  --theme-primary-dark: #e94848;
+  --theme-secondary: #ffd93d;
+  --theme-accent: #6bcb77;
+  --theme-background: #fff8f0;
 }
 
 [data-theme='stars'] {
-  --theme-primary: #6C5CE7;
-  --theme-primary-light: #A29BFE;
-  --theme-primary-dark: #5A4BD1;
-  --theme-secondary: #00B894;
-  --theme-accent: #FDCB6E;
-  --theme-background: #F8F9FE;
+  --theme-primary: #6c5ce7;
+  --theme-primary-light: #a29bfe;
+  --theme-primary-dark: #5a4bd1;
+  --theme-secondary: #00b894;
+  --theme-accent: #fdcb6e;
+  --theme-background: #f8f9fe;
 }
 
 [data-theme='legends'] {
-  --theme-primary: #0984E3;
-  --theme-primary-light: #74B9FF;
-  --theme-primary-dark: #0767B5;
-  --theme-secondary: #00CEC9;
-  --theme-accent: #FD79A8;
-  --theme-background: #F0F8FF;
+  --theme-primary: #0984e3;
+  --theme-primary-light: #74b9ff;
+  --theme-primary-dark: #0767b5;
+  --theme-secondary: #00cec9;
+  --theme-accent: #fd79a8;
+  --theme-background: #f0f8ff;
 }
 
 [data-theme='dark'] {
-  --theme-background: #1A1A2E;
-  --theme-surface: #16213E;
-  --theme-surface-elevated: #1F2B47;
-  --theme-text: #F0F0F0;
-  --theme-text-secondary: #A0A0B0;
-  --theme-text-inverse: #1A1A2E;
-  --theme-border: #2A2A4E;
+  --theme-background: #1a1a2e;
+  --theme-surface: #16213e;
+  --theme-surface-elevated: #1f2b47;
+  --theme-text: #f0f0f0;
+  --theme-text-secondary: #a0a0b0;
+  --theme-text-inverse: #1a1a2e;
+  --theme-border: #2a2a4e;
 }

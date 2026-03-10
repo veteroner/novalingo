@@ -32,8 +32,7 @@ const variantStyles: Record<ButtonVariant, string> = {
     'bg-success text-white shadow-[0_4px_0_0_#2e7d32] active:shadow-[0_2px_0_0_#2e7d32] active:translate-y-[2px]',
   danger:
     'bg-error text-white shadow-[0_4px_0_0_#c62828] active:shadow-[0_2px_0_0_#c62828] active:translate-y-[2px]',
-  ghost:
-    'bg-transparent text-nova-blue border-2 border-nova-blue hover:bg-nova-blue/10',
+  ghost: 'bg-transparent text-nova-blue border-2 border-nova-blue hover:bg-nova-blue/10',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -61,8 +60,8 @@ export function Button({
       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
       className={clsx(
         'inline-flex items-center justify-center gap-2 font-bold transition-all duration-150',
-        'select-none touch-manipulation',
-        'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0',
+        'touch-manipulation select-none',
+        'disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
         variantStyles[variant],
         sizeStyles[size],
         fullWidth && 'w-full',

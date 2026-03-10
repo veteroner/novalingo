@@ -62,17 +62,13 @@ export function ProgressBar({
   return (
     <div className={clsx('w-full', className)}>
       {showLabel && (
-        <div className="flex justify-between text-xs font-bold mb-1">
+        <div className="mb-1 flex justify-between text-xs font-bold">
           <span className="text-text-secondary">İlerleme</span>
           <span className="text-text-primary">{percentage}%</span>
         </div>
       )}
       <div
-        className={clsx(
-          'w-full rounded-full overflow-hidden',
-          styles.track,
-          sizeStyles[size],
-        )}
+        className={clsx('w-full overflow-hidden rounded-full', styles.track, sizeStyles[size])}
         role="progressbar"
         aria-valuenow={percentage}
         aria-valuemin={0}

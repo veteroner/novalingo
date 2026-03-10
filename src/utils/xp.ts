@@ -40,15 +40,11 @@ export function calculateXP(params: XPCalculationParams): XPBreakdown {
   } = params;
 
   // 1. Doğruluk bonusu (%80+ doğruluk = bonus)
-  const accuracyBonus = accuracy >= 0.8
-    ? Math.round(baseXP * (accuracy - 0.8) * 2.5)
-    : 0;
+  const accuracyBonus = accuracy >= 0.8 ? Math.round(baseXP * (accuracy - 0.8) * 2.5) : 0;
 
   // 2. Hız bonusu (tahmini sürenin %75'inden kısa = bonus)
   const speedRatio = durationSeconds / estimatedSeconds;
-  const speedBonus = speedRatio <= 0.75
-    ? Math.round(baseXP * 0.25 * (1 - speedRatio))
-    : 0;
+  const speedBonus = speedRatio <= 0.75 ? Math.round(baseXP * 0.25 * (1 - speedRatio)) : 0;
 
   // 3. Streak çarpanı (max 2x)
   const streakMultiplier = Math.min(1 + streak * 0.02, 2);

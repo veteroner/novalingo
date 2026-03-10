@@ -23,14 +23,10 @@ interface CardProps {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  elevated:
-    'bg-white shadow-lg shadow-black/5 border border-gray-100',
-  outlined:
-    'bg-white border-2 border-gray-200',
-  filled:
-    'bg-gray-50 border border-gray-100',
-  glass:
-    'bg-white/60 backdrop-blur-xl border border-white/50 shadow-lg shadow-black/5',
+  elevated: 'bg-white shadow-lg shadow-black/5 border border-gray-100',
+  outlined: 'bg-white border-2 border-gray-200',
+  filled: 'bg-gray-50 border border-gray-100',
+  glass: 'bg-white/60 backdrop-blur-xl border border-white/50 shadow-lg shadow-black/5',
 };
 
 const paddingStyles: Record<string, string> = {
@@ -74,7 +70,7 @@ export function Card({
         paddingStyles[padding],
         roundedStyles[rounded],
         pressable && !disabled && 'cursor-pointer',
-        disabled && 'opacity-50 pointer-events-none',
+        disabled && 'pointer-events-none opacity-50',
         className,
       )}
       onClick={!disabled ? onClick : undefined}

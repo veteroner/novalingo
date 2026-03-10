@@ -24,10 +24,10 @@ export function MainLayout({
   headerOffset = false,
 }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-background-primary flex flex-col">
+    <div className="bg-background-primary flex min-h-screen flex-col">
       <main
         className={clsx(
-          'flex-1 w-full max-w-md mx-auto',
+          'mx-auto w-full max-w-md flex-1',
           'safe-area-top safe-area-left safe-area-right',
           showNavigation && 'pb-20', // space for bottom nav
           headerOffset && 'pt-16',

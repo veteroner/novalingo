@@ -72,14 +72,14 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
   return (
     <div className={clsx('flex flex-col items-center', className)}>
       {/* Pointer */}
-      <div className="relative mb-2 z-10">
-        <div className="w-0 h-0 border-l-12 border-r-12 border-t-20 border-l-transparent border-r-transparent border-t-nova-orange drop-shadow-md" />
+      <div className="relative z-10 mb-2">
+        <div className="border-t-nova-orange h-0 w-0 border-t-20 border-r-12 border-l-12 border-r-transparent border-l-transparent drop-shadow-md" />
       </div>
 
       {/* Wheel */}
       <div className="relative">
         <motion.div
-          className="h-64 w-64 rounded-full border-4 border-white shadow-2xl overflow-hidden"
+          className="h-64 w-64 overflow-hidden rounded-full border-4 border-white shadow-2xl"
           animate={controls}
           style={{ rotate: currentRotation.current }}
         >
@@ -118,7 +118,7 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
                     textAnchor="middle"
                     dominantBaseline="central"
                     transform={`rotate(${labelRotation}, ${labelX}, ${labelY})`}
-                    className="text-[8px] font-bold fill-white"
+                    className="fill-white text-[8px] font-bold"
                     style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                   >
                     {slice.label}
@@ -149,7 +149,8 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
           animate={{ opacity: 1, y: 0 }}
         >
           <Text variant="h4" className="text-success">
-            🎉 +{result.amount} {result.type === 'xp' ? 'XP' : result.type === 'stars' ? '⭐' : '💎'}
+            🎉 +{result.amount}{' '}
+            {result.type === 'xp' ? 'XP' : result.type === 'stars' ? '⭐' : '💎'}
           </Text>
         </motion.div>
       )}

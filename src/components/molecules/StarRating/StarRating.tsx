@@ -50,7 +50,7 @@ export function StarRating({ stars, size = 'md', animate = true, className }: St
             }}
             className={clsx(
               'select-none',
-              filled ? 'drop-shadow-[0_2px_4px_rgba(255,193,7,0.5)]' : 'grayscale opacity-40',
+              filled ? 'drop-shadow-[0_2px_4px_rgba(255,193,7,0.5)]' : 'opacity-40 grayscale',
             )}
           >
             ⭐
