@@ -37,6 +37,7 @@
       "collectionGroup": "entries",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
+        { "fieldPath": "leagueId", "order": "ASCENDING" },
         { "fieldPath": "weeklyXP", "order": "DESCENDING" }
       ]
     }
