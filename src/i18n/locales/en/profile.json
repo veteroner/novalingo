@@ -1,0 +1,126 @@
+{
+  "title": "Profile",
+  "level": "Level {{level}}",
+  "xpToNext": "{{xp}} XP to next level",
+  "editProfile": "Edit Profile",
+
+  "stats": {
+    "title": "Statistics",
+    "totalXP": "Total XP",
+    "streak": "Longest Streak",
+    "lessonsCompleted": "Lessons Completed",
+    "wordsLearned": "Words Learned",
+    "totalTime": "Total Time",
+    "perfectLessons": "Perfect Lessons",
+    "accuracy": "Accuracy",
+    "currentStreak": "Current Streak"
+  },
+
+  "achievements": {
+    "title": "Achievements",
+    "seeAll": "See All",
+    "unlocked": "{{count}} Unlocked",
+    "locked": "Locked",
+    "progress": "{{percent}}% completed",
+    "categories": {
+      "all": "All",
+      "learning": "Learning",
+      "streak": "Streak",
+      "social": "Social",
+      "collection": "Collection",
+      "special": "Special"
+    },
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    }
+  },
+
+  "collection": {
+    "title": "Collection",
+    "seeAll": "See All",
+    "total": "{{count}} Pieces",
+    "categories": {
+      "all": "All",
+      "stickers": "Stickers",
+      "cards": "Cards",
+      "badges": "Badges",
+      "frames": "Frames",
+      "backgrounds": "Backgrounds",
+      "effects": "Effects",
+      "special": "Special"
+    }
+  },
+
+  "quests": {
+    "title": "Daily Quests",
+    "dailyProgress": "Daily Progress",
+    "completed": "{{current}}/{{total}} completed",
+    "claim": "Claim",
+    "claimed": "Claimed ✓",
+    "refreshIn": "Refreshes in: {{time}}",
+    "types": {
+      "lesson": "Complete a Lesson",
+      "xp": "Earn XP",
+      "word": "Learn Words",
+      "perfect": "Perfect Lesson",
+      "streak": "Keep Streak",
+      "social": "Rise in Ranking"
+    }
+  },
+
+  "leaderboard": {
+    "title": "Leaderboard",
+    "league": "{{name}} League",
+    "rank": "#{{rank}}",
+    "you": "(You)",
+    "weekInfo": "Week {{week}}",
+    "promotionZone": "Promotion Zone",
+    "relegationZone": "Relegation Zone",
+    "safeZone": "Safe Zone",
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "diamond": "Diamond",
+      "master": "Master"
+    }
+  },
+
+  "parent": {
+    "title": "Parent Dashboard",
+    "unlock": "Enter your PIN",
+    "weeklyStats": "This Week",
+    "lessons": "Lessons",
+    "time": "Time",
+    "settings": "Settings",
+    "dailyLimit": "Daily Time Limit",
+    "notifications": "Notifications",
+    "subscription": "Subscription",
+    "account": "Account Settings",
+    "changePin": "Change PIN",
+    "changeEmail": "Change Email",
+    "exportData": "Export Data",
+    "deleteAccount": "Delete Account",
+    "deleteConfirm": "This action cannot be undone. All your data will be permanently deleted.",
+    "contentControl": "Content Control"
+  },
+
+  "subscription": {
+    "title": "Premium",
+    "subtitle": "Unlimited learning, ad-free fun",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "monthlyPrice": "₺149.99/mo",
+    "yearlyPrice": "₺899.99/yr",
+    "yearlyDiscount": "50% Off",
+    "freeTrial": "7-Day Free Trial",
+    "processing": "Processing...",
+    "trialInfo": "7-day free trial. Cancel anytime.",
+    "restore": "Restore Purchase",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  }
+}

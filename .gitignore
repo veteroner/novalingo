@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+dist/
+dist-ssr/
+build/
+*.local
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+
+# Firebase
+firebase-data/
+emulator-data/
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+firestore-debug.log
+ui-debug.log
+pubsub-debug.log
+
+# Mobile
+android/
+ios/
+*.ipa
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+._*
+**/._*
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Storybook
+storybook-static/
+
+# Sentry
+.sentryclirc
+
+# Keys & secrets
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.cer
+google-services.json
+GoogleService-Info.plist
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Misc
+*.tsbuildinfo

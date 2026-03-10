@@ -1,0 +1,88 @@
+{
+  "appName": "NovaLingo",
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "save": "Save",
+  "close": "Close",
+  "back": "Back",
+  "next": "Next",
+  "done": "Done",
+  "yes": "Yes",
+  "no": "No",
+  "ok": "OK",
+  "delete": "Delete",
+  "edit": "Edit",
+  "search": "Search",
+  "settings": "Settings",
+  "premium": "Premium",
+  "free": "Free",
+  "offline": "Offline",
+  "online": "Online",
+  "noInternet": "No internet connection",
+  "noInternetDesc": "You can continue in offline mode",
+  "comingSoon": "Coming Soon!",
+  "underConstruction": "We're working on this feature",
+
+  "time": {
+    "now": "Now",
+    "minuteAgo": "{{count}} minute ago",
+    "hourAgo": "{{count}} hour ago",
+    "dayAgo": "{{count}} day ago",
+    "weekAgo": "{{count}} week ago",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "minutes": "{{count}} min",
+    "hours": "{{count}} hr",
+    "days": "{{count}} days"
+  },
+
+  "currency": {
+    "stars": "Stars",
+    "gems": "Gems",
+    "xp": "XP"
+  },
+
+  "ageGroups": {
+    "cubs": "Cubs",
+    "cubsDesc": "Ages 4–6",
+    "stars": "Stars",
+    "starsDesc": "Ages 7–9",
+    "legends": "Legends",
+    "legendsDesc": "Ages 10–12"
+  },
+
+  "nova": {
+    "greeting": "Hi! I'm Nova 🌟",
+    "encouragement": "You're doing great!",
+    "streakReminder": "Don't lose your streak! Do a lesson today.",
+    "lessonComplete": "Congratulations! You completed the lesson!",
+    "perfectScore": "Perfect! No mistakes!",
+    "tryAgain": "Let's try again, you can do it!",
+    "welcome": "Welcome to NovaLingo!",
+    "levelUp": "You leveled up! 🎉"
+  },
+
+  "tabs": {
+    "home": "Home",
+    "worlds": "Worlds",
+    "quests": "Quests",
+    "profile": "Profile"
+  },
+
+  "errors": {
+    "generic": "Something went wrong",
+    "network": "Connection error",
+    "auth": "Session error",
+    "notFound": "Not found",
+    "permission": "Permission denied"
+  },
+
+  "notifications": {
+    "dailyReminder": "Don't forget your lesson today! 📚",
+    "streakWarning": "Your streak is about to end! Do a lesson now! 🔥",
+    "achievementUnlocked": "New achievement unlocked: {{name}} 🏆",
+    "weeklyReport": "Your weekly report is ready! 📊"
+  }
+}

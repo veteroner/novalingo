@@ -1,0 +1,39 @@
+{
+  "title": "Shop",
+  "balance": "Balance",
+  "buy": "Buy",
+  "owned": "Owned",
+  "equipped": "Equipped",
+  "equip": "Equip",
+  "notEnough": "Not enough balance",
+  "confirmTitle": "Purchase",
+  "confirmDesc": "Spend {{price}} {{currency}} for {{name}}?",
+  "purchaseSuccess": "{{name}} purchased! 🎉",
+
+  "categories": {
+    "all": "All",
+    "avatar": "Avatars",
+    "theme": "Themes",
+    "effect": "Effects",
+    "powerup": "Power-Ups",
+    "bundle": "Bundles",
+    "special": "Special"
+  },
+
+  "powerups": {
+    "doubleXP": "2x XP",
+    "doubleXPDesc": "Double XP for 24 hours",
+    "streakFreeze": "Streak Freeze",
+    "streakFreezeDesc": "Protect your streak for 1 day",
+    "hintBoost": "Hint Pack",
+    "hintBoostDesc": "5 extra hint uses",
+    "timeBoost": "Time Extend",
+    "timeBoostDesc": "Lesson time +30 seconds"
+  },
+
+  "subscription": {
+    "title": "Go Premium",
+    "desc": "Unlimited access, ad-free experience",
+    "cta": "Go Premium"
+  }
+}

@@ -1,0 +1,164 @@
+name: Mobile Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Target platform'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - ios
+          - android
+          - both
+      environment:
+        description: 'Build environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+
+jobs:
+  # ─── Build Web Assets ──────────────────────────────────────
+  web-build:
+    name: Build Web Assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+
+      - name: Upload Web Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: dist/
+
+  # ─── Android Build ─────────────────────────────────────────
+  android:
+    name: Android Build
+    runs-on: ubuntu-latest
+    needs: web-build
+    if: ${{ inputs.platform == 'android' || inputs.platform == 'both' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - run: npm ci
+
+      - name: Download Web Build
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: dist/
+
+      - name: Capacitor Sync
+        run: npx cap sync android
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      - name: Sign APK
+        if: ${{ inputs.environment == 'production' }}
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/release.keystore
+          cd android
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=app/release.keystore \
+            -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/*.apk
+
+  # ─── iOS Build ──────────────────────────────────────────────
+  ios:
+    name: iOS Build
+    runs-on: macos-14
+    needs: web-build
+    if: ${{ inputs.platform == 'ios' || inputs.platform == 'both' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Download Web Build
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: dist/
+
+      - name: Capacitor Sync
+        run: npx cap sync ios
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install CocoaPods
+        run: |
+          cd ios/App
+          pod install
+
+      - name: Build IPA
+        run: |
+          cd ios
+          xcodebuild -workspace App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -archivePath build/App.xcarchive \
+            archive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Upload Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-archive
+          path: ios/build/App.xcarchive

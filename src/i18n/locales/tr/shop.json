@@ -1,0 +1,39 @@
+{
+  "title": "Mağaza",
+  "balance": "Bakiye",
+  "buy": "Satın Al",
+  "owned": "Sahipsin",
+  "equipped": "Takılı",
+  "equip": "Tak",
+  "notEnough": "Yetersiz bakiye",
+  "confirmTitle": "Satın Al",
+  "confirmDesc": "{{name}} için {{price}} {{currency}} harcamak istiyor musun?",
+  "purchaseSuccess": "{{name}} satın alındı! 🎉",
+
+  "categories": {
+    "all": "Tümü",
+    "avatar": "Avatarlar",
+    "theme": "Temalar",
+    "effect": "Efektler",
+    "powerup": "Güç-Up",
+    "bundle": "Paketler",
+    "special": "Özel"
+  },
+
+  "powerups": {
+    "doubleXP": "2x XP",
+    "doubleXPDesc": "24 saat boyunca çift XP",
+    "streakFreeze": "Seri Dondur",
+    "streakFreezeDesc": "Seriyi 1 gün koru",
+    "hintBoost": "İpucu Paketi",
+    "hintBoostDesc": "5 ekstra ipucu hakkı",
+    "timeBoost": "Süre Uzat",
+    "timeBoostDesc": "Ders süresi +30 saniye"
+  },
+
+  "subscription": {
+    "title": "Premium'a Geç",
+    "desc": "Sınırsız erişim, reklamsız deneyim",
+    "cta": "Premium Ol"
+  }
+}

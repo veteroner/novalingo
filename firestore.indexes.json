@@ -1,0 +1,45 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "progress",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "completedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "progress",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "worldId", "order": "ASCENDING" },
+        { "fieldPath": "unitId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "vocabulary",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "nextReviewAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "vocabulary",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "masteryLevel", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "weeklyXP", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "dsznajder.es7-react-js-snippets",
+    "steoates.autoimport",
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "naumovs.color-highlight",
+    "yoavbls.pretty-ts-errors",
+    "toba.vsfire",
+    "Webnative.webnative"
+  ]
+}

@@ -1,0 +1,196 @@
+/**
+ * HomeScreen
+ *
+ * Ana sayfa — streak, günlük hedef, dünyalar, Nova maskotu, hızlı aksiyonlar.
+ */
+
+import type { World } from '@/types/content';
+import { Badge } from '@components/atoms/Badge';
+import { Text } from '@components/atoms/Text';
+import { Card } from '@components/molecules/Card';
+import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
+import { XPDisplay } from '@components/molecules/XPDisplay';
+import { NovaCompanion } from '@components/organisms/NovaCompanion';
+import { MainLayout } from '@components/templates/MainLayout';
+import { curriculum } from '@features/learning/data/curriculum';
+import { useWorlds } from '@hooks/queries';
+import { useChildStore } from '@stores/childStore';
+import { motion } from 'framer-motion';
+import { useMemo } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+
+// Build fallback worlds from in-memory curriculum
+const curriculumWorlds: World[] = curriculum.map((w) => ({
+  id: w.id,
+  name: w.name,
+  nameEn: w.nameEn,
+  description: w.description,
+  order: w.order,
+  themeColor: w.themeColor,
+  iconUrl: '',
+  backgroundUrl: '',
+  requiredLevel: w.requiredLevel,
+  isPremium: w.isPremium,
+  units: w.units.map((u) => u.id),
+}));
+
+export default function HomeScreen() {
+  const child = useChildStore((s) => s.activeChild);
+  const children = useChildStore((s) => s.children);
+  const navigate = useNavigate();
+  const { data: firestoreWorlds } = useWorlds();
+  const worlds = useMemo(
+    () => (firestoreWorlds && firestoreWorlds.length > 0 ? firestoreWorlds : curriculumWorlds),
+    [firestoreWorlds],
+  );
+
+  // Authenticated but no children → create profile first
+  if (!child && children.length === 0) {
+    return <Navigate to="/create-profile" replace />;
+  }
+
+  if (!child) {
+    // children loaded but none selected → this shouldn't persist long
+    // (ChildDataProvider auto-selects, but guard against race)
+    return <Navigate to="/create-profile" replace />;
+  }
+
+  return (
+    <MainLayout>
+      <div className="space-y-6 px-4 py-6">
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div>
+            <Text variant="h3">Merhaba, {child.name}! 👋</Text>
+            <Text variant="bodySmall" className="text-text-secondary">
+              Bugün ne öğrenmek istersin?
+            </Text>
+          </div>
+          <CurrencyDisplay stars={child.stars} gems={child.gems} compact />
+        </div>
+
+        {/* Streak & XP */}
+        <div className="flex gap-3">
+          <Card variant="filled" padding="sm" className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🔥</span>
+              <div>
+                <Text variant="h4" className="text-nova-orange">
+                  {child.currentStreak}
+                </Text>
+                <Text variant="caption" className="text-text-secondary">
+                  Gün Seri
+                </Text>
+              </div>
+            </div>
+          </Card>
+          <Card variant="filled" padding="sm" className="flex-1">
+            <XPDisplay currentXP={child.totalXP} level={child.level} compact />
+          </Card>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            {
+              emoji: '📚',
+              label: 'Devam Et',
+              path: `/world/${child.currentWorldId}`,
+              color: 'bg-nova-blue/10',
+            },
+            { emoji: '🏆', label: 'Başarımlar', path: '/achievements', color: 'bg-nova-purple/10' },
+            { emoji: '⚔️', label: 'Görevler', path: '/quests', color: 'bg-nova-orange/10' },
+            { emoji: '🛒', label: 'Mağaza', path: '/shop', color: 'bg-success/10' },
+          ].map((action) => (
+            <Card
+              key={action.label}
+              variant="elevated"
+              pressable
+              padding="md"
+              onClick={() => navigate(action.path)}
+            >
+              <div className="space-y-1 text-center">
+                <span className="text-3xl">{action.emoji}</span>
+                <Text variant="bodySmall" weight="bold">
+                  {action.label}
+                </Text>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Worlds Preview */}
+        <div>
+          <Text variant="h4" className="mb-3">
+            Dünyalar 🌍
+          </Text>
+          <div className="space-y-3">
+            {worlds.map((world) => {
+              const isLocked = child.level < world.requiredLevel;
+              const isCurrent = child.currentWorldId === world.id;
+              const curWorld = curriculum.find((w) => w.id === world.id);
+              const emoji = curWorld?.emoji ?? '🌍';
+
+              return (
+                <Card
+                  key={world.id}
+                  variant={isLocked ? 'outlined' : 'elevated'}
+                  pressable={!isLocked}
+                  padding="md"
+                  onClick={() => !isLocked && navigate(`/world/${world.id}`)}
+                  className={isLocked ? 'opacity-60' : ''}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-success/20 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl">
+                      {emoji}
+                    </div>
+                    <div className="flex-1">
+                      <Text variant="body" weight="bold">
+                        {world.name}
+                      </Text>
+                      <Text variant="caption" className="text-text-secondary">
+                        {world.description}
+                        {isCurrent ? ' · Devam ediyor' : ''}
+                      </Text>
+                    </div>
+                    {isLocked ? (
+                      <span className="text-xl">🔒</span>
+                    ) : isCurrent ? (
+                      <Badge variant="success" size="sm">
+                        Aktif
+                      </Badge>
+                    ) : null}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Daily Goal */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Card variant="glass" padding="md">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🎯</span>
+              <div className="flex-1">
+                <Text variant="bodySmall" weight="bold">
+                  Günlük Hedef
+                </Text>
+                <Text variant="caption" className="text-text-secondary">
+                  {child.completedLessons % 3} / 3 ders tamamlandı
+                </Text>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Nova Companion */}
+      <NovaCompanion mood="happy" message="Bugün harika bir gün olacak!" />
+    </MainLayout>
+  );
+}

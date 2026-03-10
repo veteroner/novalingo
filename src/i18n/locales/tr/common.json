@@ -1,0 +1,88 @@
+{
+  "appName": "NovaLingo",
+  "loading": "Yükleniyor...",
+  "error": "Bir hata oluştu",
+  "retry": "Tekrar Dene",
+  "cancel": "Vazgeç",
+  "save": "Kaydet",
+  "close": "Kapat",
+  "back": "Geri",
+  "next": "İleri",
+  "done": "Tamam",
+  "yes": "Evet",
+  "no": "Hayır",
+  "ok": "Tamam",
+  "delete": "Sil",
+  "edit": "Düzenle",
+  "search": "Ara",
+  "settings": "Ayarlar",
+  "premium": "Premium",
+  "free": "Ücretsiz",
+  "offline": "Çevrimdışı",
+  "online": "Çevrimiçi",
+  "noInternet": "İnternet bağlantısı yok",
+  "noInternetDesc": "Çevrimdışı modda devam edebilirsin",
+  "comingSoon": "Çok Yakında!",
+  "underConstruction": "Bu özellik üzerinde çalışıyoruz",
+
+  "time": {
+    "now": "Şimdi",
+    "minuteAgo": "{{count}} dakika önce",
+    "hourAgo": "{{count}} saat önce",
+    "dayAgo": "{{count}} gün önce",
+    "weekAgo": "{{count}} hafta önce",
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "minutes": "{{count}} dk",
+    "hours": "{{count}} sa",
+    "days": "{{count}} gün"
+  },
+
+  "currency": {
+    "stars": "Yıldız",
+    "gems": "Elmas",
+    "xp": "XP"
+  },
+
+  "ageGroups": {
+    "cubs": "Minikler",
+    "cubsDesc": "4–6 yaş",
+    "stars": "Yıldızlar",
+    "starsDesc": "7–9 yaş",
+    "legends": "Efsaneler",
+    "legendsDesc": "10–12 yaş"
+  },
+
+  "nova": {
+    "greeting": "Merhaba! Ben Nova 🌟",
+    "encouragement": "Harika gidiyorsun!",
+    "streakReminder": "Serini kaybetme! Bugün ders yap.",
+    "lessonComplete": "Tebrikler! Dersi tamamladın!",
+    "perfectScore": "Mükemmel! Hatasız bitirdin!",
+    "tryAgain": "Tekrar deneyelim, başaracaksın!",
+    "welcome": "NovaLingo'ya hoş geldin!",
+    "levelUp": "Seviye atladın! 🎉"
+  },
+
+  "tabs": {
+    "home": "Ana Sayfa",
+    "worlds": "Dünyalar",
+    "quests": "Görevler",
+    "profile": "Profil"
+  },
+
+  "errors": {
+    "generic": "Bir şeyler yanlış gitti",
+    "network": "Bağlantı hatası",
+    "auth": "Oturum hatası",
+    "notFound": "Bulunamadı",
+    "permission": "İzin reddedildi"
+  },
+
+  "notifications": {
+    "dailyReminder": "Bugünkü dersini yapmayı unutma! 📚",
+    "streakWarning": "Serin bitmek üzere! Hemen bir ders yap! 🔥",
+    "achievementUnlocked": "Yeni başarı kazandın: {{name}} 🏆",
+    "weeklyReport": "Haftalık raporun hazır! 📊"
+  }
+}

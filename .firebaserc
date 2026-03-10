@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "novalingo-app"
+  },
+  "targets": {
+    "novalingo-app": {
+      "hosting": {
+        "default": [
+          "novalingo-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "rootDir": "src",
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*"]
+}

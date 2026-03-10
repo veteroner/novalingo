@@ -1,0 +1,71 @@
+{
+  "progress": "{{current}}/{{total}}",
+  "pause": "Pause",
+  "resume": "Resume",
+  "quit": "Quit",
+  "quitConfirm": "Are you sure you want to quit? Progress will be lost.",
+  "quitYes": "Yes, Quit",
+  "quitNo": "No, Continue",
+  "timeUp": "Time's Up!",
+  "hint": "Hint",
+  "skip": "Skip",
+  "check": "Check",
+  "continue": "Continue",
+  "correct": "Correct! 🎉",
+  "incorrect": "Incorrect 😢",
+  "tryAgain": "Try Again",
+  "almostThere": "Almost there! 💪",
+
+  "activities": {
+    "wordMatch": "Match",
+    "wordMatchDesc": "Match the word with the picture",
+    "listening": "Listen",
+    "listeningDesc": "Find the word you hear",
+    "speaking": "Speak",
+    "speakingDesc": "Pronounce the word",
+    "spelling": "Spell",
+    "spellingDesc": "Put the letters in order",
+    "fillBlank": "Fill in the Blank",
+    "fillBlankDesc": "Choose the correct word",
+    "story": "Story",
+    "storyDesc": "Listen and understand the story",
+    "memory": "Memory",
+    "memoryDesc": "Match the cards",
+    "tracing": "Write",
+    "tracingDesc": "Write the letter/word",
+    "sorting": "Sort",
+    "sortingDesc": "Sort into categories",
+    "conversation": "Conversation",
+    "conversationDesc": "Complete the dialogue"
+  },
+
+  "result": {
+    "title": "Lesson Complete!",
+    "perfect": "Perfect! ⭐⭐⭐",
+    "great": "Great! ⭐⭐",
+    "good": "Good! ⭐",
+    "xpEarned": "+{{xp}} XP Earned",
+    "starsEarned": "+{{stars}} Stars",
+    "accuracy": "Accuracy: {{percent}}%",
+    "time": "Time: {{time}}",
+    "streak": "Streak: {{count}} days",
+    "newWords": "{{count}} New Words",
+    "retry": "Retry",
+    "nextLesson": "Next Lesson",
+    "home": "Home",
+    "bonuses": {
+      "perfect": "Perfect Bonus",
+      "speed": "Speed Bonus",
+      "streak": "Streak Bonus",
+      "firstTry": "First Try Bonus",
+      "noHint": "No Hint Bonus"
+    }
+  },
+
+  "rewardAd": {
+    "title": "Double Your Reward!",
+    "desc": "Watch a short video to 2x your XP and stars",
+    "watch": "Watch Video",
+    "noThanks": "No, Thanks"
+  }
+}

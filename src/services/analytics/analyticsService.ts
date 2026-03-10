@@ -1,0 +1,185 @@
+/**
+ * Analytics Service
+ *
+ * Firebase Analytics wrapper — kullanıcı davranış takibi.
+ * COPPA uyumlu: kişisel tanımlayıcı bilgi loglanmaz.
+ * Child ID hash'lenir, isim/yaş gibi veriler gönderilmez.
+ */
+
+import { analytics } from '@services/firebase/app';
+import { logEvent as firebaseLogEvent, setUserProperties } from 'firebase/analytics';
+
+// ===== COPPA-SAFE HELPER =====
+
+/**
+ * Hash a child ID to avoid PII in analytics.
+ */
+function hashId(id: string): string {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    const char = id.charCodeAt(i);
+    hash = ((hash << 5) - hash + char) | 0;
+  }
+  return `h_${Math.abs(hash).toString(36)}`;
+}
+
+// ===== CORE LOG =====
+
+function logEvent(name: string, params?: Record<string, string | number | boolean>): void {
+  if (!analytics) return;
+  try {
+    firebaseLogEvent(analytics, name, params);
+  } catch {
+    // Silent fail — analytics should never break the app
+  }
+}
+
+// ===== USER PROPERTIES =====
+
+/**
+ * Set anonymous user properties (COPPA-safe).
+ */
+export function setAnalyticsUserProperties(props: {
+  ageGroup?: string;
+  isPremium?: boolean;
+  deviceType?: 'web' | 'ios' | 'android';
+}): void {
+  if (!analytics) return;
+  try {
+    setUserProperties(analytics, {
+      age_group: props.ageGroup ?? 'unknown',
+      is_premium: String(props.isPremium ?? false),
+      device_type: props.deviceType ?? 'web',
+    });
+  } catch {
+    // Silent fail
+  }
+}
+
+// ===== SCREEN TRACKING =====
+
+export function trackScreenView(screenName: string): void {
+  logEvent('screen_view', { screen_name: screenName });
+}
+
+// ===== AUTH EVENTS =====
+
+export function trackSignUp(method: 'email' | 'google' | 'apple'): void {
+  logEvent('sign_up', { method });
+}
+
+export function trackLogin(method: 'email' | 'google' | 'apple'): void {
+  logEvent('login', { method });
+}
+
+export function trackProfileCreated(childId: string, ageGroup: string): void {
+  logEvent('profile_created', {
+    child_hash: hashId(childId),
+    age_group: ageGroup,
+  });
+}
+
+// ===== LEARNING EVENTS =====
+
+export function trackLessonStarted(lessonId: string, worldId: string): void {
+  logEvent('lesson_started', { lesson_id: lessonId, world_id: worldId });
+}
+
+export function trackLessonCompleted(params: {
+  lessonId: string;
+  worldId: string;
+  score: number;
+  stars: number;
+  durationSeconds: number;
+  isPerfect: boolean;
+}): void {
+  logEvent('lesson_completed', {
+    lesson_id: params.lessonId,
+    world_id: params.worldId,
+    score: params.score,
+    stars: params.stars,
+    duration_seconds: params.durationSeconds,
+    is_perfect: params.isPerfect,
+  });
+}
+
+export function trackActivityCompleted(params: {
+  activityType: string;
+  isCorrect: boolean;
+  timeSpentSeconds: number;
+  hintsUsed: number;
+}): void {
+  logEvent('activity_completed', {
+    activity_type: params.activityType,
+    is_correct: params.isCorrect,
+    time_spent_seconds: params.timeSpentSeconds,
+    hints_used: params.hintsUsed,
+  });
+}
+
+// ===== GAMIFICATION EVENTS =====
+
+export function trackXPGained(amount: number, source: string): void {
+  logEvent('xp_gained', { amount, source });
+}
+
+export function trackLevelUp(newLevel: number): void {
+  logEvent('level_up', { level: newLevel });
+}
+
+export function trackStreakDays(days: number): void {
+  logEvent('streak_milestone', { days });
+}
+
+export function trackAchievementUnlocked(achievementId: string): void {
+  logEvent('achievement_unlocked', { achievement_id: achievementId });
+}
+
+export function trackQuestCompleted(questId: string, reward: string): void {
+  logEvent('quest_completed', { quest_id: questId, reward });
+}
+
+// ===== MONETIZATION EVENTS =====
+
+export function trackPurchase(params: {
+  itemId: string;
+  currency: 'stars' | 'gems';
+  amount: number;
+}): void {
+  logEvent('virtual_purchase', {
+    item_id: params.itemId,
+    currency: params.currency,
+    amount: params.amount,
+  });
+}
+
+export function trackAdWatched(adType: 'rewarded' | 'interstitial'): void {
+  logEvent('ad_watched', { ad_type: adType });
+}
+
+export function trackSubscriptionEvent(event: 'started' | 'renewed' | 'cancelled'): void {
+  logEvent('subscription_event', { event });
+}
+
+// ===== ENGAGEMENT EVENTS =====
+
+export function trackDailyWheelSpin(reward: string): void {
+  logEvent('daily_wheel_spin', { reward });
+}
+
+export function trackNovaEvolution(oldStage: string, newStage: string): void {
+  logEvent('nova_evolution', { old_stage: oldStage, new_stage: newStage });
+}
+
+export function trackOfflineSync(actionCount: number, success: boolean): void {
+  logEvent('offline_sync', { action_count: actionCount, success });
+}
+
+// ===== ERROR TRACKING =====
+
+export function trackError(error: string, context: string): void {
+  logEvent('app_error', {
+    error: error.slice(0, 100), // Truncate for analytics limits
+    context,
+  });
+}

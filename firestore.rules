@@ -1,0 +1,196 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===== HELPER FUNCTIONS =====
+    
+    // Giriş yapmış mı?
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Kullanıcı kendi verisine mi erişiyor?
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Admin mi?
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+    
+    // Veri boyutu kontrolü
+    function isValidString(field, maxLen) {
+      return field is string && field.size() <= maxLen;
+    }
+
+    // ===== USERS COLLECTION =====
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false; // Kullanıcılar silinemez (COPPA gereği admin gerekir)
+
+      // Purchase records — owner read only, writes via Cloud Functions (RevenueCat)
+      match /purchases/{purchaseId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Sadece Cloud Functions (validateReceipt, webhook)
+      }
+    }
+
+    // ===== CHILDREN COLLECTION (top-level) =====
+    // Cloud Functions creates children with parentUid field.
+    // Client can read/update own children.
+    match /children/{childId} {
+      allow read: if isAuthenticated() && resource.data.parentUid == request.auth.uid;
+      allow create: if false; // Sadece Cloud Functions
+      allow update: if false; // Sadece Cloud Functions
+      allow delete: if false;
+
+      // Alt koleksiyonlar
+      match /lessonProgress/{lessonId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false; // Sadece Cloud Functions
+      }
+
+      match /vocabulary/{vocabId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false; // Sadece Cloud Functions (SRS engine)
+      }
+
+      match /quests/{questId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false; // Sadece Cloud Functions
+      }
+
+      match /achievements/{achievementId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false; // Sadece Cloud Functions
+      }
+
+      match /inventory/{itemId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false; // Sadece Cloud Functions
+      }
+
+      // İstatistikler (günlük/haftalık/aylık)
+      match /stats/{period} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false; // Sadece Cloud Functions
+      }
+    }
+
+    // ===== PROGRESS COLLECTION =====
+    // Alternately structured progress data (per-child subcollections)
+    match /progress/{childId} {
+      allow read: if isAuthenticated()
+        && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+      allow write: if false;
+
+      match /lessons/{lessonId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false;
+      }
+
+      match /vocabulary/{wordId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false;
+      }
+
+      match /stats/{period} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false;
+      }
+    }
+
+    // ===== GAMIFICATION COLLECTION =====
+    match /gamification/{childId} {
+      allow read: if isAuthenticated()
+        && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+      allow write: if false; // Sadece Cloud Functions
+
+      match /achievements/{achievementId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false;
+      }
+
+      match /quests/{questId} {
+        allow read: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+        allow write: if false;
+      }
+    }
+
+    // ===== LEADERBOARDS COLLECTION =====
+    match /leaderboards/{leagueId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Sadece Cloud Functions
+      
+      match /entries/{entryId} {
+        allow read: if isAuthenticated();
+        allow write: if false;
+      }
+    }
+
+    // ===== CONTENT COLLECTIONS (Read-only) =====
+    match /worlds/{worldId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+      
+      match /units/{unitId} {
+        allow read: if isAuthenticated();
+        allow write: if isAdmin();
+        
+        match /lessons/{lessonId} {
+          allow read: if isAuthenticated();
+          allow write: if isAdmin();
+        }
+      }
+    }
+
+    // ===== SHOP ITEMS =====
+    match /shopItems/{itemId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ===== ACHIEVEMENTS CATALOG =====
+    match /achievementsCatalog/{achievementId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ===== DAILY WHEEL CONFIG =====
+    match /config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ===== ANALYTICS (server-side only) =====
+    match /analytics/{docId} {
+      allow read: if isAdmin();
+      allow write: if false; // Sadece Cloud Functions
+    }
+
+    // ===== RATE LIMITS (server-side only) =====
+    match /rateLimits/{docId} {
+      allow read, write: if false; // Sadece Cloud Functions
+    }
+
+    // ===== CATCH-ALL: Deny everything else =====
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

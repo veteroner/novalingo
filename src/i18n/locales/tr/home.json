@@ -1,0 +1,41 @@
+{
+  "greeting": "Merhaba, {{name}}! 👋",
+  "dailyGoal": "Günlük Hedef",
+  "dailyGoalDesc": "{{current}}/{{target}} ders",
+  "streak": "{{count}} Günlük Seri 🔥",
+  "level": "Seviye {{level}}",
+  "worlds": "Dünyalar",
+  "seeAll": "Tümünü Gör",
+
+  "quickActions": {
+    "title": "Hızlı Erişim",
+    "dailyQuest": "Günlük Görevler",
+    "practice": "Pratik Yap",
+    "collection": "Koleksiyon",
+    "achievements": "Başarılar"
+  },
+
+  "worldMap": {
+    "title": "Dünya Haritası",
+    "locked": "Kilitli",
+    "unlockAt": "Seviye {{level}}'de açılır",
+    "progress": "%{{percent}} tamamlandı",
+    "lessonsLeft": "{{count}} ders kaldı",
+    "completed": "Tamamlandı ✓"
+  },
+
+  "worlds": {
+    "alphabet": "Alfabe Adası",
+    "alphabetDesc": "Harfleri ve sesleri öğren",
+    "colors": "Renk Ormanı",
+    "colorsDesc": "Renklerin dünyasını keşfet",
+    "animals": "Hayvan Safarisi",
+    "animalsDesc": "Hayvan isimlerini öğren",
+    "numbers": "Sayı Kalesi",
+    "numbersDesc": "Sayılarla dans et",
+    "family": "Aile Evi",
+    "familyDesc": "Aile üyelerini tanı",
+    "food": "Yiyecek Şöleni",
+    "foodDesc": "Lezzetli kelimeler öğren"
+  }
+}

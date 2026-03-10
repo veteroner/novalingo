@@ -1,0 +1,375 @@
+/*
+ * NovaLingo — Global Styles
+ *
+ * Tailwind CSS 4 + custom design tokens + base resets.
+ * Age-group themes applied via CSS custom properties.
+ */
+
+@import 'tailwindcss';
+
+/* ─── Custom Design Tokens ────────────────────────────────── */
+@theme {
+  /* Nova Brand Colors */
+  --color-nova-blue: #6C5CE7;
+  --color-nova-purple: #A29BFE;
+  --color-nova-orange: #FDCB6E;
+  --color-nova-red: #FF6B6B;
+  --color-nova-green: #6BCB77;
+  --color-nova-cyan: #4ECDC4;
+  --color-nova-pink: #FD79A8;
+  --color-nova-yellow: #FFD93D;
+
+  /* Semantic Colors (overridden by theme) */
+  --color-primary: var(--theme-primary, #6C5CE7);
+  --color-primary-light: var(--theme-primary-light, #A29BFE);
+  --color-primary-dark: var(--theme-primary-dark, #5A4BD1);
+  --color-secondary: var(--theme-secondary, #00B894);
+  --color-accent: var(--theme-accent, #FDCB6E);
+
+  --color-background: var(--theme-background, #F8F9FE);
+  --color-surface: var(--theme-surface, #FFFFFF);
+  --color-surface-elevated: var(--theme-surface-elevated, #FFFFFF);
+
+  --color-text: var(--theme-text, #2D3436);
+  --color-text-secondary: var(--theme-text-secondary, #636E72);
+  --color-text-inverse: var(--theme-text-inverse, #FFFFFF);
+
+  --color-border: var(--theme-border, #E0E0F0);
+  --color-success: var(--theme-success, #6BCB77);
+  --color-warning: var(--theme-warning, #FDCB6E);
+  --color-error: var(--theme-error, #FF6B6B);
+  --color-info: var(--theme-info, #74B9FF);
+
+  /* Gamification */
+  --color-xp: var(--theme-xp, #FDCB6E);
+  --color-star: var(--theme-star, #FFD93D);
+  --color-gem: var(--theme-gem, #A29BFE);
+  --color-streak: var(--theme-streak, #FF6348);
+
+  /* Rarity Colors */
+  --color-rarity-common: #B2BEC3;
+  --color-rarity-rare: #74B9FF;
+  --color-rarity-epic: #A29BFE;
+  --color-rarity-legendary: #FDCB6E;
+
+  /* Custom Spacing */
+  --spacing-safe-top: env(safe-area-inset-top, 0px);
+  --spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --spacing-safe-left: env(safe-area-inset-left, 0px);
+  --spacing-safe-right: env(safe-area-inset-right, 0px);
+  --spacing-nav-height: 5rem;
+
+  /* Border Radius */
+  --radius-button: 1rem;
+  --radius-card: 1.25rem;
+  --radius-modal: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 4px 0px rgba(0, 0, 0, 0.1);
+  --shadow-button-pressed: 0 2px 0px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
+
+  /* Typography */
+  --font-display: 'Baloo 2', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ─── Base Reset ──────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  html {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    overscroll-behavior: none;
+  }
+
+  #root {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Disable user selection on interactive elements for mobile */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    user-select: none;
+  }
+
+  /* Allow text selection in text content */
+  p,
+  span,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    user-select: text;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Font imports */
+  @font-face {
+    font-family: 'Nunito';
+    font-display: swap;
+    src: local('Nunito');
+  }
+
+  @font-face {
+    font-family: 'Baloo 2';
+    font-display: swap;
+    src: local('Baloo 2');
+  }
+}
+
+/* ─── Utility Classes ─────────────────────────────────────── */
+@layer utilities {
+  /* Safe area padding */
+  .pt-safe {
+    padding-top: var(--spacing-safe-top);
+  }
+  .pb-safe {
+    padding-bottom: var(--spacing-safe-bottom);
+  }
+  .pl-safe {
+    padding-left: var(--spacing-safe-left);
+  }
+  .pr-safe {
+    padding-right: var(--spacing-safe-right);
+  }
+  .px-safe {
+    padding-left: var(--spacing-safe-left);
+    padding-right: var(--spacing-safe-right);
+  }
+  .py-safe {
+    padding-top: var(--spacing-safe-top);
+    padding-bottom: var(--spacing-safe-bottom);
+  }
+
+  /* Bottom nav spacer */
+  .pb-nav {
+    padding-bottom: calc(var(--spacing-nav-height) + var(--spacing-safe-bottom));
+  }
+
+  /* Glass morphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-nova {
+    background: linear-gradient(135deg, var(--color-nova-blue), var(--color-nova-purple));
+  }
+
+  .bg-gradient-warm {
+    background: linear-gradient(135deg, var(--color-nova-orange), var(--color-nova-red));
+  }
+
+  .bg-gradient-nature {
+    background: linear-gradient(135deg, var(--color-nova-green), var(--color-nova-cyan));
+  }
+
+  /* Text gradient */
+  .text-gradient-nova {
+    background: linear-gradient(135deg, var(--color-nova-blue), var(--color-nova-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Rarity glow */
+  .glow-common {
+    box-shadow: 0 0 8px var(--color-rarity-common);
+  }
+  .glow-rare {
+    box-shadow: 0 0 12px var(--color-rarity-rare);
+  }
+  .glow-epic {
+    box-shadow: 0 0 16px var(--color-rarity-epic);
+  }
+  .glow-legendary {
+    box-shadow: 0 0 20px var(--color-rarity-legendary);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 20px var(--color-rarity-legendary);
+    }
+    50% {
+      box-shadow: 0 0 30px var(--color-rarity-legendary);
+    }
+  }
+
+  /* Shake animation (wrong answer) */
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-8px);
+    }
+    40% {
+      transform: translateX(8px);
+    }
+    60% {
+      transform: translateX(-4px);
+    }
+    80% {
+      transform: translateX(4px);
+    }
+  }
+
+  /* Bounce animation */
+  .animate-bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Confetti burst placeholder */
+  .animate-confetti {
+    animation: confettiBurst 1s ease-out forwards;
+  }
+
+  @keyframes confettiBurst {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5) rotate(180deg);
+      opacity: 0;
+    }
+  }
+
+  /* Hide scrollbar */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch feedback */
+  .touch-feedback {
+    transition: transform 0.1s ease;
+  }
+  .touch-feedback:active {
+    transform: scale(0.96);
+  }
+}
+
+/* ─── Age Group Theme Overrides ───────────────────────────── */
+[data-theme='cubs'] {
+  --theme-primary: #FF6B6B;
+  --theme-primary-light: #FF9B9B;
+  --theme-primary-dark: #E94848;
+  --theme-secondary: #FFD93D;
+  --theme-accent: #6BCB77;
+  --theme-background: #FFF8F0;
+}
+
+[data-theme='stars'] {
+  --theme-primary: #6C5CE7;
+  --theme-primary-light: #A29BFE;
+  --theme-primary-dark: #5A4BD1;
+  --theme-secondary: #00B894;
+  --theme-accent: #FDCB6E;
+  --theme-background: #F8F9FE;
+}
+
+[data-theme='legends'] {
+  --theme-primary: #0984E3;
+  --theme-primary-light: #74B9FF;
+  --theme-primary-dark: #0767B5;
+  --theme-secondary: #00CEC9;
+  --theme-accent: #FD79A8;
+  --theme-background: #F0F8FF;
+}
+
+[data-theme='dark'] {
+  --theme-background: #1A1A2E;
+  --theme-surface: #16213E;
+  --theme-surface-elevated: #1F2B47;
+  --theme-text: #F0F0F0;
+  --theme-text-secondary: #A0A0B0;
+  --theme-text-inverse: #1A1A2E;
+  --theme-border: #2A2A4E;
+}

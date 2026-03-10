@@ -1,0 +1,71 @@
+{
+  "progress": "{{current}}/{{total}}",
+  "pause": "Duraklat",
+  "resume": "Devam Et",
+  "quit": "Çık",
+  "quitConfirm": "Dersten çıkmak istediğine emin misin? İlerleme kaybolacak.",
+  "quitYes": "Evet, Çık",
+  "quitNo": "Hayır, Devam Et",
+  "timeUp": "Süre Doldu!",
+  "hint": "İpucu",
+  "skip": "Geç",
+  "check": "Kontrol Et",
+  "continue": "Devam",
+  "correct": "Doğru! 🎉",
+  "incorrect": "Yanlış 😢",
+  "tryAgain": "Tekrar Dene",
+  "almostThere": "Az kaldı! 💪",
+
+  "activities": {
+    "wordMatch": "Eşleştir",
+    "wordMatchDesc": "Kelimeyi resmiyle eşleştir",
+    "listening": "Dinle",
+    "listeningDesc": "Duyduğun kelimeyi bul",
+    "speaking": "Söyle",
+    "speakingDesc": "Kelimeyi telaffuz et",
+    "spelling": "Harf Sırası",
+    "spellingDesc": "Harfleri doğru sıraya koy",
+    "fillBlank": "Boşluk Doldur",
+    "fillBlankDesc": "Doğru kelimeyi seç",
+    "story": "Hikaye",
+    "storyDesc": "Hikayeyi dinle ve anla",
+    "memory": "Hafıza",
+    "memoryDesc": "Kartları eşleştir",
+    "tracing": "Yaz",
+    "tracingDesc": "Harfi/kelimeyi yaz",
+    "sorting": "Sırala",
+    "sortingDesc": "Kategorilere ayır",
+    "conversation": "Konuşma",
+    "conversationDesc": "Diyalog tamamla"
+  },
+
+  "result": {
+    "title": "Ders Bitti!",
+    "perfect": "Mükemmel! ⭐⭐⭐",
+    "great": "Harika! ⭐⭐",
+    "good": "İyi! ⭐",
+    "xpEarned": "+{{xp}} XP Kazandın",
+    "starsEarned": "+{{stars}} Yıldız",
+    "accuracy": "Doğruluk: %{{percent}}",
+    "time": "Süre: {{time}}",
+    "streak": "Seri: {{count}} gün",
+    "newWords": "{{count}} Yeni Kelime",
+    "retry": "Tekrar Yap",
+    "nextLesson": "Sonraki Ders",
+    "home": "Ana Sayfa",
+    "bonuses": {
+      "perfect": "Mükemmel Bonus",
+      "speed": "Hız Bonusu",
+      "streak": "Seri Bonusu",
+      "firstTry": "İlk Deneme Bonusu",
+      "noHint": "İpucusuz Bonus"
+    }
+  },
+
+  "rewardAd": {
+    "title": "Ödülünü 2 Katına Çıkar!",
+    "desc": "Kısa bir video izleyerek XP ve yıldızlarını 2x yap",
+    "watch": "Videoyu İzle",
+    "noThanks": "Hayır, Teşekkürler"
+  }
+}

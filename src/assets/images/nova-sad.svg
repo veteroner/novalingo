@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Nova Sad - Wrong answer state -->
+  <!-- Body -->
+  <ellipse cx="100" cy="130" rx="60" ry="55" fill="#1E90FF"/>
+  <ellipse cx="100" cy="130" rx="55" ry="50" fill="#4DA6FF"/>
+  <!-- Belly -->
+  <ellipse cx="100" cy="145" rx="35" ry="30" fill="#E8F4FD"/>
+  <!-- Head -->
+  <circle cx="100" cy="75" r="45" fill="#1E90FF"/>
+  <circle cx="100" cy="75" r="40" fill="#4DA6FF"/>
+  <!-- Sad Eyes -->
+  <circle cx="82" cy="70" r="16" fill="white"/>
+  <circle cx="118" cy="70" r="16" fill="white"/>
+  <circle cx="84" cy="72" r="9" fill="#1A1A2E"/>
+  <circle cx="120" cy="72" r="9" fill="#1A1A2E"/>
+  <!-- Eye shine -->
+  <circle cx="87" cy="69" r="3" fill="white"/>
+  <circle cx="123" cy="69" r="3" fill="white"/>
+  <!-- Sad mouth -->
+  <path d="M85 92 Q100 84 115 92" stroke="#1A1A2E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Worried eyebrows -->
+  <path d="M70 58 Q82 52 92 58" stroke="#1A1A2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M108 58 Q118 52 130 58" stroke="#1A1A2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Ear tufts (droopy) -->
+  <path d="M65 48 L68 35 L78 52" fill="#1565C0"/>
+  <path d="M135 48 L132 35 L122 52" fill="#1565C0"/>
+  <!-- Wings down -->
+  <ellipse cx="48" cy="140" rx="18" ry="35" fill="#1565C0" transform="rotate(10 48 140)"/>
+  <ellipse cx="152" cy="140" rx="18" ry="35" fill="#1565C0" transform="rotate(-10 152 140)"/>
+  <!-- Feet -->
+  <ellipse cx="80" cy="182" rx="15" ry="8" fill="#FFA726"/>
+  <ellipse cx="120" cy="182" rx="15" ry="8" fill="#FFA726"/>
+</svg>

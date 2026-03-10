@@ -1,0 +1,41 @@
+{
+  "greeting": "Hello, {{name}}! 👋",
+  "dailyGoal": "Daily Goal",
+  "dailyGoalDesc": "{{current}}/{{target}} lessons",
+  "streak": "{{count}} Day Streak 🔥",
+  "level": "Level {{level}}",
+  "worlds": "Worlds",
+  "seeAll": "See All",
+
+  "quickActions": {
+    "title": "Quick Access",
+    "dailyQuest": "Daily Quests",
+    "practice": "Practice",
+    "collection": "Collection",
+    "achievements": "Achievements"
+  },
+
+  "worldMap": {
+    "title": "World Map",
+    "locked": "Locked",
+    "unlockAt": "Unlocks at Level {{level}}",
+    "progress": "{{percent}}% completed",
+    "lessonsLeft": "{{count}} lessons left",
+    "completed": "Completed ✓"
+  },
+
+  "worlds": {
+    "alphabet": "Alphabet Island",
+    "alphabetDesc": "Learn letters and sounds",
+    "colors": "Color Forest",
+    "colorsDesc": "Explore the world of colors",
+    "animals": "Animal Safari",
+    "animalsDesc": "Learn animal names",
+    "numbers": "Number Castle",
+    "numbersDesc": "Dance with numbers",
+    "family": "Family House",
+    "familyDesc": "Meet the family members",
+    "food": "Food Feast",
+    "foodDesc": "Learn delicious words"
+  }
+}
