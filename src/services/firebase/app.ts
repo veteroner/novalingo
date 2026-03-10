@@ -25,18 +25,19 @@ import {
 import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
 import { connectStorageEmulator, getStorage, type FirebaseStorage } from 'firebase/storage';
 
-const useEmulators = import.meta.env.VITE_USE_EMULATORS === 'true';
-const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY?.trim() ?? '';
+const env = import.meta.env as Record<string, string | undefined>;
+const useEmulators = env.VITE_USE_EMULATORS === 'true';
+const recaptchaSiteKey = env.VITE_RECAPTCHA_SITE_KEY?.trim() ?? '';
 
 // Firebase config — environment variables'dan
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY?.trim() ?? '',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN?.trim() ?? '',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID?.trim() ?? '',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET?.trim() ?? '',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID?.trim() ?? '',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID?.trim() ?? '',
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID?.trim() ?? '',
+  apiKey: env.VITE_FIREBASE_API_KEY?.trim() ?? '',
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN?.trim() ?? '',
+  projectId: env.VITE_FIREBASE_PROJECT_ID?.trim() ?? '',
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET?.trim() ?? '',
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID?.trim() ?? '',
+  appId: env.VITE_FIREBASE_APP_ID?.trim() ?? '',
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID?.trim() ?? '',
 };
 
 const requiredFirebaseConfigEntries = [

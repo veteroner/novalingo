@@ -75,3 +75,6 @@ yarn-error.log*
 
 # Misc
 *.tsbuildinfo
+
+# Local Netlify folder
+.netlify
