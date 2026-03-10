@@ -25,16 +25,28 @@ import {
 import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
 import { connectStorageEmulator, getStorage, type FirebaseStorage } from 'firebase/storage';
 
+const useEmulators = import.meta.env.VITE_USE_EMULATORS === 'true';
+const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY?.trim() ?? '';
+
 // Firebase config — environment variables'dan
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY?.trim() ?? '',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN?.trim() ?? '',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID?.trim() ?? '',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET?.trim() ?? '',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID?.trim() ?? '',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID?.trim() ?? '',
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID?.trim() ?? '',
 };
+
+const requiredFirebaseConfigEntries = [
+  ['VITE_FIREBASE_API_KEY', firebaseConfig.apiKey],
+  ['VITE_FIREBASE_AUTH_DOMAIN', firebaseConfig.authDomain],
+  ['VITE_FIREBASE_PROJECT_ID', firebaseConfig.projectId],
+  ['VITE_FIREBASE_STORAGE_BUCKET', firebaseConfig.storageBucket],
+  ['VITE_FIREBASE_MESSAGING_SENDER_ID', firebaseConfig.messagingSenderId],
+  ['VITE_FIREBASE_APP_ID', firebaseConfig.appId],
+] as const;
 
 // Singleton instances
 let app: FirebaseApp | undefined;
@@ -45,24 +57,45 @@ let functions: Functions;
 let analytics: Analytics | null = null;
 let appCheck: AppCheck | null = null;
 
+function getMissingFirebaseConfigKeys(): string[] {
+  return requiredFirebaseConfigEntries.filter(([, value]) => !value).map(([name]) => name);
+}
+
 function initializeFirebase() {
   if (app) return;
 
+  const missingFirebaseConfigKeys = getMissingFirebaseConfigKeys();
+
+  if (missingFirebaseConfigKeys.length > 0) {
+    throw new Error(
+      `[Firebase] Missing required Vite env vars: ${missingFirebaseConfigKeys.join(', ')}`,
+    );
+  }
+
   app = initializeApp(firebaseConfig);
-  const useEmulators = import.meta.env.VITE_USE_EMULATORS === 'true';
 
   // App Check — emülatörde devre dışı, geliştirmede debug token, üretimde reCAPTCHA v3
-  if (!useEmulators) {
+  if (!useEmulators && recaptchaSiteKey) {
     if (import.meta.env.DEV) {
       (self as unknown as Record<string, unknown>).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
     }
     appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+      provider: new ReCaptchaV3Provider(recaptchaSiteKey),
       isTokenAutoRefreshEnabled: true,
     });
+  } else if (!useEmulators) {
+    console.warn('[Firebase] App Check skipped because VITE_RECAPTCHA_SITE_KEY is missing.');
   }
 
-  auth = useEmulators ? initializeAuth(app, { persistence: inMemoryPersistence }) : getAuth(app);
+  try {
+    auth = useEmulators ? initializeAuth(app, { persistence: inMemoryPersistence }) : getAuth(app);
+  } catch (error) {
+    throw new Error(
+      '[Firebase] Auth initialization failed. Check VITE_FIREBASE_API_KEY and related Firebase web config values.',
+      { cause: error },
+    );
+  }
+
   db = initializeFirestore(app, {
     localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
   });
