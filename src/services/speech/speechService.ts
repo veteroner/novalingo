@@ -1,12 +1,11 @@
 /**
  * Speech Service
  *
- * Web Speech API wrapper — konuşma tanıma (STT) ve sentez (TTS).
- * Capacitor native eklentisi olmadığında Web API'yi kullanır.
- *
- * COPPA notu: Ses verileri cihazda işlenir, sunucuya gönderilmez.
- * Web Speech API tarayıcı yerel motorunu kullanır.
+ * TTS (Kokoro-82M neural + Web Speech API fallback) ve STT.
+ * Tüm ses verileri cihazda işlenir — COPPA uyumlu.
  */
+
+import { generateSpeech } from './kokoroService';
 
 // ===== FEATURE DETECTION =====
 
@@ -43,13 +42,7 @@ interface SpeakOptions {
   audioUrl?: string;
 }
 
-// ===== CLOUD TTS (Google Neural2 via Netlify Function) =====
-
-const CLOUD_TTS_URL = '/api/tts';
-const TTS_CACHE_NAME = 'novalingo-tts-v1';
-
-/** After first failure, skip cloud TTS for rest of session */
-let cloudTTSDisabled = false;
+// ===== AUDIO PLAYBACK =====
 
 /** Currently playing audio element — tracked for stop/cancel */
 let currentAudio: HTMLAudioElement | null = null;
@@ -60,48 +53,6 @@ function stopCurrentAudio(): void {
     currentAudio.currentTime = 0;
     currentAudio = null;
   }
-}
-
-/** Fetch TTS audio from Netlify Function (Google Cloud TTS Neural2) with Cache API */
-async function fetchCloudTTS(text: string, rate: number, pitch: number): Promise<Blob> {
-  const cacheKey = `${CLOUD_TTS_URL}?t=${encodeURIComponent(text)}&r=${rate}&p=${pitch}`;
-  const cacheReq = new Request(new URL(cacheKey, window.location.origin).href);
-
-  // Check cache first
-  if ('caches' in window) {
-    try {
-      const cache = await caches.open(TTS_CACHE_NAME);
-      const cached = await cache.match(cacheReq);
-      if (cached) return await cached.blob();
-    } catch {
-      /* cache miss */
-    }
-  }
-
-  const res = await fetch(CLOUD_TTS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, rate, pitch }),
-  });
-
-  if (!res.ok) throw new Error(`Cloud TTS: ${res.status}`);
-
-  const blob = await res.blob();
-
-  // Store in cache for next time
-  if ('caches' in window) {
-    try {
-      const cache = await caches.open(TTS_CACHE_NAME);
-      await cache.put(
-        cacheReq,
-        new Response(blob.slice(), { headers: { 'Content-Type': 'audio/mpeg' } }),
-      );
-    } catch {
-      /* caching failed, not critical */
-    }
-  }
-
-  return blob;
 }
 
 /** Play audio from URL with tracking for stop/cancel */
@@ -242,7 +193,7 @@ function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<voi
 /**
  * Kelime/cümle seslendir — 3 katmanlı:
  * 1. Önceden üretilmiş audioUrl (varsa)
- * 2. Google Cloud TTS Neural2 (Netlify Function) + Cache API
+ * 2. Kokoro-82M neural TTS (tarayıcıda ONNX WASM)
  * 3. Web Speech API fallback (telefonun sesi — son çare)
  */
 export async function speak(text: string, options: SpeakOptions = {}): Promise<void> {
@@ -251,17 +202,17 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<v
     return playAudio(options.audioUrl);
   }
 
-  // Priority 2: Cloud TTS (Google Neural2) with browser caching
-  if (!cloudTTSDisabled) {
-    try {
-      const gcpPitch = options.pitch != null ? (options.pitch - 1) * 20 : 0;
-      const blob = await fetchCloudTTS(text, options.rate ?? 0.9, gcpPitch);
+  // Priority 2: Kokoro neural TTS (browser-based)
+  try {
+    const blob = await generateSpeech(text, {
+      speed: options.rate ?? 0.9,
+    });
+    if (blob) {
       await playBlob(blob);
       return;
-    } catch {
-      // Cloud TTS unavailable — disable for this session
-      cloudTTSDisabled = true;
     }
+  } catch {
+    // Kokoro unavailable — fall through to Web Speech API
   }
 
   // Priority 3: Web Speech API (explicit English voice — last resort)

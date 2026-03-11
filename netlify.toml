@@ -1,7 +1,6 @@
 [build]
   command = "pnpm run build"
   publish = "dist"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
@@ -26,4 +25,11 @@
 [[headers]]
   for = "/assets/*"
   [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# WASM files need correct MIME type for ONNX Runtime
+[[headers]]
+  for = "/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
     Cache-Control = "public, max-age=31536000, immutable"
