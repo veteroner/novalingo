@@ -1,4 +1,4 @@
-p; /* eslint-disable */
+/* eslint-disable */
 /**
  * Firestore Seed Script — Curriculum Data
  *
@@ -10,17 +10,18 @@ p; /* eslint-disable */
  *   - worlds/{worldId}/units/{unitId}/lessons collection
  */
 
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 import { generateActivities } from '../src/features/learning/data/activityGenerator';
 import { curriculum } from '../src/features/learning/data/curriculum';
 
 // Initialize admin SDK
-if (!admin.apps.length) {
+if (!admin.apps?.length) {
   admin.initializeApp({
     projectId: 'novalingo-app',
   });
 }
 const db = admin.firestore();
+db.settings({ ignoreUndefinedProperties: true });
 
 async function seedCurriculum() {
   console.log('🌱 Seeding curriculum data...\n');
@@ -75,6 +76,14 @@ async function seedCurriculum() {
 
       for (const lesson of unit.lessons) {
         const activities = generateActivities(lesson);
+        // Firestore doesn't support nested arrays (array of arrays).
+        // word-search activities have grid: string[][] — flatten to string[]
+        const sanitizedActivities = activities.map((a: any) => {
+          if (a.type === 'word-search' && a.data?.grid && Array.isArray(a.data.grid[0])) {
+            return { ...a, data: { ...a.data, grid: a.data.grid.map((row: string[]) => row.join(',')) } };
+          }
+          return a;
+        });
         const lessonRef = unitRef.collection('lessons').doc(lesson.id);
         ops.push({
           ref: lessonRef,
@@ -90,7 +99,7 @@ async function seedCurriculum() {
             estimatedMinutes: lesson.estimatedMinutes,
             xpReward: lesson.xpReward,
             starReward: lesson.starReward,
-            activities,
+            activities: sanitizedActivities,
             vocabulary: lesson.vocabulary,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           },
