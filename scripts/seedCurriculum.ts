@@ -80,7 +80,10 @@ async function seedCurriculum() {
         // word-search activities have grid: string[][] — flatten to string[]
         const sanitizedActivities = activities.map((a: any) => {
           if (a.type === 'word-search' && a.data?.grid && Array.isArray(a.data.grid[0])) {
-            return { ...a, data: { ...a.data, grid: a.data.grid.map((row: string[]) => row.join(',')) } };
+            return {
+              ...a,
+              data: { ...a.data, grid: a.data.grid.map((row: string[]) => row.join(',')) },
+            };
           }
           return a;
         });

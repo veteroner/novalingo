@@ -1,27 +1,46 @@
 /**
- * Cloud Functions Callable Wrapper
+ * Firebase Functions — Spark Plan Compatible
  *
- * Type-safe callable function çağrıları.
- * Firebase callable functions hata durumunda HttpsError fırlatır,
- * başarı durumunda direkt veriyi döndürür.
+ * Cloud Functions mantığını client-side Firestore yazımlarıyla çalıştırır.
+ * Blaze planı gerektirmez.
  */
 
 import type { AgeGroup } from '@/types/user';
+import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
 import {
   collection,
   deleteDoc,
   doc,
   getDoc,
   getDocs,
+  increment,
   limit,
+  orderBy,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore';
-import { httpsCallable, type HttpsCallableResult } from 'firebase/functions';
-import { auth, db, functions } from './app';
+import {
+  calculateLessonXP,
+  createSRSCard,
+  generateDailyQuests,
+  generateSalt,
+  getNovaMood,
+  getNovaStage,
+  getTodayTR,
+  getWeekId,
+  hashPin,
+  pickWheelSegment,
+  reviewSRSCard,
+  updateStreak,
+  verifyPinHash,
+  xpForLevel,
+} from '../spark/gameLogic';
+import { auth, db } from './app';
 
 function requireCurrentUserId(): string {
   const uid = auth.currentUser?.uid;
@@ -77,13 +96,8 @@ interface StoredUserProfile {
   activeChildId?: string | null;
 }
 
-// ===== GENERIC CALLER =====
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-async function callFunction<TReq, TRes>(name: string, data: TReq): Promise<TRes> {
-  const fn = httpsCallable<TReq, TRes>(functions, name);
-  const result: HttpsCallableResult<TRes> = await fn(data);
-  return result.data;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type FirestoreData = Record<string, any>;
 
 // ===== TYPED FUNCTION CALLS =====
 
@@ -241,8 +255,93 @@ export interface SubmitLessonResultRes {
   isPerfect: boolean;
 }
 
-export function submitLessonResult(data: SubmitLessonResultReq) {
-  return callFunction<SubmitLessonResultReq, SubmitLessonResultRes>('submitLessonResult', data);
+export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitLessonResultRes> {
+  const uid = requireCurrentUserId();
+  const { childId, lessonId, activities, totalTimeMs } = data;
+  const childRef = doc(db, 'children', childId);
+  const lessonRef = doc(db, 'children', childId, 'lessonProgress', lessonId);
+
+  return runTransaction(db, async (tx) => {
+    const snap = await tx.get(childRef);
+    if (!snap.exists()) throw new Error('Child not found');
+    const child = snap.data() as FirestoreData;
+    if (child.parentUid !== uid) throw new Error('Not authorized');
+
+    const xp = calculateLessonXP(activities, totalTimeMs, child.currentStreak ?? 0);
+    const streak = updateStreak(
+      child.currentStreak ?? 0,
+      child.longestStreak ?? 0,
+      child.lastActivityDate || null,
+    );
+
+    let newLevel = child.level ?? 1;
+    const newTotalXP = (child.totalXP ?? 0) + xp.totalXP;
+    while (newLevel < 100 && newTotalXP >= xpForLevel(newLevel + 1)) newLevel++;
+
+    const novaStage = getNovaStage(newTotalXP);
+    const novaHappiness = getNovaMood((child.completedLessons ?? 0) + 1, streak.newStreak);
+
+    tx.update(childRef, {
+      totalXP: newTotalXP,
+      currentLevelXP: newTotalXP - xpForLevel(newLevel),
+      nextLevelXP: xpForLevel(newLevel + 1) - xpForLevel(newLevel),
+      level: newLevel,
+      stars: (child.stars ?? 0) + xp.starsEarned,
+      currentStreak: streak.newStreak,
+      longestStreak: streak.newLongest,
+      lastActivityDate: getTodayTR(),
+      completedLessons: (child.completedLessons ?? 0) + 1,
+      totalPlayTimeMinutes: (child.totalPlayTimeMinutes ?? 0) + Math.round(totalTimeMs / 60000),
+      weeklyXP: (child.weeklyXP ?? 0) + xp.totalXP,
+      novaStage,
+      novaHappiness,
+      updatedAt: serverTimestamp(),
+    });
+
+    tx.set(lessonRef, {
+      lessonId,
+      stars: xp.starRating,
+      accuracy: xp.accuracy,
+      xpEarned: xp.totalXP,
+      timeSpentMs: totalTimeMs,
+      completedAt: serverTimestamp(),
+      attempts: activities.map((a) => ({
+        activityId: a.activityId,
+        correct: a.correct,
+        timeSpentMs: a.timeSpentMs,
+      })),
+    });
+
+    // Update leaderboard entry (inside tx for consistency)
+    const weekId = getWeekId();
+    const entryRef = doc(db, 'leaderboards', weekId, 'entries', childId);
+    tx.set(
+      entryRef,
+      {
+        childId,
+        name: child.name ?? '',
+        avatarId: child.avatarId ?? 'nova_default',
+        level: newLevel,
+        weeklyXP: (child.weeklyXP ?? 0) + xp.totalXP,
+        tier: child.leagueTier ?? 'bronze',
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+
+    return {
+      xpEarned: xp.totalXP,
+      baseXP: xp.baseXP,
+      bonusXP: xp.bonusXP,
+      starsEarned: xp.starsEarned,
+      starRating: xp.starRating,
+      accuracy: xp.accuracy,
+      streak: streak.newStreak,
+      leveledUp: newLevel > (child.level ?? 1),
+      newLevel,
+      isPerfect: xp.isPerfect,
+    };
+  });
 }
 
 // --- Vocabulary ---
@@ -260,8 +359,56 @@ export interface UpdateVocabularyRes {
   masteryChanges: Array<{ cardId: string; oldLevel: string; newLevel: string }>;
 }
 
-export function updateVocabulary(data: UpdateVocabularyReq) {
-  return callFunction<UpdateVocabularyReq, UpdateVocabularyRes>('updateVocabulary', data);
+export async function updateVocabulary(data: UpdateVocabularyReq): Promise<UpdateVocabularyRes> {
+  const uid = requireCurrentUserId();
+  await getOwnedChild(data.childId, uid);
+  const today = getTodayTR();
+  const batch = writeBatch(db);
+  const masteryChanges: { cardId: string; oldLevel: string; newLevel: string }[] = [];
+
+  for (const review of data.reviews) {
+    const cardRef = doc(db, 'children', data.childId, 'vocabulary', review.cardId);
+    const cardSnap = await getDoc(cardRef);
+    const existing = cardSnap.exists()
+      ? (cardSnap.data() as {
+          easeFactor: number;
+          interval: number;
+          repetitions: number;
+          nextReviewDate: string;
+          status: string;
+        })
+      : null;
+    const card = existing
+      ? {
+          wordId: review.cardId,
+          easeFactor: existing.easeFactor,
+          interval: existing.interval,
+          repetitions: existing.repetitions,
+          nextReviewDate: existing.nextReviewDate,
+          status: existing.status as 'learning' | 'reviewing' | 'mastered',
+        }
+      : createSRSCard(review.cardId, today);
+    const oldStatus = card.status;
+    const updated = reviewSRSCard(card, review.quality, today);
+    if (oldStatus !== updated.status) {
+      masteryChanges.push({ cardId: review.cardId, oldLevel: oldStatus, newLevel: updated.status });
+    }
+    batch.set(
+      cardRef,
+      { ...updated, lastReviewedAt: serverTimestamp(), responseTimeMs: review.responseTimeMs },
+      { merge: true },
+    );
+  }
+
+  const newlyMastered = masteryChanges.filter((m) => m.newLevel === 'mastered').length;
+  if (newlyMastered > 0) {
+    batch.update(doc(db, 'children', data.childId), {
+      wordsLearned: increment(newlyMastered),
+      updatedAt: serverTimestamp(),
+    });
+  }
+  await batch.commit();
+  return { cardsUpdated: data.reviews.length, masteryChanges };
 }
 
 // --- Gamification ---
@@ -275,8 +422,42 @@ export interface ClaimQuestRewardRes {
   bonusChestAvailable: boolean;
 }
 
-export function claimQuestReward(data: ClaimQuestRewardReq) {
-  return callFunction<ClaimQuestRewardReq, ClaimQuestRewardRes>('claimQuestReward', data);
+export async function claimQuestReward(data: ClaimQuestRewardReq): Promise<ClaimQuestRewardRes> {
+  const uid = requireCurrentUserId();
+  const childRef = doc(db, 'children', data.childId);
+
+  return runTransaction(db, async (tx) => {
+    const childSnap = await tx.get(childRef);
+    if (!childSnap.exists()) throw new Error('Child not found');
+    const child = childSnap.data() as FirestoreData;
+    if (child.parentUid !== uid) throw new Error('Not authorized');
+
+    const questRef = doc(db, 'children', data.childId, 'quests', data.questId);
+    const questSnap = await tx.get(questRef);
+    if (!questSnap.exists()) throw new Error('Quest not found');
+    const quest = questSnap.data() as FirestoreData;
+    if (quest.claimed) throw new Error('Already claimed');
+    if ((quest.currentProgress ?? 0) < (quest.targetProgress ?? 1))
+      throw new Error('Quest not completed');
+
+    const reward = quest.reward ?? { type: 'stars', amount: 0 };
+    const updates: FirestoreData = { updatedAt: serverTimestamp() };
+    if (reward.type === 'stars') updates.stars = (child.stars ?? 0) + reward.amount;
+    else if (reward.type === 'gems') updates.gems = (child.gems ?? 0) + reward.amount;
+    else if (reward.type === 'xp') updates.totalXP = (child.totalXP ?? 0) + reward.amount;
+
+    tx.update(childRef, updates);
+    tx.update(questRef, { claimed: true, claimedAt: serverTimestamp() });
+
+    return {
+      reward: {
+        xp: reward.type === 'xp' ? reward.amount : 0,
+        stars: reward.type === 'stars' ? reward.amount : 0,
+        gems: reward.type === 'gems' ? reward.amount : 0,
+      },
+      bonusChestAvailable: false,
+    };
+  });
 }
 
 export interface SpinDailyWheelReq {
@@ -289,8 +470,49 @@ export interface SpinDailyWheelRes {
   animation: { targetAngle: number; duration: number };
 }
 
-export function spinDailyWheel(data: SpinDailyWheelReq) {
-  return callFunction<SpinDailyWheelReq, SpinDailyWheelRes>('spinDailyWheel', data);
+export async function spinDailyWheel(data: SpinDailyWheelReq): Promise<SpinDailyWheelRes> {
+  const uid = requireCurrentUserId();
+  const childRef = doc(db, 'children', data.childId);
+  const today = getTodayTR();
+  const segment = pickWheelSegment();
+
+  await runTransaction(db, async (tx) => {
+    const childSnap = await tx.get(childRef);
+    if (!childSnap.exists()) throw new Error('Child not found');
+    const child = childSnap.data() as FirestoreData;
+    if (child.parentUid !== uid) throw new Error('Not authorized');
+
+    const spinRef = doc(db, 'children', data.childId, 'dailySpins', today);
+    const spinSnap = await tx.get(spinRef);
+    if (spinSnap.exists()) throw new Error('Already spun today');
+
+    const updates: FirestoreData = { updatedAt: serverTimestamp() };
+    if (segment.type === 'stars') updates.stars = (child.stars ?? 0) + segment.amount;
+    else if (segment.type === 'gems') updates.gems = (child.gems ?? 0) + segment.amount;
+    else if (segment.type === 'xp') updates.totalXP = (child.totalXP ?? 0) + segment.amount;
+    else if (segment.type === 'streak_freeze')
+      updates.streakFreezes = (child.streakFreezes ?? 0) + segment.amount;
+
+    tx.update(childRef, updates);
+    tx.set(spinRef, {
+      reward: { type: segment.type, amount: segment.amount },
+      spunAt: serverTimestamp(),
+    });
+  });
+
+  const segmentIndex =
+    [0, 1, 2, 3, 4, 5, 6, 7].find(
+      (_, i) =>
+        ['stars_10', 'stars_25', 'stars_50', 'xp_20', 'xp_50', 'gems_5', 'gems_10', 'freeze'][i] ===
+        segment.id,
+    ) ?? 0;
+  const targetAngle = 360 * 3 + segmentIndex * 45 + Math.random() * 40;
+
+  return {
+    sliceId: segment.id,
+    reward: { type: segment.type, amount: segment.amount },
+    animation: { targetAngle, duration: 3000 },
+  };
 }
 
 // --- Shop ---
@@ -305,8 +527,46 @@ export interface PurchaseShopItemRes {
   item: { id: string; name: string };
 }
 
-export function purchaseShopItem(data: PurchaseShopItemReq) {
-  return callFunction<PurchaseShopItemReq, PurchaseShopItemRes>('purchaseShopItem', data);
+export async function purchaseShopItem(data: PurchaseShopItemReq): Promise<PurchaseShopItemRes> {
+  const uid = requireCurrentUserId();
+  const childRef = doc(db, 'children', data.childId);
+  const itemRef = doc(db, 'shopItems', data.itemId);
+  const itemSnap = await getDoc(itemRef);
+  if (!itemSnap.exists()) throw new Error('Item not found');
+  const item = itemSnap.data() as FirestoreData;
+
+  return runTransaction(db, async (tx) => {
+    const childSnap = await tx.get(childRef);
+    if (!childSnap.exists()) throw new Error('Child not found');
+    const child = childSnap.data() as FirestoreData;
+    if (child.parentUid !== uid) throw new Error('Not authorized');
+
+    const currencyType: string = item.currencyType ?? 'stars';
+    const price: number = item.price ?? 0;
+    const balance: number = child[currencyType] ?? 0;
+    if (balance < price) throw new Error('Insufficient balance');
+
+    // Check not already owned via inventory
+    const invRef = doc(db, 'children', data.childId, 'inventory', data.itemId);
+    const invSnap = await tx.get(invRef);
+    if (invSnap.exists()) throw new Error('Already owned');
+
+    tx.update(childRef, { [currencyType]: balance - price, updatedAt: serverTimestamp() });
+    tx.set(invRef, {
+      itemId: data.itemId,
+      itemName: item.name ?? '',
+      purchasedAt: serverTimestamp(),
+    });
+
+    return {
+      success: true,
+      newBalance: {
+        stars: currencyType === 'stars' ? balance - price : (child.stars ?? 0),
+        gems: currencyType === 'gems' ? balance - price : (child.gems ?? 0),
+      },
+      item: { id: data.itemId, name: item.name ?? '' },
+    };
+  });
 }
 
 // --- Streak ---
@@ -319,8 +579,21 @@ export interface UseStreakFreezeRes {
   streakPreserved: boolean;
 }
 
-export function useStreakFreeze(data: UseStreakFreezeReq) {
-  return callFunction<UseStreakFreezeReq, UseStreakFreezeRes>('useStreakFreeze', data);
+export async function useStreakFreeze(data: UseStreakFreezeReq): Promise<UseStreakFreezeRes> {
+  const uid = requireCurrentUserId();
+  const childRef = doc(db, 'children', data.childId);
+
+  return runTransaction(db, async (tx) => {
+    const snap = await tx.get(childRef);
+    if (!snap.exists()) throw new Error('Child not found');
+    const child = snap.data() as FirestoreData;
+    if (child.parentUid !== uid) throw new Error('Not authorized');
+    const freezes: number = child.streakFreezes ?? 0;
+    if (freezes <= 0) throw new Error('No streak freezes available');
+
+    tx.update(childRef, { streakFreezes: freezes - 1, updatedAt: serverTimestamp() });
+    return { freezesRemaining: freezes - 1, streakPreserved: true };
+  });
 }
 
 // --- Leaderboard ---
@@ -342,8 +615,31 @@ export interface GetLeaderboardRes {
   relegationLine: number;
 }
 
-export function getLeaderboard(data: GetLeaderboardReq) {
-  return callFunction<GetLeaderboardReq, GetLeaderboardRes>('getLeaderboard', data);
+export async function getLeaderboard(data: GetLeaderboardReq): Promise<GetLeaderboardRes> {
+  requireCurrentUserId();
+  const weekId = getWeekId();
+  const entriesRef = collection(db, 'leaderboards', weekId, 'entries');
+  const q = query(
+    entriesRef,
+    where('tier', '==', data.leagueId || 'bronze'),
+    orderBy('weeklyXP', 'desc'),
+    limit(50),
+  );
+  const snap = await getDocs(q);
+
+  const entries = snap.docs.map((d, i) => {
+    const e = d.data() as FirestoreData;
+    return {
+      displayName: e.name ?? 'NovaLearner',
+      avatarId: e.avatarId ?? 'nova_default',
+      level: e.level ?? 1,
+      weeklyXP: e.weeklyXP ?? 0,
+      rank: i + 1,
+    };
+  });
+
+  const myRank = entries.findIndex((e) => e.displayName !== '') + 1 || entries.length + 1;
+  return { entries, myRank, promotionLine: 3, relegationLine: Math.max(entries.length - 2, 4) };
 }
 
 // --- Offline Sync ---
@@ -362,8 +658,57 @@ export interface SyncOfflineProgressRes {
   resolvedActions: string[];
 }
 
-export function syncOfflineProgress(data: SyncOfflineProgressReq) {
-  return callFunction<SyncOfflineProgressReq, SyncOfflineProgressRes>('syncOfflineProgress', data);
+export async function syncOfflineProgress(
+  data: SyncOfflineProgressReq,
+): Promise<SyncOfflineProgressRes> {
+  const uid = requireCurrentUserId();
+  await getOwnedChild(data.childId, uid);
+  const batch = writeBatch(db);
+  let synced = 0;
+  let errors = 0;
+  const sorted = [...data.actions].sort((a, b) => a.timestamp - b.timestamp).slice(0, 100);
+
+  for (const action of sorted) {
+    try {
+      const p = action.payload as FirestoreData;
+      if (action.type === 'lessonComplete' && p.lessonId) {
+        const ref = doc(db, 'children', data.childId, 'lessonProgress', p.lessonId as string);
+        batch.set(
+          ref,
+          {
+            lessonId: p.lessonId,
+            stars: Math.min(p.stars ?? 0, 3),
+            accuracy: Math.min(p.accuracy ?? 0, 1),
+            xpEarned: Math.min(p.xpEarned ?? 0, 500),
+            timeSpentMs: p.timeSpentMs ?? 0,
+            completedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+        synced++;
+      } else if (action.type === 'vocabularyReview' && p.wordId) {
+        const ref = doc(db, 'children', data.childId, 'vocabulary', p.wordId as string);
+        batch.set(
+          ref,
+          {
+            interval: p.interval ?? 0,
+            easeFactor: p.easeFactor ?? 2.5,
+            repetitions: p.repetitions ?? 0,
+            nextReviewDate: p.nextReviewDate ?? '',
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+        synced++;
+      } else {
+        errors++;
+      }
+    } catch {
+      errors++;
+    }
+  }
+  await batch.commit();
+  return { synced, conflicts: errors, resolvedActions: [] };
 }
 
 // --- Update Child Profile ---
@@ -461,8 +806,34 @@ export interface SetParentPinRes {
   success: boolean;
 }
 
-export function setParentPin(data: SetParentPinReq): Promise<SetParentPinRes> {
-  return callFunction<SetParentPinReq, SetParentPinRes>('setParentPin', data);
+export async function setParentPin(data: SetParentPinReq): Promise<SetParentPinRes> {
+  const uid = requireCurrentUserId();
+  if (!/^\d{4}$/.test(data.pin)) throw new Error('PIN must be 4 digits');
+
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
+  const userData = userSnap.data() as FirestoreData | undefined;
+
+  // If PIN already exists, verify current PIN first
+  if (userData?.settings?.parentPinHash && userData?.settings?.parentPinSalt) {
+    if (!data.currentPin) throw new Error('Current PIN required');
+    const valid = await verifyPinHash(
+      data.currentPin,
+      userData.settings.parentPinSalt,
+      userData.settings.parentPinHash,
+    );
+    if (!valid) throw new Error('Current PIN is incorrect');
+  }
+
+  const salt = generateSalt();
+  const pinHash = await hashPin(data.pin, salt);
+  await updateDoc(userRef, {
+    'settings.parentPinHash': pinHash,
+    'settings.parentPinSalt': salt,
+    'settings.parentPin': '****',
+    updatedAt: serverTimestamp(),
+  });
+  return { success: true };
 }
 
 export interface VerifyParentPinReq {
@@ -473,8 +844,25 @@ export interface VerifyParentPinRes {
   valid: boolean;
 }
 
-export function verifyParentPin(data: VerifyParentPinReq): Promise<VerifyParentPinRes> {
-  return callFunction<VerifyParentPinReq, VerifyParentPinRes>('verifyParentPin', data);
+export async function verifyParentPin(data: VerifyParentPinReq): Promise<VerifyParentPinRes> {
+  const uid = requireCurrentUserId();
+  if (!/^\d{4}$/.test(data.pin)) throw new Error('PIN must be 4 digits');
+
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
+  const userData = userSnap.data() as FirestoreData | undefined;
+
+  if (!userData?.settings?.parentPinHash || !userData?.settings?.parentPinSalt) {
+    throw new Error('No PIN set');
+  }
+
+  const valid = await verifyPinHash(
+    data.pin,
+    userData.settings.parentPinSalt,
+    userData.settings.parentPinHash,
+  );
+  if (!valid) throw new Error('Invalid PIN');
+  return { valid: true };
 }
 
 // --- Account ---
@@ -486,6 +874,61 @@ export interface DeleteAccountRes {
   deleted: boolean;
 }
 
-export function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccountRes> {
-  return callFunction<DeleteAccountReq, DeleteAccountRes>('deleteAccount', data);
+export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccountRes> {
+  const uid = requireCurrentUserId();
+  // Verify PIN first
+  await verifyParentPin({ pin: data.pin });
+
+  // Delete all children and their subcollections
+  const childrenSnap = await getDocs(
+    query(collection(db, 'children'), where('parentUid', '==', uid)),
+  );
+  const subcollections = [
+    'lessonProgress',
+    'vocabulary',
+    'quests',
+    'achievements',
+    'inventory',
+    'dailySpins',
+    'stats',
+  ];
+
+  for (const childDoc of childrenSnap.docs) {
+    for (const sub of subcollections) {
+      const subSnap = await getDocs(collection(db, 'children', childDoc.id, sub));
+      const batch = writeBatch(db);
+      subSnap.docs.forEach((d) => batch.delete(d.ref));
+      if (!subSnap.empty) await batch.commit();
+    }
+    await deleteDoc(childDoc.ref);
+  }
+
+  // Delete user document
+  await deleteDoc(doc(db, 'users', uid));
+
+  // Delete Firebase Auth user
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    await firebaseDeleteUser(currentUser);
+  }
+
+  return { deleted: true };
+}
+
+// ===== LAZY SCHEDULED FUNCTIONS =====
+
+export async function ensureDailyQuests(childId: string): Promise<void> {
+  const uid = requireCurrentUserId();
+  await getOwnedChild(childId, uid);
+  const today = getTodayTR();
+  const questsRef = collection(db, 'children', childId, 'quests');
+  const todayQuests = await getDocs(query(questsRef, where('id', '>=', today), limit(1)));
+  if (!todayQuests.empty) return;
+
+  const quests = generateDailyQuests(today);
+  const batch = writeBatch(db);
+  for (const q of quests) {
+    batch.set(doc(questsRef, q.id), { ...q, updatedAt: serverTimestamp() });
+  }
+  await batch.commit();
 }

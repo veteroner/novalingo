@@ -101,23 +101,24 @@ service cloud.firestore {
     }
 
     function isValidChildUpdate() {
-      return request.resource.data.parentUid == resource.data.parentUid
-        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
-          'name',
-          'avatarId',
-          'updatedAt'
-        ])
-        && (
-          request.resource.data.name == resource.data.name || (
-            isValidString(request.resource.data.name, 20)
-            && request.resource.data.name.size() >= 2
-          )
-        )
-        && (
-          request.resource.data.avatarId == resource.data.avatarId
-          || isValidString(request.resource.data.avatarId, 50)
-        )
-        && request.resource.data.updatedAt is timestamp;
+      let d = request.resource.data;
+      let old = resource.data;
+      return d.parentUid == old.parentUid
+        && d.ageGroup == old.ageGroup
+        && d.createdAt == old.createdAt
+        && d.level is int && d.level >= 1 && d.level <= 100
+        && d.totalXP is int && d.totalXP >= 0
+        && d.currentLevelXP is int && d.currentLevelXP >= 0
+        && d.nextLevelXP is int && d.nextLevelXP >= 0
+        && d.stars is int && d.stars >= 0
+        && d.gems is int && d.gems >= 0
+        && d.currentStreak is int && d.currentStreak >= 0
+        && d.longestStreak is int && d.longestStreak >= 0
+        && d.streakFreezes is int && d.streakFreezes >= 0
+        && d.completedLessons is int && d.completedLessons >= 0
+        && d.totalPlayTimeMinutes is int && d.totalPlayTimeMinutes >= 0
+        && d.wordsLearned is int && d.wordsLearned >= 0
+        && d.updatedAt is timestamp;
     }
 
     // ===== USERS COLLECTION =====
@@ -125,12 +126,12 @@ service cloud.firestore {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId);
       allow update: if isOwner(userId);
-      allow delete: if false; // Kullanıcılar silinemez (COPPA gereği admin gerekir)
+      allow delete: if isOwner(userId); // COPPA: kullanıcı kendi hesabını silebilir
 
-      // Purchase records — owner read only, writes via Cloud Functions (RevenueCat)
+      // Purchase records
       match /purchases/{purchaseId} {
         allow read: if isOwner(userId);
-        allow write: if false; // Sadece Cloud Functions (validateReceipt, webhook)
+        allow write: if false;
       }
     }
 
@@ -145,42 +146,48 @@ service cloud.firestore {
         && isValidChildUpdate();
       allow delete: if isAuthenticated() && resource.data.parentUid == request.auth.uid;
 
-      // Alt koleksiyonlar
+      // Alt koleksiyonlar — client-side yazım (Spark plan uyumlu)
       match /lessonProgress/{lessonId} {
-        allow read: if isAuthenticated()
+        allow read, write: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
-        allow write: if false; // Sadece Cloud Functions
       }
 
       match /vocabulary/{vocabId} {
         allow read: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
-        allow write: if false; // Sadece Cloud Functions (SRS engine)
+        allow write: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
       }
 
       match /quests/{questId} {
         allow read: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
-        allow write: if false; // Sadece Cloud Functions
+        allow write: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
       }
 
       match /achievements/{achievementId} {
-        allow read: if isAuthenticated()
+        allow read, write: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
-        allow write: if false; // Sadece Cloud Functions
       }
 
       match /inventory/{itemId} {
-        allow read: if isAuthenticated()
+        allow read, write: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
-        allow write: if false; // Sadece Cloud Functions
+      }
+
+      // Günlük çark
+      match /dailySpins/{dateId} {
+        allow read, write: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
       }
 
       // İstatistikler (günlük/haftalık/aylık)
       match /stats/{period} {
         allow read: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
-        allow write: if false; // Sadece Cloud Functions
+        allow write: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
       }
     }
 
@@ -232,11 +239,11 @@ service cloud.firestore {
     // ===== LEADERBOARDS COLLECTION =====
     match /leaderboards/{leagueId} {
       allow read: if isAuthenticated();
-      allow write: if false; // Sadece Cloud Functions
+      allow write: if false;
       
       match /entries/{entryId} {
         allow read: if isAuthenticated();
-        allow write: if false;
+        allow write: if isAuthenticated(); // Client leaderboard güncellemesi
       }
     }
 
@@ -264,6 +271,12 @@ service cloud.firestore {
 
     // ===== ACHIEVEMENTS CATALOG =====
     match /achievementsCatalog/{achievementId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ===== COLLECTIBLES =====
+    match /collectibles/{collectibleId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
