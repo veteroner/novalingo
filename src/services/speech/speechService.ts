@@ -18,6 +18,8 @@ const SpeechRecognitionCtor: (new () => SpeechRecognition) | undefined =
     : undefined;
 
 const synthAvailable = typeof window !== 'undefined' && 'speechSynthesis' in window;
+const SILENT_WAV_DATA_URI =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=';
 
 export function isSpeechRecognitionSupported(): boolean {
   return !!SpeechRecognitionCtor;
@@ -47,6 +49,24 @@ interface SpeakOptions {
 /** Currently playing audio element — tracked for stop/cancel */
 let currentAudio: HTMLAudioElement | null = null;
 
+function isPlaybackBlockedError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === 'NotAllowedError';
+}
+
+export async function unlockAudioPlayback(): Promise<void> {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const audio = new Audio(SILENT_WAV_DATA_URI);
+    audio.muted = true;
+    await audio.play();
+    audio.pause();
+    audio.currentTime = 0;
+  } catch {
+    // Best-effort warmup only.
+  }
+}
+
 function stopCurrentAudio(): void {
   if (currentAudio) {
     currentAudio.pause();
@@ -70,7 +90,10 @@ function playAudio(src: string): Promise<void> {
       currentAudio = null;
       resolve();
     };
-    audio.play().catch(() => {
+    audio.play().catch((error: unknown) => {
+      if (isPlaybackBlockedError(error)) {
+        console.warn('[Speech] Audio playback is waiting for user interaction.');
+      }
       currentAudio = null;
       resolve();
     });
@@ -97,7 +120,10 @@ function playBlob(blob: Blob): Promise<void> {
       cleanup();
       resolve();
     };
-    audio.play().catch(() => {
+    audio.play().catch((error: unknown) => {
+      if (isPlaybackBlockedError(error)) {
+        console.warn('[Speech] Audio playback is waiting for user interaction.');
+      }
       cleanup();
       resolve();
     });

@@ -13,6 +13,7 @@ import { NovaCompanion } from '@components/organisms/NovaCompanion';
 import { getVocab } from '@features/learning/data/activityGenerator';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
 import type { SubmitLessonResultRes } from '@services/firebase/functions';
+import { unlockAudioPlayback } from '@services/speech/speechService';
 import { formatTime } from '@utils/time';
 import { calculateStars } from '@utils/xp';
 import { motion } from 'framer-motion';
@@ -222,7 +223,11 @@ export default function LessonResultScreen() {
             variant="ghost"
             size="lg"
             fullWidth
-            onClick={() => navigate(`/lesson/${summary.lessonId}`)}
+            onClick={() => {
+              void unlockAudioPlayback().finally(() => {
+                void navigate(`/lesson/${summary.lessonId}`);
+              });
+            }}
           >
             Tekrar Dene
           </Button>

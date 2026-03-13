@@ -12,6 +12,7 @@ import { LessonCard } from '@components/organisms/LessonCard';
 import { MainLayout } from '@components/templates/MainLayout';
 import { getWorld } from '@features/learning/data/curriculum';
 import { useLessonProgress, useLessons } from '@hooks/queries';
+import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
@@ -145,7 +146,12 @@ export default function WorldMapScreen() {
             status={lesson.status}
             stars={lesson.stars}
             index={index}
-            onClick={() => lesson.status !== 'locked' && navigate(`/lesson/${lesson.id}`)}
+            onClick={() => {
+              if (lesson.status === 'locked') return;
+              void unlockAudioPlayback().finally(() => {
+                void navigate(`/lesson/${lesson.id}`);
+              });
+            }}
           />
         ))}
       </div>
