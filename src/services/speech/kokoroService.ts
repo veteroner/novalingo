@@ -94,7 +94,7 @@ export async function generateSpeech(
   if (!tts) return null;
 
   // RawAudio type from @huggingface/transformers isn't directly resolvable through pnpm
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const audio: any = await tts.generate(text, {
     voice: (options.voice ?? DEFAULT_VOICE) as 'af_heart',
     speed: options.speed ?? DEFAULT_SPEED,

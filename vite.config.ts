@@ -30,7 +30,7 @@ export default defineConfig({
   build: {
     target: 'es2022',
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -41,7 +41,6 @@ export default defineConfig({
           'vendor-animation': ['framer-motion', 'lottie-react'],
           'vendor-audio': ['howler'],
           'vendor-state': ['zustand', '@tanstack/react-query'],
-          'vendor-sentry': ['@sentry/react'],
           'vendor-i18n': ['i18next', 'react-i18next'],
         },
       },

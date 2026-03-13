@@ -30,13 +30,23 @@ export function getWeekId(date: Date = new Date()): string {
 
 const levelXPCache: number[] = [0, 0, 100];
 
+function getRequiredArrayItem<T>(items: readonly T[], index: number, label: string): T {
+  const item = items[index];
+  if (item === undefined) {
+    throw new Error(`[GameLogic] Missing ${label} at index ${index}`);
+  }
+  return item;
+}
+
 export function xpForLevel(level: number): number {
   if (level <= 1) return 0;
   while (levelXPCache.length <= level) {
     const n = levelXPCache.length;
-    levelXPCache.push(Math.floor(levelXPCache[n - 2]! + levelXPCache[n - 1]! * 0.5));
+    const previousLevelXP = levelXPCache[n - 2] ?? 0;
+    const currentLevelXP = levelXPCache[n - 1] ?? 0;
+    levelXPCache.push(Math.floor(previousLevelXP + currentLevelXP * 0.5));
   }
-  return levelXPCache[level]!;
+  return levelXPCache[level] ?? 0;
 }
 
 // ===== XP CALCULATOR =====
@@ -151,7 +161,7 @@ export function reviewSRSCard(card: SRSCard, rating: number, today: string): SRS
 
   const nextDate = new Date(today);
   nextDate.setDate(nextDate.getDate() + interval);
-  const nextReviewDate = nextDate.toISOString().split('T')[0]!;
+  const [nextReviewDate = today] = nextDate.toISOString().split('T');
 
   const status: SRSCard['status'] =
     repetitions >= MASTERED_REPS && interval > MASTERED_INTERVAL
@@ -226,7 +236,7 @@ export function pickWheelSegment(): WheelSegment {
     random -= seg.weight;
     if (random <= 0) return seg;
   }
-  return WHEEL_SEGMENTS[0]!;
+  return getRequiredArrayItem(WHEEL_SEGMENTS, 0, 'wheel segment');
 }
 
 export function getWheelSegments() {
@@ -277,13 +287,16 @@ export function generateDailyQuests(today: string) {
   const shuffled = [...QUEST_TEMPLATES].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, 4).map((t, i) => {
     const di = Math.floor(Math.random() * t.targets.length);
+    const targetProgress = getRequiredArrayItem(t.targets, di, 'quest target');
+    const rewardAmount = getRequiredArrayItem(t.rewards, di, 'quest reward');
+
     return {
       id: `${today}_${i}`,
       type: t.type,
       title: t.title,
-      targetProgress: t.targets[di]!,
+      targetProgress,
       currentProgress: 0,
-      reward: { type: t.rewardType, amount: t.rewards[di]! },
+      reward: { type: t.rewardType, amount: rewardAmount },
       claimed: false,
       expiresAt: new Date(today + 'T23:59:59+03:00').toISOString(),
       createdAt: new Date().toISOString(),
