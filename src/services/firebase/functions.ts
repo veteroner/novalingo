@@ -78,7 +78,9 @@ async function getOwnedChild(childId: string, uid: string) {
     throw new Error('Child profile not found');
   }
 
-  if (childSnap.data().parentUid !== uid) {
+  const childData = childSnap.data() as StoredChildProfile;
+
+  if (childData.parentUid !== uid) {
     throw new Error('Not authorized to access this child profile');
   }
 
@@ -88,16 +90,101 @@ async function getOwnedChild(childId: string, uid: string) {
 interface StoredChildProfile {
   parentUid?: string;
   name?: string;
+  ageGroup?: AgeGroup;
   avatarId?: string;
+  level?: number;
+  totalXP?: number;
+  currentLevelXP?: number;
+  nextLevelXP?: number;
+  stars?: number;
+  gems?: number;
+  currentStreak?: number;
+  longestStreak?: number;
+  lastActivityDate?: string | null;
+  streakFreezes?: number;
+  leagueTier?: string;
+  weeklyXP?: number;
+  completedLessons?: number;
+  totalPlayTimeMinutes?: number;
+  wordsLearned?: number;
+  novaStage?: string;
+  novaHappiness?: number;
+  novaOutfitId?: string | null;
+  onboardingCompleted?: boolean;
+}
+
+interface StoredReward {
+  type: 'stars' | 'gems' | 'xp';
+  amount: number;
+}
+
+interface StoredQuest {
+  claimed?: boolean;
+  currentProgress?: number;
+  targetProgress?: number;
+  reward?: StoredReward;
+}
+
+type ShopCurrencyType = 'stars' | 'gems';
+
+interface StoredShopItem {
+  currencyType?: ShopCurrencyType;
+  price?: number;
+  name?: string;
+}
+
+interface StoredUserSettings {
+  parentPinHash?: string;
+  parentPinSalt?: string;
+  parentPin?: string;
 }
 
 interface StoredUserProfile {
   isPremium?: boolean;
   activeChildId?: string | null;
+  settings?: StoredUserSettings;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FirestoreData = Record<string, any>;
+interface StoredLeaderboardEntry {
+  name?: string;
+  avatarId?: string;
+  level?: number;
+  weeklyXP?: number;
+  tier?: string;
+}
+
+interface OfflineActionPayload {
+  lessonId?: string;
+  wordId?: string;
+  stars?: number;
+  accuracy?: number;
+  xpEarned?: number;
+  timeSpentMs?: number;
+  interval?: number;
+  easeFactor?: number;
+  repetitions?: number;
+  nextReviewDate?: string;
+}
+
+function buildRewardUpdate(
+  child: StoredChildProfile,
+  reward: StoredReward | { type: 'streak_freeze'; amount: number },
+): Record<string, unknown> {
+  if (reward.type === 'stars') {
+    return { stars: (child.stars ?? 0) + reward.amount };
+  }
+  if (reward.type === 'gems') {
+    return { gems: (child.gems ?? 0) + reward.amount };
+  }
+  if (reward.type === 'xp') {
+    return { totalXP: (child.totalXP ?? 0) + reward.amount };
+  }
+  return { streakFreezes: (child.streakFreezes ?? 0) + reward.amount };
+}
+
+function getChildCurrencyBalance(child: StoredChildProfile, currencyType: ShopCurrencyType): number {
+  return currencyType === 'gems' ? (child.gems ?? 0) : (child.stars ?? 0);
+}
 
 // ===== TYPED FUNCTION CALLS =====
 
@@ -264,7 +351,7 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
   return runTransaction(db, async (tx) => {
     const snap = await tx.get(childRef);
     if (!snap.exists()) throw new Error('Child not found');
-    const child = snap.data() as FirestoreData;
+    const child = snap.data() as StoredChildProfile;
     if (child.parentUid !== uid) throw new Error('Not authorized');
 
     const xp = calculateLessonXP(activities, totalTimeMs, child.currentStreak ?? 0);
@@ -429,22 +516,19 @@ export async function claimQuestReward(data: ClaimQuestRewardReq): Promise<Claim
   return runTransaction(db, async (tx) => {
     const childSnap = await tx.get(childRef);
     if (!childSnap.exists()) throw new Error('Child not found');
-    const child = childSnap.data() as FirestoreData;
+    const child = childSnap.data() as StoredChildProfile;
     if (child.parentUid !== uid) throw new Error('Not authorized');
 
     const questRef = doc(db, 'children', data.childId, 'quests', data.questId);
     const questSnap = await tx.get(questRef);
     if (!questSnap.exists()) throw new Error('Quest not found');
-    const quest = questSnap.data() as FirestoreData;
+    const quest = questSnap.data() as StoredQuest;
     if (quest.claimed) throw new Error('Already claimed');
     if ((quest.currentProgress ?? 0) < (quest.targetProgress ?? 1))
       throw new Error('Quest not completed');
 
-    const reward = quest.reward ?? { type: 'stars', amount: 0 };
-    const updates: FirestoreData = { updatedAt: serverTimestamp() };
-    if (reward.type === 'stars') updates.stars = (child.stars ?? 0) + reward.amount;
-    else if (reward.type === 'gems') updates.gems = (child.gems ?? 0) + reward.amount;
-    else if (reward.type === 'xp') updates.totalXP = (child.totalXP ?? 0) + reward.amount;
+    const reward: StoredReward = quest.reward ?? { type: 'stars', amount: 0 };
+    const updates = { ...buildRewardUpdate(child, reward), updatedAt: serverTimestamp() };
 
     tx.update(childRef, updates);
     tx.update(questRef, { claimed: true, claimedAt: serverTimestamp() });
@@ -479,19 +563,17 @@ export async function spinDailyWheel(data: SpinDailyWheelReq): Promise<SpinDaily
   await runTransaction(db, async (tx) => {
     const childSnap = await tx.get(childRef);
     if (!childSnap.exists()) throw new Error('Child not found');
-    const child = childSnap.data() as FirestoreData;
+    const child = childSnap.data() as StoredChildProfile;
     if (child.parentUid !== uid) throw new Error('Not authorized');
 
     const spinRef = doc(db, 'children', data.childId, 'dailySpins', today);
     const spinSnap = await tx.get(spinRef);
     if (spinSnap.exists()) throw new Error('Already spun today');
 
-    const updates: FirestoreData = { updatedAt: serverTimestamp() };
-    if (segment.type === 'stars') updates.stars = (child.stars ?? 0) + segment.amount;
-    else if (segment.type === 'gems') updates.gems = (child.gems ?? 0) + segment.amount;
-    else if (segment.type === 'xp') updates.totalXP = (child.totalXP ?? 0) + segment.amount;
-    else if (segment.type === 'streak_freeze')
-      updates.streakFreezes = (child.streakFreezes ?? 0) + segment.amount;
+    const updates = {
+      ...buildRewardUpdate(child, { type: segment.type, amount: segment.amount }),
+      updatedAt: serverTimestamp(),
+    };
 
     tx.update(childRef, updates);
     tx.set(spinRef, {
@@ -533,17 +615,17 @@ export async function purchaseShopItem(data: PurchaseShopItemReq): Promise<Purch
   const itemRef = doc(db, 'shopItems', data.itemId);
   const itemSnap = await getDoc(itemRef);
   if (!itemSnap.exists()) throw new Error('Item not found');
-  const item = itemSnap.data() as FirestoreData;
+  const item = itemSnap.data() as StoredShopItem;
 
   return runTransaction(db, async (tx) => {
     const childSnap = await tx.get(childRef);
     if (!childSnap.exists()) throw new Error('Child not found');
-    const child = childSnap.data() as FirestoreData;
+    const child = childSnap.data() as StoredChildProfile;
     if (child.parentUid !== uid) throw new Error('Not authorized');
 
-    const currencyType: string = item.currencyType ?? 'stars';
+    const currencyType: ShopCurrencyType = item.currencyType ?? 'stars';
     const price: number = item.price ?? 0;
-    const balance: number = child[currencyType] ?? 0;
+    const balance = getChildCurrencyBalance(child, currencyType);
     if (balance < price) throw new Error('Insufficient balance');
 
     // Check not already owned via inventory
@@ -551,7 +633,11 @@ export async function purchaseShopItem(data: PurchaseShopItemReq): Promise<Purch
     const invSnap = await tx.get(invRef);
     if (invSnap.exists()) throw new Error('Already owned');
 
-    tx.update(childRef, { [currencyType]: balance - price, updatedAt: serverTimestamp() });
+    const newBalance = balance - price;
+    tx.update(childRef, {
+      ...(currencyType === 'gems' ? { gems: newBalance } : { stars: newBalance }),
+      updatedAt: serverTimestamp(),
+    });
     tx.set(invRef, {
       itemId: data.itemId,
       itemName: item.name ?? '',
@@ -561,8 +647,8 @@ export async function purchaseShopItem(data: PurchaseShopItemReq): Promise<Purch
     return {
       success: true,
       newBalance: {
-        stars: currencyType === 'stars' ? balance - price : (child.stars ?? 0),
-        gems: currencyType === 'gems' ? balance - price : (child.gems ?? 0),
+        stars: currencyType === 'stars' ? newBalance : (child.stars ?? 0),
+        gems: currencyType === 'gems' ? newBalance : (child.gems ?? 0),
       },
       item: { id: data.itemId, name: item.name ?? '' },
     };
@@ -586,7 +672,7 @@ export async function useStreakFreeze(data: UseStreakFreezeReq): Promise<UseStre
   return runTransaction(db, async (tx) => {
     const snap = await tx.get(childRef);
     if (!snap.exists()) throw new Error('Child not found');
-    const child = snap.data() as FirestoreData;
+    const child = snap.data() as StoredChildProfile;
     if (child.parentUid !== uid) throw new Error('Not authorized');
     const freezes: number = child.streakFreezes ?? 0;
     if (freezes <= 0) throw new Error('No streak freezes available');
@@ -628,7 +714,7 @@ export async function getLeaderboard(data: GetLeaderboardReq): Promise<GetLeader
   const snap = await getDocs(q);
 
   const entries = snap.docs.map((d, i) => {
-    const e = d.data() as FirestoreData;
+    const e = d.data() as StoredLeaderboardEntry;
     return {
       displayName: e.name ?? 'NovaLearner',
       avatarId: e.avatarId ?? 'nova_default',
@@ -670,9 +756,9 @@ export async function syncOfflineProgress(
 
   for (const action of sorted) {
     try {
-      const p = action.payload as FirestoreData;
+      const p = action.payload as OfflineActionPayload;
       if (action.type === 'lessonComplete' && p.lessonId) {
-        const ref = doc(db, 'children', data.childId, 'lessonProgress', p.lessonId as string);
+        const ref = doc(db, 'children', data.childId, 'lessonProgress', p.lessonId);
         batch.set(
           ref,
           {
@@ -687,7 +773,7 @@ export async function syncOfflineProgress(
         );
         synced++;
       } else if (action.type === 'vocabularyReview' && p.wordId) {
-        const ref = doc(db, 'children', data.childId, 'vocabulary', p.wordId as string);
+        const ref = doc(db, 'children', data.childId, 'vocabulary', p.wordId);
         batch.set(
           ref,
           {
@@ -812,15 +898,16 @@ export async function setParentPin(data: SetParentPinReq): Promise<SetParentPinR
 
   const userRef = doc(db, 'users', uid);
   const userSnap = await getDoc(userRef);
-  const userData = userSnap.data() as FirestoreData | undefined;
+  const userData = userSnap.data() as StoredUserProfile | undefined;
+  const settings = userData?.settings;
 
   // If PIN already exists, verify current PIN first
-  if (userData?.settings?.parentPinHash && userData?.settings?.parentPinSalt) {
+  if (settings?.parentPinHash && settings.parentPinSalt) {
     if (!data.currentPin) throw new Error('Current PIN required');
     const valid = await verifyPinHash(
       data.currentPin,
-      userData.settings.parentPinSalt,
-      userData.settings.parentPinHash,
+      settings.parentPinSalt,
+      settings.parentPinHash,
     );
     if (!valid) throw new Error('Current PIN is incorrect');
   }
@@ -850,16 +937,17 @@ export async function verifyParentPin(data: VerifyParentPinReq): Promise<VerifyP
 
   const userRef = doc(db, 'users', uid);
   const userSnap = await getDoc(userRef);
-  const userData = userSnap.data() as FirestoreData | undefined;
+  const userData = userSnap.data() as StoredUserProfile | undefined;
+  const settings = userData?.settings;
 
-  if (!userData?.settings?.parentPinHash || !userData?.settings?.parentPinSalt) {
+  if (!settings?.parentPinHash || !settings.parentPinSalt) {
     throw new Error('No PIN set');
   }
 
   const valid = await verifyPinHash(
     data.pin,
-    userData.settings.parentPinSalt,
-    userData.settings.parentPinHash,
+    settings.parentPinSalt,
+    settings.parentPinHash,
   );
   if (!valid) throw new Error('Invalid PIN');
   return { valid: true };

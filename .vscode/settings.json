@@ -5,14 +5,12 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.experimental.classRegex": [
-    ["className\\s*[:=]\\s*['\"`]([^'\"`]*)['\"`]", ""]
-  ],
+  "tailwindCSS.experimental.classRegex": [["className\\s*[:=]\\s*['\"`]([^'\"`]*)['\"`]", ""]],
   "emmet.includeLanguages": {
     "typescriptreact": "html"
   },
