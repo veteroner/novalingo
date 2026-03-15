@@ -23,7 +23,6 @@ export default defineConfig({
       '@assets': resolve(__dirname, './src/assets'),
       '@config': resolve(__dirname, './src/config'),
       '@i18n': resolve(__dirname, './src/i18n'),
-      'kokoro-js': resolve(__dirname, './node_modules/kokoro-js/dist/kokoro.web.js'),
     },
   },
 
@@ -46,10 +45,6 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 600,
-  },
-
-  optimizeDeps: {
-    exclude: ['kokoro-js', '@huggingface/transformers', 'onnxruntime-web'],
   },
 
   server: {

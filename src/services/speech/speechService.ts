@@ -1,11 +1,11 @@
 /**
  * Speech Service
  *
- * TTS (Kokoro-82M neural + Web Speech API fallback) ve STT.
+ * TTS (Pre-recorded MP3 + Web Speech API fallback) ve STT.
  * Tüm ses verileri cihazda işlenir — COPPA uyumlu.
  */
 
-import { generateSpeech } from './kokoroService';
+import { getPreRecordedUrl } from './audioManifest';
 
 // ===== FEATURE DETECTION =====
 
@@ -100,36 +100,6 @@ function playAudio(src: string): Promise<void> {
   });
 }
 
-/** Play audio from Blob with tracking for stop/cancel */
-function playBlob(blob: Blob): Promise<void> {
-  const url = URL.createObjectURL(blob);
-  return new Promise((resolve) => {
-    stopCurrentAudio();
-    if (synthAvailable) window.speechSynthesis.cancel();
-    const audio = new Audio(url);
-    currentAudio = audio;
-    const cleanup = () => {
-      URL.revokeObjectURL(url);
-      currentAudio = null;
-    };
-    audio.onended = () => {
-      cleanup();
-      resolve();
-    };
-    audio.onerror = () => {
-      cleanup();
-      resolve();
-    };
-    audio.play().catch((error: unknown) => {
-      if (isPlaybackBlockedError(error)) {
-        console.warn('[Speech] Audio playback is waiting for user interaction.');
-      }
-      cleanup();
-      resolve();
-    });
-  });
-}
-
 // ===== WEB SPEECH API FALLBACK =====
 
 // Cached English voice — resolved once, reused across calls
@@ -217,28 +187,20 @@ function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<voi
 }
 
 /**
- * Kelime/cümle seslendir — 3 katmanlı:
- * 1. Önceden üretilmiş audioUrl (varsa)
- * 2. Kokoro-82M neural TTS (tarayıcıda ONNX WASM)
- * 3. Web Speech API fallback (telefonun sesi — son çare)
+ * Kelime/cümle seslendir — 2 katmanlı:
+ * 1. Önceden üretilmiş MP3 (manifest lookup veya explicit audioUrl)
+ * 2. Web Speech API fallback (telefonun sesi — son çare)
  */
 export async function speak(text: string, options: SpeakOptions = {}): Promise<void> {
-  // Priority 1: Pre-recorded audio
+  // Priority 1: Explicit pre-recorded audio URL from activity data
   if (options.audioUrl) {
     return playAudio(options.audioUrl);
   }
 
-  // Priority 2: Kokoro neural TTS (browser-based)
-  try {
-    const blob = await generateSpeech(text, {
-      speed: options.rate ?? 0.9,
-    });
-    if (blob) {
-      await playBlob(blob);
-      return;
-    }
-  } catch {
-    // Kokoro unavailable — fall through to Web Speech API
+  // Priority 2: Auto-lookup from pre-generated audio manifest
+  const manifestUrl = getPreRecordedUrl(text);
+  if (manifestUrl) {
+    return playAudio(manifestUrl);
   }
 
   // Priority 3: Web Speech API (explicit English voice — last resort)

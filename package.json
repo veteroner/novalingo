@@ -68,8 +68,6 @@
     "date-fns": "^4.1.0",
     "zod": "^3.24.0",
     "nanoid": "^5.0.0",
-    "kokoro-js": "^1.2.1",
-    "@huggingface/transformers": "^3.5.1",
     "phonemizer": "^1.2.1"
   },
   "devDependencies": {
