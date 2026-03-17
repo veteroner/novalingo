@@ -39,19 +39,6 @@ const config: CapacitorConfig = {
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
-    AdMob: {
-      // Test Ad IDs — gerçek ID'ler .env'den gelecek
-      androidBannerAdId: 'ca-app-pub-3940256099942544/6300978111',
-      androidInterstitialAdId: 'ca-app-pub-3940256099942544/1033173712',
-      androidRewardedAdId: 'ca-app-pub-3940256099942544/5224354917',
-      iosBannerAdId: 'ca-app-pub-3940256099942544/2934735716',
-      iosInterstitialAdId: 'ca-app-pub-3940256099942544/4411468910',
-      iosRewardedAdId: 'ca-app-pub-3940256099942544/1712485313',
-      isTesting: true,
-      // COPPA — çocuk içerikler için zorunlu
-      tagForChildDirectedTreatment: true,
-      maxAdContentRating: 'G',
-    },
   },
 };
 

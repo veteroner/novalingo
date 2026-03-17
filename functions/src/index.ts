@@ -12,7 +12,6 @@ export { deleteAccount } from './callables/deleteAccount';
 export { deleteChildProfile } from './callables/deleteChildProfile';
 export { getLeaderboard } from './callables/getLeaderboard';
 export { purchaseShopItem } from './callables/purchaseShopItem';
-export { restorePurchases } from './callables/restorePurchases';
 export { setParentPin } from './callables/setParentPin';
 export { spinDailyWheel } from './callables/spinDailyWheel';
 export { submitLessonResult } from './callables/submitLessonResult';
@@ -20,13 +19,11 @@ export { syncOfflineProgress } from './callables/syncOfflineProgress';
 export { updateChildProfile } from './callables/updateChildProfile';
 export { updateVocabulary } from './callables/updateVocabulary';
 export { useStreakFreeze } from './callables/useStreakFreeze';
-export { validateReceipt } from './callables/validateReceipt';
 export { verifyParentPin } from './callables/verifyParentPin';
 
 // Firestore triggers
 export { onAchievementUnlocked } from './triggers/onAchievementUnlocked';
 export { onLessonCompleted } from './triggers/onLessonCompleted';
-export { onPurchaseCreate } from './triggers/onPurchaseCreate';
 export { onStreakUpdate } from './triggers/onStreakUpdate';
 export { onUserCreated } from './triggers/onUserCreated';
 
@@ -39,4 +36,3 @@ export { weeklyReport } from './scheduled/weeklyReport';
 
 // HTTP endpoints
 export { healthCheck } from './http/healthCheck';
-export { revenuecatWebhook } from './http/revenuecatWebhook';

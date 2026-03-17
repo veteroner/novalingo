@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@capacitor-community/admob':
-        specifier: ^6.0.0
-        version: 6.2.0
       '@capacitor/android':
         specifier: ^6.2.0
         version: 6.2.1(@capacitor/core@6.2.1)
@@ -44,9 +41,6 @@ importers:
       '@phosphor-icons/react':
         specifier: ^2.1.0
         version: 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@revenuecat/purchases-capacitor':
-        specifier: ^8.0.0
-        version: 8.0.0(@capacitor/core@6.2.1)
       '@sentry/react':
         specifier: ^8.0.0
         version: 8.55.0(react@19.2.4)
@@ -289,10 +283,6 @@ packages:
   '@babel/types@7.29.0':
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
-
-  '@capacitor-community/admob@6.2.0':
-    resolution: {integrity: sha512-Po+FXAs4XW2LOegEo1pBssXVjblzt2LeyCiQML9Ep/GnDZooI+ZTIpnB1yU6W3dVW8iO2FENkfWM+oE8O+fNSA==}
-    engines: {node: '>=18.0.0'}
 
   '@capacitor/android@6.2.1':
     resolution: {integrity: sha512-8gd4CIiQO5LAIlPIfd5mCuodBRxMMdZZEdj8qG8m+dQ1sQ2xyemVpzHmRK8qSCHorsBUCg3D62j2cp6bEBAkdw==}
@@ -1131,14 +1121,6 @@ packages:
 
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
-
-  '@revenuecat/purchases-capacitor@8.0.0':
-    resolution: {integrity: sha512-xoco/tPDzKOSoelQE+72d99Li014nMy4jySRXDz89Ur5Lb/CGr4hvbVDBGDubFy+Emp9nipEufcvLgYt9mTLMA==}
-    peerDependencies:
-      '@capacitor/core': ^6.0.0
-
-  '@revenuecat/purchases-typescript-internal-esm@11.1.1':
-    resolution: {integrity: sha512-If0SFXSPBwBlEJ3bx23FY/+qo1GmQDQlMNIxGGYesC/BdBD+fEzb4O8qmtLTAhZI+B5jZBtx8rrIWDQuSJihHg==}
 
   '@rolldown/pluginutils@1.0.0-rc.2':
     resolution: {integrity: sha512-izyXV/v+cHiRfozX62W9htOAvwMo4/bXKDrQ+vom1L1qRuexPock/7VZDAhnpHCLNejd3NJ6hiab+tO0D44Rgw==}
@@ -4067,10 +4049,6 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@capacitor-community/admob@6.2.0':
-    dependencies:
-      '@capacitor/core': 6.2.1
-
   '@capacitor/android@6.2.1(@capacitor/core@6.2.1)':
     dependencies:
       '@capacitor/core': 6.2.1
@@ -4973,13 +4951,6 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.0': {}
-
-  '@revenuecat/purchases-capacitor@8.0.0(@capacitor/core@6.2.1)':
-    dependencies:
-      '@capacitor/core': 6.2.1
-      '@revenuecat/purchases-typescript-internal-esm': 11.1.1
-
-  '@revenuecat/purchases-typescript-internal-esm@11.1.1': {}
 
   '@rolldown/pluginutils@1.0.0-rc.2': {}
 

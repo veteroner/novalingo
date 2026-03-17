@@ -41,14 +41,12 @@ function logEvent(name: string, params?: Record<string, string | number | boolea
  */
 export function setAnalyticsUserProperties(props: {
   ageGroup?: string;
-  isPremium?: boolean;
   deviceType?: 'web' | 'ios' | 'android';
 }): void {
   if (!analytics) return;
   try {
     setUserProperties(analytics, {
       age_group: props.ageGroup ?? 'unknown',
-      is_premium: String(props.isPremium ?? false),
       device_type: props.deviceType ?? 'web',
     });
   } catch {
@@ -153,12 +151,8 @@ export function trackPurchase(params: {
   });
 }
 
-export function trackAdWatched(adType: 'rewarded' | 'interstitial'): void {
-  logEvent('ad_watched', { ad_type: adType });
-}
-
-export function trackSubscriptionEvent(event: 'started' | 'renewed' | 'cancelled'): void {
-  logEvent('subscription_event', { event });
+export function trackPurchaseEvent(itemId: string, currency: string): void {
+  logEvent('purchase_event', { item_id: itemId, currency });
 }
 
 // ===== ENGAGEMENT EVENTS =====

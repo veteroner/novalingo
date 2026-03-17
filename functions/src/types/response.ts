@@ -96,21 +96,6 @@ export interface GetLeaderboardRes {
   relegationSlots: number;
 }
 
-// ── Purchase ────────────────────────────────────────────
-
-export interface ValidateReceiptRes {
-  valid: boolean;
-  entitlements: string[];
-  expiresAt: number | null;
-  productId: string;
-}
-
-export interface RestorePurchasesRes {
-  entitlements: string[];
-  isPremium: boolean;
-  expiresAt: number | null;
-}
-
 // ── Account ─────────────────────────────────────────────
 
 export interface SetParentPinRes {

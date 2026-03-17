@@ -29,11 +29,5 @@
     "hintBoostDesc": "5 ekstra ipucu hakkı",
     "timeBoost": "Süre Uzat",
     "timeBoostDesc": "Ders süresi +30 saniye"
-  },
-
-  "subscription": {
-    "title": "Premium'a Geç",
-    "desc": "Sınırsız erişim, reklamsız deneyim",
-    "cta": "Premium Ol"
   }
 }

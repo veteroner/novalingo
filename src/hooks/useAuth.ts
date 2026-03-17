@@ -55,7 +55,7 @@ export function useAuth() {
                 displayName: fbUser.displayName ?? '',
                 photoURL: fbUser.photoURL ?? null,
                 provider: mapProvider(fbUser.providerData[0]?.providerId),
-                isPremium: false,
+                isPremium: true,
                 premiumExpiresAt: null,
                 activeChildId: null,
                 createdAt: serverTimestamp(),

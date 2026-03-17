@@ -10,7 +10,6 @@ describe('calculateXP', () => {
     durationSeconds: 60,
     estimatedSeconds: 60,
     streak: 0,
-    isPremium: false,
     isFirstAttempt: false,
     isPerfect: false,
   };
@@ -22,8 +21,9 @@ describe('calculateXP', () => {
     expect(result.speedBonus).toBe(0);
     expect(result.firstTryBonus).toBe(0);
     expect(result.perfectBonus).toBe(0);
-    expect(result.premiumBonus).toBe(0);
-    expect(result.total).toBe(100);
+    // All users get premium bonus in paid app
+    expect(result.premiumBonus).toBe(50);
+    expect(result.total).toBe(150);
   });
 
   it('accuracy bonus applies at 80%+', () => {
@@ -91,8 +91,8 @@ describe('calculateXP', () => {
     expect(r.perfectBonus).toBe(30);
   });
 
-  it('premium adds 50% on top', () => {
-    const r = calculateXP({ ...baseParams, accuracy: 0.7, isPremium: true });
+  it('premium bonus always applies (paid app)', () => {
+    const r = calculateXP({ ...baseParams, accuracy: 0.7 });
     // base=100, no other bonus, streak=1, withStreak=100, premium=50
     expect(r.premiumBonus).toBe(50);
     expect(r.total).toBe(150);
@@ -105,7 +105,6 @@ describe('calculateXP', () => {
       durationSeconds: 30,
       estimatedSeconds: 60,
       streak: 10,
-      isPremium: true,
       isFirstAttempt: true,
       isPerfect: true,
     });

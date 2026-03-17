@@ -20,10 +20,6 @@ export interface FeatureFlags {
   pushNotifications: boolean;
   /** Offline mode with content caching */
   offlineMode: boolean;
-  /** AdMob ad serving */
-  adsEnabled: boolean;
-  /** RevenueCat subscriptions */
-  subscriptionsEnabled: boolean;
   /** Parent dashboard */
   parentDashboard: boolean;
   /** Collection system */
@@ -48,8 +44,6 @@ export const defaultFeatureFlags: FeatureFlags = {
   peerChat: false, // Phase 4
   pushNotifications: true,
   offlineMode: true,
-  adsEnabled: true,
-  subscriptionsEnabled: true,
   parentDashboard: true,
   collectionSystem: true,
   storyMode: false, // Phase 2
@@ -64,7 +58,6 @@ export const devFeatureFlags: Partial<FeatureFlags> = {
   speechRecognition: true,
   novaAIChat: true,
   storyMode: true,
-  adsEnabled: false, // no ads in dev
 };
 
 /**

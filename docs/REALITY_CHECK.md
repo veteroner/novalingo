@@ -6,7 +6,7 @@
 
 ## Kısa karar
 
-**Bu repo "advanced MVP / beta candidate"** — temel mimari sağlam, tüm ekranlar TanStack Query'ye geçmiş, 16 callable + 5 trigger + 5 scheduled + 2 HTTP endpoint tam fonksiyonel. ESLint tamamen temiz. **374 test (tümü yeşil).** Firestore security rules tüm koleksiyonları kapsıyor. COPPA-kritik akışlar tamamlandı. **10 aktivite bileşeni tam implementasyon.** RevenueCat entegrasyonu end-to-end çalışıyor. 6 dünya müfredatı yerinde.
+**Bu repo "advanced MVP / beta candidate"** — temel mimari sağlam, tüm ekranlar TanStack Query'ye geçmiş, 14 callable + 5 trigger + 5 scheduled + 1 HTTP endpoint tam fonksiyonel. ESLint tamamen temiz. Firestore security rules tüm koleksiyonları kapsıyor. COPPA-kritik akışlar tamamlandı. **10 aktivite bileşeni tam implementasyon.** 6 dünya müfredatı yerinde. **İş modeli: Ücretli uygulama** — AdMob ve RevenueCat tamamen kaldırıldı, tüm kullanıcılar premium.
 
 **Kalan eksikler (production için):** Asset dosyaları boş (font/lottie/sound — 0 dosya), Native plugin testleri (cihazda doğrulama gerekli).
 

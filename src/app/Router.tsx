@@ -32,9 +32,6 @@ const LeaderboardScreen = lazy(() => import('@features/social/screens/Leaderboar
 const ParentDashboard = lazy(() => import('@features/parent/screens/ParentDashboard'));
 const ParentSettings = lazy(() => import('@features/parent/screens/ParentSettings'));
 
-// Subscription
-const SubscriptionScreen = lazy(() => import('@features/subscription/screens/SubscriptionScreen'));
-
 // ===== Route Guards =====
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -176,15 +173,6 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/subscription"
-          element={
-            <ProtectedRoute>
-              <SubscriptionScreen />
-            </ProtectedRoute>
-          }
-        />
-
         {/* Parent Routes — Parental Gate ile korunmalı */}
         <Route
           path="/parent"

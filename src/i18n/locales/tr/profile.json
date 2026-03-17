@@ -98,7 +98,6 @@
     "settings": "Ayarlar",
     "dailyLimit": "Günlük Süre Limiti",
     "notifications": "Bildirimler",
-    "subscription": "Abonelik",
     "account": "Hesap Ayarları",
     "changePin": "PIN Kodunu Değiştir",
     "changeEmail": "E-posta Değiştir",
@@ -106,21 +105,5 @@
     "deleteAccount": "Hesabı Sil",
     "deleteConfirm": "Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinecektir.",
     "contentControl": "İçerik Kontrolü"
-  },
-
-  "subscription": {
-    "title": "Premium",
-    "subtitle": "Sınırsız öğrenme, reklamsız eğlence",
-    "monthly": "Aylık",
-    "yearly": "Yıllık",
-    "monthlyPrice": "₺149,99/ay",
-    "yearlyPrice": "₺899,99/yıl",
-    "yearlyDiscount": "%50 Tasarruf",
-    "freeTrial": "7 Gün Ücretsiz Dene",
-    "processing": "İşleniyor...",
-    "trialInfo": "7 günlük ücretsiz deneme. İstediğiniz zaman iptal edin.",
-    "restore": "Satın Almayı Geri Yükle",
-    "privacyPolicy": "Gizlilik Politikası",
-    "termsOfService": "Kullanım Koşulları"
   }
 }

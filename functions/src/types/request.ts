@@ -93,18 +93,6 @@ export interface GetLeaderboardReq {
   limit?: number;
 }
 
-// ── Purchase ────────────────────────────────────────────
-
-export interface ValidateReceiptReq {
-  platform: 'ios' | 'android';
-  receipt: string;
-  productId: string;
-}
-
-export interface RestorePurchasesReq {
-  platform: 'ios' | 'android';
-}
-
 // ── Account ─────────────────────────────────────────────
 
 export interface SetParentPinReq {

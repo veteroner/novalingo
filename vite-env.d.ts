@@ -11,16 +11,8 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_MEASUREMENT_ID: string;
   readonly VITE_USE_EMULATORS: string;
   readonly VITE_RECAPTCHA_SITE_KEY: string;
-  readonly VITE_REVENUECAT_API_KEY_APPLE: string;
-  readonly VITE_REVENUECAT_API_KEY_GOOGLE: string;
   readonly VITE_SENTRY_DSN: string;
-  readonly VITE_FEATURE_ADS_ENABLED: string;
-  readonly VITE_FEATURE_IAP_ENABLED: string;
   readonly VITE_FEATURE_PUSH_ENABLED: string;
-  readonly VITE_ADMOB_INTERSTITIAL_IOS: string;
-  readonly VITE_ADMOB_INTERSTITIAL_ANDROID: string;
-  readonly VITE_ADMOB_REWARDED_IOS: string;
-  readonly VITE_ADMOB_REWARDED_ANDROID: string;
 }
 
 interface ImportMeta {

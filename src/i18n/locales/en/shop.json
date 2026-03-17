@@ -29,11 +29,5 @@
     "hintBoostDesc": "5 extra hint uses",
     "timeBoost": "Time Extend",
     "timeBoostDesc": "Lesson time +30 seconds"
-  },
-
-  "subscription": {
-    "title": "Go Premium",
-    "desc": "Unlimited access, ad-free experience",
-    "cta": "Go Premium"
   }
 }

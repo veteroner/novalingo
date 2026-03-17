@@ -98,7 +98,6 @@
     "settings": "Settings",
     "dailyLimit": "Daily Time Limit",
     "notifications": "Notifications",
-    "subscription": "Subscription",
     "account": "Account Settings",
     "changePin": "Change PIN",
     "changeEmail": "Change Email",
@@ -106,21 +105,5 @@
     "deleteAccount": "Delete Account",
     "deleteConfirm": "This action cannot be undone. All your data will be permanently deleted.",
     "contentControl": "Content Control"
-  },
-
-  "subscription": {
-    "title": "Premium",
-    "subtitle": "Unlimited learning, ad-free fun",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "monthlyPrice": "₺149.99/mo",
-    "yearlyPrice": "₺899.99/yr",
-    "yearlyDiscount": "50% Off",
-    "freeTrial": "7-Day Free Trial",
-    "processing": "Processing...",
-    "trialInfo": "7-day free trial. Cancel anytime.",
-    "restore": "Restore Purchase",
-    "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service"
   }
 }

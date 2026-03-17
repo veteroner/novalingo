@@ -11,7 +11,6 @@ interface XPCalculationParams {
   durationSeconds: number;
   estimatedSeconds: number;
   streak: number;
-  isPremium: boolean;
   isFirstAttempt: boolean;
   isPerfect: boolean;
 }
@@ -28,16 +27,8 @@ export interface XPBreakdown {
 }
 
 export function calculateXP(params: XPCalculationParams): XPBreakdown {
-  const {
-    baseXP,
-    accuracy,
-    durationSeconds,
-    estimatedSeconds,
-    streak,
-    isPremium,
-    isFirstAttempt,
-    isPerfect,
-  } = params;
+  const { baseXP, accuracy, durationSeconds, estimatedSeconds, streak, isFirstAttempt, isPerfect } =
+    params;
 
   // 1. Doğruluk bonusu (%80+ doğruluk = bonus)
   const accuracyBonus = accuracy >= 0.8 ? Math.round(baseXP * (accuracy - 0.8) * 2.5) : 0;
@@ -55,10 +46,10 @@ export function calculateXP(params: XPCalculationParams): XPBreakdown {
   // 5. Mükemmel ders bonusu (%100 doğruluk)
   const perfectBonus = isPerfect ? Math.round(baseXP * 0.3) : 0;
 
-  // 6. Premium bonus (%50)
+  // 6. Premium bonus (%50) — all users get this in paid app
   const subtotal = baseXP + accuracyBonus + speedBonus + firstTryBonus + perfectBonus;
   const withStreak = Math.round(subtotal * streakMultiplier);
-  const premiumBonus = isPremium ? Math.round(withStreak * 0.5) : 0;
+  const premiumBonus = Math.round(withStreak * 0.5);
 
   const total = withStreak + premiumBonus;
 
