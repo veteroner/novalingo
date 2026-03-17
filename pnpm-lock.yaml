@@ -11,6 +11,9 @@ importers:
       '@capacitor-community/admob':
         specifier: ^6.0.0
         version: 6.2.0
+      '@capacitor/android':
+        specifier: ^6.2.0
+        version: 6.2.1(@capacitor/core@6.2.1)
       '@capacitor/app':
         specifier: ^6.0.0
         version: 6.0.3(@capacitor/core@6.2.1)
@@ -20,13 +23,13 @@ importers:
       '@capacitor/haptics':
         specifier: ^6.0.0
         version: 6.0.3(@capacitor/core@6.2.1)
+      '@capacitor/ios':
+        specifier: ^6.2.0
+        version: 6.2.1(@capacitor/core@6.2.1)
       '@capacitor/keyboard':
         specifier: ^6.0.0
         version: 6.0.4(@capacitor/core@6.2.1)
       '@capacitor/network':
-        specifier: ^6.0.0
-        version: 6.0.4(@capacitor/core@6.2.1)
-      '@capacitor/preferences':
         specifier: ^6.0.0
         version: 6.0.4(@capacitor/core@6.2.1)
       '@capacitor/push-notifications':
@@ -291,6 +294,11 @@ packages:
     resolution: {integrity: sha512-Po+FXAs4XW2LOegEo1pBssXVjblzt2LeyCiQML9Ep/GnDZooI+ZTIpnB1yU6W3dVW8iO2FENkfWM+oE8O+fNSA==}
     engines: {node: '>=18.0.0'}
 
+  '@capacitor/android@6.2.1':
+    resolution: {integrity: sha512-8gd4CIiQO5LAIlPIfd5mCuodBRxMMdZZEdj8qG8m+dQ1sQ2xyemVpzHmRK8qSCHorsBUCg3D62j2cp6bEBAkdw==}
+    peerDependencies:
+      '@capacitor/core': ^6.2.0
+
   '@capacitor/app@6.0.3':
     resolution: {integrity: sha512-4gFUCbcVz0N/YYN32OBFerocWXslIv3Nc90gDiRsBkJc0plwK6kIUT6PKa5WtW2kfhteUeCVXQbvArH2fH+0Ug==}
     peerDependencies:
@@ -309,6 +317,11 @@ packages:
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
+  '@capacitor/ios@6.2.1':
+    resolution: {integrity: sha512-tbMlQdQjxe1wyaBvYVU1yTojKJjgluZQsJkALuJxv/6F8QTw5b6vd7X785O/O7cMpIAZfUWo/vtAHzFkRV+kXw==}
+    peerDependencies:
+      '@capacitor/core': ^6.2.0
+
   '@capacitor/keyboard@6.0.4':
     resolution: {integrity: sha512-tNeyQGxIOTiSv3g+dTxJ/plVpGMnB4daJuCHz1E2Kelo+jOx+FKlyFY9L1Ow144SCzuXK48NXr8WoxXfXgQEKA==}
     peerDependencies:
@@ -316,11 +329,6 @@ packages:
 
   '@capacitor/network@6.0.4':
     resolution: {integrity: sha512-ywtlM3wJ3evci0T9zl3aGXGvd96pkiQDeoxrGR3rAqcBpf9DQubMGdFRmHma3frn2Fd/MBDYlgleu+nWDXunAg==}
-    peerDependencies:
-      '@capacitor/core': ^6.0.0
-
-  '@capacitor/preferences@6.0.4':
-    resolution: {integrity: sha512-ziauSI1pgdyl+gduvvf8lInvzF3Wdyu/ok+u7NlnhKp8XOj9plJgtnXZWFiR8CiCK5wMvo+gFaNh3zhMyEUwpA==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
@@ -4063,6 +4071,10 @@ snapshots:
     dependencies:
       '@capacitor/core': 6.2.1
 
+  '@capacitor/android@6.2.1(@capacitor/core@6.2.1)':
+    dependencies:
+      '@capacitor/core': 6.2.1
+
   '@capacitor/app@6.0.3(@capacitor/core@6.2.1)':
     dependencies:
       '@capacitor/core': 6.2.1
@@ -4097,15 +4109,15 @@ snapshots:
     dependencies:
       '@capacitor/core': 6.2.1
 
+  '@capacitor/ios@6.2.1(@capacitor/core@6.2.1)':
+    dependencies:
+      '@capacitor/core': 6.2.1
+
   '@capacitor/keyboard@6.0.4(@capacitor/core@6.2.1)':
     dependencies:
       '@capacitor/core': 6.2.1
 
   '@capacitor/network@6.0.4(@capacitor/core@6.2.1)':
-    dependencies:
-      '@capacitor/core': 6.2.1
-
-  '@capacitor/preferences@6.0.4(@capacitor/core@6.2.1)':
     dependencies:
       '@capacitor/core': 6.2.1
 

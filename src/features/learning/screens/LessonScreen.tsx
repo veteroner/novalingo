@@ -27,6 +27,7 @@ import {
   type LessonSession,
 } from '@services/learning/learningEngine';
 import { enqueueAction } from '@services/offline/offlineDB';
+import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { useLessonStore } from '@stores/lessonStore';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -136,6 +137,8 @@ export default function LessonScreen() {
 
   useEffect(() => {
     if (lessonId && lessonSession && !useLessonStore.getState().isActive) {
+      // Unlock audio playback for mobile — must happen before activities auto-speak
+      void unlockAudioPlayback();
       startLesson(lessonId, lessonSession.activities);
       // Boss lesson: start a global per-activity countdown (30s per activity)
       if (lessonTypeRef.current === 'boss') {

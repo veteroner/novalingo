@@ -4,6 +4,7 @@
  * Cross-platform abonelik ve IAP yönetimi.
  */
 
+import { getPlatform } from '@/utils/platform';
 // RevenueCat Capacitor plugin — dinamik import
 import type { Purchases as PurchasesPlugin } from '@revenuecat/purchases-capacitor';
 let Purchases: typeof PurchasesPlugin | null = null;
@@ -153,13 +154,12 @@ export function getExpirationDate(): string | null {
 
 // ===== Helpers =====
 function getPlatformApiKey(): string | null {
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.includes('iphone') || ua.includes('ipad')) {
+  const platform = getPlatform();
+  if (platform === 'ios') {
     return import.meta.env.VITE_REVENUECAT_API_KEY_APPLE || null;
   }
-  if (ua.includes('android')) {
+  if (platform === 'android') {
     return import.meta.env.VITE_REVENUECAT_API_KEY_GOOGLE || null;
   }
-  // Web'de IAP yok
   return null;
 }

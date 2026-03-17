@@ -3,6 +3,10 @@
  *
  * TTS (Pre-recorded MP3 + Web Speech API fallback) ve STT.
  * Tüm ses verileri cihazda işlenir — COPPA uyumlu.
+ *
+ * Mobil tarayıcı/WebView'lerde autoplay policy nedeniyle
+ * ses çalma kullanıcı etkileşimi gerektirir. unlockAudioPlayback()
+ * ile audio context açılır; speak() blocked durumda false döner.
  */
 
 import { getPreRecordedUrl } from './audioManifest';
@@ -20,6 +24,13 @@ const SpeechRecognitionCtor: (new () => SpeechRecognition) | undefined =
 const synthAvailable = typeof window !== 'undefined' && 'speechSynthesis' in window;
 const SILENT_WAV_DATA_URI =
   'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=';
+
+/** Whether audio playback has been unlocked via user gesture */
+let audioUnlocked = false;
+
+export function isAudioUnlocked(): boolean {
+  return audioUnlocked;
+}
 
 export function isSpeechRecognitionSupported(): boolean {
   return !!SpeechRecognitionCtor;
@@ -62,6 +73,7 @@ export async function unlockAudioPlayback(): Promise<void> {
     await audio.play();
     audio.pause();
     audio.currentTime = 0;
+    audioUnlocked = true;
   } catch {
     // Best-effort warmup only.
   }
@@ -75,8 +87,8 @@ function stopCurrentAudio(): void {
   }
 }
 
-/** Play audio from URL with tracking for stop/cancel */
-function playAudio(src: string): Promise<void> {
+/** Play audio from URL with tracking for stop/cancel. Returns true if played, false if blocked. */
+function playAudio(src: string): Promise<boolean> {
   return new Promise((resolve) => {
     stopCurrentAudio();
     if (synthAvailable) window.speechSynthesis.cancel();
@@ -84,18 +96,20 @@ function playAudio(src: string): Promise<void> {
     currentAudio = audio;
     audio.onended = () => {
       currentAudio = null;
-      resolve();
+      resolve(true);
     };
     audio.onerror = () => {
       currentAudio = null;
-      resolve();
+      resolve(false);
     };
     audio.play().catch((error: unknown) => {
-      if (isPlaybackBlockedError(error)) {
-        console.warn('[Speech] Audio playback is waiting for user interaction.');
-      }
       currentAudio = null;
-      resolve();
+      if (isPlaybackBlockedError(error)) {
+        console.warn('[Speech] Audio playback blocked — requires user interaction.');
+        resolve(false);
+        return;
+      }
+      resolve(false);
     });
   });
 }
@@ -190,8 +204,10 @@ function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<voi
  * Kelime/cümle seslendir — 2 katmanlı:
  * 1. Önceden üretilmiş MP3 (manifest lookup veya explicit audioUrl)
  * 2. Web Speech API fallback (telefonun sesi — son çare)
+ *
+ * Returns true if audio actually played, false if blocked by autoplay policy.
  */
-export async function speak(text: string, options: SpeakOptions = {}): Promise<void> {
+export async function speak(text: string, options: SpeakOptions = {}): Promise<boolean> {
   // Priority 1: Explicit pre-recorded audio URL from activity data
   if (options.audioUrl) {
     return playAudio(options.audioUrl);
@@ -204,7 +220,12 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<v
   }
 
   // Priority 3: Web Speech API (explicit English voice — last resort)
-  await speakWithWebSpeechAPI(text, options);
+  try {
+    await speakWithWebSpeechAPI(text, options);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**

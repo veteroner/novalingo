@@ -33,14 +33,8 @@ export interface AsyncState<T> {
 }
 
 // ===== PLATFORM =====
-export type Platform = 'web' | 'ios' | 'android';
-
-export function getPlatform(): Platform {
-  const userAgent = navigator.userAgent.toLowerCase();
-  if (userAgent.includes('iphone') || userAgent.includes('ipad')) return 'ios';
-  if (userAgent.includes('android')) return 'android';
-  return 'web';
-}
+export { getPlatform } from '@/utils/platform';
+export type { Platform } from '@/utils/platform';
 
 // ===== DATE HELPERS =====
 export type DateString = string; // YYYY-MM-DD format

@@ -27,9 +27,17 @@ firestore-debug.log
 ui-debug.log
 pubsub-debug.log
 
-# Mobile
-android/
-ios/
+# Mobile — track native projects, ignore build artifacts
+# android/ and ios/ are tracked for reproducible builds
+android/app/src/main/assets/public/
+android/app/build/
+android/.gradle/
+android/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+ios/App/App/public/
+ios/App/Pods/
+ios/capacitor-cordova-ios-plugins/
 *.ipa
 *.apk
 *.aab

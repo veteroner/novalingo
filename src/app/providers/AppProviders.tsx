@@ -1,7 +1,9 @@
 import { LoadingScreen } from '@components/atoms/Spinner/LoadingScreen';
 import { useChildren } from '@hooks/queries';
 import { useAppInit } from '@hooks/useAppInit';
+import { useAudioUnlock } from '@hooks/useAudioUnlock';
 import { useAuth } from '@hooks/useAuth';
+import { useCapacitorLifecycle } from '@hooks/useCapacitorLifecycle';
 import { useAuthStore } from '@stores/authStore';
 import { type ReactNode } from 'react';
 import { ThemeProvider } from './ThemeProvider';
@@ -34,6 +36,12 @@ function ChildDataProvider({ children }: { children: ReactNode }) {
 
   // Initialize platform services after auth
   useAppInit();
+
+  // Unlock audio playback on first user interaction (mobile autoplay policy)
+  useAudioUnlock();
+
+  // Native app lifecycle (back button, splash, statusbar, deep links)
+  useCapacitorLifecycle();
 
   if (isAuthenticated && isLoading) return <LoadingScreen />;
 

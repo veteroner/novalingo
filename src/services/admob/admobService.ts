@@ -5,6 +5,7 @@
  * Yalnızca Rewarded ve Interstitial — Banner yok (çocuk UX).
  */
 
+import { getPlatform } from '@/utils/platform';
 // Capacitor AdMob — dinamik import (sadece native'de)
 import type { AdMob as AdMobPlugin } from '@capacitor-community/admob';
 let AdMob: typeof AdMobPlugin | null = null;
@@ -157,13 +158,6 @@ const TEST_AD_IDS = {
  */
 function isProduction(): boolean {
   return import.meta.env.VITE_APP_ENV === 'production';
-}
-
-function getPlatform(): 'ios' | 'android' | 'web' {
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.includes('iphone') || ua.includes('ipad')) return 'ios';
-  if (ua.includes('android')) return 'android';
-  return 'web';
 }
 
 function getInterstitialAdId(): string {

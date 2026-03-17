@@ -182,7 +182,10 @@ function buildRewardUpdate(
   return { streakFreezes: (child.streakFreezes ?? 0) + reward.amount };
 }
 
-function getChildCurrencyBalance(child: StoredChildProfile, currencyType: ShopCurrencyType): number {
+function getChildCurrencyBalance(
+  child: StoredChildProfile,
+  currencyType: ShopCurrencyType,
+): number {
   return currencyType === 'gems' ? (child.gems ?? 0) : (child.stars ?? 0);
 }
 
@@ -944,11 +947,7 @@ export async function verifyParentPin(data: VerifyParentPinReq): Promise<VerifyP
     throw new Error('No PIN set');
   }
 
-  const valid = await verifyPinHash(
-    data.pin,
-    settings.parentPinSalt,
-    settings.parentPinHash,
-  );
+  const valid = await verifyPinHash(data.pin, settings.parentPinSalt, settings.parentPinHash);
   if (!valid) throw new Error('Invalid PIN');
   return { valid: true };
 }

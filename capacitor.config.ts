@@ -6,12 +6,22 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     androidScheme: 'https',
+    iosScheme: 'https',
+  },
+  ios: {
+    contentInset: 'automatic',
+    allowsLinkPreview: false,
+    scrollEnabled: false,
+  },
+  android: {
+    allowMixedContent: false,
+    backgroundColor: '#6c5ce7',
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
-      launchAutoHide: true,
-      backgroundColor: '#0D8FDB',
+      launchShowDuration: 3000,
+      launchAutoHide: false, // We hide manually after app is ready
+      backgroundColor: '#6c5ce7',
       androidSplashResourceName: 'splash',
       iosSplashResourceName: 'Default',
       showSpinner: false,
@@ -20,7 +30,7 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'LIGHT',
-      backgroundColor: '#0D8FDB',
+      backgroundColor: '#6c5ce7',
     },
     Keyboard: {
       resize: 'body',
