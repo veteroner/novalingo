@@ -9,8 +9,8 @@ import { Badge } from '@components/atoms/Badge';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
+import { NovaStageAvatar } from '@components/molecules/NovaStageAvatar';
 import { XPDisplay } from '@components/molecules/XPDisplay';
-import { NovaCompanion } from '@components/organisms/NovaCompanion';
 import { MainLayout } from '@components/templates/MainLayout';
 import { curriculum } from '@features/learning/data/curriculum';
 import { useWorlds } from '@hooks/queries';
@@ -189,8 +189,32 @@ export default function HomeScreen() {
         </motion.div>
       </div>
 
-      {/* Nova Companion */}
-      <NovaCompanion mood="happy" message="Bugün harika bir gün olacak!" />
+      {/* Nova Companion — interactive SVG */}
+      <motion.div
+        className="fixed right-4 bottom-24 z-30"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.5 }}
+      >
+        <motion.button
+          className="relative cursor-pointer touch-manipulation"
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => navigate('/profile')}
+        >
+          <NovaStageAvatar stage={child.novaStage} size="sm" />
+          {/* Speech bubble */}
+          <motion.div
+            className="absolute right-0 bottom-full mb-2 max-w-44 min-w-28 rounded-2xl rounded-br-sm border border-gray-100 bg-white px-3 py-2 shadow-lg"
+            initial={{ opacity: 0, scale: 0.5, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 1.2, type: 'spring', stiffness: 400, damping: 20 }}
+          >
+            <p className="text-text-primary text-xs font-semibold">Bugün harika bir gün olacak! 🌟</p>
+          </motion.div>
+        </motion.button>
+      </motion.div>
     </MainLayout>
   );
 }

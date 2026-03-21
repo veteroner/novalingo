@@ -5,7 +5,9 @@
  * AppProviders içinde tek bir yerde kullanılır.
  */
 
+import type { AchievementDefinition } from '@/types';
 import type { NovaStage } from '@/types/user';
+import { AchievementPopup } from '@components/organisms/AchievementPopup';
 import { LevelUpModal } from '@components/organisms/LevelUpModal';
 import { NovaEvolutionModal } from '@components/organisms/NovaEvolutionModal';
 import { useUIStore } from '@stores/uiStore';
@@ -33,6 +35,13 @@ export function GlobalModalRenderer() {
         isOpen={activeModal === 'novaEvolution'}
         oldStage={(modalData?.oldStage as NovaStage) ?? 'egg'}
         newStage={(modalData?.newStage as NovaStage) ?? 'baby'}
+        onClose={closeModal}
+      />
+
+      {/* Achievement Popup */}
+      <AchievementPopup
+        isOpen={activeModal === 'achievement'}
+        achievement={(modalData?.achievement as AchievementDefinition) ?? null}
         onClose={closeModal}
       />
     </>

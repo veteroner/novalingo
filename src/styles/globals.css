@@ -155,23 +155,7 @@
     border-radius: 4px;
   }
 
-  /* Font declarations — loaded via Google Fonts in index.html */
-  @font-face {
-    font-family: 'Nunito';
-    font-display: swap;
-    src:
-      local('Nunito'),
-      url('https://fonts.gstatic.com/s/nunito/v26/XRXI3I6Li01BKofiOc5wtlZ2di8HDDshRTM.woff2')
-        format('woff2');
-  }
-
-  @font-face {
-    font-family: 'Baloo 2';
-    font-display: swap;
-    src:
-      local('Baloo 2'),
-      url('https://fonts.gstatic.com/s/baloo2/v21/wXK0E3kTposypRyd51jcAMomSA.woff2') format('woff2');
-  }
+  /* Fonts loaded via Google Fonts stylesheet in index.html — no @font-face needed */
 }
 
 /* ─── Utility Classes ─────────────────────────────────────── */

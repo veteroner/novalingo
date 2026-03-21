@@ -92,6 +92,7 @@ export default function ProfileScreen() {
             { label: '📦 Koleksiyon', path: '/collection' },
             { label: '🛒 Mağaza', path: '/shop' },
             { label: '📊 Liderlik', path: '/leaderboard' },
+            { label: '👨‍👩‍👧 Ebeveyn Paneli', path: '/parent' },
           ].map((link) => (
             <Card
               key={link.label}
@@ -157,9 +158,9 @@ function NovaStageCard({
 
   return (
     <Card variant="elevated" padding="md">
-      <div className="flex items-center gap-4">
-        <NovaStageAvatar stage={stage} size="sm" />
-        <div className="min-w-0 flex-1">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <NovaStageAvatar stage={stage} size="lg" />
+        <div className="w-full">
           <div className="flex items-center gap-2">
             <Text variant="body" weight="bold" style={{ color: config.bodyColor }}>
               {STAGE_LABELS_TR[stage]}

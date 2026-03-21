@@ -1,5 +1,6 @@
 import { LoadingScreen } from '@components/atoms/Spinner/LoadingScreen';
 import { GlobalModalRenderer } from '@components/organisms/GlobalModalRenderer';
+import { ToastRenderer } from '@components/organisms/ToastRenderer';
 import { useChildren } from '@hooks/queries';
 import { useAppInit } from '@hooks/useAppInit';
 import { useAudioUnlock } from '@hooks/useAudioUnlock';
@@ -60,6 +61,7 @@ export function AppProviders({ children }: AppProvidersProps) {
         <ChildDataProvider>
           {children}
           <GlobalModalRenderer />
+          <ToastRenderer />
         </ChildDataProvider>
       </AuthProvider>
     </ThemeProvider>
