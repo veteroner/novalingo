@@ -37,8 +37,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
-  const activeLessonId = useLessonStore((s) => s.lessonId);
-  const isActive = useLessonStore((s) => s.isActive);
 
   const {
     currentActivityIndex,
@@ -52,6 +50,7 @@ export default function LessonScreen() {
     resumeLesson,
     endLesson,
   } = useLessonStore();
+  const hasStartedRef = useRef(false);
 
   const child = useChildStore((s) => s.activeChild);
   const addXP = useChildStore((s) => s.addXP);
@@ -136,14 +135,13 @@ export default function LessonScreen() {
     }
   }
   const lessonSession = sessionRef.current;
-  const shouldStartLesson =
-    !!lessonId && !!lessonSession && (!isActive || activeLessonId !== lessonId);
 
   useEffect(() => {
-    if (lessonId && lessonSession && shouldStartLesson) {
+    if (lessonId && lessonSession && !hasStartedRef.current) {
       // Unlock audio playback for mobile — must happen before activities auto-speak
       void unlockAudioPlayback();
       startLesson(lessonId, lessonSession.activities);
+      hasStartedRef.current = true;
       // Boss lesson: start a global per-activity countdown (30s per activity)
       if (lessonTypeRef.current === 'boss') {
         setBossTimeLeft(30);
@@ -161,8 +159,9 @@ export default function LessonScreen() {
       }
       useLessonStore.getState().reset();
       sessionRef.current = null;
+      hasStartedRef.current = false;
     };
-  }, [lessonId, lessonSession, shouldStartLesson, startLesson]);
+  }, [lessonId, lessonSession, startLesson]);
 
   // Boss timer countdown
   useEffect(() => {
