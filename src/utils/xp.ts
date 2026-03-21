@@ -108,11 +108,13 @@ export function calculateLevel(totalXP: number): {
 
 // ===== STAR RATING =====
 /**
- * Skor'dan yıldız hesapla (0-3)
+ * Accuracy (0–1) üzerinden yıldız hesapla (0-3).
+ * Eşikler constants.ts → LESSON.STAR_THRESHOLDS ile aynıdır.
  */
-export function calculateStars(score: number): number {
-  if (score >= 95) return 3;
-  if (score >= 75) return 2;
-  if (score >= 50) return 1;
+export function calculateStars(accuracy: number): number {
+  // LESSON.STAR_THRESHOLDS: [0.6, 0.8, 1.0]
+  if (accuracy >= 1.0) return 3;
+  if (accuracy >= 0.8) return 2;
+  if (accuracy >= 0.6) return 1;
   return 0;
 }

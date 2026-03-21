@@ -12,7 +12,6 @@
 import { stopSpeaking } from '@/services/speech/speechService';
 import { isNative } from '@/utils/platform';
 import { App } from '@capacitor/app';
-import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -23,9 +22,6 @@ export function useCapacitorLifecycle(): void {
 
   useEffect(() => {
     if (!isNative()) return;
-
-    // ─── SplashScreen: uygulama hazır, splash'i gizle ───
-    void SplashScreen.hide();
 
     // ─── StatusBar: başlangıç stili ───
     void StatusBar.setStyle({ style: Style.Light });

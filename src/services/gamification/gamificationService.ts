@@ -7,6 +7,7 @@
 
 import type { SubmitLessonResultRes } from '@services/firebase/functions';
 import { useUIStore } from '@stores/uiStore';
+import { XP } from '../../config/constants';
 
 // ===== LESSON RESULT PROCESSING =====
 
@@ -40,17 +41,11 @@ export function processLessonResult(
 }
 
 // ===== LEVEL REWARDS =====
-function calculateLevelRewards(level: number): { stars: number; gems: number } {
-  // Every 5 levels: gems bonus, always some stars
-  return {
-    stars: level * 10,
-    gems: level % 5 === 0 ? level * 2 : 0,
-  };
-}
+const LEVEL_REWARD_STARS_PER_LEVEL = 10;
+const LEVEL_REWARD_GEMS_MILESTONE_INTERVAL = 5;
+const LEVEL_REWARD_GEMS_MULTIPLIER = 2;
 
-// ===== NOVA STAGE =====
-
-const NOVA_STAGES = [
+const NOVA_STAGE_THRESHOLDS = [
   { stage: 'egg', minXP: 0 },
   { stage: 'baby', minXP: 200 },
   { stage: 'child', minXP: 1000 },
@@ -59,9 +54,20 @@ const NOVA_STAGES = [
   { stage: 'legendary', minXP: 20000 },
 ] as const;
 
+function calculateLevelRewards(level: number): { stars: number; gems: number } {
+  return {
+    stars: level * LEVEL_REWARD_STARS_PER_LEVEL,
+    gems: level % LEVEL_REWARD_GEMS_MILESTONE_INTERVAL === 0
+      ? level * LEVEL_REWARD_GEMS_MULTIPLIER
+      : 0,
+  };
+}
+
+// ===== NOVA STAGE =====
+
 export function getNovaStageForXP(totalXP: number): string {
-  for (let i = NOVA_STAGES.length - 1; i >= 0; i--) {
-    const entry = NOVA_STAGES[i];
+  for (let i = NOVA_STAGE_THRESHOLDS.length - 1; i >= 0; i--) {
+    const entry = NOVA_STAGE_THRESHOLDS[i];
     if (entry && totalXP >= entry.minXP) return entry.stage;
   }
   return 'egg';
@@ -83,7 +89,7 @@ export function checkNovaEvolution(previousXP: number, newXP: number): string | 
 // ===== STREAK HELPERS =====
 
 export function getStreakMultiplier(streak: number): number {
-  return Math.min(1 + streak * 0.05, 2.5); // max 2.5x at 30 days
+  return Math.min(1 + streak * XP.STREAK_BONUS_PER_DAY, 1 + XP.STREAK_BONUS_MAX);
 }
 
 export function isStreakActive(lastActivityDate: string): boolean {

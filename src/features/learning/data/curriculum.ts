@@ -85,6 +85,7 @@ const world1: CurriculumWorld = {
             'word-builder',
             'fill-blank',
             'memory-game',
+            'conversation',
           ],
         },
         {
@@ -237,6 +238,7 @@ const world1: CurriculumWorld = {
             'word-builder',
             'fill-blank',
             'memory-game',
+            'conversation',
           ],
         },
         {
@@ -368,6 +370,7 @@ const world1: CurriculumWorld = {
             'word-builder',
             'fill-blank',
             'memory-game',
+            'conversation',
           ],
         },
         {
@@ -668,6 +671,7 @@ const world1: CurriculumWorld = {
           vocabulary: ['cherry', 'melon', 'peach', 'pear', 'lemon'],
           activityTypes: [
             'flash-card',
+            'conversation',
             'listen-and-tap',
             'match-pairs',
             'word-builder',
@@ -1138,6 +1142,7 @@ const world2: CurriculumWorld = {
           activityTypes: [
             'flash-card',
             'listen-and-tap',
+            'conversation',
             'speak-it',
             'fill-blank',
             'sentence-builder',

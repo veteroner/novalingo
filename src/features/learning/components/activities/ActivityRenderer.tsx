@@ -8,6 +8,7 @@
 import type { Activity, ActivityData, ActivityType } from '@/types/content';
 import { Text } from '@components/atoms/Text';
 import ActivityErrorBoundary from './ActivityErrorBoundary';
+import ConversationActivity from './ConversationActivity';
 import FillBlankActivity from './FillBlankActivity';
 import FlashCardActivity from './FlashCardActivity';
 import GrammarTransformActivity from './GrammarTransformActivity';
@@ -106,6 +107,10 @@ function renderActivity(activity: Activity, onComplete: (outcome: ActivityOutcom
     case 'grammar-transform':
       if (!hasActivityData(activity, 'grammar-transform')) return renderUnknownActivity();
       return <GrammarTransformActivity data={activity.data} onComplete={onComplete} />;
+
+    case 'conversation':
+      if (!hasActivityData(activity, 'conversation')) return renderUnknownActivity();
+      return <ConversationActivity data={activity.data} onComplete={onComplete} />;
 
     default:
       return renderUnknownActivity();

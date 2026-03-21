@@ -1,5 +1,7 @@
+import { isNative } from '@/utils/platform';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Component, useEffect, type ErrorInfo, type ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './providers/AppProviders';
 import { AppRouter } from './Router';
@@ -19,6 +21,13 @@ const queryClient = new QueryClient({
 });
 
 export function App() {
+  useEffect(() => {
+    if (!isNative()) return;
+
+    // Hide the native splash as soon as React mounts so auth/loading work happens in-app.
+    void SplashScreen.hide();
+  }, []);
+
   return (
     <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>

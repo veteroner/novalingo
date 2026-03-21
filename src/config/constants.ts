@@ -135,3 +135,39 @@ export const QUESTS = {
   DAILY_QUEST_COUNT: 4,
   REFRESH_HOUR: 5, // 05:00 local time
 } as const;
+
+// ─── Nova Mascot ─────────────────────────────────────────────────
+export interface NovaStageThreshold {
+  stage: 'egg' | 'baby' | 'child' | 'teen' | 'adult' | 'legendary';
+  minXP: number;
+}
+
+export const NOVA_STAGES: readonly NovaStageThreshold[] = [
+  { stage: 'egg', minXP: 0 },
+  { stage: 'baby', minXP: 200 },
+  { stage: 'child', minXP: 1000 },
+  { stage: 'teen', minXP: 3000 },
+  { stage: 'adult', minXP: 8000 },
+  { stage: 'legendary', minXP: 20000 },
+] as const;
+
+// ─── Level Rewards ───────────────────────────────────────────────
+export interface LevelRewardsConfig {
+  STARS_PER_LEVEL: number;
+  GEMS_MILESTONE_INTERVAL: number;
+  GEMS_MULTIPLIER: number;
+}
+
+export const LEVEL_REWARDS: LevelRewardsConfig = {
+  STARS_PER_LEVEL: 10,
+  GEMS_MILESTONE_INTERVAL: 5, // every 5 levels
+  GEMS_MULTIPLIER: 2, // gems = level * multiplier
+} as const;
+
+export function getLevelRewardsConfig(): LevelRewardsConfig {
+  return LEVEL_REWARDS;
+}
+
+export function getNovaStages(): readonly NovaStageThreshold[] {
+  return NOVA_STAGES;
+}

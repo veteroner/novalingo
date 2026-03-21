@@ -19,7 +19,7 @@ import {
   connectFirestoreEmulator,
   initializeFirestore,
   persistentLocalCache,
-  persistentMultipleTabManager,
+  persistentSingleTabManager,
   type Firestore,
 } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
@@ -98,7 +98,7 @@ function initializeFirebase() {
   }
 
   db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+    localCache: persistentLocalCache({ tabManager: persistentSingleTabManager(undefined) }),
   });
   storage = getStorage(app);
   functions = getFunctions(app, 'europe-west1');
@@ -118,6 +118,10 @@ function initializeFirebase() {
 }
 
 // İlk yüklenmede başlat
-initializeFirebase();
+try {
+  initializeFirebase();
+} catch (error) {
+  console.error('[Firebase] Initialization failed:', error);
+}
 
 export { analytics, app, appCheck, auth, db, functions, storage };

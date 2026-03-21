@@ -1,0 +1,1 @@
+export { GlobalModalRenderer } from './GlobalModalRenderer';

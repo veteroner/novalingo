@@ -5,6 +5,8 @@
  * Blaze planı olmadan tüm öğrenme döngüsünü çalışır hale getirir.
  */
 
+import { CURRENCY, LESSON, XP } from '@/config/constants';
+
 // ===== DATE HELPERS =====
 
 export function getTodayTR(): string {
@@ -51,8 +53,6 @@ export function xpForLevel(level: number): number {
 
 // ===== XP CALCULATOR =====
 
-const BASE_XP_PER_CORRECT = 10;
-
 export interface ActivityResult {
   activityId: string;
   correct: boolean;
@@ -91,17 +91,23 @@ export function calculateLessonXP(
   const correctCount = activities.filter((a) => a.correct).length;
   const accuracy = correctCount / total;
   const isPerfect = accuracy === 1;
-  const baseXP = correctCount * BASE_XP_PER_CORRECT;
+  const baseXP = correctCount * XP.BASE_PER_ACTIVITY;
 
   let bonusXP = 0;
-  if (isPerfect) bonusXP += Math.floor(baseXP * 0.5);
-  if (totalTimeMs < total * 30_000 * 0.7) bonusXP += Math.floor(baseXP * 0.2);
-  bonusXP += Math.floor(baseXP * Math.min(currentStreak * 0.05, 0.5));
-  if (activities.every((a) => a.attempts <= 1)) bonusXP += 5;
-  if (activities.every((a) => a.hintsUsed === 0)) bonusXP += 3;
+  if (isPerfect) bonusXP += Math.floor(baseXP * (XP.PERFECT_MULTIPLIER - 1));
+  if (totalTimeMs < total * LESSON.TIME_PER_ACTIVITY_SEC * 1000 * XP.SPEED_BONUS_THRESHOLD)
+    bonusXP += Math.floor(baseXP * (XP.SPEED_MULTIPLIER - 1));
+  bonusXP += Math.floor(
+    baseXP * Math.min(currentStreak * XP.STREAK_BONUS_PER_DAY, XP.STREAK_BONUS_MAX),
+  );
+  if (activities.every((a) => a.attempts <= 1)) bonusXP += XP.FIRST_TRY_BONUS;
+  if (activities.every((a) => a.hintsUsed === 0)) bonusXP += XP.NO_HINT_BONUS;
 
-  const starRating = accuracy >= 1 ? 3 : accuracy >= 0.8 ? 2 : accuracy >= 0.6 ? 1 : 0;
-  const starsEarned = isPerfect ? 15 : 5;
+  const [t1, t2, t3] = LESSON.STAR_THRESHOLDS;
+  const starRating = accuracy >= t3 ? 3 : accuracy >= t2 ? 2 : accuracy >= t1 ? 1 : 0;
+  const starsEarned = isPerfect
+    ? CURRENCY.STARS_PER_LESSON + CURRENCY.STARS_PERFECT_BONUS
+    : CURRENCY.STARS_PER_LESSON;
 
   return {
     baseXP,

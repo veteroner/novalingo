@@ -28,6 +28,27 @@ const SILENT_WAV_DATA_URI =
 /** Whether audio playback has been unlocked via user gesture */
 let audioUnlocked = false;
 
+// ===== SPEAKING STATE TRACKING =====
+type SpeakingStateListener = (isSpeaking: boolean) => void;
+let _isSpeaking = false;
+const _speakingListeners = new Set<SpeakingStateListener>();
+
+function notifySpeaking(speaking: boolean): void {
+  _isSpeaking = speaking;
+  for (const cb of _speakingListeners) cb(speaking);
+}
+
+/** Subscribe to speaking state changes. Returns unsubscribe function. */
+export function onSpeakingStateChange(listener: SpeakingStateListener): () => void {
+  _speakingListeners.add(listener);
+  return () => { _speakingListeners.delete(listener); };
+}
+
+/** Whether TTS is currently playing audio. */
+export function isSpeakingNow(): boolean {
+  return _isSpeaking;
+}
+
 export function isAudioUnlocked(): boolean {
   return audioUnlocked;
 }
@@ -216,22 +237,30 @@ function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<voi
  * Returns true if audio actually played, false if blocked by autoplay policy.
  */
 export async function speak(text: string, options: SpeakOptions = {}): Promise<boolean> {
-  // Priority 1: Explicit pre-recorded audio URL from activity data
-  if (options.audioUrl) {
-    return playAudio(options.audioUrl);
-  }
+  notifySpeaking(true);
 
-  // Priority 2: Auto-lookup from pre-generated audio manifest
-  const manifestUrl = getPreRecordedUrl(text);
-  if (manifestUrl) {
-    return playAudio(manifestUrl);
-  }
-
-  // Priority 3: Web Speech API (explicit English voice — last resort)
   try {
+    // Priority 1: Explicit pre-recorded audio URL from activity data
+    if (options.audioUrl) {
+      const result = await playAudio(options.audioUrl);
+      notifySpeaking(false);
+      return result;
+    }
+
+    // Priority 2: Auto-lookup from pre-generated audio manifest
+    const manifestUrl = getPreRecordedUrl(text);
+    if (manifestUrl) {
+      const result = await playAudio(manifestUrl);
+      notifySpeaking(false);
+      return result;
+    }
+
+    // Priority 3: Web Speech API (explicit English voice — last resort)
     await speakWithWebSpeechAPI(text, options);
+    notifySpeaking(false);
     return true;
   } catch {
+    notifySpeaking(false);
     return false;
   }
 }
@@ -244,6 +273,7 @@ export function stopSpeaking(): void {
   if (synthAvailable) {
     window.speechSynthesis.cancel();
   }
+  notifySpeaking(false);
 }
 
 /**

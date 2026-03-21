@@ -70,7 +70,8 @@ export type ActivityType =
   | 'quiz-battle'
   | 'sentence-builder'
   | 'story-comprehension'
-  | 'grammar-transform';
+  | 'grammar-transform'
+  | 'conversation';
 
 export interface Activity {
   id: string;
@@ -95,7 +96,8 @@ export type ActivityData =
   | QuizBattleData
   | SentenceBuilderData
   | StoryComprehensionData
-  | GrammarTransformData;
+  | GrammarTransformData
+  | ConversationData;
 
 export interface FlashCardData {
   type: 'flash-card';
@@ -247,4 +249,53 @@ export interface GrammarTransformData {
   correctAnswer: string;
   /** Multiple choice options */
   options: string[];
+}
+
+// ===== CONVERSATION (Senaryolu Diyalog) =====
+
+export interface ConversationNode {
+  /** Unique node id within the dialogue tree */
+  id: string;
+  /** Who is speaking: 'nova' (mascot/NPC) or 'child' */
+  speaker: 'nova' | 'child';
+  /** Display text (English) */
+  text: string;
+  /** Turkish translation shown below */
+  textTr: string;
+  /** Optional pre-recorded audio URL for this line */
+  audioUrl?: string;
+  /** Optional emoji/image to show alongside the bubble */
+  emoji?: string;
+  /** Child response options — only present when speaker is 'nova' (prompting child) */
+  options?: ConversationOption[];
+  /** Next node id to auto-advance to (for nova lines without options) */
+  next?: string;
+}
+
+export interface ConversationOption {
+  /** The English text the child should say/tap */
+  text: string;
+  /** Turkish translation */
+  textTr: string;
+  /** Acceptable STT variations for this option */
+  acceptableVariations?: string[];
+  /** Node id to jump to when this option is chosen */
+  nextNodeId: string;
+  /** Optional emoji shown on the option button */
+  emoji?: string;
+}
+
+export interface ConversationData {
+  type: 'conversation';
+  /** Scene title, e.g. "At the Pet Shop" */
+  title: string;
+  titleTr: string;
+  /** Scene emoji/image */
+  sceneEmoji: string;
+  /** Dialogue tree — nodes keyed by id */
+  nodes: ConversationNode[];
+  /** Id of the first node to start the dialogue */
+  startNodeId: string;
+  /** Target vocabulary practiced in this conversation */
+  targetWords: string[];
 }

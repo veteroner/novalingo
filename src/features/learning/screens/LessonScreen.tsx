@@ -6,6 +6,7 @@
  * Her aktivite kendi interaktif bileşeniyle render edilir.
  */
 
+import { LESSON } from '@/config/constants';
 import type { ActivityOutcome } from '@/features/learning/components/activities';
 import { ActivityRenderer } from '@/features/learning/components/activities';
 import { generateActivities } from '@/features/learning/data/activityGenerator';
@@ -100,16 +101,21 @@ export default function LessonScreen() {
       const rawActivities = generateActivities(curLesson);
 
       // Bridge CurriculumLesson → Lesson for prepareLesson
+      // lessonId format: w{x}_u{y}_l{z}
+      const idParts = curLesson.id.split('_');
+      const worldId = idParts[0] ?? '';
+      const unitId = idParts.slice(0, 2).join('_');
+
       const lesson: Lesson = {
         id: curLesson.id,
-        unitId: '',
-        worldId: '',
+        unitId,
+        worldId,
         name: curLesson.name,
         nameEn: curLesson.nameEn,
         type: curLesson.type,
         difficulty: curLesson.difficulty,
         order: curLesson.order,
-        requiredStars: 0,
+        requiredStars: curLesson.starReward,
         estimatedMinutes: curLesson.estimatedMinutes,
         xpReward: curLesson.xpReward,
         starReward: curLesson.starReward,
@@ -142,9 +148,9 @@ export default function LessonScreen() {
       void unlockAudioPlayback();
       startLesson(lessonId, lessonSession.activities);
       hasStartedRef.current = true;
-      // Boss lesson: start a global per-activity countdown (30s per activity)
+      // Boss lesson: start a global per-activity countdown
       if (lessonTypeRef.current === 'boss') {
-        setBossTimeLeft(30);
+        setBossTimeLeft(LESSON.TIME_PER_ACTIVITY_SEC);
         setBossTimerActive(true);
       }
     }
@@ -171,7 +177,7 @@ export default function LessonScreen() {
         if (prev <= 1) {
           // Time's up — treat as wrong answer, lose a life
           setBossLives((l) => l - 1);
-          return 30; // reset for next activity
+          return LESSON.TIME_PER_ACTIVITY_SEC; // reset for next activity
         }
         return prev - 1;
       });
@@ -231,7 +237,7 @@ export default function LessonScreen() {
 
       // Reset boss timer for next activity
       if (isBoss) {
-        setBossTimeLeft(30);
+        setBossTimeLeft(LESSON.TIME_PER_ACTIVITY_SEC);
       }
 
       // Auto-advance after a short delay for feedback

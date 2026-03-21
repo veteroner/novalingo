@@ -36,7 +36,16 @@
     "sorting": "Sort",
     "sortingDesc": "Sort into categories",
     "conversation": "Conversation",
-    "conversationDesc": "Complete the dialogue"
+    "conversationDesc": "Complete the dialogue",
+    "conversationHeader": "💬 CONVERSATION",
+    "conversationListening": "Listening...",
+    "conversationTryAgain": "Try again! 💪",
+    "conversationSpeakerNova": "Nova",
+    "conversationSpeakerYou": "You",
+    "conversationReplay": "Replay",
+    "conversationTranslate": "Translate",
+    "conversationKeyboard": "Type",
+    "conversationSpeed": "Speed"
   },
 
   "result": {

@@ -66,11 +66,12 @@ const ACTIVITY_PEDAGOGIC_ORDER: Record<ActivityType, number> = {
   'sentence-builder': 6,
   'grammar-transform': 7,
   'speak-it': 8,
-  'story-time': 9,
-  'story-comprehension': 10,
-  'memory-game': 11,
-  'word-search': 12,
-  'quiz-battle': 13,
+  'conversation': 9,
+  'story-time': 10,
+  'story-comprehension': 11,
+  'memory-game': 12,
+  'word-search': 13,
+  'quiz-battle': 14,
 };
 
 function getPedagogicOrder(type: string): number {

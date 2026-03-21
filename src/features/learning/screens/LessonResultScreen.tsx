@@ -53,9 +53,9 @@ export default function LessonResultScreen() {
     );
   }
 
-  const stars = backendResult?.starRating ?? calculateStars(summary.score);
+  const stars = backendResult?.starRating ?? calculateStars(summary.accuracy);
   const accuracy = backendResult?.accuracy ?? summary.accuracy;
-  const xpEarned = backendResult?.xpEarned ?? summary.score;
+  const xpEarned = backendResult?.xpEarned ?? 0;
 
   const getMoodMessage = () => {
     if (stars === 3) return { mood: 'celebrating' as const, msg: 'MÜKEMMEL! Sen bir dahisin! 🌟' };

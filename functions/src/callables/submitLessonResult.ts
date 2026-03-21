@@ -6,6 +6,7 @@
  */
 
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
+import { CURRENCY, LESSON, XP } from '../config/constants';
 import {
   callableOpts,
   db,
@@ -44,17 +45,18 @@ export const submitLessonResult = onCall(callableOpts, async (request) => {
   const accuracy = correctCount / activities.length;
 
   // ── Calculate Stars ───────────────────────────────────
+  const [t1, t2, t3] = LESSON.STAR_THRESHOLDS;
   let stars = 0;
-  if (accuracy >= 1.0) stars = 3;
-  else if (accuracy >= 0.8) stars = 2;
-  else if (accuracy >= 0.6) stars = 1;
+  if (accuracy >= t3) stars = 3;
+  else if (accuracy >= t2) stars = 2;
+  else if (accuracy >= t1) stars = 1;
 
   // ── Calculate XP (6 bonus types) ──────────────────────
-  const baseXP = correctCount * 10;
-  const isPerfect = accuracy === 1.0;
+  const baseXP = correctCount * XP.BASE_PER_ACTIVITY;
+  const isPerfect = accuracy === LESSON.PERFECT_ACCURACY;
   const allFirstTry = activities.every((a) => a.attempts <= 1);
   const noHints = activities.every((a) => a.hintsUsed === 0);
-  const expectedTimeMs = activities.length * 30_000;
+  const expectedTimeMs = activities.length * LESSON.TIME_PER_ACTIVITY_SEC * 1000;
 
   // ── Run inside transaction to avoid stale reads ───────
   const result = await db.runTransaction(async (tx) => {
@@ -67,28 +69,31 @@ export const submitLessonResult = onCall(callableOpts, async (request) => {
     let bonusXP = 0;
 
     // 1. Perfect bonus (1.5x)
-    if (isPerfect) bonusXP += Math.floor(baseXP * 0.5);
+    if (isPerfect) bonusXP += Math.floor(baseXP * (XP.PERFECT_MULTIPLIER - 1));
 
     // 2. Speed bonus: completed in <70% of expected time
-    if (totalTimeMs < expectedTimeMs * 0.7) {
-      bonusXP += Math.floor(baseXP * 0.2);
+    if (totalTimeMs < expectedTimeMs * XP.SPEED_BONUS_THRESHOLD) {
+      bonusXP += Math.floor(baseXP * (XP.SPEED_MULTIPLIER - 1));
     }
 
     // 3. Streak bonus: +5% per day, max 50%
-    const streakBonus = Math.min((child.streak?.current ?? 0) * 0.05, 0.5);
+    const streakBonus = Math.min(
+      (child.streak?.current ?? 0) * XP.STREAK_BONUS_PER_DAY,
+      XP.STREAK_BONUS_MAX,
+    );
     bonusXP += Math.floor(baseXP * streakBonus);
 
     // 4. First try bonus (no retry attempts)
-    if (allFirstTry) bonusXP += 5;
+    if (allFirstTry) bonusXP += XP.FIRST_TRY_BONUS;
 
     // 5. No hint bonus
-    if (noHints) bonusXP += 3;
+    if (noHints) bonusXP += XP.NO_HINT_BONUS;
 
     const totalXP = baseXP + bonusXP;
 
     // ── Currency ──────────────────────────────────────────
-    let starsEarned = 5;
-    if (isPerfect) starsEarned += 10;
+    let starsEarned = CURRENCY.STARS_PER_LESSON;
+    if (isPerfect) starsEarned += CURRENCY.STARS_PERFECT_BONUS;
 
     // ── Streak Update ─────────────────────────────────────
     const today = getTodayTR();

@@ -4,17 +4,20 @@
  * Çocuk profili — avatar, seviye, streak, istatistikler, başarımlar özeti.
  */
 
-import novaMascot from '@assets/images/nova-mascot.svg';
+import { NOVA_STAGES } from '@/config/constants';
+import type { NovaStage } from '@/types/user';
 import { Avatar } from '@components/atoms/Avatar';
 import { Badge } from '@components/atoms/Badge';
 import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
+import { NovaStageAvatar, STAGE_CONFIG } from '@components/molecules/NovaStageAvatar';
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { useChildStore } from '@stores/childStore';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProfileScreen() {
@@ -75,28 +78,12 @@ export default function ProfileScreen() {
           ))}
         </div>
 
-        {/* Nova Companion Status */}
-        <Card variant="elevated" padding="md">
-          <div className="flex items-center gap-4">
-            <div className="bg-nova-blue/10 flex h-16 w-16 items-center justify-center rounded-full">
-              <img src={novaMascot} alt="Nova" className="h-12 w-12" />
-            </div>
-            <div className="flex-1">
-              <Text variant="body" weight="bold">
-                Nova
-              </Text>
-              <Text variant="caption" className="text-text-secondary">
-                Aşama: {child.novaStage} · Mutluluk {child.novaHappiness}%
-              </Text>
-              <ProgressBar
-                value={child.novaHappiness / 100}
-                variant="xp"
-                size="xs"
-                className="mt-1"
-              />
-            </div>
-          </div>
-        </Card>
+        {/* Nova Companion Status — Enhanced */}
+        <NovaStageCard
+          stage={child.novaStage}
+          totalXP={child.totalXP}
+          happiness={child.novaHappiness}
+        />
 
         {/* Quick Links */}
         <div className="space-y-2">
@@ -124,5 +111,79 @@ export default function ProfileScreen() {
         </div>
       </div>
     </MainLayout>
+  );
+}
+
+// ===== Nova Stage Card =====
+
+const STAGE_LABELS_TR: Record<NovaStage, string> = {
+  egg: 'Yumurta',
+  baby: 'Bebek Nova',
+  child: 'Çocuk Nova',
+  teen: 'Genç Nova',
+  adult: 'Yetişkin Nova',
+  legendary: 'Efsanevi Nova',
+};
+
+function NovaStageCard({
+  stage,
+  totalXP,
+  happiness,
+}: {
+  stage: NovaStage;
+  totalXP: number;
+  happiness: number;
+}) {
+  const stageProgress = useMemo(() => {
+    const currentIdx = NOVA_STAGES.findIndex((s) => s.stage === stage);
+    const currentThreshold = NOVA_STAGES[currentIdx];
+    const nextThreshold = NOVA_STAGES[currentIdx + 1];
+
+    if (!nextThreshold || !currentThreshold) {
+      return { progress: 1, xpToNext: 0, nextStageName: null };
+    }
+
+    const rangeXP = nextThreshold.minXP - currentThreshold.minXP;
+    const progressXP = totalXP - currentThreshold.minXP;
+
+    return {
+      progress: Math.min(progressXP / rangeXP, 1),
+      xpToNext: nextThreshold.minXP - totalXP,
+      nextStageName: STAGE_LABELS_TR[nextThreshold.stage],
+    };
+  }, [stage, totalXP]);
+
+  const config = STAGE_CONFIG[stage];
+
+  return (
+    <Card variant="elevated" padding="md">
+      <div className="flex items-center gap-4">
+        <NovaStageAvatar stage={stage} size="sm" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <Text variant="body" weight="bold" style={{ color: config.bodyColor }}>
+              {STAGE_LABELS_TR[stage]}
+            </Text>
+            <Text variant="caption" className="text-text-secondary">
+              😊 {happiness}%
+            </Text>
+          </div>
+
+          {/* Progress to next stage */}
+          {stageProgress.nextStageName ? (
+            <>
+              <ProgressBar value={stageProgress.progress} variant="xp" size="xs" className="mt-1" />
+              <Text variant="caption" className="text-text-secondary mt-0.5">
+                Sonraki: {stageProgress.nextStageName} · {stageProgress.xpToNext} XP kaldı
+              </Text>
+            </>
+          ) : (
+            <Text variant="caption" className="text-nova-orange mt-1 font-semibold">
+              ✦ Maksimum Aşama ✦
+            </Text>
+          )}
+        </div>
+      </div>
+    </Card>
   );
 }

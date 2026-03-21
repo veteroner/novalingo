@@ -191,23 +191,22 @@ describe('calculateLevel', () => {
 
 // ===== calculateStars =====
 describe('calculateStars', () => {
-  it('score >=95 → 3 stars', () => {
-    expect(calculateStars(95)).toBe(3);
-    expect(calculateStars(100)).toBe(3);
+  it('accuracy >=1.0 → 3 stars', () => {
+    expect(calculateStars(1.0)).toBe(3);
   });
 
-  it('score >=75 → 2 stars', () => {
-    expect(calculateStars(75)).toBe(2);
-    expect(calculateStars(94)).toBe(2);
+  it('accuracy >=0.8 → 2 stars', () => {
+    expect(calculateStars(0.8)).toBe(2);
+    expect(calculateStars(0.99)).toBe(2);
   });
 
-  it('score >=50 → 1 star', () => {
-    expect(calculateStars(50)).toBe(1);
-    expect(calculateStars(74)).toBe(1);
+  it('accuracy >=0.6 → 1 star', () => {
+    expect(calculateStars(0.6)).toBe(1);
+    expect(calculateStars(0.79)).toBe(1);
   });
 
-  it('score <50 → 0 stars', () => {
-    expect(calculateStars(49)).toBe(0);
+  it('accuracy <0.6 → 0 stars', () => {
+    expect(calculateStars(0.59)).toBe(0);
     expect(calculateStars(0)).toBe(0);
   });
 });

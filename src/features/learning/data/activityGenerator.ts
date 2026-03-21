@@ -7,6 +7,7 @@
 
 import type {
   Activity,
+  ConversationData,
   FillBlankData,
   FlashCardData,
   GrammarTransformData,
@@ -23,6 +24,7 @@ import type {
 } from '@/types/content';
 import { shuffle } from '@/utils/array';
 import { COMPREHENSION_TEMPLATES, type ComprehensionTemplate } from './comprehensionTemplates';
+import { findBestTemplate } from './conversationTemplates';
 import type { CurriculumLesson } from './curriculum';
 import { GRAMMAR_PATTERNS } from './grammarPatterns';
 import { PHONEME_MAP } from './phonemeMap';
@@ -8022,6 +8024,33 @@ function generateSentenceBuilder(lessonId: string, words: string[], startOrder: 
   };
 }
 
+// ===== CONVERSATION GENERATOR =====
+
+function generateConversation(lessonId: string, words: string[], startOrder: number): Activity {
+  const template = findBestTemplate(words);
+  const selectedWords = words.slice(0, Math.max(template.minWords, 3));
+  const translations = selectedWords.map((w) => getVocab(w).tr);
+  const emojis = selectedWords.map((w) => getVocab(w).emoji ?? '💬');
+  const nodes = template.buildNodes(selectedWords, translations, emojis);
+
+  return {
+    id: nextId(lessonId, 'conv'),
+    type: 'conversation' as const,
+    order: startOrder,
+    timeLimit: null,
+    maxAttempts: 1,
+    data: {
+      type: 'conversation' as const,
+      title: template.title,
+      titleTr: template.titleTr,
+      sceneEmoji: template.sceneEmoji,
+      nodes,
+      startNodeId: nodes[0]?.id ?? 'n1',
+      targetWords: selectedWords,
+    } satisfies ConversationData,
+  };
+}
+
 // ===== MAIN ACTIVITY GENERATOR =====
 
 /**
@@ -8097,6 +8126,10 @@ export function generateActivities(lesson: CurriculumLesson): Activity[] {
         break;
       case 'grammar-transform':
         activities.push(generateGrammarTransform(lessonId, words, order));
+        order++;
+        break;
+      case 'conversation':
+        activities.push(generateConversation(lessonId, words, order));
         order++;
         break;
       default:

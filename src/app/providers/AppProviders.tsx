@@ -1,4 +1,5 @@
 import { LoadingScreen } from '@components/atoms/Spinner/LoadingScreen';
+import { GlobalModalRenderer } from '@components/organisms/GlobalModalRenderer';
 import { useChildren } from '@hooks/queries';
 import { useAppInit } from '@hooks/useAppInit';
 import { useAudioUnlock } from '@hooks/useAudioUnlock';
@@ -56,7 +57,10 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <ChildDataProvider>{children}</ChildDataProvider>
+        <ChildDataProvider>
+          {children}
+          <GlobalModalRenderer />
+        </ChildDataProvider>
       </AuthProvider>
     </ThemeProvider>
   );

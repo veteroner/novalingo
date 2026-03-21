@@ -36,7 +36,16 @@
     "sorting": "Sırala",
     "sortingDesc": "Kategorilere ayır",
     "conversation": "Konuşma",
-    "conversationDesc": "Diyalog tamamla"
+    "conversationDesc": "Diyalog tamamla",
+    "conversationHeader": "💬 KONUŞMA",
+    "conversationListening": "Dinliyorum...",
+    "conversationTryAgain": "Tekrar dene! 💪",
+    "conversationSpeakerNova": "Nova",
+    "conversationSpeakerYou": "Sen",
+    "conversationReplay": "Tekrar",
+    "conversationTranslate": "Çevir",
+    "conversationKeyboard": "Yaz",
+    "conversationSpeed": "Hız"
   },
 
   "result": {

@@ -119,9 +119,9 @@ describe('getStreakMultiplier', () => {
     expect(getStreakMultiplier(10)).toBe(1.5);
   });
 
-  it('should cap at 2.5x', () => {
-    expect(getStreakMultiplier(30)).toBe(2.5);
-    expect(getStreakMultiplier(100)).toBe(2.5);
+  it('should cap at 1.5x', () => {
+    expect(getStreakMultiplier(30)).toBe(1.5);
+    expect(getStreakMultiplier(100)).toBe(1.5);
   });
 });
 

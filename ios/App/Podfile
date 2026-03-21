@@ -1,5 +1,7 @@
 require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
 
+project 'App.xcodeproj'
+
 platform :ios, '13.0'
 use_frameworks!
 
@@ -18,8 +20,6 @@ def capacitor_pods
   pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/@capacitor/push-notifications'
   pod 'CapacitorNetwork', :path => '../../node_modules/@capacitor/network'
-  pod 'CapacitorCommunityAdmob', :path => '../../node_modules/@capacitor-community/admob'
-  pod 'RevenuecatPurchasesCapacitor', :path => '../../node_modules/@revenuecat/purchases-capacitor'
 end
 
 target 'App' do
