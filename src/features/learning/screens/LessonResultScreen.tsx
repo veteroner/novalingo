@@ -224,9 +224,8 @@ export default function LessonResultScreen() {
             size="lg"
             fullWidth
             onClick={() => {
-              void unlockAudioPlayback().finally(() => {
-                void navigate(`/lesson/${summary.lessonId}`);
-              });
+              void unlockAudioPlayback();
+              void navigate(`/lesson/${summary.lessonId}`);
             }}
           >
             Tekrar Dene

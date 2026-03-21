@@ -37,6 +37,8 @@ export default function ReviewScreen() {
   useEffect(() => {
     return () => {
       if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+      useLessonStore.getState().reset();
+      sessionRef.current = null;
     };
   }, []);
 

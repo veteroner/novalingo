@@ -148,9 +148,8 @@ export default function WorldMapScreen() {
             index={index}
             onClick={() => {
               if (lesson.status === 'locked') return;
-              void unlockAudioPlayback().finally(() => {
-                void navigate(`/lesson/${lesson.id}`);
-              });
+              void unlockAudioPlayback();
+              void navigate(`/lesson/${lesson.id}`);
             }}
           />
         ))}

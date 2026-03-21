@@ -59,6 +59,7 @@ interface SpeakOptions {
 
 /** Currently playing audio element — tracked for stop/cancel */
 let currentAudio: HTMLAudioElement | null = null;
+const AUDIO_UNLOCK_TIMEOUT_MS = 1500;
 
 function isPlaybackBlockedError(error: unknown): boolean {
   return error instanceof DOMException && error.name === 'NotAllowedError';
@@ -70,7 +71,14 @@ export async function unlockAudioPlayback(): Promise<void> {
   try {
     const audio = new Audio(SILENT_WAV_DATA_URI);
     audio.muted = true;
-    await audio.play();
+    await Promise.race([
+      audio.play(),
+      new Promise<never>((_, reject) => {
+        window.setTimeout(() => {
+          reject(new Error('Audio unlock timed out'));
+        }, AUDIO_UNLOCK_TIMEOUT_MS);
+      }),
+    ]);
     audio.pause();
     audio.currentTime = 0;
     audioUnlocked = true;

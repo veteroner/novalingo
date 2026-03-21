@@ -37,6 +37,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
+  const activeLessonId = useLessonStore((s) => s.lessonId);
+  const isActive = useLessonStore((s) => s.isActive);
 
   const {
     currentActivityIndex,
@@ -134,9 +136,11 @@ export default function LessonScreen() {
     }
   }
   const lessonSession = sessionRef.current;
+  const shouldStartLesson =
+    !!lessonId && !!lessonSession && (!isActive || activeLessonId !== lessonId);
 
   useEffect(() => {
-    if (lessonId && lessonSession && !useLessonStore.getState().isActive) {
+    if (lessonId && lessonSession && shouldStartLesson) {
       // Unlock audio playback for mobile — must happen before activities auto-speak
       void unlockAudioPlayback();
       startLesson(lessonId, lessonSession.activities);
@@ -158,7 +162,7 @@ export default function LessonScreen() {
       useLessonStore.getState().reset();
       sessionRef.current = null;
     };
-  }, [lessonId, startLesson, lessonSession]);
+  }, [lessonId, lessonSession, shouldStartLesson, startLesson]);
 
   // Boss timer countdown
   useEffect(() => {
