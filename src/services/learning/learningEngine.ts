@@ -115,12 +115,32 @@ export function prepareLesson(params: PrepareLessonParams): LessonSession {
   // Determine difficulty
   const difficulty = getAdaptiveDifficulty(recentPerformance, childLevel);
 
-  // Select & sort activities
+  // Select & sort activities — preserve type diversity
   let selectedActivities = lesson.activities.slice();
 
-  // Trim/extend to match difficulty's activity count
   if (selectedActivities.length > difficulty.activitiesPerLesson) {
-    selectedActivities = selectedActivities.slice(0, difficulty.activitiesPerLesson);
+    // Keep one of each activity type first (ensures all types appear)
+    const seenTypes = new Set<string>();
+    const unique: Activity[] = [];
+    const extras: Activity[] = [];
+
+    for (const act of selectedActivities) {
+      if (!seenTypes.has(act.type)) {
+        seenTypes.add(act.type);
+        unique.push(act);
+      } else {
+        extras.push(act);
+      }
+    }
+
+    const limit = difficulty.activitiesPerLesson;
+    if (unique.length <= limit) {
+      // All types fit — fill remaining slots with extras (e.g. extra flash-cards)
+      selectedActivities = [...unique, ...extras.slice(0, limit - unique.length)];
+    } else {
+      // More types than slots — keep types by pedagogic priority
+      selectedActivities = sortActivitiesPedagogically(unique).slice(0, limit);
+    }
   }
 
   // Sort pedagogically
