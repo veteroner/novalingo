@@ -42,7 +42,7 @@ export function ToastRenderer() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.9 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              onClick={() => removeToast(toast.id)}
+              onClick={() => { removeToast(toast.id); }}
             >
               <div className="flex items-center gap-3">
                 <span className="shrink-0 text-2xl">{toast.icon ?? style.iconFallback}</span>

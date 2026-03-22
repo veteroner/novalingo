@@ -15,6 +15,7 @@ import { MainLayout } from '@components/templates/MainLayout';
 import { curriculum } from '@features/learning/data/curriculum';
 import { useWorlds } from '@hooks/queries';
 import { useChildStore } from '@stores/childStore';
+import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -37,12 +38,28 @@ const curriculumWorlds: World[] = curriculum.map((w) => ({
 export default function HomeScreen() {
   const child = useChildStore((s) => s.activeChild);
   const children = useChildStore((s) => s.children);
+  const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
   const { data: firestoreWorlds } = useWorlds();
   const worlds = useMemo(
     () => (firestoreWorlds && firestoreWorlds.length > 0 ? firestoreWorlds : curriculumWorlds),
     [firestoreWorlds],
   );
+  const conversationLessonId = useMemo(() => {
+    const currentWorldLesson = curriculum
+      .find((world) => world.id === child?.currentWorldId)
+      ?.units.flatMap((unit) => unit.lessons)
+      .find((lesson) => lesson.activityTypes.includes('conversation'));
+
+    if (currentWorldLesson) {
+      return currentWorldLesson.id;
+    }
+
+    return curriculum
+      .flatMap((world) => world.units)
+      .flatMap((unit) => unit.lessons)
+      .find((lesson) => lesson.activityTypes.includes('conversation'))?.id;
+  }, [child?.currentWorldId]);
 
   // Authenticated but no children → create profile first
   if (!child && children.length === 0) {
@@ -95,24 +112,56 @@ export default function HomeScreen() {
             {
               emoji: '📚',
               label: 'Devam Et',
-              path: `/world/${child.currentWorldId}`,
-              color: 'bg-nova-blue/10',
+              description: 'Bulunduğun dünyaya dön',
+              onClick: () => navigate(`/world/${child.currentWorldId}`),
             },
-            { emoji: '🏆', label: 'Başarımlar', path: '/achievements', color: 'bg-nova-purple/10' },
-            { emoji: '⚔️', label: 'Görevler', path: '/quests', color: 'bg-nova-orange/10' },
-            { emoji: '🛒', label: 'Mağaza', path: '/shop', color: 'bg-success/10' },
+            {
+              emoji: '🎭',
+              label: 'Senaryolu Diyalog',
+              description: 'Nova ile konuşma pratiği',
+              onClick: () => conversationLessonId && navigate(`/lesson/${conversationLessonId}`),
+              disabled: !conversationLessonId,
+            },
+            {
+              emoji: '🎰',
+              label: 'Günlük Çark',
+              description: 'Günlük ödülünü çevir',
+              onClick: () => openModal('dailyWheel'),
+            },
+            {
+              emoji: '🏆',
+              label: 'Başarımlar',
+              description: 'Açtığın rozetleri gör',
+              onClick: () => navigate('/achievements'),
+            },
+            {
+              emoji: '⚔️',
+              label: 'Görevler',
+              description: 'Günlük görevleri tamamla',
+              onClick: () => navigate('/quests'),
+            },
+            {
+              emoji: '🛒',
+              label: 'Mağaza',
+              description: 'Nova için yeni eşyalar',
+              onClick: () => navigate('/shop'),
+            },
           ].map((action) => (
             <Card
               key={action.label}
               variant="elevated"
-              pressable
+              pressable={!action.disabled}
               padding="md"
-              onClick={() => navigate(action.path)}
+              onClick={action.onClick}
+              className={action.disabled ? 'opacity-50' : ''}
             >
               <div className="space-y-1 text-center">
                 <span className="text-3xl">{action.emoji}</span>
                 <Text variant="bodySmall" weight="bold">
                   {action.label}
+                </Text>
+                <Text variant="caption" className="text-text-secondary block">
+                  {action.description}
                 </Text>
               </div>
             </Card>

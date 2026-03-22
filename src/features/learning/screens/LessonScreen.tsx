@@ -31,9 +31,12 @@ import { enqueueAction } from '@services/offline/offlineDB';
 import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { useLessonStore } from '@stores/lessonStore';
+import { useUIStore } from '@stores/uiStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+const SUBMIT_TIMEOUT_MS = 4500;
 
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -57,8 +60,11 @@ export default function LessonScreen() {
   const addXP = useChildStore((s) => s.addXP);
   const updateStreak = useChildStore((s) => s.updateStreak);
   const updateCurrency = useChildStore((s) => s.updateCurrency);
+  const showToast = useUIStore((s) => s.showToast);
   const submitLessonMutation = useSubmitLesson();
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const submitFallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasNavigatedToResultRef = useRef(false);
   const sessionRef = useRef<LessonSession | null>(null);
   const lessonTypeRef = useRef<'normal' | 'boss' | 'review' | 'bonus'>('normal');
 
@@ -159,6 +165,10 @@ export default function LessonScreen() {
         clearTimeout(feedbackTimerRef.current);
         feedbackTimerRef.current = null;
       }
+      if (submitFallbackTimerRef.current) {
+        clearTimeout(submitFallbackTimerRef.current);
+        submitFallbackTimerRef.current = null;
+      }
       if (bossTimerRef.current) {
         clearInterval(bossTimerRef.current);
         bossTimerRef.current = null;
@@ -166,6 +176,7 @@ export default function LessonScreen() {
       useLessonStore.getState().reset();
       sessionRef.current = null;
       hasStartedRef.current = false;
+      hasNavigatedToResultRef.current = false;
     };
   }, [lessonId, lessonSession, startLesson]);
 
@@ -187,16 +198,38 @@ export default function LessonScreen() {
     };
   }, [bossTimerActive]);
 
+  const navigateToResult = useCallback(
+    (state: {
+      summary: ReturnType<typeof endLesson>;
+      backendResult?: unknown;
+      vocabulary: string[];
+      bossGameOver?: boolean;
+    }) => {
+      if (hasNavigatedToResultRef.current) return;
+      hasNavigatedToResultRef.current = true;
+
+      if (submitFallbackTimerRef.current) {
+        clearTimeout(submitFallbackTimerRef.current);
+        submitFallbackTimerRef.current = null;
+      }
+
+      void navigate(`/lesson/${lessonId}/result`, { state });
+    },
+    [endLesson, lessonId, navigate],
+  );
+
   // Boss: game over when lives hit 0
   useEffect(() => {
     if (!isBoss || bossLives > 0) return;
     setBossTimerActive(false);
     const summary = endLesson();
     sfxIncorrect();
-    void navigate(`/lesson/${lessonId}/result`, {
-      state: { summary, bossGameOver: true, vocabulary: sessionRef.current?.vocabulary ?? [] },
+    navigateToResult({
+      summary,
+      bossGameOver: true,
+      vocabulary: sessionRef.current?.vocabulary ?? [],
     });
-  }, [bossLives, isBoss, endLesson, navigate, lessonId]);
+  }, [bossLives, isBoss, endLesson, navigateToResult]);
 
   const totalActivities = activities.length;
   const progress = totalActivities > 0 ? (currentActivityIndex + 1) / totalActivities : 0;
@@ -274,6 +307,22 @@ export default function LessonScreen() {
               attempts: r.attempts,
             }));
 
+            if (submitFallbackTimerRef.current) {
+              clearTimeout(submitFallbackTimerRef.current);
+            }
+
+            submitFallbackTimerRef.current = setTimeout(() => {
+              showToast({
+                type: 'info',
+                title: 'Ders kaydediliyor',
+                message: 'Sonuç ekranı açıldı. Kayıt arka planda tamamlanacak.',
+              });
+              navigateToResult({
+                summary,
+                vocabulary: session?.vocabulary ?? [],
+              });
+            }, SUBMIT_TIMEOUT_MS);
+
             submitLessonMutation.mutate(
               {
                 childId: child.id,
@@ -293,12 +342,10 @@ export default function LessonScreen() {
                   updateStreak(backendResult.streak);
                   updateCurrency(backendResult.starsEarned, 0);
 
-                  void navigate(`/lesson/${lessonId}/result`, {
-                    state: {
-                      summary,
-                      backendResult,
-                      vocabulary: session?.vocabulary ?? [],
-                    },
+                  navigateToResult({
+                    summary,
+                    backendResult,
+                    vocabulary: session?.vocabulary ?? [],
                   });
                 },
                 onError: () => {
@@ -310,21 +357,17 @@ export default function LessonScreen() {
                     activities: activitiesPayload,
                     totalTimeMs: summary.durationSeconds * 1000,
                   });
-                  void navigate(`/lesson/${lessonId}/result`, {
-                    state: {
-                      summary,
-                      vocabulary: session?.vocabulary ?? [],
-                    },
+                  navigateToResult({
+                    summary,
+                    vocabulary: session?.vocabulary ?? [],
                   });
                 },
               },
             );
           } else {
-            void navigate(`/lesson/${lessonId}/result`, {
-              state: {
-                summary,
-                vocabulary: session?.vocabulary ?? [],
-              },
+            navigateToResult({
+              summary,
+              vocabulary: session?.vocabulary ?? [],
             });
           }
         }
@@ -341,9 +384,11 @@ export default function LessonScreen() {
       lessonId,
       addXP,
       child,
+      navigateToResult,
       submitLessonMutation,
       vocabularyCards,
       isBoss,
+      showToast,
       updateCurrency,
       updateStreak,
     ],
