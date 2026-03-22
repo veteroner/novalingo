@@ -10,18 +10,18 @@ import novaMascot from '@assets/images/nova-mascot.svg';
 import { Text } from '@components/atoms/Text';
 import { useHaptic } from '@hooks/useHaptic';
 import {
-    comparePronunciation,
-    onSpeakingStateChange,
-    stopSpeaking,
-    speak as ttsSpeak,
+  comparePronunciation,
+  onSpeakingStateChange,
+  stopSpeaking,
+  speak as ttsSpeak,
 } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    matchConversationResponse as rawMatchConversationResponse,
-    type MatchConversationResponseResult,
+  matchConversationResponse as rawMatchConversationResponse,
+  type MatchConversationResponseResult,
 } from './conversationRuntime.ts';
 import type { ActivityCallbacks, FeedbackState } from './types';
 
@@ -76,13 +76,23 @@ interface ChatBubble {
 
 const CHILD_ACCEPT_THRESHOLD = 0.65;
 const SPEECH_RATES = [0.6, 0.8, 1.0] as const;
-const HINT_DELAY_MS = 8000;        // Show hint after 8 s of no response
-const AUTO_ADVANCE_MS = 20000;     // Auto-advance after 20 s if child is stuck
+const HINT_DELAY_MS = 8000; // Show hint after 8 s of no response
+const AUTO_ADVANCE_MS = 20000; // Auto-advance after 20 s if child is stuck
 type NovaMood = 'idle' | 'speaking' | 'listening' | 'celebrating' | 'sad' | 'thinking';
 
 const AVATAR_EMOJIS: Record<string, string> = {
-  fox: '🦊', panda: '🐼', unicorn: '🦄', lion: '🦁', owl: '🦉', rabbit: '🐰',
-  cat: '🐱', dog: '🐶', dragon: '🐉', astronaut: '🧑‍🚀', robot: '🤖', star: '🌟',
+  fox: '🦊',
+  panda: '🐼',
+  unicorn: '🦄',
+  lion: '🦁',
+  owl: '🦉',
+  rabbit: '🐰',
+  cat: '🐱',
+  dog: '🐶',
+  dragon: '🐉',
+  astronaut: '🧑‍🚀',
+  robot: '🤖',
+  star: '🌟',
 };
 
 /* ─── Nova Speaking Avatar — Hero character with mood animations ─── */
@@ -191,9 +201,7 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
                         : { ry: 0.8 }
               }
               transition={
-                isSpeaking
-                  ? { duration: 0.4, repeat: Infinity, ease: 'linear' }
-                  : { duration: 0.3 }
+                isSpeaking ? { duration: 0.4, repeat: Infinity, ease: 'linear' } : { duration: 0.3 }
               }
             />
           </svg>
@@ -332,10 +340,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
 
 /* ─── Main Component ─── */
 
-export default function ConversationActivity({
-  data,
-  onComplete,
-}: ConversationActivityProps) {
+export default function ConversationActivity({ data, onComplete }: ConversationActivityProps) {
   const { t } = useTranslation('lesson');
   const activeChild = useChildStore((s) => s.activeChild);
   const childAvatarEmoji = AVATAR_EMOJIS[activeChild?.avatarId ?? ''] ?? '🧒';
@@ -386,7 +391,8 @@ export default function ConversationActivity({
 
   // Total interaction rounds for progress indicator
   const totalRounds = useMemo(
-    () => data.nodes.filter((n) => n.speaker === 'nova' && n.options && n.options.length > 0).length,
+    () =>
+      data.nodes.filter((n) => n.speaker === 'nova' && n.options && n.options.length > 0).length,
     [data.nodes],
   );
 
@@ -399,7 +405,9 @@ export default function ConversationActivity({
             // Auto-start listening if STT is available and child has options to respond to
             if (SpeechRecognitionAPI) {
               // Small delay so the mic doesn't pick up the tail of TTS
-              const tid = setTimeout(() => { startListeningRef.current(); }, 400);
+              const tid = setTimeout(() => {
+                startListeningRef.current();
+              }, 400);
               autoAdvanceTimers.current.push(tid);
             }
             return 'listening';
@@ -463,67 +471,73 @@ export default function ConversationActivity({
     });
   }, [data.targetWords, onComplete]);
 
-  const advanceToNode = useCallback((node: ConversationActivityNode) => {
-    setFeedback('idle');
-    setHintVisible(false);
-    if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+  const advanceToNode = useCallback(
+    (node: ConversationActivityNode) => {
+      setFeedback('idle');
+      setHintVisible(false);
+      if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
 
-    // Add bubble
-    setBubbles((prev) => [
-      ...prev,
-      {
-        id: node.id,
-        speaker: node.speaker,
-        text: node.text,
-        textTr: node.textTr,
-        emoji: node.emoji,
-      },
-    ]);
+      // Add bubble
+      setBubbles((prev) => [
+        ...prev,
+        {
+          id: node.id,
+          speaker: node.speaker,
+          text: node.text,
+          textTr: node.textTr,
+          emoji: node.emoji,
+        },
+      ]);
 
-    // Nova speaks — TTS with current rate
-    if (node.speaker === 'nova') {
-      setCurrentSpeech({ text: node.text, textTr: node.textTr });
-      // Brief thinking state before speaking starts
-      setNovaMood('thinking');
-      const speakTid = setTimeout(() => {
-        setNovaMood('speaking');
-        void ttsSpeak(node.text, { rate: SPEECH_RATES[speechRateRef.current], audioUrl: node.audioUrl });
-      }, 500);
-      autoAdvanceTimers.current.push(speakTid);
-    }
+      // Nova speaks — TTS with current rate
+      if (node.speaker === 'nova') {
+        setCurrentSpeech({ text: node.text, textTr: node.textTr });
+        // Brief thinking state before speaking starts
+        setNovaMood('thinking');
+        const speakTid = setTimeout(() => {
+          setNovaMood('speaking');
+          void ttsSpeak(node.text, {
+            rate: SPEECH_RATES[speechRateRef.current],
+            audioUrl: node.audioUrl,
+          });
+        }, 500);
+        autoAdvanceTimers.current.push(speakTid);
+      }
 
-    // If nova with options → free-form input active + start hint + auto-advance timers
-    if (node.speaker === 'nova' && node.options && node.options.length > 0) {
-      setOptions(node.options);
-      // Hint timer — subtly suggest the first option after HINT_DELAY_MS
-      hintTimerRef.current = setTimeout(() => {
-        setHintVisible(true);
-        setShowTranslation(true);
-      }, HINT_DELAY_MS);
-      // Auto-advance if child doesn't respond within AUTO_ADVANCE_MS
-      if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
-      noResponseTimerRef.current = setTimeout(() => {
-        autoAdvanceRef.current();
-      }, AUTO_ADVANCE_MS);
-    } else if (node.next) {
-      const nextNodeId = node.next;
+      // If nova with options → free-form input active + start hint + auto-advance timers
+      if (node.speaker === 'nova' && node.options && node.options.length > 0) {
+        setOptions(node.options);
+        // Hint timer — subtly suggest the first option after HINT_DELAY_MS
+        hintTimerRef.current = setTimeout(() => {
+          setHintVisible(true);
+          setShowTranslation(true);
+        }, HINT_DELAY_MS);
+        // Auto-advance if child doesn't respond within AUTO_ADVANCE_MS
+        if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
+        noResponseTimerRef.current = setTimeout(() => {
+          autoAdvanceRef.current();
+        }, AUTO_ADVANCE_MS);
+      } else if (node.next) {
+        const nextNodeId = node.next;
 
-      // Auto-advance after a short delay (e.g. child bubble → next nova line)
-      const tid1 = setTimeout(() => {
-        const nextNode = nodesMap.current.get(nextNodeId);
-        if (nextNode) {
-          advanceToNode(nextNode);
-        }
-      }, 1200);
-      autoAdvanceTimers.current.push(tid1);
-    } else {
-      // End of conversation — no next, no options → complete
-      const tid2 = setTimeout(() => {
-        finishConversation();
-      }, 1500);
-      autoAdvanceTimers.current.push(tid2);
-    }
-  }, [finishConversation]);
+        // Auto-advance after a short delay (e.g. child bubble → next nova line)
+        const tid1 = setTimeout(() => {
+          const nextNode = nodesMap.current.get(nextNodeId);
+          if (nextNode) {
+            advanceToNode(nextNode);
+          }
+        }, 1200);
+        autoAdvanceTimers.current.push(tid1);
+      } else {
+        // End of conversation — no next, no options → complete
+        const tid2 = setTimeout(() => {
+          finishConversation();
+        }, 1500);
+        autoAdvanceTimers.current.push(tid2);
+      }
+    },
+    [finishConversation],
+  );
 
   const handleOptionSelect = useCallback(
     (option: ConversationActivityOption) => {
@@ -535,7 +549,10 @@ export default function ConversationActivity({
       if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
 
       // Track vocabulary — strip punctuation before matching
-      const words = option.text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
+      const words = option.text
+        .toLowerCase()
+        .replace(/[^a-z\s]/g, '')
+        .split(/\s+/);
       setCompletedWords((prev) => {
         const next = new Set(prev);
         for (const w of words) {
@@ -595,21 +612,15 @@ export default function ConversationActivity({
       if (!rawText.trim() || options.length === 0) return;
       abortRecognition();
 
-      // ESLint currently resolves this helper import as error-typed in this file,
-      // but TypeScript resolves it correctly and the helper is covered by tests.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const match: MatchConversationResponseResult = rawMatchConversationResponse({
         rawText,
         options,
         targetWords: data.targetWords,
         acceptThreshold: CHILD_ACCEPT_THRESHOLD,
         pronunciationScorer: comparePronunciation,
-      }) as MatchConversationResponseResult;
+      });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const matchedOption: ConversationActivityOption | null = match.matchedOption as
-        | ConversationActivityOption
-        | null;
+      const matchedOption: ConversationActivityOption | null = match.matchedOption;
 
       if (matchedOption) {
         handleOptionSelect(matchedOption);
@@ -654,8 +665,13 @@ export default function ConversationActivity({
       recognition.maxAlternatives = 5;
       recognitionRef.current = recognition;
 
-      recognition.onstart = () => { setIsListening(true); setMicError(null); };
-      recognition.onend = () => { setIsListening(false); };
+      recognition.onstart = () => {
+        setIsListening(true);
+        setMicError(null);
+      };
+      recognition.onend = () => {
+        setIsListening(false);
+      };
       recognition.onerror = (event: Event & { error?: string }) => {
         setIsListening(false);
         const errorType = event.error;
@@ -719,7 +735,9 @@ export default function ConversationActivity({
         </div>
         <ProgressDots current={currentRound} total={totalRounds} />
         <button
-          onClick={() => { setSpeechRateIndex((i) => (i + 1) % SPEECH_RATES.length); }}
+          onClick={() => {
+            setSpeechRateIndex((i) => (i + 1) % SPEECH_RATES.length);
+          }}
           className="rounded-full bg-white/80 px-2.5 py-1 text-xs font-bold text-indigo-500 shadow-sm active:bg-indigo-50"
         >
           {SPEECH_RATES[speechRateIndex]}x
@@ -754,17 +772,19 @@ export default function ConversationActivity({
             </AnimatePresence>
             <div className="mt-2 flex justify-center gap-3">
               <button
-                onClick={() => { replaySpeech(); }}
+                onClick={() => {
+                  replaySpeech();
+                }}
                 className="flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-500 active:bg-indigo-100"
               >
                 🔊 {t('activities.conversationReplay')}
               </button>
               <button
-                onClick={() => { setShowTranslation((v) => !v); }}
+                onClick={() => {
+                  setShowTranslation((v) => !v);
+                }}
                 className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                  showTranslation
-                    ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-gray-100 text-gray-400'
+                  showTranslation ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'
                 }`}
               >
                 🇹🇷 {t('activities.conversationTranslate')}
@@ -828,7 +848,9 @@ export default function ConversationActivity({
                 )}
                 {bubble.speaker === 'nova' && (
                   <button
-                    onClick={() => { replaySpeech(bubble.text); }}
+                    onClick={() => {
+                      replaySpeech(bubble.text);
+                    }}
                     className="mt-0.5 text-xs text-indigo-300 opacity-60 transition-opacity active:opacity-100"
                     aria-label={t('activities.conversationReplay')}
                   >
@@ -846,7 +868,7 @@ export default function ConversationActivity({
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="shrink-0 border-t border-indigo-100/50 bg-white px-4 pb-4 pt-3"
+          className="shrink-0 border-t border-indigo-100/50 bg-white px-4 pt-3 pb-4"
         >
           {/* Hint: gently suggest the first option after HINT_DELAY_MS */}
           <AnimatePresence>
@@ -859,9 +881,7 @@ export default function ConversationActivity({
               >
                 <p className="text-xs text-amber-500">{t('activities.conversationTryThis')}</p>
                 <p className="text-sm font-semibold text-amber-700">{options[0].text}</p>
-                {showTranslation && (
-                  <p className="text-xs text-amber-400">{options[0].textTr}</p>
-                )}
+                {showTranslation && <p className="text-xs text-amber-400">{options[0].textTr}</p>}
               </motion.div>
             )}
           </AnimatePresence>
@@ -871,7 +891,9 @@ export default function ConversationActivity({
             <input
               type="text"
               value={freeInputText}
-              onChange={(e) => { setFreeInputText(e.target.value); }}
+              onChange={(e) => {
+                setFreeInputText(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && freeInputText.trim()) {
                   const val = freeInputText.trim();
@@ -880,7 +902,7 @@ export default function ConversationActivity({
                 }
               }}
               placeholder={t('activities.conversationTypeHere')}
-              className="flex-1 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-300 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+              className="flex-1 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-300 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 focus:outline-none"
             />
             <AnimatePresence>
               {freeInputText.trim() && (
@@ -915,14 +937,21 @@ export default function ConversationActivity({
                       ? 'bg-red-100 text-red-500'
                       : 'bg-indigo-500 active:scale-95'
                 } text-white`}
-                aria-label={isListening ? t('activities.conversationListening') : t('activities.conversationKeyboard')}
+                aria-label={
+                  isListening
+                    ? t('activities.conversationListening')
+                    : t('activities.conversationKeyboard')
+                }
               >
                 <span className="text-3xl">{isListening ? '🔴' : '🎤'}</span>
               </motion.button>
             )}
 
             <button
-              onClick={() => { setShowTranslation(true); setHintVisible(true); }}
+              onClick={() => {
+                setShowTranslation(true);
+                setHintVisible(true);
+              }}
               className={`flex h-10 w-10 items-center justify-center rounded-full active:bg-amber-100 ${
                 hintVisible ? 'bg-amber-200 text-amber-600' : 'bg-amber-50 text-amber-500'
               }`}
@@ -981,7 +1010,7 @@ export default function ConversationActivity({
             >
               🔄
             </motion.span>
-            <Text variant="caption" className="absolute bottom-1/3 text-red-400 font-semibold">
+            <Text variant="caption" className="absolute bottom-1/3 font-semibold text-red-400">
               {t('activities.conversationTryAgain')}
             </Text>
           </motion.div>
