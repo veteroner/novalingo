@@ -19,6 +19,10 @@ import { useChildStore } from '@stores/childStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+    matchConversationResponse as rawMatchConversationResponse,
+    type MatchConversationResponseResult,
+} from './conversationRuntime.ts';
 import type { ActivityCallbacks, FeedbackState } from './types';
 
 interface ConversationActivityProps extends ActivityCallbacks {
@@ -591,58 +595,28 @@ export default function ConversationActivity({
       if (!rawText.trim() || options.length === 0) return;
       abortRecognition();
 
-      const text = rawText.toLowerCase().trim();
+      // ESLint currently resolves this helper import as error-typed in this file,
+      // but TypeScript resolves it correctly and the helper is covered by tests.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+      const match: MatchConversationResponseResult = rawMatchConversationResponse({
+        rawText,
+        options,
+        targetWords: data.targetWords,
+        acceptThreshold: CHILD_ACCEPT_THRESHOLD,
+        pronunciationScorer: comparePronunciation,
+      }) as MatchConversationResponseResult;
 
-      // 1. Try comparePronunciation against every option
-      let bestOption: ConversationActivityOption | null = null;
-      let bestScore = 0;
-      for (const opt of options) {
-        const score = comparePronunciation(text, opt.text, opt.acceptableVariations);
-        if (score > bestScore) {
-          bestScore = score;
-          bestOption = opt;
-        }
-      }
-      if (bestOption && bestScore >= CHILD_ACCEPT_THRESHOLD) {
-        handleOptionSelect(bestOption);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const matchedOption: ConversationActivityOption | null = match.matchedOption as
+        | ConversationActivityOption
+        | null;
+
+      if (matchedOption) {
+        handleOptionSelect(matchedOption);
         return;
       }
 
-      // 2. Substring match: acceptable variations
-      for (const opt of options) {
-        const variations = [opt.text.toLowerCase(), ...(opt.acceptableVariations ?? [])];
-        if (variations.some((v) => text.includes(v.toLowerCase()))) {
-          handleOptionSelect(opt);
-          return;
-        }
-      }
-
-      // 3. Target word detected in free speech
-      const foundTarget = data.targetWords.find((tw) => text.includes(tw.toLowerCase()));
-      if (foundTarget) {
-        const matchingOpt =
-          options.find((o) => o.text.toLowerCase().includes(foundTarget.toLowerCase())) ??
-          options[0];
-        if (matchingOpt) {
-          handleOptionSelect(matchingOpt);
-          return;
-        }
-      }
-
-      // 4. Any key word from any option appears in speech
-      for (const opt of options) {
-        const optWords = opt.text
-          .toLowerCase()
-          .replace(/[^a-z\s]/g, '')
-          .split(/\s+/)
-          .filter((w) => w.length > 2);
-        if (optWords.some((w) => text.includes(w))) {
-          handleOptionSelect(opt);
-          return;
-        }
-      }
-
-      // 5. No match — give feedback but keep child in the same round
+      // No match — give feedback but keep child in the same round
       setFeedback('wrong');
       setNovaMood('sad');
       void haptic.error();

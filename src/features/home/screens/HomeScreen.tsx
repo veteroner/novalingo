@@ -61,21 +61,8 @@ export default function HomeScreen() {
     () => (firestoreWorlds && firestoreWorlds.length > 0 ? firestoreWorlds : curriculumWorlds),
     [firestoreWorlds],
   );
-  const conversationLessonId = useMemo(() => {
-    const currentWorldLesson = curriculum
-      .find((world) => world.id === child?.currentWorldId)
-      ?.units.flatMap((unit) => unit.lessons)
-      .find((lesson) => lesson.activityTypes.includes('conversation'));
-
-    if (currentWorldLesson) {
-      return currentWorldLesson.id;
-    }
-
-    return curriculum
-      .flatMap((world) => world.units)
-      .flatMap((unit) => unit.lessons)
-      .find((lesson) => lesson.activityTypes.includes('conversation'))?.id;
-  }, [child?.currentWorldId]);
+  // "Nova ile Konuş" artık standalone /conversation route'una yönlenir.
+  // Lesson hack (conversationLessonId) kaldırıldı.
 
   // Authenticated but no children → create profile first
   if (!child && children.length === 0) {
@@ -135,8 +122,7 @@ export default function HomeScreen() {
               emoji: '🎭',
               label: 'Nova ile Konuş',
               description: 'Nova ile birebir pratik yap',
-              onClick: () => conversationLessonId && navigate(`/lesson/${conversationLessonId}?mode=conversation`),
-              disabled: !conversationLessonId,
+              onClick: () => navigate('/conversation'),
             },
             {
               emoji: '🎰',
@@ -166,10 +152,9 @@ export default function HomeScreen() {
             <Card
               key={action.label}
               variant="elevated"
-              pressable={!action.disabled}
+              pressable
               padding="md"
               onClick={action.onClick}
-              className={action.disabled ? 'opacity-50' : ''}
             >
               <div className="space-y-1 text-center">
                 <span className="text-3xl">{action.emoji}</span>

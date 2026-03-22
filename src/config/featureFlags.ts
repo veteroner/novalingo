@@ -30,6 +30,8 @@ export interface FeatureFlags {
   multiplayerGames: boolean;
   /** AR-based activities */
   arActivities: boolean;
+  /** New registry-backed conversation content system */
+  conversationScenarioRegistry: boolean;
 }
 
 /**
@@ -49,6 +51,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   storyMode: false, // Phase 2
   multiplayerGames: false, // Phase 4
   arActivities: false, // Phase 5
+  conversationScenarioRegistry: false,
 };
 
 /**
@@ -58,6 +61,7 @@ export const devFeatureFlags: Partial<FeatureFlags> = {
   speechRecognition: true,
   novaAIChat: true,
   storyMode: true,
+  conversationScenarioRegistry: false,
 };
 
 /**

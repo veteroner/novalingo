@@ -18,6 +18,10 @@ const LessonScreen = lazy(() => import('@features/learning/screens/LessonScreen'
 const LessonResultScreen = lazy(() => import('@features/learning/screens/LessonResultScreen'));
 const ReviewScreen = lazy(() => import('@features/learning/screens/ReviewScreen'));
 
+// Conversation (standalone)
+const ConversationScreen = lazy(() => import('@features/conversation/screens/ConversationScreen'));
+const ConversationResultScreen = lazy(() => import('@features/conversation/screens/ConversationResultScreen'));
+
 // Gamification
 const ProfileScreen = lazy(() => import('@features/gamification/screens/ProfileScreen'));
 const ShopScreen = lazy(() => import('@features/gamification/screens/ShopScreen'));
@@ -98,6 +102,22 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <WorldMapScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/conversation"
+          element={
+            <ProtectedRoute>
+              <ConversationScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/conversation/result"
+          element={
+            <ProtectedRoute>
+              <ConversationResultScreen />
             </ProtectedRoute>
           }
         />

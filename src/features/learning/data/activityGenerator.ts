@@ -5,6 +5,7 @@
  * oluşturur. Her ders için pedagojik sıralama ile tam oynanabilir veriler üretir.
  */
 
+import { resolveFeatureFlags } from '@/config/featureFlags';
 import type {
   Activity,
   ConversationData,
@@ -24,6 +25,7 @@ import type {
 } from '@/types/content';
 import { shuffle } from '@/utils/array';
 import { COMPREHENSION_TEMPLATES, type ComprehensionTemplate } from './comprehensionTemplates';
+import { selectConversationScenario, toConversationActivityData } from './conversations';
 import { findBestTemplate } from './conversationTemplates';
 import type { CurriculumLesson } from './curriculum';
 import { GRAMMAR_PATTERNS } from './grammarPatterns';
@@ -8026,7 +8028,40 @@ function generateSentenceBuilder(lessonId: string, words: string[], startOrder: 
 
 // ===== CONVERSATION GENERATOR =====
 
+function isConversationScenarioRegistryEnabled(): boolean {
+  const env =
+    import.meta.env.MODE === 'production'
+      ? 'production'
+      : import.meta.env.MODE === 'test'
+        ? 'test'
+        : 'development';
+
+  const remoteOverrides =
+    import.meta.env.VITE_FEATURE_CONVERSATION_SCENARIO_REGISTRY === 'true'
+      ? { conversationScenarioRegistry: true }
+      : undefined;
+
+  return resolveFeatureFlags(env, remoteOverrides).conversationScenarioRegistry;
+}
+
 function generateConversation(lessonId: string, words: string[], startOrder: number): Activity {
+  if (isConversationScenarioRegistryEnabled()) {
+    try {
+      const scenario = selectConversationScenario({ words });
+
+      return {
+        id: nextId(lessonId, 'conv'),
+        type: 'conversation' as const,
+        order: startOrder,
+        timeLimit: null,
+        maxAttempts: 1,
+        data: toConversationActivityData(scenario),
+      };
+    } catch {
+      // Fall back to the legacy template path until registry coverage is complete.
+    }
+  }
+
   const template = findBestTemplate(words);
   const selectedWords = words.slice(0, Math.max(template.minWords, 3));
   const translations = selectedWords.map((w) => getVocab(w).tr);

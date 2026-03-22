@@ -34,15 +34,13 @@ import { useLessonStore } from '@stores/lessonStore';
 import { useUIStore } from '@stores/uiStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const SUBMIT_TIMEOUT_MS = 4500;
 
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const conversationOnly = searchParams.get('mode') === 'conversation';
 
   const {
     currentActivityIndex,
@@ -106,11 +104,7 @@ export default function LessonScreen() {
     } else {
       lessonTypeRef.current = curLesson.type;
       // Generate raw activities from curriculum
-      const rawActivitiesAll = generateActivities(curLesson);
-      // If opened via "Nova ile Konuş" → keep only conversation activities
-      const rawActivities = conversationOnly
-        ? rawActivitiesAll.filter((a) => a.type === 'conversation')
-        : rawActivitiesAll;
+      const rawActivities = generateActivities(curLesson);
 
       // Bridge CurriculumLesson → Lesson for prepareLesson
       // lessonId format: w{x}_u{y}_l{z}
