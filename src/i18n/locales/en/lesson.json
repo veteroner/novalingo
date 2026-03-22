@@ -45,6 +45,8 @@
     "conversationReplay": "Replay",
     "conversationTranslate": "Translate",
     "conversationKeyboard": "Type",
+    "conversationTryThis": "💡 Try saying...",
+    "conversationTypeHere": "Type or speak English...",
     "conversationSpeed": "Speed"
   },
 

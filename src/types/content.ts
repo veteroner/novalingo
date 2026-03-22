@@ -251,7 +251,7 @@ export interface GrammarTransformData {
   options: string[];
 }
 
-// ===== CONVERSATION (Senaryolu Diyalog) =====
+// ===== CONVERSATION (Nova ile Konuş) =====
 
 export interface ConversationNode {
   /** Unique node id within the dialogue tree */
@@ -270,6 +270,8 @@ export interface ConversationNode {
   options?: ConversationOption[];
   /** Next node id to auto-advance to (for nova lines without options) */
   next?: string;
+  /** Primary target vocabulary word for this prompt — used in free-form matching */
+  targetWord?: string;
 }
 
 export interface ConversationOption {

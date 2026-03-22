@@ -1,9 +1,9 @@
 /**
- * ConversationActivity
+ * ConversationActivity — Nova ile Konuş
  *
- * Senaryolu diyalog — Nova (maskot) ile çocuk arasında karşılıklı konuşma.
- * Diyalog ağacı üzerinden ilerler. Çocuk seçenek tıklar veya mikrofona söyler.
- * Web Speech API STT kullanır, fallback olarak butonlar her zaman aktif.
+ * Nova (maskot) ile çocuk arasında serbest karşılıklı konuşma.
+ * Çocuk mikrofona konuşur veya metin kutusu ile yazar — seçenek butonu yok.
+ * Web Speech API STT + TTS kullanır; metinle de tam çalışır.
  */
 
 import novaMascot from '@assets/images/nova-mascot.svg';
@@ -72,7 +72,8 @@ interface ChatBubble {
 
 const CHILD_ACCEPT_THRESHOLD = 0.65;
 const SPEECH_RATES = [0.6, 0.8, 1.0] as const;
-const HINT_DELAY_MS = 8000; // Show hint after 8 seconds of inactivity
+const HINT_DELAY_MS = 8000;        // Show hint after 8 s of no response
+const AUTO_ADVANCE_MS = 20000;     // Auto-advance after 20 s if child is stuck
 type NovaMood = 'idle' | 'speaking' | 'listening' | 'celebrating' | 'sad' | 'thinking';
 
 const AVATAR_EMOJIS: Record<string, string> = {
@@ -342,7 +343,7 @@ export default function ConversationActivity({
   const [feedback, setFeedback] = useState<FeedbackState>('idle');
   const [completedWords, setCompletedWords] = useState<Set<string>>(new Set());
   const [attempts, setAttempts] = useState(0);
-  const [showManual, setShowManual] = useState(!SpeechRecognitionAPI);
+  const [freeInputText, setFreeInputText] = useState('');
 
   // ── Premium UX state ──
   const [novaMood, setNovaMood] = useState<NovaMood>('idle');
@@ -358,6 +359,7 @@ export default function ConversationActivity({
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autoAdvanceTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const hintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const noResponseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nodesMap = useRef<Map<string, ConversationActivityNode>>(new Map());
   const completedWordsRef = useRef(completedWords);
   const attemptsRef = useRef(attempts);
@@ -367,8 +369,15 @@ export default function ConversationActivity({
   const speechRateRef = useRef(speechRateIndex);
   speechRateRef.current = speechRateIndex;
 
+  // Keep a live ref to current options so timer callbacks can read them without stale closures
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+
   // Ref for auto-listen callback (avoids stale closure in the speaking-state effect)
   const startListeningRef = useRef<() => void>(() => {});
+
+  // Ref for auto-advance callback when child doesn't respond
+  const autoAdvanceRef = useRef<() => void>(() => {});
 
   // Total interaction rounds for progress indicator
   const totalRounds = useMemo(
@@ -382,8 +391,8 @@ export default function ConversationActivity({
       if (!speaking) {
         setNovaMood((prev) => {
           if (prev === 'speaking') {
-            // Auto-start listening if STT is available
-            if (SpeechRecognitionAPI && !showManual) {
+            // Auto-start listening if STT is available and child has options to respond to
+            if (SpeechRecognitionAPI) {
               // Small delay so the mic doesn't pick up the tail of TTS
               const tid = setTimeout(() => { startListeningRef.current(); }, 400);
               autoAdvanceTimers.current.push(tid);
@@ -394,7 +403,7 @@ export default function ConversationActivity({
         });
       }
     });
-  }, [showManual]);
+  }, []);
 
   // Build nodes map once
   useEffect(() => {
@@ -420,6 +429,7 @@ export default function ConversationActivity({
     return () => {
       if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+      if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
       for (const tid of autoAdvanceTimers.current) clearTimeout(tid);
       autoAdvanceTimers.current = [];
       abortRecognition();
@@ -477,14 +487,19 @@ export default function ConversationActivity({
       autoAdvanceTimers.current.push(speakTid);
     }
 
-    // If nova with options → show them for child to respond + start hint timer
+    // If nova with options → free-form input active + start hint + auto-advance timers
     if (node.speaker === 'nova' && node.options && node.options.length > 0) {
       setOptions(node.options);
-      // Start hint timer
+      // Hint timer — subtly suggest the first option after HINT_DELAY_MS
       hintTimerRef.current = setTimeout(() => {
         setHintVisible(true);
         setShowTranslation(true);
       }, HINT_DELAY_MS);
+      // Auto-advance if child doesn't respond within AUTO_ADVANCE_MS
+      if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
+      noResponseTimerRef.current = setTimeout(() => {
+        autoAdvanceRef.current();
+      }, AUTO_ADVANCE_MS);
     } else if (node.next) {
       const nextNodeId = node.next;
 
@@ -512,6 +527,7 @@ export default function ConversationActivity({
       setCurrentRound((r) => r + 1);
       setHintVisible(false);
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+      if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
 
       // Track vocabulary — strip punctuation before matching
       const words = option.text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
@@ -568,6 +584,75 @@ export default function ConversationActivity({
     [currentSpeech],
   );
 
+  // ── Free-form input handler (STT transcript or typed text) ──
+  const handleFreeInput = useCallback(
+    (rawText: string) => {
+      if (!rawText.trim() || options.length === 0) return;
+      abortRecognition();
+
+      const text = rawText.toLowerCase().trim();
+
+      // 1. Try comparePronunciation against every option
+      let bestOption: ConversationActivityOption | null = null;
+      let bestScore = 0;
+      for (const opt of options) {
+        const score = comparePronunciation(text, opt.text, opt.acceptableVariations);
+        if (score > bestScore) {
+          bestScore = score;
+          bestOption = opt;
+        }
+      }
+      if (bestOption && bestScore >= CHILD_ACCEPT_THRESHOLD) {
+        handleOptionSelect(bestOption);
+        return;
+      }
+
+      // 2. Substring match: acceptable variations
+      for (const opt of options) {
+        const variations = [opt.text.toLowerCase(), ...(opt.acceptableVariations ?? [])];
+        if (variations.some((v) => text.includes(v.toLowerCase()))) {
+          handleOptionSelect(opt);
+          return;
+        }
+      }
+
+      // 3. Target word detected in free speech
+      const foundTarget = data.targetWords.find((tw) => text.includes(tw.toLowerCase()));
+      if (foundTarget) {
+        const matchingOpt =
+          options.find((o) => o.text.toLowerCase().includes(foundTarget.toLowerCase())) ??
+          options[0];
+        if (matchingOpt) {
+          handleOptionSelect(matchingOpt);
+          return;
+        }
+      }
+
+      // 4. Any key word from any option appears in speech
+      for (const opt of options) {
+        const optWords = opt.text
+          .toLowerCase()
+          .replace(/[^a-z\s]/g, '')
+          .split(/\s+/)
+          .filter((w) => w.length > 2);
+        if (optWords.some((w) => text.includes(w))) {
+          handleOptionSelect(opt);
+          return;
+        }
+      }
+
+      // 5. No match — give feedback but keep child in the same round
+      setFeedback('wrong');
+      setNovaMood('sad');
+      void haptic.error();
+      feedbackTimerRef.current = setTimeout(() => {
+        setFeedback('idle');
+        setNovaMood('listening');
+      }, 1200);
+    },
+    [options, data.targetWords, handleOptionSelect, haptic],
+  );
+
   // ===== STT =====
   const abortRecognition = () => {
     if (recognitionRef.current) {
@@ -593,62 +678,40 @@ export default function ConversationActivity({
 
       recognition.onstart = () => { setIsListening(true); };
       recognition.onend = () => { setIsListening(false); };
-      recognition.onerror = () => {
-        setIsListening(false);
-        setShowManual(true);
-      };
+      recognition.onerror = () => { setIsListening(false); };
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
         const results = event.results[0];
         if (!results) return;
 
-        // Gather all transcripts from alternatives
+        // Collect all transcripts from alternatives
         const transcripts: string[] = [];
         for (let i = 0; i < results.length; i++) {
           const alt = results[i];
           if (alt) transcripts.push(alt.transcript.toLowerCase().trim());
         }
 
-        // Find best matching option
-        let bestOption: ConversationActivityOption | null = null;
-        let bestScore = 0;
-
-        for (const opt of options) {
-          for (const transcript of transcripts) {
-            const score = comparePronunciation(
-              transcript,
-              opt.text,
-              opt.acceptableVariations,
-            );
-            if (score > bestScore) {
-              bestScore = score;
-              bestOption = opt;
-            }
-          }
-        }
-
-        if (bestOption && bestScore >= CHILD_ACCEPT_THRESHOLD) {
-          handleOptionSelect(bestOption);
-        } else {
-          // Didn't match — show wrong feedback briefly with sad Nova
-          setFeedback('wrong');
-          setNovaMood('sad');
-          void haptic.error();
-          feedbackTimerRef.current = setTimeout(() => {
-            setFeedback('idle');
-            setNovaMood('listening');
-          }, 1200);
-        }
+        // Pass the top transcript to the free-form handler
+        const best = transcripts[0];
+        if (best) handleFreeInput(best);
       };
 
       recognition.start();
     } catch {
-      setShowManual(true);
+      /* STT not available — text input is still usable */
     }
-  }, [options, handleOptionSelect, haptic]);
+  }, [options.length, handleFreeInput]);
 
   // Keep startListeningRef in sync for auto-listen
   startListeningRef.current = startListening;
+
+  // Keep autoAdvanceRef in sync — called when child doesn't respond in time
+  autoAdvanceRef.current = () => {
+    const curr = optionsRef.current;
+    if (curr.length > 0 && curr[0]) {
+      handleOptionSelect(curr[0]);
+    }
+  };
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-linear-to-b from-indigo-50 via-white to-slate-50">
@@ -789,73 +852,84 @@ export default function ConversationActivity({
         </AnimatePresence>
       </div>
 
-      {/* ═══ Response Area ═══ */}
+      {/* ═══ Response Area — free-form dialogue ═══ */}
       {options.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           className="shrink-0 border-t border-indigo-100/50 bg-white px-4 pb-4 pt-3"
         >
-          {/* Option buttons */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {options.map((opt, i) => (
-              <motion.button
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{
-                  opacity: 1,
-                  scale: hintVisible && i === 0 ? [1, 1.05, 1] : 1,
-                }}
-                transition={
-                  hintVisible && i === 0
-                    ? { scale: { duration: 1.2, repeat: Infinity }, delay: i * 0.08 }
-                    : { delay: i * 0.08 }
-                }
-                whileTap={{ scale: 0.95 }}
-                onClick={() => { handleOptionSelect(opt); }}
-                className={`flex items-center gap-2 rounded-2xl border-2 px-4 py-2.5 shadow-sm transition-colors active:border-indigo-400 active:bg-indigo-50 ${
-                  hintVisible && i === 0
-                    ? 'border-amber-300 bg-amber-50'
-                    : 'border-indigo-100 bg-white'
-                }`}
+          {/* Hint: gently suggest the first option after HINT_DELAY_MS */}
+          <AnimatePresence>
+            {hintVisible && options[0] && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-3 overflow-hidden rounded-xl bg-amber-50 px-4 py-2 text-center"
               >
-                {opt.emoji && <span className="text-lg">{opt.emoji}</span>}
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-gray-700">{opt.text}</p>
-                  {showTranslation && (
-                    <p className="text-xs text-gray-400">{opt.textTr}</p>
-                  )}
-                </div>
-              </motion.button>
-            ))}
+                <p className="text-xs text-amber-500">{t('activities.conversationTryThis')}</p>
+                <p className="text-sm font-semibold text-amber-700">{options[0].text}</p>
+                {showTranslation && (
+                  <p className="text-xs text-amber-400">{options[0].textTr}</p>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Free-form text input */}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={freeInputText}
+              onChange={(e) => { setFreeInputText(e.target.value); }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && freeInputText.trim()) {
+                  const val = freeInputText.trim();
+                  setFreeInputText('');
+                  handleFreeInput(val);
+                }
+              }}
+              placeholder={t('activities.conversationTypeHere')}
+              className="flex-1 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-300 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            />
+            <AnimatePresence>
+              {freeInputText.trim() && (
+                <motion.button
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    const val = freeInputText.trim();
+                    setFreeInputText('');
+                    handleFreeInput(val);
+                  }}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white shadow-md"
+                >
+                  <span className="text-lg">➤</span>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
 
-          {/* Input controls */}
-          <div className="mt-3 flex items-center justify-center gap-3">
-            {SpeechRecognitionAPI && !showManual && (
+          {/* Mic button + hint toggle */}
+          <div className="mt-3 flex items-center justify-center gap-4">
+            {SpeechRecognitionAPI && (
               <motion.button
                 whileTap={{ scale: 0.9 }}
-                onClick={startListening}
-                disabled={isListening}
-                className={`flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all ${
+                onClick={isListening ? abortRecognition : startListening}
+                className={`flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition-all ${
                   isListening
                     ? 'animate-pulse bg-red-500'
                     : feedback === 'wrong'
                       ? 'bg-red-100 text-red-500'
                       : 'bg-indigo-500 active:scale-95'
                 } text-white`}
+                aria-label={isListening ? t('activities.conversationListening') : t('activities.conversationKeyboard')}
               >
-                <span className="text-2xl">{isListening ? '🔴' : '🎤'}</span>
+                <span className="text-3xl">{isListening ? '🔴' : '🎤'}</span>
               </motion.button>
-            )}
-
-            {SpeechRecognitionAPI && (
-              <button
-                onClick={() => { setShowManual((v) => !v); }}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 active:bg-gray-200"
-              >
-                ⌨️
-              </button>
             )}
 
             <button
@@ -863,6 +937,7 @@ export default function ConversationActivity({
               className={`flex h-10 w-10 items-center justify-center rounded-full active:bg-amber-100 ${
                 hintVisible ? 'bg-amber-200 text-amber-600' : 'bg-amber-50 text-amber-500'
               }`}
+              aria-label="Hint"
             >
               💡
             </button>

@@ -133,8 +133,8 @@ export default function HomeScreen() {
             },
             {
               emoji: '🎭',
-              label: 'Senaryolu Diyalog',
-              description: 'Nova ile konuşma pratiği',
+              label: 'Nova ile Konuş',
+              description: 'Nova ile birebir pratik yap',
               onClick: () => conversationLessonId && navigate(`/lesson/${conversationLessonId}`),
               disabled: !conversationLessonId,
             },

@@ -182,15 +182,18 @@ describe('ConversationActivity', () => {
     expect(img).toHaveAttribute('src', 'nova-mascot.svg');
   });
 
-  it('renders option buttons', () => {
+  it('renders free-form text input instead of option buttons', () => {
     const onComplete = vi.fn();
     render(<ConversationActivity data={buildSimpleData()} onComplete={onComplete} />);
 
-    expect(screen.getByText('I want a dog!')).toBeInTheDocument();
-    expect(screen.getByText('I want a cat!')).toBeInTheDocument();
+    // Text input for free-form dialogue is present
+    expect(screen.getByPlaceholderText('activities.conversationTypeHere')).toBeInTheDocument();
+    // Option buttons are NOT rendered
+    expect(screen.queryByRole('button', { name: /I want a dog/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /I want a cat/i })).not.toBeInTheDocument();
   });
 
-  it('handles option selection and tracks vocabulary', () => {
+  it('handles free-form text input and tracks vocabulary', () => {
     const onComplete = vi.fn();
     render(<ConversationActivity data={buildSimpleData()} onComplete={onComplete} />);
 
@@ -199,8 +202,10 @@ describe('ConversationActivity', () => {
       vi.advanceTimersByTime(500);
     });
 
-    // Click the dog option
-    fireEvent.click(screen.getByText('I want a dog!'));
+    // Type the correct option text and press Enter
+    const input = screen.getByPlaceholderText('activities.conversationTypeHere');
+    fireEvent.change(input, { target: { value: 'I want a dog!' } });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
     // Child bubble should appear
     expect(screen.getAllByText('I want a dog!').length).toBeGreaterThanOrEqual(1);
@@ -236,7 +241,9 @@ describe('ConversationActivity', () => {
       vi.advanceTimersByTime(500);
     });
 
-    fireEvent.click(screen.getByText('I want a dog!'));
+    const input = screen.getByPlaceholderText('activities.conversationTypeHere');
+    fireEvent.change(input, { target: { value: 'I want a dog!' } });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
     act(() => {
       vi.advanceTimersByTime(800);
