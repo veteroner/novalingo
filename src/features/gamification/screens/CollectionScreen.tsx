@@ -9,6 +9,7 @@ import { Card } from '@components/molecules/Card';
 import { MainLayout } from '@components/templates/MainLayout';
 import { useCollectibles, useInventory } from '@hooks/queries';
 import { useChildStore } from '@stores/childStore';
+import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 
@@ -87,6 +88,7 @@ const rarityGlow: Record<string, string> = {
 export default function CollectionScreen() {
   const [activeCategory, setActiveCategory] = useState<CollectionCategory>('animals');
   const childId = useChildStore((s) => s.activeChild?.id);
+  const openModal = useUIStore((s) => s.openModal);
   const { data: catalog } = useCollectibles(activeCategory);
   const { data: inventory } = useInventory(childId);
 
@@ -149,6 +151,17 @@ export default function CollectionScreen() {
                 variant="elevated"
                 padding="sm"
                 pressable={item.collected}
+                onClick={() => {
+                  if (!item.collected) return;
+                  openModal('collectible', {
+                    id: item.id,
+                    name: item.name,
+                    emoji: item.emoji,
+                    rarity: item.rarity,
+                    description: `${item.name} koleksiyonuna eklendi. Dersleri ve görevleri tamamlayarak daha fazla öğe açabilirsin.`,
+                    fact: `${categories.find((category) => category.id === item.category)?.label ?? 'Koleksiyon'} kategorisinden özel bir parça.`,
+                  });
+                }}
                 className={`flex aspect-square items-center justify-center ${
                   item.collected ? rarityGlow[item.rarity] : 'opacity-30'
                 }`}

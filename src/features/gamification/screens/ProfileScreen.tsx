@@ -16,12 +16,14 @@ import { NovaStageAvatar, STAGE_CONFIG } from '@components/molecules/NovaStageAv
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { useChildStore } from '@stores/childStore';
+import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProfileScreen() {
   const child = useChildStore((s) => s.activeChild);
+  const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
 
   if (!child) return null;
@@ -87,6 +89,38 @@ export default function ProfileScreen() {
 
         {/* Quick Links */}
         <div className="space-y-2">
+          <Card
+            variant="outlined"
+            pressable
+            padding="sm"
+            onClick={() => {
+              openModal('settings');
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <Text variant="body" weight="semibold">
+                ⚙️ Hızlı Ayarlar
+              </Text>
+              <span className="text-gray-400">→</span>
+            </div>
+          </Card>
+
+          <Card
+            variant="outlined"
+            pressable
+            padding="sm"
+            onClick={() => {
+              openModal('streakLost');
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <Text variant="body" weight="semibold">
+                🔥 Seri Koruma
+              </Text>
+              <span className="text-gray-400">→</span>
+            </div>
+          </Card>
+
           {[
             { label: '🏆 Başarımlar', path: '/achievements' },
             { label: '📦 Koleksiyon', path: '/collection' },

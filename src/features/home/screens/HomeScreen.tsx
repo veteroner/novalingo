@@ -17,7 +17,7 @@ import { useWorlds } from '@hooks/queries';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 // Build fallback worlds from in-memory curriculum
@@ -41,6 +41,22 @@ export default function HomeScreen() {
   const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
   const { data: firestoreWorlds } = useWorlds();
+
+  // Otomatik streak-lost modal: seri kırılmışsa (currentStreak===0 ve daha önce bir seri vardıysa)
+  // her profil için oturum başına yalnızca bir kez göster.
+  useEffect(() => {
+    if (!child) return;
+    if (child.currentStreak === 0 && child.longestStreak > 2) {
+      const storageKey = `streak_lost_shown_${child.id}`;
+      if (!sessionStorage.getItem(storageKey)) {
+        sessionStorage.setItem(storageKey, '1');
+        const timer = setTimeout(() => {
+          openModal('streakLost');
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [child?.id, child?.currentStreak, child?.longestStreak, openModal]);
   const worlds = useMemo(
     () => (firestoreWorlds && firestoreWorlds.length > 0 ? firestoreWorlds : curriculumWorlds),
     [firestoreWorlds],
