@@ -135,7 +135,7 @@ export default function HomeScreen() {
               emoji: '🎭',
               label: 'Nova ile Konuş',
               description: 'Nova ile birebir pratik yap',
-              onClick: () => conversationLessonId && navigate(`/lesson/${conversationLessonId}`),
+              onClick: () => conversationLessonId && navigate(`/lesson/${conversationLessonId}?mode=conversation`),
               disabled: !conversationLessonId,
             },
             {

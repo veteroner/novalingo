@@ -47,7 +47,10 @@
     "conversationKeyboard": "Yaz",
     "conversationTryThis": "💡 Şunu söylemeyi dene...",
     "conversationTypeHere": "İngilizce yaz ya da konuş...",
-    "conversationSpeed": "Hız"
+    "conversationSpeed": "Hız",
+    "conversationMicNotAllowed": "Mikrofon izni gerekli 🎤",
+    "conversationMicNoSpeech": "Ses algılanamadı — tekrar dene 🔇",
+    "conversationMicError": "Mikrofon hatası — yazmayı dene ⌨️"
   },
 
   "result": {

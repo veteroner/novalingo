@@ -47,7 +47,10 @@
     "conversationKeyboard": "Type",
     "conversationTryThis": "💡 Try saying...",
     "conversationTypeHere": "Type or speak English...",
-    "conversationSpeed": "Speed"
+    "conversationSpeed": "Speed",
+    "conversationMicNotAllowed": "Microphone permission needed 🎤",
+    "conversationMicNoSpeech": "No speech detected — try again 🔇",
+    "conversationMicError": "Mic error — try typing instead ⌨️"
   },
 
   "result": {

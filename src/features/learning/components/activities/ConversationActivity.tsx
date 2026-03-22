@@ -344,6 +344,7 @@ export default function ConversationActivity({
   const [completedWords, setCompletedWords] = useState<Set<string>>(new Set());
   const [attempts, setAttempts] = useState(0);
   const [freeInputText, setFreeInputText] = useState('');
+  const [micError, setMicError] = useState<string | null>(null);
 
   // ── Premium UX state ──
   const [novaMood, setNovaMood] = useState<NovaMood>('idle');
@@ -669,6 +670,9 @@ export default function ConversationActivity({
   const startListening = useCallback(() => {
     if (!SpeechRecognitionAPI || options.length === 0) return;
 
+    // Abort any previous recognition session to prevent conflicts
+    abortRecognition();
+
     try {
       const recognition = new SpeechRecognitionAPI();
       recognition.lang = 'en-US';
@@ -676,11 +680,22 @@ export default function ConversationActivity({
       recognition.maxAlternatives = 5;
       recognitionRef.current = recognition;
 
-      recognition.onstart = () => { setIsListening(true); };
+      recognition.onstart = () => { setIsListening(true); setMicError(null); };
       recognition.onend = () => { setIsListening(false); };
-      recognition.onerror = () => { setIsListening(false); };
+      recognition.onerror = (event: Event & { error?: string }) => {
+        setIsListening(false);
+        const errorType = event.error;
+        if (errorType === 'not-allowed') {
+          setMicError(t('activities.conversationMicNotAllowed'));
+        } else if (errorType === 'no-speech') {
+          setMicError(t('activities.conversationMicNoSpeech'));
+        } else if (errorType !== 'aborted') {
+          setMicError(t('activities.conversationMicError'));
+        }
+      };
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
+        setMicError(null);
         const results = event.results[0];
         if (!results) return;
 
@@ -698,9 +713,9 @@ export default function ConversationActivity({
 
       recognition.start();
     } catch {
-      /* STT not available — text input is still usable */
+      setMicError(t('activities.conversationMicError'));
     }
-  }, [options.length, handleFreeInput]);
+  }, [options.length, handleFreeInput, t]);
 
   // Keep startListeningRef in sync for auto-listen
   startListeningRef.current = startListening;
@@ -952,6 +967,11 @@ export default function ConversationActivity({
           {feedback === 'wrong' && !isListening && (
             <Text variant="caption" className="mt-2 text-center text-red-400">
               {t('activities.conversationTryAgain')}
+            </Text>
+          )}
+          {micError && !isListening && feedback !== 'wrong' && (
+            <Text variant="caption" className="mt-2 text-center text-amber-500">
+              {micError}
             </Text>
           )}
         </motion.div>
