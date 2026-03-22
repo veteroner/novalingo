@@ -188,6 +188,7 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
               cx="15"
               cy="8"
               rx="6"
+              ry={0.8}
               fill={isSad ? '#EF4444' : '#D84315'}
               animate={
                 isSpeaking
@@ -450,6 +451,15 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
     };
   }, []);
 
+  // Proactively request mic permission on desktop so the permission dialog
+  // appears immediately rather than being silently skipped later.
+  useEffect(() => {
+    if (!SpeechRecognitionAPI) return;
+    void navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => {
+      // User denied or unavailable — text input fallback still works
+    });
+  }, []);
+
   // Auto-scroll chat to bottom
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -607,27 +617,29 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
   );
 
   // ── Free-form input handler (STT transcript or typed text) ──
+  // alternatives: additional STT candidates to try if rawText doesn't match
   const handleFreeInput = useCallback(
-    (rawText: string) => {
+    (rawText: string, alternatives: string[] = []) => {
       if (!rawText.trim() || options.length === 0) return;
       abortRecognition();
 
-      const match: MatchConversationResponseResult = rawMatchConversationResponse({
-        rawText,
-        options,
-        targetWords: data.targetWords,
-        acceptThreshold: CHILD_ACCEPT_THRESHOLD,
-        pronunciationScorer: comparePronunciation,
-      });
-
-      const matchedOption: ConversationActivityOption | null = match.matchedOption;
-
-      if (matchedOption) {
-        handleOptionSelect(matchedOption);
-        return;
+      // Try primary text first, then each STT alternative — take first match
+      const textsToTry = [rawText, ...alternatives.filter((a) => a !== rawText)];
+      for (const text of textsToTry) {
+        const match: MatchConversationResponseResult = rawMatchConversationResponse({
+          rawText: text,
+          options,
+          targetWords: data.targetWords,
+          acceptThreshold: CHILD_ACCEPT_THRESHOLD,
+          pronunciationScorer: comparePronunciation,
+        });
+        if (match.matchedOption) {
+          handleOptionSelect(match.matchedOption);
+          return;
+        }
       }
 
-      // No match — give feedback but keep child in the same round
+      // No match in any alternative — give feedback but keep child in the same round
       setFeedback('wrong');
       setNovaMood('sad');
       void haptic.error();
@@ -696,9 +708,9 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
           if (alt) transcripts.push(alt.transcript.toLowerCase().trim());
         }
 
-        // Pass the top transcript to the free-form handler
-        const best = transcripts[0];
-        if (best) handleFreeInput(best);
+        // Pass all alternatives so handleFreeInput can try each before giving up
+        const [best, ...rest] = transcripts;
+        if (best) handleFreeInput(best, rest);
       };
 
       recognition.start();

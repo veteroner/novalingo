@@ -13,38 +13,35 @@ import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { useConversationStore } from '@stores/conversationStore';
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ConversationScreen() {
   const navigate = useNavigate();
   const child = useChildStore((s) => s.activeChild);
-  const {
-    session,
-    scenario,
-    isActive,
-    startSession,
-    completeSession,
-    reset,
-  } = useConversationStore();
+  const { session, scenario, isActive, startSession, completeSession, reset } =
+    useConversationStore();
   const hasStartedRef = useRef(false);
+  // On mobile browsers audio is blocked until a direct user gesture.
+  // We show a tap-to-start overlay first; the tap itself unlocks audio.
+  const [audioReady, setAudioReady] = useState(false);
 
-  // Start a conversation session on mount
+  // Cleanup only on unmount — session start is triggered by user tap
   useEffect(() => {
-    if (hasStartedRef.current) return;
-    hasStartedRef.current = true;
-
-    void unlockAudioPlayback();
-
-    startSession({
-      worldId: child?.currentWorldId ?? null,
-    });
-
     return () => {
       reset();
       hasStartedRef.current = false;
     };
-  }, [child?.currentWorldId, startSession, reset]);
+  }, [reset]);
+
+  const handleTapToStart = useCallback(() => {
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+    // Run inside user-gesture context so mobile browsers allow audio playback
+    void unlockAudioPlayback();
+    startSession({ worldId: child?.currentWorldId ?? null });
+    setAudioReady(true);
+  }, [child?.currentWorldId, startSession]);
 
   const handleComplete = useCallback(
     (outcome: ActivityOutcome) => {
@@ -80,7 +77,34 @@ export default function ConversationScreen() {
     void navigate('/home');
   }, [navigate, reset]);
 
-  // Loading state
+  // Tap-to-start overlay — ensures audio is unlocked via direct user gesture on mobile
+  if (!audioReady) {
+    return (
+      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-white px-6">
+        <motion.div
+          animate={{ scale: [1, 1.08, 1] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          className="mb-6 text-7xl"
+        >
+          🎭
+        </motion.div>
+        <Text variant="h3" align="center" className="mb-2">
+          Nova ile Konuş
+        </Text>
+        <Text variant="bodySmall" align="center" className="mb-8 text-gray-500">
+          İngilizce konuşma pratiği yapmaya hazır mısın?
+        </Text>
+        <button
+          onClick={handleTapToStart}
+          className="rounded-2xl bg-indigo-500 px-8 py-4 text-lg font-bold text-white shadow-lg active:bg-indigo-600"
+        >
+          Başla 🎤
+        </button>
+      </div>
+    );
+  }
+
+  // Loading state — session started but scenario not yet ready
   if (!session || !scenario || !isActive) {
     return (
       <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-white">
