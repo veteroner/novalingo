@@ -161,16 +161,20 @@
 /* ─── Utility Classes ─────────────────────────────────────── */
 @layer utilities {
   /* Safe area padding */
-  .pt-safe {
+  .pt-safe,
+  .safe-area-top {
     padding-top: var(--spacing-safe-top);
   }
-  .pb-safe {
+  .pb-safe,
+  .safe-area-bottom {
     padding-bottom: var(--spacing-safe-bottom);
   }
-  .pl-safe {
+  .pl-safe,
+  .safe-area-left {
     padding-left: var(--spacing-safe-left);
   }
-  .pr-safe {
+  .pr-safe,
+  .safe-area-right {
     padding-right: var(--spacing-safe-right);
   }
   .px-safe {

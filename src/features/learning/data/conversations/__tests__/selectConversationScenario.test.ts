@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PHASE1_CONVERSATION_SCENARIOS } from '../registry/scenarioIndex';
+import { ALL_CONVERSATION_SCENARIOS } from '../registry/scenarioIndex';
 import { selectConversationScenario } from '../selectors/selectConversationScenario';
 
 describe('selectConversationScenario', () => {
@@ -24,7 +24,7 @@ describe('selectConversationScenario', () => {
   it('falls back to another available scenario when one is excluded', () => {
     const scenario = selectConversationScenario({
       words: ['xylophone'],
-      candidates: PHASE1_CONVERSATION_SCENARIOS,
+      candidates: ALL_CONVERSATION_SCENARIOS,
       excludeScenarioIds: ['phase1_animals_pet_shop_pick'],
     });
     expect(scenario).toBeTruthy();

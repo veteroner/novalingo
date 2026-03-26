@@ -8,6 +8,95 @@ import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { sendToParent } from '../services/notificationService';
 import { db, REGION } from '../utils/admin';
 
+interface WeeklyConversationEvidence {
+  scenarioTheme?: string;
+  hintedTurns?: number;
+  passed?: boolean;
+  score?: number;
+  targetWordsHit?: string[];
+}
+
+interface WeeklyConversationThemeProgress {
+  theme: string;
+  attempts: number;
+  successRate: number;
+  averageScore: number;
+  averageHints: number;
+  focusWords: string[];
+}
+
+function buildWeeklyConversationThemeProgress(
+  lessonDocs: FirebaseFirestore.QueryDocumentSnapshot[],
+): WeeklyConversationThemeProgress[] {
+  const grouped = new Map<
+    string,
+    {
+      attempts: number;
+      passedCount: number;
+      totalScore: number;
+      totalHints: number;
+      words: string[];
+    }
+  >();
+
+  for (const lessonDoc of lessonDocs) {
+    const data = lessonDoc.data() as { conversationEvidence?: WeeklyConversationEvidence[] };
+    for (const evidence of data.conversationEvidence ?? []) {
+      const theme = evidence.scenarioTheme?.trim();
+      if (!theme) continue;
+
+      const current = grouped.get(theme) ?? {
+        attempts: 0,
+        passedCount: 0,
+        totalScore: 0,
+        totalHints: 0,
+        words: [],
+      };
+
+      current.attempts += 1;
+      current.passedCount += evidence.passed ? 1 : 0;
+      current.totalScore += evidence.score ?? 0;
+      current.totalHints += evidence.hintedTurns ?? 0;
+      current.words.push(...(evidence.targetWordsHit ?? []));
+      grouped.set(theme, current);
+    }
+  }
+
+  return [...grouped.entries()]
+    .map(([theme, stats]) => ({
+      theme,
+      attempts: stats.attempts,
+      successRate: stats.attempts > 0 ? stats.passedCount / stats.attempts : 0,
+      averageScore: stats.attempts > 0 ? stats.totalScore / stats.attempts : 0,
+      averageHints: stats.attempts > 0 ? stats.totalHints / stats.attempts : 0,
+      focusWords: [...new Set(stats.words)].slice(0, 2),
+    }))
+    .sort((left, right) => right.averageScore - left.averageScore);
+}
+
+function getWeeklyRecommendedConversationTheme(
+  themes: WeeklyConversationThemeProgress[],
+): { theme: string; averageScore: number; focusWords: string[] } | null {
+  const candidates = themes
+    .filter(
+      (item) => item.averageScore < 80 || item.successRate < 0.75 || item.averageHints >= 0.75,
+    )
+    .map((item) => ({
+      item,
+      needScore: 100 - item.averageScore + (1 - item.successRate) * 35 + item.averageHints * 12,
+    }))
+    .sort((left, right) => right.needScore - left.needScore);
+
+  const selected = candidates[0]?.item;
+  if (!selected) return null;
+
+  return {
+    theme: selected.theme,
+    averageScore: Math.round(selected.averageScore),
+    focusWords: selected.focusWords,
+  };
+}
+
 export const weeklyReport = onSchedule(
   {
     schedule: '0 7 * * 0', // Sunday 07:00 UTC = 10:00 Turkey
@@ -44,14 +133,14 @@ export const weeklyReport = onSchedule(
       const summaries: string[] = [];
 
       for (const child of children) {
-        // Count lessons completed this week
         const lessonsSnap = await db
           .collection(`children/${child.childId}/lessonProgress`)
           .where('completedAt', '>=', sevenDaysAgo)
-          .count()
           .get();
 
-        const lessonsCount = lessonsSnap.data().count;
+        const lessonsCount = lessonsSnap.size;
+        const weeklyConversationThemes = buildWeeklyConversationThemeProgress(lessonsSnap.docs);
+        const recommendedTheme = getWeeklyRecommendedConversationTheme(weeklyConversationThemes);
 
         // Get child stats
         const childDoc = await db.doc(`children/${child.childId}`).get();
@@ -60,8 +149,12 @@ export const weeklyReport = onSchedule(
         const streak = childData?.streak?.current ?? 0;
         const level = childData?.level ?? 1;
 
+        const recommendationText = recommendedTheme
+          ? ` • konuşma odağı: ${recommendedTheme.theme} (%${recommendedTheme.averageScore}${recommendedTheme.focusWords.length > 0 ? `, ${recommendedTheme.focusWords.join(', ')}` : ''})`
+          : '';
+
         summaries.push(
-          `${child.name}: ${lessonsCount} ders, ${streak} günlük seri, seviye ${level}`,
+          `${child.name}: ${lessonsCount} ders, ${streak} günlük seri, seviye ${level}${recommendationText}`,
         );
       }
 

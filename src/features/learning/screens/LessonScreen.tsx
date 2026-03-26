@@ -143,6 +143,7 @@ export default function LessonScreen() {
         recentPerformance,
         childLevel: child?.level ?? 1,
         vocabularyCards: vocabularyCards ?? [],
+        ageGroup: child?.ageGroup,
       });
     }
   }
@@ -204,6 +205,7 @@ export default function LessonScreen() {
       backendResult?: unknown;
       vocabulary: string[];
       bossGameOver?: boolean;
+      lessonType?: string;
     }) => {
       if (hasNavigatedToResultRef.current) return;
       hasNavigatedToResultRef.current = true;
@@ -227,6 +229,7 @@ export default function LessonScreen() {
     navigateToResult({
       summary,
       bossGameOver: true,
+      lessonType: lessonTypeRef.current,
       vocabulary: sessionRef.current?.vocabulary ?? [],
     });
   }, [bossLives, isBoss, endLesson, navigateToResult]);
@@ -255,6 +258,7 @@ export default function LessonScreen() {
         timeSpentSeconds: outcome.timeSpentSeconds,
         attempts: outcome.attempts,
         hintsUsed: outcome.hintsUsed,
+        conversationEvidence: outcome.conversationEvidence,
       });
 
       // Play SFX feedback
@@ -301,10 +305,12 @@ export default function LessonScreen() {
           if (child && !submitLessonMutation.isPending) {
             const activitiesPayload = storeState.results.map((r) => ({
               activityId: r.activityId,
+              activityType: r.activityType,
               correct: r.isCorrect,
               timeSpentMs: r.timeSpentSeconds * 1000,
               hintsUsed: r.hintsUsed,
               attempts: r.attempts,
+              conversationEvidence: r.conversationEvidence,
             }));
 
             if (submitFallbackTimerRef.current) {
@@ -319,6 +325,7 @@ export default function LessonScreen() {
               });
               navigateToResult({
                 summary,
+                lessonType: lessonTypeRef.current,
                 vocabulary: session?.vocabulary ?? [],
               });
             }, SUBMIT_TIMEOUT_MS);
@@ -345,6 +352,7 @@ export default function LessonScreen() {
                   navigateToResult({
                     summary,
                     backendResult,
+                    lessonType: lessonTypeRef.current,
                     vocabulary: session?.vocabulary ?? [],
                   });
                 },
@@ -359,6 +367,7 @@ export default function LessonScreen() {
                   });
                   navigateToResult({
                     summary,
+                    lessonType: lessonTypeRef.current,
                     vocabulary: session?.vocabulary ?? [],
                   });
                 },
@@ -367,6 +376,7 @@ export default function LessonScreen() {
           } else {
             navigateToResult({
               summary,
+              lessonType: lessonTypeRef.current,
               vocabulary: session?.vocabulary ?? [],
             });
           }

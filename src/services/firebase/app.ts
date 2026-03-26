@@ -5,12 +5,14 @@
  * Emülatör desteği dahil.
  */
 
+import { isNative } from '@/utils/platform';
 import { getAnalytics, type Analytics } from 'firebase/analytics';
 import { initializeApp, type FirebaseApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaV3Provider, type AppCheck } from 'firebase/app-check';
 import {
   connectAuthEmulator,
   getAuth,
+  indexedDBLocalPersistence,
   initializeAuth,
   inMemoryPersistence,
   type Auth,
@@ -89,7 +91,14 @@ function initializeFirebase() {
   }
 
   try {
-    auth = useEmulators ? initializeAuth(app, { persistence: inMemoryPersistence }) : getAuth(app);
+    if (useEmulators) {
+      auth = initializeAuth(app, { persistence: inMemoryPersistence });
+    } else if (isNative()) {
+      // WKWebView'de getAuth() persistence algılaması asılabilir — explicit persistence kullan
+      auth = initializeAuth(app, { persistence: indexedDBLocalPersistence });
+    } else {
+      auth = getAuth(app);
+    }
   } catch (error) {
     throw new Error(
       '[Firebase] Auth initialization failed. Check VITE_FIREBASE_API_KEY and related Firebase web config values.',
@@ -99,13 +108,20 @@ function initializeFirebase() {
 
   db = initializeFirestore(app, {
     localCache: persistentLocalCache({ tabManager: persistentSingleTabManager(undefined) }),
+    // WKWebView/Capacitor can hang with Firestore's default streaming transport.
+    // Force the more compatible polling path on native shells.
+    experimentalAutoDetectLongPolling: isNative(),
   });
   storage = getStorage(app);
   functions = getFunctions(app, 'europe-west1');
 
-  // Analytics sadece production'da
-  if (import.meta.env.VITE_APP_ENV === 'production') {
-    analytics = getAnalytics(app);
+  // Analytics sadece production'da ve measurementId varsa
+  if (import.meta.env.VITE_APP_ENV === 'production' && firebaseConfig.measurementId) {
+    try {
+      analytics = getAnalytics(app);
+    } catch (e) {
+      console.warn('[Firebase] Analytics initialization failed:', e);
+    }
   }
 
   // Emülatör bağlantıları

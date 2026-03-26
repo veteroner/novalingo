@@ -4,16 +4,34 @@
 
 export { generateActivities } from './activityGenerator';
 export {
-  getConversationScenarioById, isConversationScenarioValid, PHASE1_CONVERSATION_SCENARIOS, selectConversationScenario,
+  ALL_CHUNKS,
+  CORE_CHUNKS,
+  STARTER_CHUNKS,
+  STRETCH_CHUNKS,
+  getChunksByBand,
+  getChunksByFunction,
+  getChunksByWorld,
+} from './chunkBank';
+export type { Chunk } from './chunkBank';
+export {
+  ALL_CONVERSATION_SCENARIOS,
+  PHASE1_CONVERSATION_SCENARIOS,
+  PHASE2_CONVERSATION_SCENARIOS,
+  PHASE3_CONVERSATION_SCENARIOS,
+  PHASE4_CONVERSATION_SCENARIOS,
+  PHASE5_CONVERSATION_SCENARIOS,
+  getConversationScenarioById,
+  isConversationScenarioValid,
+  selectConversationScenario,
   toConversationActivityData,
-  validateConversationScenario
+  validateConversationScenario,
 } from './conversations';
 export type {
   ConversationAgeBand,
   ConversationDifficulty,
   ConversationScenario,
   ConversationScenarioValidationIssue,
-  SelectConversationScenarioParams
+  SelectConversationScenarioParams,
 } from './conversations';
 export {
   curriculum,
@@ -21,8 +39,7 @@ export {
   getLesson,
   getTotalVocabularyCount,
   getWorld,
-  getWorldLessons
+  getWorldLessons,
 } from './curriculum';
 export type { CurriculumLesson, CurriculumUnit, CurriculumWorld } from './curriculum';
 export { getMockActivities } from './mockLessons';
-

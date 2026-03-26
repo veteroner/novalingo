@@ -4,7 +4,6 @@
  * Günlük görevler listesi — ilerleme, ödüller, tamamlanma durumu.
  */
 
-import type { DailyQuest, QuestDefinition } from '@/types';
 import { Badge } from '@components/atoms/Badge';
 import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
@@ -26,78 +25,6 @@ function secondsUntilMidnight(): number {
   return Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
 }
 
-// Helper to create mock quest
-function mockQuest(
-  questId: string,
-  def: Omit<QuestDefinition, 'id' | 'titleEn' | 'description' | 'difficulty' | 'metadata'>,
-  progress: number,
-  completed: boolean,
-  claimed: boolean,
-): DailyQuest {
-  return {
-    questId,
-    definition: {
-      id: `def_${questId}`,
-      titleEn: def.title,
-      description: def.title,
-      difficulty: 'easy',
-      ...def,
-    },
-    progress,
-    target: def.target,
-    completed,
-    claimed,
-    assignedAt: null,
-  };
-}
-
-// Fallback mock quests
-const fallbackQuests: DailyQuest[] = [
-  mockQuest(
-    'q1',
-    {
-      type: 'complete_lessons',
-      title: '3 ders tamamla',
-      target: 3,
-      reward: { xp: 50, stars: 0, gems: 0 },
-    },
-    2,
-    false,
-    false,
-  ),
-  mockQuest(
-    'q2',
-    { type: 'earn_xp', title: '100 XP kazan', target: 100, reward: { xp: 0, stars: 30, gems: 0 } },
-    100,
-    true,
-    false,
-  ),
-  mockQuest(
-    'q3',
-    {
-      type: 'perfect_score',
-      title: '1 mükemmel ders yap',
-      target: 1,
-      reward: { xp: 0, stars: 0, gems: 5 },
-    },
-    0,
-    false,
-    false,
-  ),
-  mockQuest(
-    'q4',
-    {
-      type: 'learn_words',
-      title: '20 kelime tekrar et',
-      target: 20,
-      reward: { xp: 30, stars: 0, gems: 0 },
-    },
-    8,
-    false,
-    false,
-  ),
-];
-
 export default function DailyQuestsScreen() {
   const child = useChildStore((s) => s.activeChild);
   const { data: serverQuests } = useDailyQuests(child?.id);
@@ -105,7 +32,7 @@ export default function DailyQuestsScreen() {
   const [localClaimed, setLocalClaimed] = useState<Set<string>>(new Set());
   const showToast = useUIStore((s) => s.showToast);
 
-  const quests = serverQuests && serverQuests.length > 0 ? serverQuests : fallbackQuests;
+  const quests = serverQuests ?? [];
 
   const completedCount = quests.filter(
     (q) => q.completed || q.claimed || localClaimed.has(q.questId),
@@ -179,16 +106,30 @@ export default function DailyQuestsScreen() {
 
         {/* Quest List */}
         <div className="space-y-3">
-          {quests.map((quest, i) => (
-            <motion.div
-              key={quest.questId}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-            >
-              <QuestItem quest={quest} onClaim={handleClaim} />
-            </motion.div>
-          ))}
+          {quests.length === 0 ? (
+            <Card variant="filled" padding="lg">
+              <div className="space-y-2 text-center">
+                <span className="text-4xl">⚔️</span>
+                <Text variant="body" weight="bold">
+                  Henüz görev yok
+                </Text>
+                <Text variant="caption" className="text-text-secondary">
+                  Günlük görevler yakında gelecek!
+                </Text>
+              </div>
+            </Card>
+          ) : (
+            quests.map((quest, i) => (
+              <motion.div
+                key={quest.questId}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <QuestItem quest={quest} onClaim={handleClaim} />
+              </motion.div>
+            ))
+          )}
         </div>
 
         {/* Timer */}

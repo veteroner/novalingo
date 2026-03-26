@@ -6,6 +6,7 @@
  */
 
 import { resolveFeatureFlags } from '@/config/featureFlags';
+import { trackConversationLegacyFallback } from '@/services/analytics/analyticsService';
 import type {
   Activity,
   ConversationData,
@@ -24,12 +25,14 @@ import type {
   WordSearchData,
 } from '@/types/content';
 import { shuffle } from '@/utils/array';
+import { generateStoryPlaceholderImage, generateWordPlaceholderImage } from '@/utils/mediaFallback';
 import { COMPREHENSION_TEMPLATES, type ComprehensionTemplate } from './comprehensionTemplates';
-import { selectConversationScenario, toConversationActivityData } from './conversations';
 import { findBestTemplate } from './conversationTemplates';
+import { selectConversationScenario, toConversationActivityData } from './conversations';
 import type { CurriculumLesson } from './curriculum';
 import { GRAMMAR_PATTERNS } from './grammarPatterns';
 import { PHONEME_MAP } from './phonemeMap';
+import { resolveStoryAudioUrl, selectStoryForWords } from './storyBank';
 
 // ===== VOCABULARY DATABASE =====
 // Kelime → Türkçe çeviri + birden fazla örnek cümle
@@ -6729,7 +6732,7 @@ function generateFlashCards(lessonId: string, words: string[], startOrder: numbe
         type: 'flash-card' as const,
         word: word.charAt(0).toUpperCase() + word.slice(1),
         translation: v.tr,
-        imageUrl: '',
+        imageUrl: generateWordPlaceholderImage(word),
         audioUrl: '',
         exampleSentence: sent.en,
         exampleTranslation: sent.tr,
@@ -6796,7 +6799,7 @@ function generateWordBuilder(lessonId: string, word: string, startOrder: number)
       type: 'word-builder' as const,
       word: singleWord.charAt(0).toUpperCase() + singleWord.slice(1),
       translation: v.tr,
-      imageUrl: '',
+      imageUrl: generateWordPlaceholderImage(singleWord),
       audioUrl: '',
       scrambledLetters: scrambled.map((l) => l.toUpperCase()),
       hintLetters: [0],
@@ -6848,7 +6851,7 @@ function generateSpeakIt(lessonId: string, word: string, startOrder: number): Ac
       word: word.charAt(0).toUpperCase() + word.slice(1),
       translation: v.tr,
       audioUrl: '',
-      imageUrl: '',
+      imageUrl: generateWordPlaceholderImage(word),
       acceptableVariations: [word.toLowerCase(), word.toUpperCase(), word],
       phonemeHint: PHONEME_MAP[key] ?? PHONEME_MAP[word],
     } satisfies SpeakItData,
@@ -7662,6 +7665,22 @@ function findStoryTemplate(words: string[]): StoryTemplate {
 
 function generateStoryTime(lessonId: string, words: string[], startOrder: number): Activity {
   const template = findStoryTemplate(words);
+  const theme = template.keywords[0] ?? 'animals';
+  const selectedStory = selectStoryForWords(words, theme);
+
+  if (selectedStory.data.pages.length > 0) {
+    return {
+      id: nextId(lessonId, 'st'),
+      type: 'story-time' as const,
+      order: startOrder,
+      timeLimit: null,
+      maxAttempts: 1,
+      data: {
+        ...selectedStory.data,
+        pages: selectedStory.data.pages.map((page) => ({ ...page })),
+      },
+    };
+  }
 
   return {
     id: nextId(lessonId, 'st'),
@@ -7672,11 +7691,11 @@ function generateStoryTime(lessonId: string, words: string[], startOrder: number
     data: {
       type: 'story-time' as const,
       title: template.title,
-      pages: template.pages.map((p) => ({
+      pages: template.pages.map((p, idx) => ({
         text: p.text,
         translation: p.translation,
-        imageUrl: '',
-        audioUrl: '',
+        imageUrl: generateStoryPlaceholderImage(theme, idx),
+        audioUrl: resolveStoryAudioUrl(p.text),
         highlightWords: p.highlightWords,
         interactionType: 'tap-word' as const,
       })),
@@ -8046,22 +8065,22 @@ function isConversationScenarioRegistryEnabled(): boolean {
 
 function generateConversation(lessonId: string, words: string[], startOrder: number): Activity {
   if (isConversationScenarioRegistryEnabled()) {
-    try {
-      const scenario = selectConversationScenario({ words });
-
-      return {
-        id: nextId(lessonId, 'conv'),
-        type: 'conversation' as const,
-        order: startOrder,
-        timeLimit: null,
-        maxAttempts: 1,
-        data: toConversationActivityData(scenario),
-      };
-    } catch {
-      // Fall back to the legacy template path until registry coverage is complete.
-    }
+    // Registry is always enabled in dev/test/prod (conversationScenarioRegistry: true by default).
+    // selectConversationScenario always returns a valid scenario (falls back to first registered
+    // one as safety net), so this path never needs to call the legacy template.
+    const scenario = selectConversationScenario({ words });
+    return {
+      id: nextId(lessonId, 'conv'),
+      type: 'conversation' as const,
+      order: startOrder,
+      timeLimit: null,
+      maxAttempts: 1,
+      data: toConversationActivityData(scenario),
+    };
   }
 
+  // Legacy path — only reached if the registry flag is explicitly disabled via env var.
+  trackConversationLegacyFallback();
   const template = findBestTemplate(words);
   const selectedWords = words.slice(0, Math.max(template.minWords, 3));
   const translations = selectedWords.map((w) => getVocab(w).tr);
@@ -8100,6 +8119,19 @@ export function generateActivities(lesson: CurriculumLesson): Activity[] {
   const { id: lessonId, vocabulary: words, activityTypes } = lesson;
   const activities: Activity[] = [];
   let order = 0;
+
+  // Prepend Nova's intro slide if the lesson has an introLine
+  if (lesson.introLine) {
+    activities.push({
+      id: `${lessonId}_intro`,
+      type: 'lesson-intro',
+      order,
+      data: { type: 'lesson-intro', text: lesson.introLine },
+      timeLimit: null,
+      maxAttempts: 1,
+    });
+    order++;
+  }
 
   for (const actType of activityTypes) {
     switch (actType) {
@@ -8171,6 +8203,18 @@ export function generateActivities(lesson: CurriculumLesson): Activity[] {
         // Unknown activity type — skip silently
         break;
     }
+  }
+
+  // Append Nova's outro slide if the lesson has an outroLine
+  if (lesson.outroLine) {
+    activities.push({
+      id: `${lessonId}_outro`,
+      type: 'lesson-outro',
+      order,
+      data: { type: 'lesson-outro', text: lesson.outroLine },
+      timeLimit: null,
+      maxAttempts: 1,
+    });
   }
 
   return activities;

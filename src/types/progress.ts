@@ -5,6 +5,27 @@
 import { type Timestamp } from 'firebase/firestore';
 import { type ActivityType } from './content';
 
+export interface ConversationEvidence {
+  scenarioId?: string;
+  scenarioTheme?: string;
+  acceptedTurns: number;
+  hintedTurns: number;
+  targetWordsHit: string[];
+  patternsHit: string[];
+  passed: boolean;
+  score: number;
+}
+
+export interface LessonActivityAttempt {
+  activityId: string;
+  activityType?: ActivityType;
+  correct: boolean;
+  timeSpentMs: number;
+  hintsUsed?: number;
+  attempts?: number;
+  conversationEvidence?: ConversationEvidence;
+}
+
 // ===== LESSON PROGRESS =====
 export interface LessonProgress {
   id: string;
@@ -37,6 +58,8 @@ export interface LessonProgress {
   attemptNumber: number;
   isPerfect: boolean;
   deviceType: 'web' | 'ios' | 'android';
+  attempts?: LessonActivityAttempt[];
+  conversationEvidence?: ConversationEvidence[];
 }
 
 // ===== ACTIVITY RESULT =====
@@ -50,6 +73,7 @@ export interface ActivityResult {
   hintsUsed: number;
   selectedAnswer?: string;
   correctAnswer?: string;
+  conversationEvidence?: ConversationEvidence;
 }
 
 // ===== SRS (Spaced Repetition System) =====

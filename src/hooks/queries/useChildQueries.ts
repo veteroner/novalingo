@@ -116,6 +116,7 @@ export function useChildren() {
     },
     enabled: !!uid,
     staleTime: 5 * 60 * 1000,
+    retry: 1,
   });
 
   // Sync query data to store (outside of select, in an effect)
@@ -129,6 +130,12 @@ export function useChildren() {
       }
     }
   }, [query.data, setChildren, setActiveChild]);
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[useChildren] Failed to load child profiles', query.error);
+    }
+  }, [query.error]);
 
   return query;
 }

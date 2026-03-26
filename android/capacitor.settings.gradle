@@ -22,9 +22,3 @@ project(':capacitor-push-notifications').projectDir = new File('../node_modules/
 
 include ':capacitor-network'
 project(':capacitor-network').projectDir = new File('../node_modules/@capacitor/network/android')
-
-include ':capacitor-community-admob'
-project(':capacitor-community-admob').projectDir = new File('../node_modules/@capacitor-community/admob/android')
-
-include ':revenuecat-purchases-capacitor'
-project(':revenuecat-purchases-capacitor').projectDir = new File('../node_modules/@revenuecat/purchases-capacitor/android')

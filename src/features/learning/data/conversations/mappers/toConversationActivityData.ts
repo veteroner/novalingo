@@ -1,8 +1,8 @@
 import type { ConversationData, ConversationNode, ConversationOption } from '@/types/content';
 import type {
-    ConversationNodeV2,
-    ConversationResponseRule,
-    ConversationScenario,
+  ConversationNodeV2,
+  ConversationResponseRule,
+  ConversationScenario,
 } from '../types/conversationScenario';
 
 function toLegacyOption(nodeId: string, response: ConversationResponseRule): ConversationOption {
@@ -10,8 +10,13 @@ function toLegacyOption(nodeId: string, response: ConversationResponseRule): Con
     text: response.expectedText,
     textTr: response.expectedTextTr,
     acceptableVariations: response.acceptedVariants,
+    acceptedWords: response.acceptedWords,
+    minimumConfidence: response.minimumConfidence,
     nextNodeId: `${nodeId}__${response.id}__child`,
     emoji: response.emoji,
+    responseId: response.id,
+    marksTargetWords: response.marksTargetWord,
+    marksPatterns: response.marksPattern,
   };
 }
 
@@ -28,8 +33,6 @@ function toLegacyOptions(
     legacyOptions.push(toLegacyOption(nodeId, response));
   }
 
-  // ESLint infers this array as any[] here despite the explicit local type and TS success.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return legacyOptions;
 }
 
@@ -57,7 +60,7 @@ function toLegacyChildEchoNode(
     text: response.expectedText,
     textTr: response.expectedTextTr,
     emoji: response.emoji,
-    next: response.nextNodeId,
+    next: response.nextNodeId ?? undefined,
   };
 }
 
@@ -99,5 +102,15 @@ export function toConversationActivityData(scenario: ConversationScenario): Conv
     nodes: toLegacyNodeList(scenario.nodes),
     startNodeId: scenario.entryNodeId,
     targetWords: scenario.targetWords,
+    scenarioId: scenario.id,
+    scenarioTheme: scenario.theme,
+    scenarioSummary: scenario.summary,
+    scenarioSummaryTr: scenario.summaryTr,
+    scenarioMode: scenario.mode,
+    targetPatterns: scenario.targetPatterns,
+    rewardType: scenario.reward.rewardType,
+    rewardId: scenario.reward.rewardId,
+    successCriteria: scenario.successCriteria,
+    estimatedDurationSec: scenario.estimatedDurationSec,
   };
 }

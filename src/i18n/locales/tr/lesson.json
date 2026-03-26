@@ -50,7 +50,9 @@
     "conversationSpeed": "Hız",
     "conversationMicNotAllowed": "Mikrofon izni gerekli 🎤",
     "conversationMicNoSpeech": "Ses algılanamadı — tekrar dene 🔇",
-    "conversationMicError": "Mikrofon hatası — yazmayı dene ⌨️"
+    "conversationMicError": "Mikrofon hatası — yazmayı dene ⌨️",
+    "conversationGuided": "Nova sana adım adım rehberlik edecek",
+    "conversationModeHint": "Konuş ya da cevabını yaz"
   },
 
   "result": {

@@ -20,6 +20,25 @@ interface OfflineAction {
   timestamp: number; // epoch ms
 }
 
+interface OfflineLessonActivity {
+  activityId: string;
+  activityType?: string;
+  correct: boolean;
+  timeSpentMs: number;
+  hintsUsed: number;
+  attempts: number;
+  conversationEvidence?: {
+    scenarioId?: string;
+    scenarioTheme?: string;
+    acceptedTurns: number;
+    hintedTurns: number;
+    targetWordsHit: string[];
+    patternsHit: string[];
+    passed: boolean;
+    score: number;
+  };
+}
+
 interface SyncRequest {
   childId: string;
   actions: OfflineAction[];
@@ -52,6 +71,18 @@ export const syncOfflineProgress = onCall(callableOpts, async (request) => {
         case 'lessonComplete': {
           const p = action.payload;
           const lessonId = typeof p.lessonId === 'string' ? p.lessonId : null;
+          const activities = Array.isArray(p.activities)
+            ? (p.activities.filter(
+                (activity): activity is OfflineLessonActivity =>
+                  typeof activity === 'object' && activity !== null && 'activityId' in activity,
+              ) as OfflineLessonActivity[])
+            : [];
+          const conversationEvidence = activities
+            .map((activity) => activity.conversationEvidence)
+            .filter(
+              (evidence): evidence is NonNullable<OfflineLessonActivity['conversationEvidence']> =>
+                Boolean(evidence),
+            );
           if (!lessonId) {
             errors++;
             break;
@@ -63,6 +94,19 @@ export const syncOfflineProgress = onCall(callableOpts, async (request) => {
               accuracy: Math.min(Math.max(Number(p.accuracy) || 0, 0), 1),
               xpEarned: Math.min(Math.max(Number(p.xpEarned) || 0, 0), 500),
               timeSpentMs: Math.min(Math.max(Number(p.timeSpentMs) || 0, 0), 600_000),
+              durationSeconds: Math.round(
+                Math.min(Math.max(Number(p.timeSpentMs) || 0, 0), 600_000) / 1000,
+              ),
+              attempts: activities.map((activity) => ({
+                activityId: activity.activityId,
+                activityType: activity.activityType,
+                correct: activity.correct,
+                timeSpentMs: activity.timeSpentMs,
+                hintsUsed: activity.hintsUsed,
+                attempts: activity.attempts,
+                conversationEvidence: activity.conversationEvidence ?? null,
+              })),
+              conversationEvidence,
               syncedAt: serverTimestamp(),
               offlineSync: true,
             },

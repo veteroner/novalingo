@@ -12,7 +12,13 @@ export type ConversationGoalType =
   | 'compare'
   | 'express_feeling'
   | 'solve'
-  | 'sequence';
+  | 'sequence'
+  | 'suggest'
+  | 'identify'
+  | 'report'
+  | 'repeat'
+  | 'direct'
+  | 'introduce';
 
 export interface ConversationSuccessCriteria {
   minimumAcceptedTurns: number;
@@ -24,6 +30,14 @@ export interface ConversationSuccessCriteria {
 export interface ConversationReward {
   rewardType: 'praise' | 'sticker' | 'badge_progress' | 'collectible' | 'none';
   rewardId?: string;
+}
+
+/** Story-series metadata — present when mode === 'story' */
+export interface ConversationStoryMeta {
+  seriesId: string;
+  seriesTitleTr: string;
+  episodeNumber: number;
+  totalEpisodes: number;
 }
 
 export interface ConversationSelectionPolicy {
@@ -66,11 +80,15 @@ export interface ConversationResponseRule {
   id: string;
   expectedText: string;
   expectedTextTr: string;
-  acceptedVariants: string[];
+  acceptedVariants?: string[];
   acceptedWords?: string[];
   minimumConfidence?: number;
-  nextNodeId: string;
+  nextNodeId: string | null;
   emoji?: string;
+  rewardXp?: number;
+  feedbackEmoji?: string;
+  feedbackText?: string;
+  feedbackTextTr?: string;
   marksTargetWord?: string[];
   marksPattern?: string[];
 }
@@ -97,7 +115,7 @@ export interface ConversationNodeV2 {
 export interface ConversationScenario {
   id: string;
   version: number;
-  phase: 'phase1' | 'phase2' | 'phase3';
+  phase: 'phase1' | 'phase2' | 'phase3' | 'phase4' | 'phase5';
   title: string;
   titleTr: string;
   summary: string;
@@ -117,6 +135,8 @@ export interface ConversationScenario {
   learningGoals: string[];
   successCriteria: ConversationSuccessCriteria;
   reward: ConversationReward;
+  /** Optional story-series data — set when mode === 'story' */
+  series?: ConversationStoryMeta;
   selection: ConversationSelectionPolicy;
   variants: ConversationVariant[];
   entryNodeId: string;
@@ -130,4 +150,12 @@ export interface SelectConversationScenarioParams {
   preferredTheme?: string;
   excludeScenarioIds?: string[];
   candidates?: ConversationScenario[];
+  /** IDs of recently completed scenarios (newest first) — used for repetition penalty */
+  recentlyCompletedIds?: string[];
+  /** Child's average success rate (0-1) — used for difficulty adaptation */
+  averageSuccessRate?: number;
+  /** Patterns the child struggled with — used for re-drilling */
+  weakPatterns?: string[];
+  /** Tags the child has shown preference for */
+  preferredTags?: string[];
 }

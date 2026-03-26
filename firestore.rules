@@ -189,6 +189,18 @@ service cloud.firestore {
         allow write: if isAuthenticated()
           && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
       }
+
+      // Konuşma oturum kayıtları
+      match /conversationSessions/{sessionId} {
+        allow read, write: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+      }
+
+      // Konuşma senaryo en iyi skorları
+      match /conversationBestScores/{scenarioId} {
+        allow read, write: if isAuthenticated()
+          && get(/databases/$(database)/documents/children/$(childId)).data.parentUid == request.auth.uid;
+      }
     }
 
     // ===== PROGRESS COLLECTION =====

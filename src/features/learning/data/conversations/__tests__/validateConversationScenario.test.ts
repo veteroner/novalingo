@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { PHASE1_CONVERSATION_SCENARIOS } from '../registry/scenarioIndex';
+import { ALL_CONVERSATION_SCENARIOS } from '../registry/scenarioIndex';
 import { validateConversationScenario } from '../validators/validateConversationScenario';
 
 describe('validateConversationScenario', () => {
-  it('marks all Phase 1 scenarios as valid', () => {
-    for (const scenario of PHASE1_CONVERSATION_SCENARIOS) {
+  it('marks all registered scenarios as valid', () => {
+    for (const scenario of ALL_CONVERSATION_SCENARIOS) {
       expect(validateConversationScenario(scenario)).toEqual([]);
     }
   });
 
   it('reports duplicate node ids and broken references', () => {
-    const baseScenario = PHASE1_CONVERSATION_SCENARIOS[0];
+    const baseScenario = ALL_CONVERSATION_SCENARIOS[0];
     if (!baseScenario) {
-      throw new Error('Expected at least one Phase 1 scenario');
+      throw new Error('Expected at least one registered scenario');
     }
 
     const baseNode = baseScenario.nodes[0];

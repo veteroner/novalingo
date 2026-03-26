@@ -37,76 +37,6 @@ interface AchievementItem {
   target: number;
 }
 
-// Fallback data
-const fallbackAchievements: AchievementItem[] = [
-  {
-    id: '1',
-    title: 'İlk Adım',
-    description: 'İlk dersini tamamla',
-    icon: '👣',
-    rarity: 'common',
-    category: 'learning',
-    unlocked: true,
-    progress: 1,
-    target: 1,
-  },
-  {
-    id: '2',
-    title: 'Kelime Avcısı',
-    description: '50 kelime öğren',
-    icon: '🎯',
-    rarity: 'rare',
-    category: 'learning',
-    unlocked: true,
-    progress: 50,
-    target: 50,
-  },
-  {
-    id: '3',
-    title: 'Ateş Serisi',
-    description: '7 gün üst üste oyna',
-    icon: '🔥',
-    rarity: 'rare',
-    category: 'streak',
-    unlocked: false,
-    progress: 4,
-    target: 7,
-  },
-  {
-    id: '4',
-    title: 'Mükemmeliyetci',
-    description: '10 mükemmel ders',
-    icon: '💎',
-    rarity: 'epic',
-    category: 'learning',
-    unlocked: false,
-    progress: 3,
-    target: 10,
-  },
-  {
-    id: '5',
-    title: 'Efsane',
-    description: "Seviye 50'ye ulaş",
-    icon: '👑',
-    rarity: 'legendary',
-    category: 'special',
-    unlocked: false,
-    progress: 12,
-    target: 50,
-  },
-  {
-    id: '6',
-    title: 'Sosyal Kelebek',
-    description: 'Liderlik tablosunda Top 10',
-    icon: '🦋',
-    rarity: 'epic',
-    category: 'social',
-    unlocked: false,
-    progress: 0,
-    target: 1,
-  },
-];
-
 const rarityStyles: Record<string, string> = {
   common: 'border-gray-200',
   rare: 'border-nova-blue/50',
@@ -121,7 +51,7 @@ export default function AchievementsScreen() {
   const { data: userAchs } = useAchievements(childId);
 
   const achievements: AchievementItem[] = useMemo(() => {
-    if (!catalog || catalog.length === 0) return fallbackAchievements;
+    if (!catalog || catalog.length === 0) return [];
     const unlockedIds = new Set((userAchs ?? []).map((a) => a.achievementId));
     return catalog.map((a) => ({
       id: a.id,
@@ -174,53 +104,67 @@ export default function AchievementsScreen() {
 
         {/* Achievement List */}
         <div className="space-y-3">
-          {filteredAchievements.map((ach, i) => (
-            <motion.div
-              key={ach.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-            >
-              <Card
-                variant="outlined"
-                padding="md"
-                className={`border-2 ${rarityStyles[ach.rarity]} ${!ach.unlocked ? 'opacity-60' : ''}`}
+          {filteredAchievements.length === 0 ? (
+            <Card variant="filled" padding="lg">
+              <div className="space-y-2 text-center">
+                <span className="text-4xl">🏆</span>
+                <Text variant="body" weight="bold">
+                  Henüz başarım yok
+                </Text>
+                <Text variant="caption" className="text-text-secondary">
+                  Dersleri tamamlayarak başarımlar kazanabilirsin!
+                </Text>
+              </div>
+            </Card>
+          ) : (
+            filteredAchievements.map((ach, i) => (
+              <motion.div
+                key={ach.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
               >
-                <div className="flex items-center gap-3">
-                  <div className="shrink-0 text-3xl">{ach.unlocked ? ach.icon : '🔒'}</div>
-                  <div className="min-w-0 flex-1">
-                    <Text variant="bodySmall" weight="bold" truncate>
-                      {ach.title}
-                    </Text>
-                    <Text variant="caption" className="text-text-secondary">
-                      {ach.description}
-                    </Text>
-                    {!ach.unlocked && (
-                      <div className="mt-1.5 flex items-center gap-2">
-                        <ProgressBar
-                          value={ach.progress / ach.target}
-                          size="xs"
-                          className="flex-1"
-                        />
-                        <Text
-                          variant="caption"
-                          weight="bold"
-                          className="text-text-secondary shrink-0"
-                        >
-                          {ach.progress}/{ach.target}
-                        </Text>
-                      </div>
+                <Card
+                  variant="outlined"
+                  padding="md"
+                  className={`border-2 ${rarityStyles[ach.rarity]} ${!ach.unlocked ? 'opacity-60' : ''}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="shrink-0 text-3xl">{ach.unlocked ? ach.icon : '🔒'}</div>
+                    <div className="min-w-0 flex-1">
+                      <Text variant="bodySmall" weight="bold" truncate>
+                        {ach.title}
+                      </Text>
+                      <Text variant="caption" className="text-text-secondary">
+                        {ach.description}
+                      </Text>
+                      {!ach.unlocked && (
+                        <div className="mt-1.5 flex items-center gap-2">
+                          <ProgressBar
+                            value={ach.progress / ach.target}
+                            size="xs"
+                            className="flex-1"
+                          />
+                          <Text
+                            variant="caption"
+                            weight="bold"
+                            className="text-text-secondary shrink-0"
+                          >
+                            {ach.progress}/{ach.target}
+                          </Text>
+                        </div>
+                      )}
+                    </div>
+                    {ach.unlocked && (
+                      <Badge variant="success" size="sm">
+                        ✓
+                      </Badge>
                     )}
                   </div>
-                  {ach.unlocked && (
-                    <Badge variant="success" size="sm">
-                      ✓
-                    </Badge>
-                  )}
-                </div>
-              </Card>
-            </motion.div>
-          ))}
+                </Card>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </MainLayout>

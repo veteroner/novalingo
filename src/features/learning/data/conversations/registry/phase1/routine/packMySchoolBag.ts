@@ -33,7 +33,10 @@ export const packMySchoolBagScenario: ConversationScenario = {
     preferredIfTagsSeen: ['routine', 'school'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'mission' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'mission' },
+    { id: 'playful', label: 'Playful', labelTr: 'Eğlenceli', promptStyle: 'playful' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -43,6 +46,18 @@ export const packMySchoolBagScenario: ConversationScenario = {
       text: 'Help me pack my school bag. What should we put in first?',
       textTr: 'Okul cantami hazirlamama yardim et. Once ne koyalim?',
       targetPattern: 'Put in...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: Put in a book.',
+        promptTr: 'Şöyle söyle: Put in a book.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: Put in a book.',
+        textTr: 'Şöyle söylemeyi dene: Put in a book.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r1_book',
@@ -75,6 +90,18 @@ export const packMySchoolBagScenario: ConversationScenario = {
       text: 'Great. What do we need next?',
       textTr: 'Harika. Sirada neye ihtiyacimiz var?',
       targetPattern: 'We need...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: We need a pencil.',
+        promptTr: 'Şöyle söyle: We need a pencil.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: We need a pencil.',
+        textTr: 'Şöyle söylemeyi dene: We need a pencil.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r2_pencil',

@@ -129,6 +129,67 @@ export function trackStreakDays(days: number): void {
   logEvent('streak_milestone', { days });
 }
 
+// ===== CONVERSATION EVENTS =====
+
+export function trackConversationStarted(params: { scenarioId: string; theme: string }): void {
+  logEvent('conversation_started', {
+    scenario_id: params.scenarioId,
+    theme: params.theme,
+  });
+}
+
+export function trackConversationTurnCompleted(params: {
+  scenarioId: string;
+  nodeId: string;
+  matched: boolean;
+  hintUsed: boolean;
+}): void {
+  logEvent('conversation_turn_completed', {
+    scenario_id: params.scenarioId,
+    node_id: params.nodeId,
+    matched: params.matched,
+    hint_used: params.hintUsed,
+  });
+}
+
+export function trackConversationHintShown(params: { scenarioId: string; nodeId: string }): void {
+  logEvent('conversation_hint_shown', {
+    scenario_id: params.scenarioId,
+    node_id: params.nodeId,
+  });
+}
+
+export function trackConversationRepairUsed(params: { scenarioId: string; nodeId: string }): void {
+  logEvent('conversation_repair_used', {
+    scenario_id: params.scenarioId,
+    node_id: params.nodeId,
+  });
+}
+
+export function trackConversationCompleted(params: {
+  scenarioId: string;
+  theme: string;
+  score: number;
+  passed: boolean;
+  durationSeconds: number;
+  acceptedTurns: number;
+  hintedTurns: number;
+}): void {
+  logEvent('conversation_completed', {
+    scenario_id: params.scenarioId,
+    theme: params.theme,
+    score: params.score,
+    passed: params.passed,
+    duration_seconds: params.durationSeconds,
+    accepted_turns: params.acceptedTurns,
+    hinted_turns: params.hintedTurns,
+  });
+}
+
+export function trackConversationLegacyFallback(): void {
+  logEvent('conversation_legacy_fallback');
+}
+
 export function trackAchievementUnlocked(achievementId: string): void {
   logEvent('achievement_unlocked', { achievement_id: achievementId });
 }

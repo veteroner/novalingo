@@ -20,7 +20,9 @@ const ReviewScreen = lazy(() => import('@features/learning/screens/ReviewScreen'
 
 // Conversation (standalone)
 const ConversationScreen = lazy(() => import('@features/conversation/screens/ConversationScreen'));
-const ConversationResultScreen = lazy(() => import('@features/conversation/screens/ConversationResultScreen'));
+const ConversationResultScreen = lazy(
+  () => import('@features/conversation/screens/ConversationResultScreen'),
+);
 
 // Gamification
 const ProfileScreen = lazy(() => import('@features/gamification/screens/ProfileScreen'));
@@ -35,6 +37,7 @@ const LeaderboardScreen = lazy(() => import('@features/social/screens/Leaderboar
 // Parent
 const ParentDashboard = lazy(() => import('@features/parent/screens/ParentDashboard'));
 const ParentSettings = lazy(() => import('@features/parent/screens/ParentSettings'));
+const SubscriptionScreen = lazy(() => import('@features/parent/screens/SubscriptionScreen'));
 
 // ===== Route Guards =====
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -207,6 +210,14 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <ParentSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subscription"
+          element={
+            <ProtectedRoute>
+              <SubscriptionScreen />
             </ProtectedRoute>
           }
         />

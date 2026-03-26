@@ -6,28 +6,43 @@
  */
 
 import type {
-    ConversationProgress,
-    ConversationResult,
-    ConversationSession,
+  ConversationProgress,
+  ConversationResult,
+  ConversationSession,
 } from '@/features/conversation/types/conversationSession';
 import type { ConversationScenario } from '@/features/learning/data/conversations';
-import {
-    selectConversationScenario,
-} from '@/features/learning/data/conversations';
+import { selectConversationScenario } from '@/features/learning/data/conversations';
+import { submitConversationResult } from '@/services/firebase/functions';
+import { useChildStore } from '@/stores/childStore';
 import { create } from 'zustand';
+
+/** Mirrors SubmitConversationResultRes from functions.ts — kept local to avoid ESLint type resolution issues */
+interface ConversationXpResult {
+  xpEarned: number;
+  streak: number;
+  leveledUp: boolean;
+  newLevel: number;
+  isNewBest: boolean;
+}
 
 interface ConversationStoreState {
   // Active session
   session: ConversationSession | null;
   scenario: ConversationScenario | null;
   result: ConversationResult | null;
+  xpResult: ConversationXpResult | null;
   isActive: boolean;
+  isSaving: boolean;
 
   // Persistent progress (in-memory; can be synced to backend later)
   progress: ConversationProgress;
 
   // Actions
-  startSession: (params: { worldId: string | null; excludeScenarioIds?: string[] }) => void;
+  startSession: (params: {
+    worldId: string | null;
+    excludeScenarioIds?: string[];
+    preferredTheme?: string;
+  }) => void;
   completeSession: (outcome: {
     score: number;
     accuracy: number;
@@ -53,17 +68,21 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
   session: null,
   scenario: null,
   result: null,
+  xpResult: null,
   isActive: false,
+  isSaving: false,
   progress: { ...initialProgress },
 
-  startSession: ({ worldId, excludeScenarioIds }) => {
+  startSession: ({ worldId, excludeScenarioIds, preferredTheme }) => {
     const progress = get().progress;
 
     // Select a scenario — prefer variety by excluding recently completed
-    const exclude = excludeScenarioIds ?? (progress.lastScenarioId ? [progress.lastScenarioId] : []);
+    const exclude =
+      excludeScenarioIds ?? (progress.lastScenarioId ? [progress.lastScenarioId] : []);
 
     const scenario = selectConversationScenario({
       words: [], // standalone mode — let selector use theme/age matching
+      preferredTheme,
       excludeScenarioIds: exclude,
     });
 
@@ -79,6 +98,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       session,
       scenario,
       result: null,
+      xpResult: null,
       isActive: true,
     });
   },
@@ -101,7 +121,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       completedAt: Date.now(),
     };
 
-    // Update progress
+    // Update in-memory progress
     const prev = state.progress;
     const completedSet = new Set(prev.completedScenarioIds);
     completedSet.add(state.scenario.id);
@@ -115,6 +135,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
     set({
       result,
       isActive: false,
+      isSaving: true,
       progress: {
         completedScenarioIds: [...completedSet],
         totalSessions: prev.totalSessions + 1,
@@ -124,6 +145,38 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       },
     });
 
+    // Persist to Firebase asynchronously — don't block the result screen
+    const activeChild = useChildStore.getState().activeChild;
+    if (activeChild) {
+      void (
+        submitConversationResult({
+          childId: activeChild.id,
+          sessionId: result.sessionId,
+          scenarioId: result.scenarioId,
+          score: result.score,
+          accuracy: result.accuracy,
+          durationSeconds: result.durationSeconds,
+          targetWordsHit: result.targetWordsHit,
+          targetWordsTotal: result.targetWordsTotal,
+          attempts: result.attempts,
+        }) as Promise<ConversationXpResult>
+      )
+        .then((xpRes) => {
+          set({ xpResult: xpRes, isSaving: false });
+          // Update local child profile with the returned level/streak
+          useChildStore.getState().updateActiveChild({
+            level: xpRes.newLevel,
+            currentStreak: xpRes.streak,
+          });
+        })
+        .catch((err: unknown) => {
+          console.error('[conversationStore] submitConversationResult failed:', err);
+          set({ isSaving: false });
+        });
+    } else {
+      set({ isSaving: false });
+    }
+
     return result;
   },
 
@@ -132,7 +185,9 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       session: null,
       scenario: null,
       result: null,
+      xpResult: null,
       isActive: false,
+      isSaving: false,
     });
   },
 }));

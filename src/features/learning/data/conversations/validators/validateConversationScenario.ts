@@ -50,7 +50,7 @@ export function validateConversationScenario(
     nodeIds.add(node.id);
 
     for (const response of node.responses ?? []) {
-      if (response.acceptedVariants.length === 0) {
+      if ((response.acceptedVariants ?? []).length === 0) {
         issues.push({
           code: 'empty_response_variants',
           message: `Response rule ${response.id} must define accepted variants.`,
@@ -86,7 +86,7 @@ export function validateConversationScenario(
     }
 
     for (const response of node.responses ?? []) {
-      if (!nodeIds.has(response.nextNodeId)) {
+      if (response.nextNodeId && !nodeIds.has(response.nextNodeId)) {
         issues.push({
           code: 'missing_node_reference',
           message: `Response ${response.id} points to missing node ${response.nextNodeId}.`,
@@ -96,9 +96,11 @@ export function validateConversationScenario(
     }
   }
 
-  const hasTerminalNode = scenario.nodes.some(
-    (node) => !node.next && (!node.responses || node.responses.length === 0),
-  );
+  const hasTerminalNode = scenario.nodes.some((node) => {
+    if (node.next) return false;
+    if (!node.responses || node.responses.length === 0) return true;
+    return node.responses.every((response) => !response.nextNodeId);
+  });
 
   if (!hasTerminalNode) {
     issues.push({

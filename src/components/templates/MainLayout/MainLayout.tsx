@@ -5,9 +5,9 @@
  * Ders ekranı dışında tüm sayfalarda kullanılır.
  */
 
-import { type ReactNode } from 'react';
-import { clsx } from 'clsx';
 import { Navigation } from '@components/organisms/Navigation';
+import { clsx } from 'clsx';
+import { type ReactNode } from 'react';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -29,7 +29,7 @@ export function MainLayout({
         className={clsx(
           'mx-auto w-full max-w-md flex-1',
           'safe-area-top safe-area-left safe-area-right',
-          showNavigation && 'pb-20', // space for bottom nav
+          showNavigation && 'pb-nav', // space for bottom nav + safe area
           headerOffset && 'pt-16',
           className,
         )}

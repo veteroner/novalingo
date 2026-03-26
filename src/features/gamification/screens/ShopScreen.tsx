@@ -38,171 +38,270 @@ interface DisplayShopItem {
   rarity: string;
 }
 
-// Fallback mock items per category
-const fallbackItems: Record<string, DisplayShopItem[]> = {
+// Default items shown when server items are unavailable
+const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
   avatars: [
     {
-      id: 'a1',
-      name: 'Kaplan',
+      id: 'avatar_fox',
+      name: 'Tilki',
       category: 'avatars',
       price: 100,
       currency: 'stars',
-      emoji: '🐯',
+      emoji: '🦊',
       rarity: 'common',
     },
     {
-      id: 'a2',
+      id: 'avatar_panda',
       name: 'Panda',
       category: 'avatars',
-      price: 200,
+      price: 150,
       currency: 'stars',
       emoji: '🐼',
-      rarity: 'rare',
+      rarity: 'common',
     },
     {
-      id: 'a3',
+      id: 'avatar_unicorn',
+      name: 'Unicorn',
+      category: 'avatars',
+      price: 300,
+      currency: 'gems',
+      emoji: '🦄',
+      rarity: 'epic',
+    },
+    {
+      id: 'avatar_dragon',
       name: 'Ejderha',
       category: 'avatars',
-      price: 15,
+      price: 500,
       currency: 'gems',
       emoji: '🐉',
       rarity: 'epic',
     },
     {
-      id: 'a4',
-      name: 'Unicorn',
+      id: 'avatar_astronaut',
+      name: 'Astronot',
       category: 'avatars',
-      price: 30,
-      currency: 'gems',
-      emoji: '🦄',
-      rarity: 'legendary',
+      price: 200,
+      currency: 'stars',
+      emoji: '🧑‍🚀',
+      rarity: 'common',
+    },
+    {
+      id: 'avatar_robot',
+      name: 'Robot',
+      category: 'avatars',
+      price: 250,
+      currency: 'stars',
+      emoji: '🤖',
+      rarity: 'common',
     },
   ],
   themes: [
     {
-      id: 't1',
+      id: 'theme_ocean',
       name: 'Okyanus',
       category: 'themes',
-      price: 150,
+      price: 200,
       currency: 'stars',
       emoji: '🌊',
       rarity: 'common',
     },
     {
-      id: 't2',
+      id: 'theme_space',
       name: 'Uzay',
+      category: 'themes',
+      price: 300,
+      currency: 'gems',
+      emoji: '🚀',
+      rarity: 'epic',
+    },
+    {
+      id: 'theme_forest',
+      name: 'Orman',
+      category: 'themes',
+      price: 200,
+      currency: 'stars',
+      emoji: '🌲',
+      rarity: 'common',
+    },
+    {
+      id: 'theme_candy',
+      name: 'Şekerleme',
       category: 'themes',
       price: 250,
       currency: 'stars',
-      emoji: '🚀',
-      rarity: 'rare',
-    },
-    {
-      id: 't3',
-      name: 'Orman',
-      category: 'themes',
-      price: 100,
-      currency: 'stars',
-      emoji: '🌲',
+      emoji: '🍭',
       rarity: 'common',
     },
   ],
   boosters: [
     {
-      id: 'b1',
+      id: 'boost_2x_xp',
       name: '2x XP (1 saat)',
       category: 'boosters',
-      price: 50,
-      currency: 'stars',
+      price: 150,
+      currency: 'gems',
       emoji: '⚡',
       rarity: 'common',
     },
     {
-      id: 'b2',
-      name: 'Seri Koruma',
+      id: 'boost_streak_freeze',
+      name: 'Seri Koruyucu',
       category: 'boosters',
-      price: 10,
+      price: 100,
       currency: 'gems',
       emoji: '🛡️',
-      rarity: 'rare',
+      rarity: 'common',
     },
     {
-      id: 'b3',
-      name: 'İpucu Paketi',
+      id: 'boost_hint_pack',
+      name: 'İpucu Paketi (10x)',
       category: 'boosters',
-      price: 30,
-      currency: 'stars',
+      price: 80,
+      currency: 'gems',
       emoji: '💡',
       rarity: 'common',
+    },
+    {
+      id: 'boost_star_doubler',
+      name: 'Yıldız 2x (1 gün)',
+      category: 'boosters',
+      price: 200,
+      currency: 'gems',
+      emoji: '🌟',
+      rarity: 'epic',
     },
   ],
   frames: [
     {
-      id: 'f1',
-      name: 'Yıldız',
+      id: 'frame_gold',
+      name: 'Altın Çerçeve',
       category: 'frames',
-      price: 80,
+      price: 200,
+      currency: 'stars',
+      emoji: '🖼️',
+      rarity: 'common',
+    },
+    {
+      id: 'frame_rainbow',
+      name: 'Gökkuşağı',
+      category: 'frames',
+      price: 300,
+      currency: 'gems',
+      emoji: '🌈',
+      rarity: 'epic',
+    },
+    {
+      id: 'frame_star',
+      name: 'Yıldız Çerçeve',
+      category: 'frames',
+      price: 150,
       currency: 'stars',
       emoji: '⭐',
       rarity: 'common',
     },
     {
-      id: 'f2',
-      name: 'Ateş',
+      id: 'frame_crown',
+      name: 'Taç Çerçeve',
       category: 'frames',
-      price: 200,
-      currency: 'stars',
-      emoji: '🔥',
-      rarity: 'rare',
+      price: 400,
+      currency: 'gems',
+      emoji: '👑',
+      rarity: 'epic',
     },
   ],
   effects: [
     {
-      id: 'e1',
+      id: 'effect_sparkle',
+      name: 'Işıltı',
+      category: 'effects',
+      price: 100,
+      currency: 'stars',
+      emoji: '✨',
+      rarity: 'common',
+    },
+    {
+      id: 'effect_confetti',
       name: 'Konfeti',
       category: 'effects',
-      price: 120,
+      price: 150,
       currency: 'stars',
       emoji: '🎊',
       rarity: 'common',
     },
     {
-      id: 'e2',
+      id: 'effect_fireworks',
       name: 'Havai Fişek',
       category: 'effects',
-      price: 20,
+      price: 250,
       currency: 'gems',
       emoji: '🎆',
       rarity: 'epic',
     },
+    {
+      id: 'effect_hearts',
+      name: 'Kalpler',
+      category: 'effects',
+      price: 120,
+      currency: 'stars',
+      emoji: '💖',
+      rarity: 'common',
+    },
   ],
   nova: [
     {
-      id: 'n1',
-      name: 'Şapka',
+      id: 'nova_hat_wizard',
+      name: 'Büyücü Şapkası',
       category: 'nova',
-      price: 150,
+      price: 200,
       currency: 'stars',
-      emoji: '🎩',
+      emoji: '🧙',
       rarity: 'common',
     },
     {
-      id: 'n2',
-      name: 'Gözlük',
+      id: 'nova_hat_crown',
+      name: 'Kral Tacı',
+      category: 'nova',
+      price: 400,
+      currency: 'gems',
+      emoji: '👑',
+      rarity: 'epic',
+    },
+    {
+      id: 'nova_cape_red',
+      name: 'Kırmızı Pelerin',
+      category: 'nova',
+      price: 250,
+      currency: 'stars',
+      emoji: '🦸',
+      rarity: 'common',
+    },
+    {
+      id: 'nova_glasses',
+      name: 'Güneş Gözlüğü',
       category: 'nova',
       price: 100,
       currency: 'stars',
-      emoji: '🕶️',
+      emoji: '😎',
       rarity: 'common',
     },
     {
-      id: 'n3',
-      name: 'Kanatlar',
+      id: 'nova_wings',
+      name: 'Melek Kanatları',
       category: 'nova',
-      price: 25,
+      price: 500,
       currency: 'gems',
-      emoji: '🪽',
+      emoji: '😇',
       rarity: 'epic',
+    },
+    {
+      id: 'nova_scarf',
+      name: 'Atkı',
+      category: 'nova',
+      price: 80,
+      currency: 'stars',
+      emoji: '🧣',
+      rarity: 'common',
     },
   ],
 };
@@ -226,7 +325,7 @@ export default function ShopScreen() {
         rarity: si.isPremium ? 'epic' : 'common',
       }));
     }
-    return fallbackItems[activeCategory] ?? [];
+    return defaultShopItems[activeCategory] ?? [];
   }, [serverItems, activeCategory]);
 
   const handlePurchase = useCallback(
@@ -235,11 +334,25 @@ export default function ShopScreen() {
 
       // Check balance
       const balance = item.currency === 'stars' ? child.stars : child.gems;
-      if (balance < item.price) return;
+      if (balance < item.price) {
+        showToast({
+          type: 'error',
+          title: 'Yetersiz bakiye',
+          message: `${item.name} için yeterli ${item.currency === 'gems' ? 'elmas' : 'yıldız'} yok.`,
+        });
+        return;
+      }
 
       purchase.mutate(
         { childId: child.id, itemId: item.id },
         {
+          onSuccess: () => {
+            showToast({
+              type: 'success',
+              title: 'Satın alındı! 🎉',
+              message: `${item.name} koleksiyonuna eklendi.`,
+            });
+          },
           onError: () => {
             showToast({
               type: 'error',
@@ -286,40 +399,54 @@ export default function ShopScreen() {
         </div>
 
         {/* Items Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {items.map((item) => {
-            const balance = item.currency === 'stars' ? child.stars : child.gems;
-            const canAfford = balance >= item.price;
-            const isBuying = purchase.isPending;
+        {items.length === 0 ? (
+          <Card variant="filled" padding="lg">
+            <div className="space-y-2 text-center">
+              <span className="text-4xl">🛒</span>
+              <Text variant="body" weight="bold">
+                Bu kategoride henüz ürün yok
+              </Text>
+              <Text variant="caption" className="text-text-secondary">
+                Ders tamamla ve yıldız kazan — yeni ürünler açılacak!
+              </Text>
+            </div>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {items.map((item) => {
+              const balance = item.currency === 'stars' ? child.stars : child.gems;
+              const canAfford = balance >= item.price;
+              const isBuying = purchase.isPending;
 
-            return (
-              <Card key={item.id} variant="elevated" padding="sm">
-                <div className="space-y-2 text-center">
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100 text-3xl">
-                    {item.emoji}
+              return (
+                <Card key={item.id} variant="elevated" padding="sm">
+                  <div className="space-y-2 text-center">
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100 text-3xl">
+                      {item.emoji}
+                    </div>
+                    <Text variant="bodySmall" weight="bold" truncate>
+                      {item.name}
+                    </Text>
+                    <Badge variant={item.currency === 'gems' ? 'gem' : 'star'} size="sm">
+                      {item.price} {item.currency === 'gems' ? '💎' : '⭐'}
+                    </Badge>
+                    <Button
+                      variant={canAfford ? 'primary' : 'secondary'}
+                      size="sm"
+                      fullWidth
+                      disabled={!canAfford || isBuying}
+                      onClick={() => {
+                        handlePurchase(item);
+                      }}
+                    >
+                      {isBuying ? '...' : canAfford ? 'Satın Al' : 'Yetersiz'}
+                    </Button>
                   </div>
-                  <Text variant="bodySmall" weight="bold" truncate>
-                    {item.name}
-                  </Text>
-                  <Badge variant={item.currency === 'gems' ? 'gem' : 'star'} size="sm">
-                    {item.price} {item.currency === 'gems' ? '💎' : '⭐'}
-                  </Badge>
-                  <Button
-                    variant={canAfford ? 'primary' : 'secondary'}
-                    size="sm"
-                    fullWidth
-                    disabled={!canAfford || isBuying}
-                    onClick={() => {
-                      handlePurchase(item);
-                    }}
-                  >
-                    {isBuying ? '...' : canAfford ? 'Satın Al' : 'Yetersiz'}
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </MainLayout>
   );

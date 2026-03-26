@@ -4,7 +4,7 @@
  * Haftalık liderlik tablosu — lig sistemi, sıralama.
  */
 
-import type { LeaderboardEntry, LeagueTier } from '@/types';
+import type { LeagueTier } from '@/types';
 import { Badge } from '@components/atoms/Badge';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
@@ -24,82 +24,6 @@ const leagueTiers: { id: LeagueTier; label: string; emoji: string; color: string
   { id: 'legend', label: 'Efsane', emoji: '👑', color: 'text-nova-purple' },
 ];
 
-// Fallback mock leaderboard
-const fallbackEntries: LeaderboardEntry[] = [
-  {
-    childId: 'c1',
-    displayName: 'Ayşe',
-    avatarId: 'avatar_1',
-    level: 15,
-    weeklyXP: 1250,
-    rank: 1,
-    trend: 'up',
-  },
-  {
-    childId: 'c2',
-    displayName: 'Mehmet',
-    avatarId: 'avatar_2',
-    level: 12,
-    weeklyXP: 980,
-    rank: 2,
-    trend: 'down',
-  },
-  {
-    childId: 'c3',
-    displayName: 'Zeynep',
-    avatarId: 'avatar_3',
-    level: 14,
-    weeklyXP: 920,
-    rank: 3,
-    trend: 'up',
-  },
-  {
-    childId: 'current',
-    displayName: 'Sen',
-    avatarId: 'avatar_default',
-    level: 10,
-    weeklyXP: 750,
-    rank: 4,
-    trend: 'same',
-  },
-  {
-    childId: 'c4',
-    displayName: 'Ali',
-    avatarId: 'avatar_4',
-    level: 9,
-    weeklyXP: 680,
-    rank: 5,
-    trend: 'down',
-  },
-  {
-    childId: 'c5',
-    displayName: 'Elif',
-    avatarId: 'avatar_5',
-    level: 11,
-    weeklyXP: 620,
-    rank: 6,
-    trend: 'up',
-  },
-  {
-    childId: 'c6',
-    displayName: 'Can',
-    avatarId: 'avatar_6',
-    level: 8,
-    weeklyXP: 500,
-    rank: 7,
-    trend: 'same',
-  },
-  {
-    childId: 'c7',
-    displayName: 'Defne',
-    avatarId: 'avatar_7',
-    level: 7,
-    weeklyXP: 420,
-    rank: 8,
-    trend: 'down',
-  },
-];
-
 export default function LeaderboardScreen() {
   const child = useChildStore((s) => s.activeChild);
   const [currentLeague, setCurrentLeague] = useState<LeagueTier>(child?.leagueTier ?? 'silver');
@@ -112,8 +36,8 @@ export default function LeaderboardScreen() {
   const currentTier = leagueTiers.find((t) => t.id === currentLeague) ?? defaultTier;
 
   const { data } = useLeaderboard(currentLeague);
-  const entries = data?.entries ?? fallbackEntries;
-  const myRank = data?.myRank ?? 4;
+  const entries = data?.entries ?? [];
+  const myRank = data?.myRank ?? 0;
 
   return (
     <MainLayout>
@@ -171,7 +95,21 @@ export default function LeaderboardScreen() {
         </Card>
 
         {/* Leaderboard */}
-        <Leaderboard entries={entries} currentUserId={child?.id ?? 'current'} />
+        {entries.length === 0 ? (
+          <Card variant="filled" padding="lg">
+            <div className="space-y-2 text-center">
+              <span className="text-4xl">📊</span>
+              <Text variant="body" weight="bold">
+                Henüz kimse yok
+              </Text>
+              <Text variant="caption" className="text-text-secondary">
+                Bu haftanın liderlik tablosu yakında dolacak!
+              </Text>
+            </div>
+          </Card>
+        ) : (
+          <Leaderboard entries={entries} currentUserId={child?.id ?? 'current'} />
+        )}
       </div>
     </MainLayout>
   );

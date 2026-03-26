@@ -14,11 +14,14 @@ import type { Activity, ActivityType, Lesson } from '@/types/content';
 import type { ActivityResult, VocabularyCard } from '@/types/progress';
 import {
   calculateNextReview,
+  getAdaptiveActivityCount,
   getAdaptiveDifficulty,
   getReviewQueue,
   inferQuality,
   type DifficultyProfile,
 } from '@services/srs';
+
+type AgeGroup = 'cubs' | 'stars' | 'legends';
 
 // ===== LESSON SESSION =====
 
@@ -58,6 +61,7 @@ export interface LessonOutcome {
  * 7. Quiz battle / memory game (karma tekrar)
  */
 const ACTIVITY_PEDAGOGIC_ORDER: Record<ActivityType, number> = {
+  'lesson-intro': 0,
   'flash-card': 1,
   'listen-and-tap': 2,
   'match-pairs': 3,
@@ -66,12 +70,13 @@ const ACTIVITY_PEDAGOGIC_ORDER: Record<ActivityType, number> = {
   'sentence-builder': 6,
   'grammar-transform': 7,
   'speak-it': 8,
-  'conversation': 9,
+  conversation: 9,
   'story-time': 10,
   'story-comprehension': 11,
   'memory-game': 12,
   'word-search': 13,
   'quiz-battle': 14,
+  'lesson-outro': 99,
 };
 
 function getPedagogicOrder(type: string): number {
@@ -104,19 +109,103 @@ interface PrepareLessonParams {
   childLevel: number;
   /** Vocabulary cards for SRS-based content selection */
   vocabularyCards?: VocabularyCard[];
+  /** Child's age group for pedagogic differentiation */
+  ageGroup?: AgeGroup;
 }
 
+// Activity type priorities by age group — higher score = preferred
+const AGE_GROUP_ACTIVITY_PRIORITY: Record<AgeGroup, Partial<Record<ActivityType, number>>> = {
+  // Cubs (4-6): Visual-audio heavy, minimal text, drag-based
+  cubs: {
+    'flash-card': 10,
+    'listen-and-tap': 10,
+    'match-pairs': 9,
+    'memory-game': 8,
+    'word-builder': 5,
+    'story-time': 7,
+    'word-search': 2,
+    'fill-blank': 2,
+    'speak-it': 6,
+    'quiz-battle': 1,
+    'sentence-builder': 0,
+    'grammar-transform': 0,
+    'story-comprehension': 1,
+    conversation: 3,
+  },
+  // Stars (7-9): Balanced mix with reading/story focus
+  stars: {
+    'flash-card': 8,
+    'listen-and-tap': 7,
+    'match-pairs': 6,
+    'word-builder': 7,
+    'fill-blank': 6,
+    'story-time': 9,
+    'story-comprehension': 8,
+    'memory-game': 5,
+    'sentence-builder': 5,
+    'speak-it': 7,
+    'quiz-battle': 4,
+    conversation: 6,
+    'grammar-transform': 3,
+    'word-search': 4,
+  },
+  // Legends (10-12): Productive tasks, grammar, conversations
+  legends: {
+    'flash-card': 3,
+    'listen-and-tap': 4,
+    'match-pairs': 2,
+    'fill-blank': 7,
+    'sentence-builder': 9,
+    'grammar-transform': 8,
+    'speak-it': 10,
+    conversation: 10,
+    'story-comprehension': 7,
+    'story-time': 4,
+    'quiz-battle': 6,
+    'word-builder': 5,
+    'word-search': 3,
+    'memory-game': 1,
+  },
+};
+
+// Activity types to skip for younger age groups
+const AGE_GROUP_SKIP: Record<AgeGroup, Set<ActivityType>> = {
+  cubs: new Set(['grammar-transform', 'sentence-builder', 'story-comprehension', 'word-search']),
+  stars: new Set(),
+  legends: new Set(),
+};
+
 /**
- * Prepare a lesson session: select activities based on difficulty and SRS.
+ * Prepare a lesson session: select activities based on difficulty, age group, and SRS.
  */
 export function prepareLesson(params: PrepareLessonParams): LessonSession {
-  const { lesson, recentPerformance, childLevel, vocabularyCards } = params;
+  const { lesson, recentPerformance, childLevel, vocabularyCards, ageGroup = 'stars' } = params;
 
   // Determine difficulty
   const difficulty = getAdaptiveDifficulty(recentPerformance, childLevel);
 
-  // Select & sort activities — preserve type diversity
-  let selectedActivities = lesson.activities.slice();
+  // Adjust activity count based on age group
+  const avgAccuracy =
+    recentPerformance.length > 0
+      ? recentPerformance.reduce((sum, p) => sum + p.accuracy, 0) / recentPerformance.length
+      : 0.5;
+  difficulty.activitiesPerLesson = getAdaptiveActivityCount(avgAccuracy, ageGroup);
+
+  // Age-group difficulty adjustments
+  if (ageGroup === 'cubs') {
+    difficulty.autoHints = true;
+    difficulty.maxHints = Math.max(difficulty.maxHints, 3);
+    difficulty.timeMultiplier = Math.max(difficulty.timeMultiplier, 1.3);
+    difficulty.distractorCount = Math.min(difficulty.distractorCount, 3);
+  } else if (ageGroup === 'legends') {
+    difficulty.autoHints = false;
+    difficulty.maxHints = Math.min(difficulty.maxHints, 1);
+    difficulty.timeMultiplier = Math.min(difficulty.timeMultiplier, 1.0);
+  }
+
+  // Filter out age-inappropriate activity types
+  const skipTypes = AGE_GROUP_SKIP[ageGroup];
+  let selectedActivities = lesson.activities.filter((a) => !skipTypes.has(a.type));
 
   if (selectedActivities.length > difficulty.activitiesPerLesson) {
     // Keep one of each activity type first (ensures all types appear)
@@ -138,8 +227,10 @@ export function prepareLesson(params: PrepareLessonParams): LessonSession {
       // All types fit — fill remaining slots with extras (e.g. extra flash-cards)
       selectedActivities = [...unique, ...extras.slice(0, limit - unique.length)];
     } else {
-      // More types than slots — keep types by pedagogic priority
-      selectedActivities = sortActivitiesPedagogically(unique).slice(0, limit);
+      // More types than slots — prioritize by age group preference
+      const priorities = AGE_GROUP_ACTIVITY_PRIORITY[ageGroup];
+      unique.sort((a, b) => (priorities[b.type] ?? 5) - (priorities[a.type] ?? 5));
+      selectedActivities = unique.slice(0, limit);
     }
   }
 

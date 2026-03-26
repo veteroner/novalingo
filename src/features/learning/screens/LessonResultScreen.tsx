@@ -11,6 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { StarRating } from '@components/molecules/StarRating';
 import { NovaCompanion } from '@components/organisms/NovaCompanion';
 import { getVocab } from '@features/learning/data/activityGenerator';
+import { getLesson } from '@features/learning/data/curriculum';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
 import type { SubmitLessonResultRes } from '@services/firebase/functions';
 import { unlockAudioPlayback } from '@services/speech/speechService';
@@ -38,10 +39,14 @@ export default function LessonResultScreen() {
     summary?: LessonSummary;
     backendResult?: SubmitLessonResultRes;
     vocabulary?: string[];
+    bossGameOver?: boolean;
+    lessonType?: string;
   } | null;
   const summary = state?.summary;
   const backendResult = state?.backendResult;
   const vocabulary = state?.vocabulary ?? [];
+  const bossGameOver = state?.bossGameOver ?? false;
+  const isBossLesson = state?.lessonType === 'boss';
 
   if (!summary) {
     return (
@@ -49,6 +54,90 @@ export default function LessonResultScreen() {
         <Button variant="primary" onClick={() => navigate('/home')}>
           Ana Sayfaya Dön
         </Button>
+      </div>
+    );
+  }
+
+  // ===== BOSS DEFEAT SCREEN =====
+  if (bossGameOver) {
+    return (
+      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-red-950 to-red-900 px-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 160 }}
+          className="text-8xl"
+        >
+          💀
+        </motion.div>
+
+        <motion.div
+          className="mt-5 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Text variant="h2" align="center" className="text-white">
+            Patron Seni Yendi!
+          </Text>
+          <Text variant="body" align="center" className="mt-2 text-red-200">
+            Ama yenilmek söz konusu değil… henüz.
+          </Text>
+        </motion.div>
+
+        <motion.div
+          className="mt-6 grid w-full max-w-xs grid-cols-2 gap-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <div className="rounded-2xl bg-white/10 p-4 text-center">
+            <Text variant="h3" className="text-white">
+              {summary.correctAnswers}
+            </Text>
+            <Text variant="caption" className="text-red-200">
+              Doğru Cevap
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-white/10 p-4 text-center">
+            <Text variant="h3" className="text-white">
+              {formatTime(summary.durationSeconds)}
+            </Text>
+            <Text variant="caption" className="text-red-200">
+              Süre
+            </Text>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mt-8 w-full max-w-xs space-y-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1 }}
+        >
+          <Button
+            variant="primary"
+            size="xl"
+            fullWidth
+            onClick={() => {
+              void unlockAudioPlayback();
+              void navigate(`/lesson/${summary.lessonId}`);
+            }}
+          >
+            🗡️ Tekrar Saldır!
+          </Button>
+          <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
+            <span className="text-white">Sonra Dene</span>
+          </Button>
+        </motion.div>
+
+        <NovaCompanion
+          mood="encouraging"
+          message="Sen bunu yapabilirsin! Her deneme seni daha güçlü yapıyor! 💪"
+          position="center"
+          size="lg"
+          className="mt-6"
+        />
       </div>
     );
   }
@@ -67,9 +156,27 @@ export default function LessonResultScreen() {
   };
 
   const { mood, msg } = getMoodMessage();
+  const lesson = getLesson(summary.lessonId);
 
   return (
     <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
+      {/* Boss Victory Banner */}
+      {isBossLesson && (
+        <motion.div
+          className="mb-4 w-full max-w-sm rounded-3xl bg-linear-to-r from-yellow-400 to-amber-500 px-6 py-4 text-center shadow-lg"
+          initial={{ opacity: 0, scale: 0.5, y: -20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 12 }}
+        >
+          <Text variant="h2" align="center" className="text-white drop-shadow">
+            👑 PATRON YENİLDİ!
+          </Text>
+          <Text variant="bodySmall" align="center" className="mt-1 text-yellow-100">
+            Mükemmel bir zafer! Harikaşsın!
+          </Text>
+        </motion.div>
+      )}
+
       {/* Stars */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
@@ -137,11 +244,16 @@ export default function LessonResultScreen() {
 
       {/* Streak badge */}
       <motion.div
-        className="mt-4 flex gap-2"
+        className="mt-4 flex flex-wrap justify-center gap-2"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.3, type: 'spring' }}
       >
+        {isBossLesson && (
+          <Badge variant="xp" size="lg" icon={<span>👑</span>}>
+            Boss Ödülü!
+          </Badge>
+        )}
         {backendResult && backendResult.streak > 0 && (
           <Badge variant="streak" size="lg" icon={<span>🔥</span>}>
             {backendResult.streak} gün seri!
@@ -167,6 +279,23 @@ export default function LessonResultScreen() {
           </Text>
           <Text variant="caption" className="text-text-secondary">
             Yeni seviyeye ulaştın!
+          </Text>
+        </motion.div>
+      )}
+
+      {/* Can Do Achievement */}
+      {lesson?.canDo && (
+        <motion.div
+          className="bg-success/10 mt-4 w-full max-w-sm rounded-2xl px-5 py-4 text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.75, type: 'spring', stiffness: 180 }}
+        >
+          <Text variant="caption" className="text-success mb-1 font-bold tracking-wide uppercase">
+            ✅ Artık şunu yapabilirsin
+          </Text>
+          <Text variant="body" className="text-surface-900 dark:text-surface-100 font-semibold">
+            {lesson.canDo}
           </Text>
         </motion.div>
       )}
@@ -214,8 +343,21 @@ export default function LessonResultScreen() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
       >
-        <Button variant="primary" size="xl" fullWidth onClick={() => navigate('/home')}>
-          Devam Et
+        {/* Conversation Practice CTA — offer after every lesson */}
+        <Button
+          variant="primary"
+          size="xl"
+          fullWidth
+          onClick={() => {
+            void unlockAudioPlayback();
+            void navigate('/conversation');
+          }}
+        >
+          🎭 Konuşma Pratiği Yap
+        </Button>
+
+        <Button variant="secondary" size="lg" fullWidth onClick={() => navigate('/home')}>
+          Ana Sayfaya Dön
         </Button>
 
         {stars < 3 && (

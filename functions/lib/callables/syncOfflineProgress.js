@@ -29,6 +29,12 @@ exports.syncOfflineProgress = (0, https_1.onCall)(admin_1.callableOpts, async (r
                 case 'lessonComplete': {
                     const p = action.payload;
                     const lessonId = typeof p.lessonId === 'string' ? p.lessonId : null;
+                    const activities = Array.isArray(p.activities)
+                        ? p.activities.filter((activity) => typeof activity === 'object' && activity !== null && 'activityId' in activity)
+                        : [];
+                    const conversationEvidence = activities
+                        .map((activity) => activity.conversationEvidence)
+                        .filter((evidence) => Boolean(evidence));
                     if (!lessonId) {
                         errors++;
                         break;
@@ -39,6 +45,17 @@ exports.syncOfflineProgress = (0, https_1.onCall)(admin_1.callableOpts, async (r
                         accuracy: Math.min(Math.max(Number(p.accuracy) || 0, 0), 1),
                         xpEarned: Math.min(Math.max(Number(p.xpEarned) || 0, 0), 500),
                         timeSpentMs: Math.min(Math.max(Number(p.timeSpentMs) || 0, 0), 600_000),
+                        durationSeconds: Math.round(Math.min(Math.max(Number(p.timeSpentMs) || 0, 0), 600_000) / 1000),
+                        attempts: activities.map((activity) => ({
+                            activityId: activity.activityId,
+                            activityType: activity.activityType,
+                            correct: activity.correct,
+                            timeSpentMs: activity.timeSpentMs,
+                            hintsUsed: activity.hintsUsed,
+                            attempts: activity.attempts,
+                            conversationEvidence: activity.conversationEvidence ?? null,
+                        })),
+                        conversationEvidence,
                         syncedAt: (0, admin_1.serverTimestamp)(),
                         offlineSync: true,
                     }, { merge: true });

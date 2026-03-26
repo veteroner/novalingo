@@ -25,11 +25,9 @@ exports.createChildProfile = (0, https_1.onCall)(admin_1.callableOpts, async (re
         .where('parentUid', '==', uid)
         .count()
         .get();
-    const userDoc = await admin_1.db.doc(`users/${uid}`).get();
-    const isPremium = userDoc.data()?.isPremium ?? false;
-    const maxChildren = isPremium ? 5 : 1;
+    const maxChildren = 5;
     if (existingChildren.data().count >= maxChildren) {
-        throw new https_1.HttpsError('resource-exhausted', isPremium ? 'Maximum 5 child profiles' : 'Upgrade to Premium for more profiles');
+        throw new https_1.HttpsError('resource-exhausted', 'Maximum 5 child profiles');
     }
     // Create child document
     const childRef = admin_1.db.collection('children').doc();

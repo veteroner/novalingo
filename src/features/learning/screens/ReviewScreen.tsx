@@ -72,6 +72,7 @@ export default function ReviewScreen() {
         timeSpentSeconds: outcome.timeSpentSeconds,
         attempts: outcome.attempts,
         hintsUsed: outcome.hintsUsed,
+        conversationEvidence: outcome.conversationEvidence,
       });
 
       feedbackTimerRef.current = setTimeout(() => {

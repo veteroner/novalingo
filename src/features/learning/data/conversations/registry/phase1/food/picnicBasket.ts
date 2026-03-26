@@ -46,6 +46,12 @@ export const picnicBasketScenario: ConversationScenario = {
       text: 'Let’s make a picnic basket. What should we take first?',
       textTr: 'Hadi bir piknik sepeti hazırlayalım. Önce ne alalım?',
       targetPattern: 'Let’s take...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: Let’s take bread.',
+        promptTr: 'Şöyle söyle: Let’s take bread.',
+        maxRetries: 2,
+      },
       hint: {
         delayMs: 8000,
         text: 'Try saying: Let’s take bread.',
@@ -83,6 +89,18 @@ export const picnicBasketScenario: ConversationScenario = {
       text: 'Good. What do we need next? Juice or cake?',
       textTr: 'Güzel. Sırada neye ihtiyacımız var? Meyve suyu mu pasta mı?',
       targetPattern: 'We need...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: We need juice.',
+        promptTr: 'Şöyle söyle: We need juice.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: We need juice.',
+        textTr: 'Şöyle söylemeyi dene: We need juice.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r2_juice',
@@ -115,6 +133,18 @@ export const picnicBasketScenario: ConversationScenario = {
       text: 'Yum. Which one do you like more?',
       textTr: 'Yum. Hangisini daha çok seviyorsun?',
       targetPattern: 'I like...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: I like juice.',
+        promptTr: 'Şöyle söyle: I like juice.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: I like juice.',
+        textTr: 'Şöyle söylemeyi dene: I like juice.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r3_like_juice',

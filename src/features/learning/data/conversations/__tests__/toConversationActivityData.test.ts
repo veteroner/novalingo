@@ -16,6 +16,10 @@ describe('toConversationActivityData', () => {
     );
     expect(startNode?.speaker).toBe('nova');
     expect(startNode?.options?.length).toBeGreaterThan(0);
+    expect(startNode?.options?.[0]?.responseId).toBeTruthy();
+    expect(startNode?.options?.[0]?.acceptableVariations?.length).toBeGreaterThan(0);
+    expect(activityData.successCriteria).toEqual(fruitStandOrderScenario.successCriteria);
+    expect(activityData.estimatedDurationSec).toBe(fruitStandOrderScenario.estimatedDurationSec);
 
     const echoNode = activityData.nodes.find((node) => node.id.includes('__child'));
     expect(echoNode?.speaker).toBe('child');

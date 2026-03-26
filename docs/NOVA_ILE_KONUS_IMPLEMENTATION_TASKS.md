@@ -29,26 +29,26 @@
 
 ### 1.1 İlk Pilot Entegrasyon
 
-- [ ] `generateConversation()` içine feature-flag destekli scenario selector entegrasyonu ekle
-- [ ] Yeni selector başarısız olursa legacy `findBestTemplate()` fallback’i bırak
-- [ ] Mapper çıktısının mevcut `ConversationActivity` ile sorunsuz çalıştığını doğrula
+- [x] `generateConversation()` içine feature-flag destekli scenario selector entegrasyonu ekle
+- [x] Yeni selector başarısız olursa legacy `findBestTemplate()` fallback'i bırak
+- [x] Mapper çıktısının mevcut `ConversationActivity` ile sorunsuz çalıştığını doğrula
 - [ ] Phase 1’in ilk 5 senaryosunu tek tek smoke test et
 
 ### 1.2 Validation Katmanı
 
-- [ ] `validateConversationScenario.ts` dosyasını oluştur
-- [ ] Node id benzersizlik testi yaz
-- [ ] Geçerli `nextNodeId` testi yaz
-- [ ] En az bir terminal node testi yaz
-- [ ] Required metadata testi yaz
-- [ ] Response rule boşluk ve duplicate variant testi yaz
+- [x] `validateConversationScenario.ts` dosyasını oluştur
+- [x] Node id benzersizlik testi yaz
+- [x] Geçerli `nextNodeId` testi yaz
+- [x] En az bir terminal node testi yaz
+- [x] Required metadata testi yaz
+- [x] Response rule boşluk ve duplicate variant testi yaz
 
 ### 1.3 Test Kapsamı
 
-- [ ] `scenarioIndex` için registry testleri yaz
-- [ ] `selectConversationScenario` için seçim testleri yaz
-- [ ] `toConversationActivityData` için mapper testleri yaz
-- [ ] İlk 5 senaryonun graph validasyon testlerini yaz
+- [x] `scenarioIndex` için registry testleri yaz
+- [x] `selectConversationScenario` için seçim testleri yaz
+- [x] `toConversationActivityData` için mapper testleri yaz
+- [x] İlk 5 senaryonun graph validasyon testlerini yaz
 
 ---
 
@@ -56,24 +56,24 @@
 
 ### 2.1 Matching Motoru
 
-- [ ] `matchConversationResponse.ts` oluştur
-- [ ] `ConversationActivity` içindeki free-form matching mantığını runtime helper’a taşı
-- [ ] Response rule bazlı match sonucu tipi tanımla
-- [ ] Repair ve hint kararını node metadata’sından okut
+- [x] `matchConversationResponse.ts` oluştur
+- [x] `ConversationActivity` içindeki free-form matching mantığını runtime helper'a taşı
+- [x] Response rule bazlı match sonucu tipi tanımla
+- [x] Repair ve hint kararını node metadata'sından okut
 
 ### 2.2 Completion ve Scoring
 
-- [ ] Scenario-level success criteria değerlendirme helper’ı yaz
-- [ ] `targetWords` bazlı kaba skor yerine scenario scoring kuralı ekle
-- [ ] Hint ile tamamlanan cevaplar için farklı scoring kuralı tanımla
+- [x] Scenario-level success criteria değerlendirme helper'ı yaz
+- [x] `targetWords` bazlı kaba skor yerine scenario scoring kuralı ekle
+- [x] Hint ile tamamlanan cevaplar için farklı scoring kuralı tanımla
 
 ### 2.3 Analytics Hook’ları
 
-- [ ] `conversation_started` eventini emit et
-- [ ] `conversation_turn_completed` eventini emit et
-- [ ] `conversation_hint_shown` eventini emit et
-- [ ] `conversation_repair_prompt_used` eventini emit et
-- [ ] `conversation_completed` eventini emit et
+- [x] `conversation_started` eventini emit et
+- [x] `conversation_turn_completed` eventini emit et
+- [x] `conversation_hint_shown` eventini emit et
+- [x] `conversation_repair_prompt_used` eventini emit et
+- [x] `conversation_completed` eventini emit et
 
 ---
 
@@ -81,21 +81,21 @@
 
 ### 3.1 Phase 1A İçerikleri
 
-- [ ] Senaryo 6-10 için gerçek TS içerik dosyalarını ekle
-- [ ] Her senaryo için en az 2 varyant ekle
+- [x] Senaryo 6-10 için gerçek TS içerik dosyalarını ekle
+- [x] Her senaryo için en az 2 varyant ekle
 - [ ] Yaş bandı ve zorluk dağılımını tekrar dengele
 
 ### 3.2 Phase 1B İçerikleri
 
-- [ ] Senaryo 11-20 için gerçek TS içerik dosyalarını ekle
-- [ ] Stretch senaryoları için daha güçlü repair akışı yaz
+- [x] Senaryo 11-20 için gerçek TS içerik dosyalarını ekle
+- [x] Stretch senaryoları için daha güçlü repair akışı yaz
 - [ ] Mission senaryoları için reward hook alanlarını netleştir
 
 ### 3.3 İçerik Yazım Standardizasyonu
 
-- [ ] Script brief şablonu oluştur
-- [ ] Content review checklist oluştur
-- [ ] İçerik yazarları için örnek senaryo dosyası oluştur
+- [x] Script brief şablonu oluştur
+- [x] Content review checklist oluştur
+- [x] İçerik yazarları için örnek senaryo dosyası oluştur
 
 ---
 
@@ -103,17 +103,17 @@
 
 ### 4.1 Akıllı Seçim
 
-- [ ] Age band uyum skorunu iyileştir
-- [ ] Difficulty uyum skorunu iyileştir
-- [ ] Repetition penalty ekle
-- [ ] Novelty bonus ekle
-- [ ] Theme bias ve recent history entegrasyonu ekle
+- [x] Age band uyum skorunu iyileştir
+- [x] Difficulty uyum skorunu iyileştir
+- [x] Repetition penalty ekle
+- [x] Novelty bonus ekle
+- [x] Theme bias ve recent history entegrasyonu ekle
 
 ### 4.2 Kişiselleştirme
 
-- [ ] Çocuğun son başarı oranına göre scenario difficulty seç
-- [ ] En çok zorlandığı kalıpları yeniden döndür
-- [ ] Tercih edilen tema etiketlerine göre öneri yap
+- [x] Çocuğun son başarı oranına göre scenario difficulty seç
+- [x] En çok zorlandığı kalıpları yeniden döndür
+- [x] Tercih edilen tema etiketlerine göre öneri yap
 
 ---
 
@@ -121,16 +121,16 @@
 
 ### 5.1 Scenario-Aware UI
 
-- [ ] Konuşma başında scenario summary gösterimi değerlendir
-- [ ] Mission senaryoları için görev header’ı ekle
+- [x] Konuşma başında scenario summary gösterimi değerlendir
+- [x] Mission senaryoları için görev header'ı ekle
 - [ ] Story senaryoları için episode göstergesi ekle
 - [ ] Reward tipi bazlı son ekran varyantları tasarla
 
 ### 5.2 Hint ve Repair Görselleştirmesi
 
-- [ ] Pattern reveal kartı tasarla
-- [ ] Repair prompt’lar için daha net konuşma yardımı tasarla
-- [ ] Mikrofon ve yazı modları arasında yönlendirici ipuçları ekle
+- [x] Pattern reveal kartı tasarla
+- [ ] Repair prompt'lar için daha net konuşma yardımı tasarla
+- [x] Mikrofon ve yazı modları arasında yönlendirici ipuçları ekle
 
 ---
 
@@ -139,23 +139,31 @@
 ### 6.1 Legacy Kullanımını Azalt
 
 - [ ] Yeni registry’nin kapsadığı tema sayısını ölç
-- [ ] Legacy template kullanım oranını analitikte izle
+- [x] Legacy template kullanım oranını analitikte izle
 - [ ] Registry yeterli kapsama ulaştığında yeni derslerde legacy kullanımını kapat
 
 ### 6.2 Son Temizlik
 
-- [ ] `findBestTemplate()` kullanım alanlarını temizle
-- [ ] `conversationTemplates.ts` dosyasını legacy fallback veya test fixture olarak ayır
+- [x] `findBestTemplate()` kullanım alanlarını temizle
+- [x] `conversationTemplates.ts` dosyasını legacy fallback veya test fixture olarak ayır
 - [ ] Node echo geçişini tamamen runtime mapper’dan native runtime’a taşı
 
 ---
 
 ## Öncelikli Sıradaki Kod İşleri
 
-İlk uygulanması gereken 5 teknik adım:
+Aşağıdaki 5 adım tamamlandı:
 
-1. `generateConversation()` için selector + mapper entegrasyonu
-2. `validateConversationScenario.ts` oluşturma
-3. selector testleri
-4. mapper testleri
-5. Phase 1’in sonraki 5 senaryosu
+1. ~~`generateConversation()` için selector + mapper entegrasyonu~~ ✅
+2. ~~`validateConversationScenario.ts` oluşturma~~ ✅
+3. ~~selector testleri~~ ✅
+4. ~~mapper testleri~~ ✅
+5. ~~Phase 1'in sonraki 5 senaryosu~~ ✅
+
+Kalan işler:
+
+1. Phase 1 senaryolarını cihazda smoke test et
+2. Story senaryoları için episode göstergesi ekle
+3. Reward tipi bazlı son ekran varyantlarını tasarla
+4. Repair prompt görselleştirmesini iyileştir
+5. Registry kapsama oranı yeterli olduğunda production flag'ını aç

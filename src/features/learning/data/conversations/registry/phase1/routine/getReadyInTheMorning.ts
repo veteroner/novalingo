@@ -33,7 +33,10 @@ export const getReadyInTheMorningScenario: ConversationScenario = {
     preferredIfTagsSeen: ['routine'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsayılan', promptStyle: 'mission' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsayılan', promptStyle: 'mission' },
+    { id: 'playful', label: 'Playful', labelTr: 'Eğlenceli', promptStyle: 'playful' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -43,6 +46,12 @@ export const getReadyInTheMorningScenario: ConversationScenario = {
       text: 'Good morning! What do we need first?',
       textTr: 'Günaydın! Önce neye ihtiyacımız var?',
       targetPattern: 'We need...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: We need shoes.',
+        promptTr: 'Şöyle söyle: We need shoes.',
+        maxRetries: 2,
+      },
       hint: {
         delayMs: 7000,
         text: 'Try saying: We need shoes.',
@@ -80,6 +89,18 @@ export const getReadyInTheMorningScenario: ConversationScenario = {
       text: 'Great. What do we need next? Maybe a bag or water.',
       textTr: 'Harika. Sırada neye ihtiyacımız var? Belki bir çanta ya da su.',
       targetPattern: 'We need...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: We need a bag.',
+        promptTr: 'Şöyle söyle: We need a bag.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: We need a bag.',
+        textTr: 'Şöyle söylemeyi dene: We need a bag.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r2_bag',
@@ -112,6 +133,18 @@ export const getReadyInTheMorningScenario: ConversationScenario = {
       text: 'Now say: I am ready!',
       textTr: 'Şimdi şöyle söyle: I am ready!',
       targetPattern: 'I am ready',
+      repair: {
+        enabled: true,
+        prompt: 'Say: I am ready!',
+        promptTr: 'Şöyle söyle: I am ready!',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: I am ready!',
+        textTr: 'Şöyle söylemeyi dene: I am ready!',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r3_ready',

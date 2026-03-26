@@ -7,6 +7,7 @@
 
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { CURRENCY, LESSON, XP } from '../config/constants';
+import type { SubmitLessonResultReq } from '../types/request';
 import {
   callableOpts,
   db,
@@ -18,23 +19,10 @@ import {
 } from '../utils/admin';
 import { checkRateLimit, RATE_LIMITS } from '../utils/rateLimit';
 
-interface LessonResultRequest {
-  childId: string;
-  lessonId: string;
-  activities: {
-    activityId: string;
-    correct: boolean;
-    timeSpentMs: number;
-    hintsUsed: number;
-    attempts: number;
-  }[];
-  totalTimeMs: number;
-}
-
 export const submitLessonResult = onCall(callableOpts, async (request) => {
   const uid = requireAuth(request);
   await checkRateLimit(uid, 'submitLessonResult', RATE_LIMITS.write);
-  const { childId, lessonId, activities, totalTimeMs } = request.data as LessonResultRequest;
+  const { childId, lessonId, activities, totalTimeMs } = request.data as SubmitLessonResultReq;
 
   await requireChildOwnership(uid, childId);
 
@@ -43,6 +31,13 @@ export const submitLessonResult = onCall(callableOpts, async (request) => {
   // ── Calculate Accuracy ────────────────────────────────
   const correctCount = activities.filter((a) => a.correct).length;
   const accuracy = correctCount / activities.length;
+  const hintsUsed = activities.reduce((sum, activity) => sum + activity.hintsUsed, 0);
+  const conversationEvidence = activities
+    .map((activity) => activity.conversationEvidence)
+    .filter(
+      (evidence): evidence is NonNullable<(typeof activities)[number]['conversationEvidence']> =>
+        Boolean(evidence),
+    );
 
   // ── Calculate Stars ───────────────────────────────────
   const [t1, t2, t3] = LESSON.STAR_THRESHOLDS;
@@ -153,16 +148,32 @@ export const submitLessonResult = onCall(callableOpts, async (request) => {
   await progressRef.set(
     {
       lessonId,
+      score: Math.round(accuracy * 100),
       stars,
+      starsEarned: stars,
       accuracy,
       xpEarned: result.totalXP,
+      durationSeconds: Math.round(totalTimeMs / 1000),
       timeSpentMs: totalTimeMs,
+      activitiesCompleted: activities.length,
+      activitiesTotal: activities.length,
+      correctAnswers: correctCount,
+      wrongAnswers: activities.length - correctCount,
+      hintsUsed,
+      isPerfect,
+      attemptNumber: 1,
+      deviceType: 'web',
       completedAt: serverTimestamp(),
       attempts: activities.map((a) => ({
         activityId: a.activityId,
+        activityType: a.activityType,
         correct: a.correct,
         timeSpentMs: a.timeSpentMs,
+        hintsUsed: a.hintsUsed,
+        attempts: a.attempts,
+        conversationEvidence: a.conversationEvidence ?? null,
       })),
+      conversationEvidence,
     },
     { merge: true },
   );

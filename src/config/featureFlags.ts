@@ -48,10 +48,10 @@ export const defaultFeatureFlags: FeatureFlags = {
   offlineMode: true,
   parentDashboard: true,
   collectionSystem: true,
-  storyMode: false, // Phase 2
+  storyMode: true, // Enabled — Phase 1 stories available
   multiplayerGames: false, // Phase 4
   arActivities: false, // Phase 5
-  conversationScenarioRegistry: false,
+  conversationScenarioRegistry: true,
 };
 
 /**
@@ -61,7 +61,7 @@ export const devFeatureFlags: Partial<FeatureFlags> = {
   speechRecognition: true,
   novaAIChat: true,
   storyMode: true,
-  conversationScenarioRegistry: false,
+  conversationScenarioRegistry: true,
 };
 
 /**

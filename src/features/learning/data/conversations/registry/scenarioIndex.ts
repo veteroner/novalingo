@@ -19,6 +19,46 @@ import { packMySchoolBagScenario } from './phase1/routine/packMySchoolBag';
 import { buildAPlayTeamScenario } from './phase1/toys/buildAPlayTeam';
 import { fixTheBrokenToyScenario } from './phase1/toys/fixTheBrokenToy';
 import { toyShopChoiceScenario } from './phase1/toys/toyShopChoice';
+import { letsPlayScenario } from './phase2/actions/letsPlay';
+import { whatDoYouDoScenario } from './phase2/actions/whatDoYouDo';
+import { biggerThanScenario } from './phase2/adjectives/biggerThan';
+import { meetNovaScenario } from './phase2/family/meetNova';
+import { whoIsThisScenario } from './phase2/family/whoIsThis';
+import { canIHaveScenario } from './phase2/food/canIHave';
+import { canYouScenario } from './phase2/helpers/canYou';
+import { iAmYouAreScenario } from './phase2/tobe/iAmYouAre';
+import { gettingDressedScenario } from './phase3/clothes/gettingDressed';
+import { whatToWearScenario } from './phase3/clothes/whatToWear';
+import { myRoutineScenario } from './phase3/home/myRoutine';
+import { whereIsTheScenario } from './phase3/home/whereIsThe';
+import { inTheForestScenario } from './phase3/nature/inTheForest';
+import { whatSeasonScenario } from './phase3/nature/whatSeason';
+import { howDoYouGoScenario } from './phase3/transport/howDoYouGo';
+import { letsGoScenario } from './phase3/transport/letsGo';
+import { letsGoShoppingScenario } from './phase4/city/letsGoShopping';
+import { whereIsTheBankScenario } from './phase4/city/whereIsTheBank';
+import { whereIsTheParkScenario } from './phase4/city/whereIsThePark';
+import { myBestFriendScenario } from './phase4/friends/myBestFriend';
+import { iWantToBeScenario } from './phase4/jobs/iWantToBe';
+import { whatDoYouWorkScenario } from './phase4/jobs/whatDoYouWork';
+import { canIBorrowScenario } from './phase4/school/canIBorrow';
+import { doYouHaveAScenario } from './phase4/school/doYouHaveA';
+import { doYouLikeToPlayScenario } from './phase4/sports/doYouLikeToPlay';
+import { letsPlaySportsScenario } from './phase4/sports/letsPlaySports';
+import { myDailyScheduleScenario } from './phase4/time/myDailySchedule';
+import { whatTimeIsItScenario } from './phase4/time/whatTimeIsIt';
+import { atTheLibraryScenario } from './phase5/city/atTheLibrary';
+import { atThePostOfficeScenario } from './phase5/city/atThePostOffice';
+import { orderAtTheCafeScenario } from './phase5/city/orderAtTheCafe';
+import { planningAPartyScenario } from './phase5/friends/planningAParty';
+import { meetTheDoctorScenario } from './phase5/jobs/meetTheDoctor';
+import { theFirefighterMissionScenario } from './phase5/jobs/theFirefighterMission';
+import { lunchAtSchoolScenario } from './phase5/school/lunchAtSchool';
+import { scienceClassScenario } from './phase5/school/scienceClass';
+import { writingALetterScenario } from './phase5/school/writingALetter';
+import { joinTheTeamScenario } from './phase5/sports/joinTheTeam';
+import { howLongDoesItTakeScenario } from './phase5/time/howLongDoesItTake';
+import { planningMyWeekScenario } from './phase5/time/planningMyWeek';
 
 export const PHASE1_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   petShopPickScenario,
@@ -43,6 +83,66 @@ export const PHASE1_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   bedtimeWindDownScenario,
 ];
 
+export const PHASE2_CONVERSATION_SCENARIOS: ConversationScenario[] = [
+  meetNovaScenario,
+  whoIsThisScenario,
+  canIHaveScenario,
+  biggerThanScenario,
+  iAmYouAreScenario,
+  canYouScenario,
+  letsPlayScenario,
+  whatDoYouDoScenario,
+];
+
+export const PHASE3_CONVERSATION_SCENARIOS: ConversationScenario[] = [
+  whereIsTheScenario,
+  myRoutineScenario,
+  inTheForestScenario,
+  whatSeasonScenario,
+  gettingDressedScenario,
+  whatToWearScenario,
+  howDoYouGoScenario,
+  letsGoScenario,
+];
+
+export const PHASE4_CONVERSATION_SCENARIOS: ConversationScenario[] = [
+  whereIsTheBankScenario,
+  letsGoShoppingScenario,
+  whereIsTheParkScenario,
+  whatTimeIsItScenario,
+  myDailyScheduleScenario,
+  whatDoYouWorkScenario,
+  iWantToBeScenario,
+  doYouHaveAScenario,
+  canIBorrowScenario,
+  doYouLikeToPlayScenario,
+  letsPlaySportsScenario,
+  myBestFriendScenario,
+];
+
+export const PHASE5_CONVERSATION_SCENARIOS: ConversationScenario[] = [
+  orderAtTheCafeScenario,
+  atThePostOfficeScenario,
+  atTheLibraryScenario,
+  planningMyWeekScenario,
+  howLongDoesItTakeScenario,
+  meetTheDoctorScenario,
+  theFirefighterMissionScenario,
+  joinTheTeamScenario,
+  lunchAtSchoolScenario,
+  scienceClassScenario,
+  planningAPartyScenario,
+  writingALetterScenario,
+];
+
+export const ALL_CONVERSATION_SCENARIOS: ConversationScenario[] = [
+  ...PHASE1_CONVERSATION_SCENARIOS,
+  ...PHASE2_CONVERSATION_SCENARIOS,
+  ...PHASE3_CONVERSATION_SCENARIOS,
+  ...PHASE4_CONVERSATION_SCENARIOS,
+  ...PHASE5_CONVERSATION_SCENARIOS,
+];
+
 export function getConversationScenarioById(id: string): ConversationScenario | undefined {
-  return PHASE1_CONVERSATION_SCENARIOS.find((scenario) => scenario.id === id);
+  return ALL_CONVERSATION_SCENARIOS.find((scenario) => scenario.id === id);
 }

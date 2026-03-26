@@ -71,10 +71,23 @@ function makeChild(overrides = {}) {
 function makeActivities(count, allCorrect = true) {
     return Array.from({ length: count }, (_, i) => ({
         activityId: `act-${i}`,
+        activityType: i === 0 ? 'conversation' : 'flash-card',
         correct: allCorrect,
         timeSpentMs: 5000,
         hintsUsed: 0,
         attempts: 1,
+        conversationEvidence: i === 0
+            ? {
+                scenarioId: 'greeting-1',
+                scenarioTheme: 'greetings',
+                acceptedTurns: 2,
+                hintedTurns: 0,
+                targetWordsHit: ['hello'],
+                patternsHit: ['greeting'],
+                passed: true,
+                score: 95,
+            }
+            : undefined,
     }));
 }
 function makeReq(data) {
@@ -99,13 +112,13 @@ function makeReq(data) {
         (0, vitest_1.expect)(result.starRating).toBe(3);
         // baseXP = 4 * 10 = 40
         // perfect bonus = floor(40 * 0.5) = 20
-        // speed bonus: 60000 < 120000*0.7=84000 → floor(40*0.2) = 8
+        // speed bonus: 60000 < 120000*0.7=84000 → floor(40*0.2) = 7
         // streak bonus: current=0, so 0
         // first try: all attempts ≤ 1 → +5
         // no hints: all 0 → +3
         (0, vitest_1.expect)(result.baseXP).toBe(40);
-        (0, vitest_1.expect)(result.bonusXP).toBe(20 + 8 + 5 + 3);
-        (0, vitest_1.expect)(result.xpEarned).toBe(40 + 36);
+        (0, vitest_1.expect)(result.bonusXP).toBe(20 + 7 + 5 + 3);
+        (0, vitest_1.expect)(result.xpEarned).toBe(40 + 35);
         (0, vitest_1.expect)(result.starsEarned).toBe(15); // 5 base + 10 perfect
     });
     (0, vitest_1.it)('calculates 0 stars for low accuracy', async () => {
@@ -143,8 +156,8 @@ function makeReq(data) {
         });
         const result = await handler(makeReq({ childId: 'c1', lessonId: 'l1', activities, totalTimeMs: 60000 }));
         // streak bonus: min(10 * 0.05, 0.5) = 0.5 → floor(40 * 0.5) = 20
-        // perfect + speed + streak + firstTry + noHints = 20 + 8 + 20 + 5 + 3 = 56
-        (0, vitest_1.expect)(result.bonusXP).toBe(56);
+        // perfect + speed + streak + firstTry + noHints = 20 + 7 + 20 + 5 + 3 = 55
+        (0, vitest_1.expect)(result.bonusXP).toBe(55);
         // Streak should increment (lastDate = yesterday, today = 2026-03-07)
         (0, vitest_1.expect)(result.streak).toBe(11);
     });
@@ -159,7 +172,7 @@ function makeReq(data) {
         const result = await handler(makeReq({ childId: 'c1', lessonId: 'l1', activities, totalTimeMs: 60000 }));
         // streak bonus: min(20 * 0.05, 0.5) = 0.5 → capped → floor(40 * 0.5) = 20
         // same as 10-day streak — capped at 50%
-        (0, vitest_1.expect)(result.bonusXP).toBe(56); // 20+8+20+5+3
+        (0, vitest_1.expect)(result.bonusXP).toBe(55); // 20+7+20+5+3
     });
     (0, vitest_1.it)('does not give speed bonus when slow', async () => {
         const activities = makeActivities(4, true);
@@ -180,8 +193,8 @@ function makeReq(data) {
             data: () => makeChild(),
         });
         const result = await handler(makeReq({ childId: 'c1', lessonId: 'l1', activities, totalTimeMs: 60000 }));
-        // perfect + speed + no firstTry + noHints = 20 + 8 + 0 + 3 = 31
-        (0, vitest_1.expect)(result.bonusXP).toBe(31);
+        // perfect + speed + no firstTry + noHints = 20 + 7 + 0 + 3 = 30
+        (0, vitest_1.expect)(result.bonusXP).toBe(30);
     });
     (0, vitest_1.it)('does not give no-hint bonus when hints used', async () => {
         const activities = makeActivities(4, true).map((a, i) => i === 0 ? { ...a, hintsUsed: 2 } : a);
@@ -190,8 +203,8 @@ function makeReq(data) {
             data: () => makeChild(),
         });
         const result = await handler(makeReq({ childId: 'c1', lessonId: 'l1', activities, totalTimeMs: 60000 }));
-        // perfect + speed + firstTry + no noHints = 20 + 8 + 5 + 0 = 33
-        (0, vitest_1.expect)(result.bonusXP).toBe(33);
+        // perfect + speed + firstTry + no noHints = 20 + 7 + 5 + 0 = 32
+        (0, vitest_1.expect)(result.bonusXP).toBe(32);
     });
     (0, vitest_1.it)('resets streak when there is a gap', async () => {
         const activities = makeActivities(2, true);
@@ -242,8 +255,40 @@ function makeReq(data) {
         const setArgs = mockBatchSet.mock.calls[0];
         (0, vitest_1.expect)(setArgs[0]).toEqual(vitest_1.expect.objectContaining({
             lessonId: 'l1',
+            score: 100,
             stars: 3,
+            starsEarned: 3,
             accuracy: 1.0,
+            durationSeconds: 30,
+            activitiesCompleted: 2,
+            activitiesTotal: 2,
+            correctAnswers: 2,
+            wrongAnswers: 0,
+            hintsUsed: 0,
+            isPerfect: true,
+            deviceType: 'web',
+            conversationEvidence: [
+                vitest_1.expect.objectContaining({
+                    scenarioId: 'greeting-1',
+                    targetWordsHit: ['hello'],
+                    patternsHit: ['greeting'],
+                }),
+            ],
+            attempts: [
+                vitest_1.expect.objectContaining({
+                    activityId: 'act-0',
+                    activityType: 'conversation',
+                    correct: true,
+                    timeSpentMs: 5000,
+                    conversationEvidence: vitest_1.expect.objectContaining({ scenarioId: 'greeting-1' }),
+                }),
+                vitest_1.expect.objectContaining({
+                    activityId: 'act-1',
+                    activityType: 'flash-card',
+                    correct: true,
+                    timeSpentMs: 5000,
+                }),
+            ],
         }));
     });
     (0, vitest_1.it)('rejects unauthenticated request', async () => {

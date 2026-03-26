@@ -5,7 +5,9 @@
  * TTS ile dinleme, sayfa geçiş animasyonları.
  */
 
+import { STORY_TTS_FALLBACK_MARKER } from '@/features/learning/data/storyBank';
 import type { StoryTimeData } from '@/types/content';
+import { generateStoryPlaceholderImage } from '@/utils/mediaFallback';
 import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -18,7 +20,9 @@ interface StoryTimeActivityProps extends ActivityCallbacks {
 
 /** TTS ile metni seslendir — prefer audioUrl when available */
 function speak(text: string, audioUrl?: string, lang = 'en-US') {
-  void ttsSpeak(text, { lang, audioUrl: audioUrl || undefined });
+  const resolvedAudioUrl =
+    audioUrl && audioUrl !== STORY_TTS_FALLBACK_MARKER ? audioUrl : undefined;
+  void ttsSpeak(text, { lang, audioUrl: resolvedAudioUrl });
 }
 
 /** Emoji haritası — basit tema ipuçları */
@@ -168,18 +172,19 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
           className="min-h-55 space-y-4 rounded-3xl bg-white p-6 shadow-lg"
         >
           {/* Story illustration */}
-          {page.imageUrl && (
-            <div className="h-32 w-full overflow-hidden rounded-2xl">
-              <img
-                src={page.imageUrl}
-                alt="Story illustration"
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </div>
-          )}
+          <div className="h-32 w-full overflow-hidden rounded-2xl">
+            <img
+              src={page.imageUrl || generateStoryPlaceholderImage(data.title, currentPage)}
+              alt="Story illustration"
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = generateStoryPlaceholderImage(
+                  data.title,
+                  currentPage,
+                );
+              }}
+            />
+          </div>
 
           {/* Metin — vurgulu kelimeler tıklanabilir */}
           <div className="flex flex-wrap gap-1 leading-relaxed">

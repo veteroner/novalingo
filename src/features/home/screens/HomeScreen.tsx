@@ -109,6 +109,36 @@ export default function HomeScreen() {
           </Card>
         </div>
 
+        {/* Conversation Practice — Prominent CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card
+            variant="elevated"
+            pressable
+            padding="md"
+            onClick={() => navigate('/conversation')}
+            className="border-nova-blue/20 border bg-linear-to-r from-purple-50 to-blue-50"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-nova-blue/10 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl">
+                🎭
+              </div>
+              <div className="flex-1">
+                <Text variant="body" weight="bold">
+                  Nova ile Konuş
+                </Text>
+                <Text variant="caption" className="text-text-secondary">
+                  Birebir konuşma pratiği yap — her gün yeni senaryolar!
+                </Text>
+              </div>
+              <span className="text-nova-blue text-xl">→</span>
+            </div>
+          </Card>
+        </motion.div>
+
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
           {[
@@ -117,12 +147,6 @@ export default function HomeScreen() {
               label: 'Devam Et',
               description: 'Bulunduğun dünyaya dön',
               onClick: () => navigate(`/world/${child.currentWorldId}`),
-            },
-            {
-              emoji: '🎭',
-              label: 'Nova ile Konuş',
-              description: 'Nova ile birebir pratik yap',
-              onClick: () => navigate('/conversation'),
             },
             {
               emoji: '🎰',
@@ -147,6 +171,23 @@ export default function HomeScreen() {
               label: 'Mağaza',
               description: 'Nova için yeni eşyalar',
               onClick: () => navigate('/shop'),
+            },
+            {
+              emoji: '📖',
+              label: 'Hikayeler',
+              description: 'İngilizce hikaye oku',
+              onClick: () => {
+                // Find the first story lesson in the current world
+                const world = curriculum.find((w) => w.id === child.currentWorldId);
+                const storyLesson = world?.units
+                  .flatMap((u) => u.lessons)
+                  .find((l) => l.activityTypes.includes('story-time'));
+                if (storyLesson) {
+                  void navigate(`/lesson/${storyLesson.id}`);
+                } else {
+                  void navigate(`/world/${child.currentWorldId}`);
+                }
+              },
             },
           ].map((action) => (
             <Card
@@ -241,7 +282,8 @@ export default function HomeScreen() {
 
       {/* Nova Companion — interactive SVG */}
       <motion.div
-        className="fixed right-4 bottom-24 z-30"
+        className="fixed right-4 z-30"
+        style={{ bottom: 'calc(var(--spacing-nav-height) + var(--spacing-safe-bottom) + 0.5rem)' }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.5 }}
@@ -261,7 +303,9 @@ export default function HomeScreen() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 1.2, type: 'spring', stiffness: 400, damping: 20 }}
           >
-            <p className="text-text-primary text-xs font-semibold">Bugün harika bir gün olacak! 🌟</p>
+            <p className="text-text-primary text-xs font-semibold">
+              Bugün harika bir gün olacak! 🌟
+            </p>
           </motion.div>
         </motion.button>
       </motion.div>

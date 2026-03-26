@@ -33,7 +33,10 @@ export const bedtimeWindDownScenario: ConversationScenario = {
     preferredIfTagsSeen: ['routine', 'bedtime'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' },
+    { id: 'supportive', label: 'Supportive', labelTr: 'Destekleyici', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -43,6 +46,18 @@ export const bedtimeWindDownScenario: ConversationScenario = {
       text: 'I feel sleepy. Can you tell me how to say it?',
       textTr: 'Uykum geldi. Bunu nasil soyleyecegimi soyleyebilir misin?',
       targetPattern: 'I am sleepy',
+      repair: {
+        enabled: true,
+        prompt: 'Say: I am sleepy.',
+        promptTr: 'Şöyle söyle: I am sleepy.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: I am sleepy.',
+        textTr: 'Şöyle söylemeyi dene: I am sleepy.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r1_sleepy',
@@ -64,6 +79,18 @@ export const bedtimeWindDownScenario: ConversationScenario = {
       text: 'What should we do now? Read a book or hug a teddy?',
       textTr: 'Simdi ne yapalim? Kitap mi okuyalim yoksa oyuncak ayiya mi sarilalim?',
       targetPattern: 'Let’s read...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: Let’s read a book.',
+        promptTr: 'Şöyle söyle: Let’s read a book.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: Let’s read a book.',
+        textTr: 'Şöyle söylemeyi dene: Let’s read a book.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r2_book',

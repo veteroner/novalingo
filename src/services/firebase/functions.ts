@@ -164,6 +164,7 @@ interface OfflineActionPayload {
   easeFactor?: number;
   repetitions?: number;
   nextReviewDate?: string;
+  activities?: SubmitLessonResultReq['activities'];
 }
 
 function buildRewardUpdate(
@@ -324,10 +325,21 @@ export interface SubmitLessonResultReq {
   lessonId: string;
   activities: {
     activityId: string;
+    activityType?: string;
     correct: boolean;
     timeSpentMs: number;
     hintsUsed: number;
     attempts: number;
+    conversationEvidence?: {
+      scenarioId?: string;
+      scenarioTheme?: string;
+      acceptedTurns: number;
+      hintedTurns: number;
+      targetWordsHit: string[];
+      patternsHit: string[];
+      passed: boolean;
+      score: number;
+    };
   }[];
   totalTimeMs: number;
 }
@@ -350,6 +362,14 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
   const { childId, lessonId, activities, totalTimeMs } = data;
   const childRef = doc(db, 'children', childId);
   const lessonRef = doc(db, 'children', childId, 'lessonProgress', lessonId);
+  const correctCount = activities.filter((activity) => activity.correct).length;
+  const hintsUsed = activities.reduce((sum, activity) => sum + activity.hintsUsed, 0);
+  const conversationEvidence = activities
+    .map((activity) => activity.conversationEvidence)
+    .filter(
+      (evidence): evidence is NonNullable<(typeof activities)[number]['conversationEvidence']> =>
+        Boolean(evidence),
+    );
 
   return runTransaction(db, async (tx) => {
     const snap = await tx.get(childRef);
@@ -390,16 +410,32 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
 
     tx.set(lessonRef, {
       lessonId,
+      score: Math.round(xp.accuracy * 100),
       stars: xp.starRating,
+      starsEarned: xp.starRating,
       accuracy: xp.accuracy,
       xpEarned: xp.totalXP,
+      durationSeconds: Math.round(totalTimeMs / 1000),
       timeSpentMs: totalTimeMs,
+      activitiesCompleted: activities.length,
+      activitiesTotal: activities.length,
+      correctAnswers: correctCount,
+      wrongAnswers: activities.length - correctCount,
+      hintsUsed,
+      isPerfect: xp.isPerfect,
+      attemptNumber: 1,
+      deviceType: 'web',
       completedAt: serverTimestamp(),
       attempts: activities.map((a) => ({
         activityId: a.activityId,
+        activityType: a.activityType,
         correct: a.correct,
         timeSpentMs: a.timeSpentMs,
+        hintsUsed: a.hintsUsed,
+        attempts: a.attempts,
+        conversationEvidence: a.conversationEvidence ?? null,
       })),
+      conversationEvidence,
     });
 
     // Update leaderboard entry (inside tx for consistency)
@@ -762,6 +798,15 @@ export async function syncOfflineProgress(
       const p = action.payload as OfflineActionPayload;
       if (action.type === 'lessonComplete' && p.lessonId) {
         const ref = doc(db, 'children', data.childId, 'lessonProgress', p.lessonId);
+        const activities = Array.isArray(p.activities) ? p.activities : [];
+        const conversationEvidence = activities
+          .map((activity) => activity.conversationEvidence)
+          .filter(
+            (
+              evidence,
+            ): evidence is NonNullable<(typeof activities)[number]['conversationEvidence']> =>
+              Boolean(evidence),
+          );
         batch.set(
           ref,
           {
@@ -770,6 +815,17 @@ export async function syncOfflineProgress(
             accuracy: Math.min(p.accuracy ?? 0, 1),
             xpEarned: Math.min(p.xpEarned ?? 0, 500),
             timeSpentMs: p.timeSpentMs ?? 0,
+            durationSeconds: Math.round((p.timeSpentMs ?? 0) / 1000),
+            attempts: activities.map((activity) => ({
+              activityId: activity.activityId,
+              activityType: activity.activityType,
+              correct: activity.correct,
+              timeSpentMs: activity.timeSpentMs,
+              hintsUsed: activity.hintsUsed,
+              attempts: activity.attempts,
+              conversationEvidence: activity.conversationEvidence ?? null,
+            })),
+            conversationEvidence,
             completedAt: serverTimestamp(),
           },
           { merge: true },
@@ -1003,6 +1059,138 @@ export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccou
 }
 
 // ===== LAZY SCHEDULED FUNCTIONS =====
+
+// --- Conversation ---
+
+export interface SubmitConversationResultReq {
+  childId: string;
+  sessionId: string;
+  scenarioId: string;
+  score: number;
+  accuracy: number;
+  durationSeconds: number;
+  targetWordsHit: number;
+  targetWordsTotal: number;
+  attempts: number;
+}
+
+export interface SubmitConversationResultRes {
+  xpEarned: number;
+  streak: number;
+  leveledUp: boolean;
+  newLevel: number;
+  isNewBest: boolean;
+}
+
+export function submitConversationResult(
+  data: SubmitConversationResultReq,
+): Promise<SubmitConversationResultRes> {
+  const uid = requireCurrentUserId();
+  const {
+    childId,
+    sessionId,
+    scenarioId,
+    score,
+    accuracy,
+    durationSeconds,
+    targetWordsHit,
+    targetWordsTotal,
+    attempts,
+  } = data;
+  const childRef = doc(db, 'children', childId);
+  const sessionRef = doc(db, 'children', childId, 'conversationSessions', sessionId);
+
+  return runTransaction(db, async (tx) => {
+    const snap = await tx.get(childRef);
+    if (!snap.exists()) throw new Error('Child not found');
+    const child = snap.data() as StoredChildProfile;
+    if (child.parentUid !== uid) throw new Error('Not authorized');
+
+    // XP: 10 base + up to 20 from score + streak bonus (capped at 50%)
+    const baseXP = Math.round(10 + (score / 100) * 20);
+    const streakMultiplier = Math.min(1.5, 1 + Math.floor((child.currentStreak ?? 0) / 3) * 0.1);
+    const xpEarned = Math.round(baseXP * streakMultiplier);
+
+    const streak = updateStreak(
+      child.currentStreak ?? 0,
+      child.longestStreak ?? 0,
+      child.lastActivityDate || null,
+    );
+
+    let newLevel = child.level ?? 1;
+    const newTotalXP = (child.totalXP ?? 0) + xpEarned;
+    while (newLevel < 100 && newTotalXP >= xpForLevel(newLevel + 1)) newLevel++;
+
+    const novaStage = getNovaStage(newTotalXP);
+    const prevConversations =
+      (child as StoredChildProfile & { totalConversations?: number }).totalConversations ?? 0;
+    const novaHappiness = getNovaMood(prevConversations + 1, streak.newStreak);
+
+    // Check if new best score for this scenario
+    const bestRef = doc(db, 'children', childId, 'conversationBestScores', scenarioId);
+    const bestSnap = await tx.get(bestRef);
+    const prevBest: number = bestSnap.exists()
+      ? ((bestSnap.data() as { score?: number }).score ?? 0)
+      : 0;
+    const isNewBest = score > prevBest;
+
+    tx.update(childRef, {
+      totalXP: newTotalXP,
+      currentLevelXP: newTotalXP - xpForLevel(newLevel),
+      nextLevelXP: xpForLevel(newLevel + 1) - xpForLevel(newLevel),
+      level: newLevel,
+      currentStreak: streak.newStreak,
+      longestStreak: streak.newLongest,
+      lastActivityDate: getTodayTR(),
+      weeklyXP: (child.weeklyXP ?? 0) + xpEarned,
+      totalConversations: prevConversations + 1,
+      novaStage,
+      novaHappiness,
+      updatedAt: serverTimestamp(),
+    });
+
+    tx.set(sessionRef, {
+      sessionId,
+      scenarioId,
+      score,
+      accuracy,
+      durationSeconds,
+      targetWordsHit,
+      targetWordsTotal,
+      attempts,
+      xpEarned,
+      completedAt: serverTimestamp(),
+    });
+
+    if (isNewBest) {
+      tx.set(bestRef, { scenarioId, score, completedAt: serverTimestamp() });
+    }
+
+    const weekId = getWeekId();
+    const entryRef = doc(db, 'leaderboards', weekId, 'entries', childId);
+    tx.set(
+      entryRef,
+      {
+        childId,
+        name: child.name ?? '',
+        avatarId: child.avatarId ?? 'nova_default',
+        level: newLevel,
+        weeklyXP: (child.weeklyXP ?? 0) + xpEarned,
+        tier: child.leagueTier ?? 'bronze',
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+
+    return {
+      xpEarned,
+      streak: streak.newStreak,
+      leveledUp: newLevel > (child.level ?? 1),
+      newLevel,
+      isNewBest,
+    };
+  });
+}
 
 export async function ensureDailyQuests(childId: string): Promise<void> {
   const uid = requireCurrentUserId();

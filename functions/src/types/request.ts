@@ -25,10 +25,21 @@ export interface DeleteChildProfileReq {
 
 export interface ActivityResult {
   activityId: string;
+  activityType?: string;
   correct: boolean;
   timeSpentMs: number;
   hintsUsed: number;
   attempts: number;
+  conversationEvidence?: {
+    scenarioId?: string;
+    scenarioTheme?: string;
+    acceptedTurns: number;
+    hintedTurns: number;
+    targetWordsHit: string[];
+    patternsHit: string[];
+    passed: boolean;
+    score: number;
+  };
 }
 
 export interface SubmitLessonResultReq {

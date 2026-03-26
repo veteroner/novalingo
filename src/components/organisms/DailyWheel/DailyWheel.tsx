@@ -5,12 +5,12 @@
  * Fizik bazlı dönüş animasyonu, ödül popup'ı.
  */
 
-import { useState, useRef, useCallback } from 'react';
-import { motion, useAnimationControls } from 'framer-motion';
-import { clsx } from 'clsx';
+import type { WheelSlice } from '@/types';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
-import type { WheelSlice } from '@/types';
+import { clsx } from 'clsx';
+import { motion, useAnimationControls } from 'framer-motion';
+import { useCallback, useRef, useState } from 'react';
 
 interface DailyWheelProps {
   slices: WheelSlice[];
@@ -48,7 +48,8 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
       // Calculate target angle: 5 full spins + land on slice
       const sliceAngle = 360 / slices.length;
       const targetAngle = sliceAngle * sliceIndex + sliceAngle / 2;
-      const totalRotation = currentRotation.current + 360 * 5 + (360 - targetAngle);
+      // Pointer is at top (12 o'clock = 270° in SVG coords), rotate to align target slice
+      const totalRotation = currentRotation.current + 360 * 5 + ((270 - targetAngle + 360) % 360);
 
       await controls.start({
         rotate: totalRotation,
@@ -157,7 +158,7 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
 
       {/* Spin Button */}
       <Button
-        variant="secondary"
+        variant="primary"
         size="lg"
         className="mt-4"
         onClick={handleSpin}

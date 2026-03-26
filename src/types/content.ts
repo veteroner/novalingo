@@ -71,7 +71,9 @@ export type ActivityType =
   | 'sentence-builder'
   | 'story-comprehension'
   | 'grammar-transform'
-  | 'conversation';
+  | 'conversation'
+  | 'lesson-intro'
+  | 'lesson-outro';
 
 export interface Activity {
   id: string;
@@ -97,7 +99,21 @@ export type ActivityData =
   | SentenceBuilderData
   | StoryComprehensionData
   | GrammarTransformData
-  | ConversationData;
+  | ConversationData
+  | LessonIntroData
+  | LessonOutroData;
+
+export interface LessonIntroData {
+  type: 'lesson-intro';
+  /** Nova's intro line shown before lesson activities begin */
+  text: string;
+}
+
+export interface LessonOutroData {
+  type: 'lesson-outro';
+  /** Nova's celebration line shown after all lesson activities complete */
+  text: string;
+}
 
 export interface FlashCardData {
   type: 'flash-card';
@@ -281,10 +297,27 @@ export interface ConversationOption {
   textTr: string;
   /** Acceptable STT variations for this option */
   acceptableVariations?: string[];
+  /** Accepted keyword hits used by response-rule-aware matching */
+  acceptedWords?: string[];
+  /** Per-option confidence threshold override */
+  minimumConfidence?: number;
   /** Node id to jump to when this option is chosen */
   nextNodeId: string;
   /** Optional emoji shown on the option button */
   emoji?: string;
+  /** Stable response id from the scenario registry */
+  responseId?: string;
+  /** Words to mark as demonstrated when this response is accepted */
+  marksTargetWords?: string[];
+  /** Patterns to mark as demonstrated when this response is accepted */
+  marksPatterns?: string[];
+}
+
+export interface ConversationSuccessCriteriaData {
+  minimumAcceptedTurns: number;
+  minimumTargetWordsHit: number;
+  requiredPatterns?: string[];
+  allowCompletionOnHintedAnswer: boolean;
 }
 
 export interface ConversationData {
@@ -300,4 +333,22 @@ export interface ConversationData {
   startNodeId: string;
   /** Target vocabulary practiced in this conversation */
   targetWords: string[];
+  /** Registry scenario id (set when generated from a ConversationScenario) */
+  scenarioId?: string;
+  /** Scenario theme (e.g. "animals", "food") */
+  scenarioTheme?: string;
+  /** Brief summary shown at conversation start */
+  scenarioSummary?: string;
+  scenarioSummaryTr?: string;
+  /** Scenario mode: guided, semi_open, open_ended */
+  scenarioMode?: string;
+  /** Target patterns for pattern reveal UI */
+  targetPatterns?: string[];
+  /** Reward type and id for end screen */
+  rewardType?: string;
+  rewardId?: string;
+  /** Scenario success rules used for conversation scoring */
+  successCriteria?: ConversationSuccessCriteriaData;
+  /** Scenario duration hint used for time bonus scoring */
+  estimatedDurationSec?: number;
 }

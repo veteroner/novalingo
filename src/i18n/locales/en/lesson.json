@@ -50,7 +50,9 @@
     "conversationSpeed": "Speed",
     "conversationMicNotAllowed": "Microphone permission needed 🎤",
     "conversationMicNoSpeech": "No speech detected — try again 🔇",
-    "conversationMicError": "Mic error — try typing instead ⌨️"
+    "conversationMicError": "Mic error — try typing instead ⌨️",
+    "conversationGuided": "Nova will guide you step by step",
+    "conversationModeHint": "Speak or type your answer"
   },
 
   "result": {

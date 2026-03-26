@@ -4,6 +4,15 @@ import '@/styles/globals.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+// Register service worker for PWA installability
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // SW registration failure is non-fatal — app still works
+    });
+  });
+}
+
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {

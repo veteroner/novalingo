@@ -4,6 +4,8 @@
  * Her aktivite bileşeni bu arayüzü implemente eder.
  */
 
+import type { ConversationEvidence } from '@/types/progress';
+
 export interface ActivityCallbacks {
   /** Aktivite tamamlandığında çağrılır */
   onComplete: (result: ActivityOutcome) => void;
@@ -20,6 +22,8 @@ export interface ActivityOutcome {
   attempts: number;
   /** Kullanılan ipucu sayısı */
   hintsUsed: number;
+  /** Konuşma aktiviteleri için kaydedilen üretim kanıtı */
+  conversationEvidence?: ConversationEvidence;
 }
 
 /** Feedback durumu — doğru / yanlış / bekleniyor */

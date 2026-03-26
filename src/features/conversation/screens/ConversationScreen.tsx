@@ -14,10 +14,11 @@ import { useChildStore } from '@stores/childStore';
 import { useConversationStore } from '@stores/conversationStore';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function ConversationScreen() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const child = useChildStore((s) => s.activeChild);
   const { session, scenario, isActive, startSession, completeSession, reset } =
     useConversationStore();
@@ -25,6 +26,7 @@ export default function ConversationScreen() {
   // On mobile browsers audio is blocked until a direct user gesture.
   // We show a tap-to-start overlay first; the tap itself unlocks audio.
   const [audioReady, setAudioReady] = useState(false);
+  const preferredTheme = searchParams.get('theme')?.trim() || undefined;
 
   // Cleanup only on unmount — session start is triggered by user tap
   useEffect(() => {
@@ -39,9 +41,9 @@ export default function ConversationScreen() {
     hasStartedRef.current = true;
     // Run inside user-gesture context so mobile browsers allow audio playback
     void unlockAudioPlayback();
-    startSession({ worldId: child?.currentWorldId ?? null });
+    startSession({ worldId: child?.currentWorldId ?? null, preferredTheme });
     setAudioReady(true);
-  }, [child?.currentWorldId, startSession]);
+  }, [child?.currentWorldId, preferredTheme, startSession]);
 
   const handleComplete = useCallback(
     (outcome: ActivityOutcome) => {
@@ -65,6 +67,9 @@ export default function ConversationScreen() {
             titleTr: scenario.titleTr,
             sceneEmoji: scenario.sceneEmoji,
             targetWords: scenario.targetWords,
+            rewardType: scenario.reward.rewardType,
+            rewardId: scenario.reward.rewardId,
+            series: scenario.series,
           },
         },
       });
@@ -137,13 +142,21 @@ export default function ConversationScreen() {
         >
           <span className="text-lg">✕</span>
         </button>
-        <div className="text-center">
+        <div className="flex flex-col items-center text-center">
           <Text variant="bodySmall" weight="bold">
             {scenario.sceneEmoji} Nova ile Konuş
           </Text>
           <Text variant="caption" className="text-text-secondary">
             {scenario.titleTr}
           </Text>
+          {scenario.series && (
+            <div className="mt-0.5 flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5">
+              <Text variant="caption" className="text-[10px] font-semibold text-purple-600">
+                📖 {scenario.series.seriesTitleTr} · {scenario.series.episodeNumber}/
+                {scenario.series.totalEpisodes}. Bölüm
+              </Text>
+            </div>
+          )}
         </div>
         <div className="w-10" /> {/* Spacer for centering */}
       </div>

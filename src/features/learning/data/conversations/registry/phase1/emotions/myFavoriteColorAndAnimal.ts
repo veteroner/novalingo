@@ -34,7 +34,10 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
     preferredIfTagsSeen: ['favorites'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' },
+    { id: 'playful', label: 'Playful', labelTr: 'Eğlenceli', promptStyle: 'playful' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -44,6 +47,18 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
       text: 'What is your favorite color?',
       textTr: 'En sevdigin renk ne?',
       targetPattern: 'My favorite ... is ...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: My favorite color is blue.',
+        promptTr: 'Şöyle söyle: My favorite color is blue.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: My favorite color is blue.',
+        textTr: 'Şöyle söylemeyi dene: My favorite color is blue.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r1_blue',
@@ -76,6 +91,18 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
       text: 'Nice. What is your favorite animal?',
       textTr: 'Guzel. En sevdigin hayvan ne?',
       targetPattern: 'My favorite ... is ...',
+      repair: {
+        enabled: true,
+        prompt: 'Say: My favorite animal is a rabbit.',
+        promptTr: 'Şöyle söyle: My favorite animal is a rabbit.',
+        maxRetries: 2,
+      },
+      hint: {
+        delayMs: 8000,
+        text: 'Try saying: My favorite animal is a rabbit.',
+        textTr: 'Şöyle söylemeyi dene: My favorite animal is a rabbit.',
+        revealPattern: true,
+      },
       responses: [
         {
           id: 'r2_rabbit',

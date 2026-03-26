@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ConversationTemplate } from '../conversationTemplates';
-import {
-    CONVERSATION_TEMPLATES,
-    findBestTemplate,
-} from '../conversationTemplates';
+import { CONVERSATION_TEMPLATES, findBestTemplate } from '../conversationTemplates';
 
 /** Minimal structural type matching ConversationNode fields used in tests */
 type NodeShape = {
@@ -11,6 +8,12 @@ type NodeShape = {
   speaker: string;
   next?: string;
   options?: Array<{ nextNodeId: string }>;
+};
+
+const getLegacyBestTemplate = (words: string[]) => {
+  // This test suite intentionally verifies the deprecated legacy fallback behavior.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  return findBestTemplate(words);
 };
 
 describe('conversationTemplates', () => {
@@ -98,27 +101,27 @@ describe('conversationTemplates', () => {
 
   describe('findBestTemplate', () => {
     it('returns pet shop template for animal words', () => {
-      const template = findBestTemplate(['dog', 'cat', 'fish']);
+      const template = getLegacyBestTemplate(['dog', 'cat', 'fish']);
       expect(template.title).toBe('At the Pet Shop');
     });
 
     it('returns food template for food words', () => {
-      const template = findBestTemplate(['apple', 'banana', 'water']);
+      const template = getLegacyBestTemplate(['apple', 'banana', 'water']);
       expect(template.title).toBe('At the Restaurant');
     });
 
     it('returns color template for color words', () => {
-      const template = findBestTemplate(['red', 'blue', 'green']);
+      const template = getLegacyBestTemplate(['red', 'blue', 'green']);
       expect(template.title).toBe('At the Color Shop');
     });
 
     it('returns number template for number words', () => {
-      const template = findBestTemplate(['one', 'two', 'three']);
+      const template = getLegacyBestTemplate(['one', 'two', 'three']);
       expect(template.title).toBe('Counting Game');
     });
 
     it('falls back to generic template for unknown words', () => {
-      const template = findBestTemplate(['xylophone', 'telescope', 'harmonica']);
+      const template = getLegacyBestTemplate(['xylophone', 'telescope', 'harmonica']);
       expect(template.title).toBe('Talk with Nova');
     });
   });

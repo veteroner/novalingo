@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-deprecated -- This file IS the legacy engine; internal self-references are expected. */
+/**
+ * @deprecated Legacy conversation matching engine.
+ * New scenario-based matching: conversations/runtime/matchConversationResponse.ts
+ * Kept for backward compatibility with legacy template-based conversations.
+ */
 export interface ConversationRuntimeOption {
   text: string;
   textTr: string;

@@ -12,6 +12,7 @@ import ConversationActivity from './ConversationActivity';
 import FillBlankActivity from './FillBlankActivity';
 import FlashCardActivity from './FlashCardActivity';
 import GrammarTransformActivity from './GrammarTransformActivity';
+import LessonSlideActivity from './LessonSlideActivity';
 import ListenAndTapActivity from './ListenAndTapActivity';
 import MatchPairsActivity from './MatchPairsActivity';
 import MemoryGameActivity from './MemoryGameActivity';
@@ -111,6 +112,14 @@ function renderActivity(activity: Activity, onComplete: (outcome: ActivityOutcom
     case 'conversation':
       if (!hasActivityData(activity, 'conversation')) return renderUnknownActivity();
       return <ConversationActivity data={activity.data} onComplete={onComplete} />;
+
+    case 'lesson-intro':
+      if (!hasActivityData(activity, 'lesson-intro')) return renderUnknownActivity();
+      return <LessonSlideActivity data={activity.data} onComplete={onComplete} />;
+
+    case 'lesson-outro':
+      if (!hasActivityData(activity, 'lesson-outro')) return renderUnknownActivity();
+      return <LessonSlideActivity data={activity.data} onComplete={onComplete} />;
 
     default:
       return renderUnknownActivity();

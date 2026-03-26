@@ -16,8 +16,6 @@ dependencies {
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-push-notifications')
     implementation project(':capacitor-network')
-    implementation project(':capacitor-community-admob')
-    implementation project(':revenuecat-purchases-capacitor')
 
 }
 

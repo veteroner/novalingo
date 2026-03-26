@@ -5,7 +5,7 @@
  */
 
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { createElement, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ─── Mocks ───────────────────────────────────────────────
@@ -14,10 +14,15 @@ const mockSpeak = vi.fn();
 const mockStopSpeaking = vi.fn();
 const mockComparePronunciation = vi.fn((..._args: unknown[]) => 0);
 const mockOnSpeakingStateChange = vi.fn((..._args: unknown[]) => vi.fn());
+let speakingStateListener: ((speaking: boolean) => void) | undefined;
 
 vi.mock('@services/speech/speechService', () => ({
-  speak: (...args: unknown[]): void => { mockSpeak(...args); },
-  stopSpeaking: (...args: unknown[]): void => { mockStopSpeaking(...args); },
+  speak: (...args: unknown[]): void => {
+    mockSpeak(...args);
+  },
+  stopSpeaking: (...args: unknown[]): void => {
+    mockStopSpeaking(...args);
+  },
   comparePronunciation: (...args: unknown[]) => mockComparePronunciation(...args),
   onSpeakingStateChange: (...args: unknown[]) => mockOnSpeakingStateChange(...args),
 }));
@@ -49,34 +54,32 @@ vi.mock('@components/atoms/Text', () => ({
 
 vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: ReactNode }) => <>{children}</>,
-  motion: {
-    div: ({ children, className, ...props }: Record<string, unknown>) => (
-      <div className={className as string} {...(props as Record<string, unknown>)}>
-        {children as ReactNode}
-      </div>
-    ),
-    button: ({ children, className, onClick, disabled, ...props }: Record<string, unknown>) => (
-      <button
-        className={className as string}
-        onClick={onClick as () => void}
-        disabled={disabled as boolean}
-        {...(props as Record<string, unknown>)}
-      >
-        {children as ReactNode}
-      </button>
-    ),
-    span: ({ children, className, ...props }: Record<string, unknown>) => (
-      <span className={className as string} {...(props as Record<string, unknown>)}>
-        {children as ReactNode}
-      </span>
-    ),
-    p: ({ children, className, ...props }: Record<string, unknown>) => (
-      <p className={className as string} {...(props as Record<string, unknown>)}>
-        {children as ReactNode}
-      </p>
-    ),
-    ellipse: (props: Record<string, unknown>) => <ellipse {...(props as Record<string, string>)} />,
-  },
+  motion: new Proxy(
+    {},
+    {
+      get: (_target, tagName: string) => {
+        const Component = ({ children, ...props }: Record<string, unknown>) => {
+          const {
+            animate: _animate,
+            initial: _initial,
+            exit: _exit,
+            transition: _transition,
+            whileTap: _whileTap,
+            whileHover: _whileHover,
+            whileInView: _whileInView,
+            variants: _variants,
+            layout: _layout,
+            ...domProps
+          } = props;
+
+          return createElement(tagName, domProps, children as ReactNode);
+        };
+
+        Component.displayName = `motion.${tagName}`;
+        return Component;
+      },
+    },
+  ),
 }));
 
 import ConversationActivity from '../ConversationActivity';
@@ -142,7 +145,11 @@ describe('ConversationActivity', () => {
     vi.useFakeTimers();
     mockSpeak.mockReset();
     mockStopSpeaking.mockReset();
-    mockOnSpeakingStateChange.mockReset().mockReturnValue(vi.fn());
+    speakingStateListener = undefined;
+    mockOnSpeakingStateChange.mockReset().mockImplementation((listener: unknown) => {
+      speakingStateListener = listener as (speaking: boolean) => void;
+      return vi.fn();
+    });
   });
 
   afterEach(() => {
@@ -205,12 +212,12 @@ describe('ConversationActivity', () => {
     // Type the correct option text and press Enter
     const input = screen.getByPlaceholderText('activities.conversationTypeHere');
     fireEvent.change(input, { target: { value: 'I want a dog!' } });
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    fireEvent.click(screen.getByRole('button', { name: '➤' }));
 
     // Child bubble should appear
     expect(screen.getAllByText('I want a dog!').length).toBeGreaterThanOrEqual(1);
 
-    // Advance timers for feedback + echo skip + thinking delay + auto-advance
+    // Advance timers for feedback + echo skip + thinking delay + simulated TTS end
     act(() => {
       vi.advanceTimersByTime(800); // feedback timer (skip echo → advance to end node)
     });
@@ -218,12 +225,17 @@ describe('ConversationActivity', () => {
       vi.advanceTimersByTime(500); // thinking delay for end node
     });
     act(() => {
-      vi.advanceTimersByTime(1500); // end node → finishConversation timer
+      speakingStateListener?.(false); // Nova finished speaking the end node
+      vi.advanceTimersByTime(600); // pending post-TTS action delay
     });
 
     expect(onComplete).toHaveBeenCalledTimes(1);
 
-    const result = onComplete.mock.calls[0]?.[0] as { score: number; attempts: number; isCorrect: boolean };
+    const result = onComplete.mock.calls[0]?.[0] as {
+      score: number;
+      attempts: number;
+      isCorrect: boolean;
+    };
     expect(result.score).toBeGreaterThanOrEqual(0);
     expect(result.attempts).toBe(1);
   });
@@ -243,7 +255,7 @@ describe('ConversationActivity', () => {
 
     const input = screen.getByPlaceholderText('activities.conversationTypeHere');
     fireEvent.change(input, { target: { value: 'I want a dog!' } });
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    fireEvent.click(screen.getByRole('button', { name: '➤' }));
 
     act(() => {
       vi.advanceTimersByTime(800);
@@ -252,12 +264,17 @@ describe('ConversationActivity', () => {
       vi.advanceTimersByTime(500); // thinking delay
     });
     act(() => {
-      vi.advanceTimersByTime(1500);
+      speakingStateListener?.(false);
+      vi.advanceTimersByTime(600);
     });
 
     expect(onComplete).toHaveBeenCalledTimes(1);
 
-    const result = onComplete.mock.calls[0]?.[0] as { score: number; attempts: number; isCorrect: boolean };
+    const result = onComplete.mock.calls[0]?.[0] as {
+      score: number;
+      attempts: number;
+      isCorrect: boolean;
+    };
     // "dog" is in "I want a dog!" → completedWords has "dog" → accuracy = 1/1 = 100
     expect(result.score).toBe(100);
     expect(result.isCorrect).toBe(true);
