@@ -81,14 +81,14 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       excludeScenarioIds ?? (progress.lastScenarioId ? [progress.lastScenarioId] : []);
 
     const scenario = selectConversationScenario({
-      words: [], // standalone mode — let selector use theme/age matching
+      words: [], // standalone mode — let selector use theme/world/age matching
       preferredTheme,
       excludeScenarioIds: exclude,
+      worldId, // narrows candidate pool to the correct phase for this world
     });
 
-    sessionCounter += 1;
     const session: ConversationSession = {
-      id: `conv_${Date.now()}_${sessionCounter}`,
+      id: `session-${String(++sessionCounter)}`,
       scenarioId: scenario.id,
       worldId,
       startedAt: Date.now(),

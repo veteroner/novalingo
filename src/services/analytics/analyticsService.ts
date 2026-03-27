@@ -131,10 +131,15 @@ export function trackStreakDays(days: number): void {
 
 // ===== CONVERSATION EVENTS =====
 
-export function trackConversationStarted(params: { scenarioId: string; theme: string }): void {
+export function trackConversationStarted(params: {
+  scenarioId: string;
+  theme: string;
+  worldId?: string | null;
+}): void {
   logEvent('conversation_started', {
     scenario_id: params.scenarioId,
     theme: params.theme,
+    ...(params.worldId ? { world_id: params.worldId } : {}),
   });
 }
 
@@ -196,6 +201,20 @@ export function trackAchievementUnlocked(achievementId: string): void {
 
 export function trackQuestCompleted(questId: string, reward: string): void {
   logEvent('quest_completed', { quest_id: questId, reward });
+}
+
+// ===== CONTENT USAGE EVENTS =====
+
+export function trackStoryLibraryOpened(): void {
+  logEvent('story_library_opened');
+}
+
+export function trackStoryOpened(params: { storyId: string; worldId: string }): void {
+  logEvent('story_opened', { story_id: params.storyId, world_id: params.worldId });
+}
+
+export function trackStoryCompleted(params: { storyId: string; worldId: string }): void {
+  logEvent('story_completed', { story_id: params.storyId, world_id: params.worldId });
 }
 
 // ===== MONETIZATION EVENTS =====

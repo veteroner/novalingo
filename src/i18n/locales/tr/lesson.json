@@ -52,7 +52,41 @@
     "conversationMicNoSpeech": "Ses algılanamadı — tekrar dene 🔇",
     "conversationMicError": "Mikrofon hatası — yazmayı dene ⌨️",
     "conversationGuided": "Nova sana adım adım rehberlik edecek",
-    "conversationModeHint": "Konuş ya da cevabını yaz"
+    "conversationModeHint": "Konuş ya da cevabını yaz",
+    "conversationScreenTitle": "Nova ile Konuş",
+    "conversationScreenSubtitle": "İngilizce konuşma pratiği yapmaya hazır mısın?",
+    "conversationScreenStart": "Başla 🎤",
+    "conversationScreenLoading": "Senaryo hazırlanıyor...",
+    "conversationScreenEpisode": "{{episode}}/{{total}}. Bölüm"
+  },
+
+  "conversationResult": {
+    "home": "Ana Sayfaya Dön",
+    "newSession": "Yeni Konuşma Başlat 🎭",
+    "moodGreat": "Harika konuşma! Nova çok mutlu! 🌟",
+    "moodGood": "Güzel pratik oldu! Devam et! 💪",
+    "moodEncouraging": "Her konuşma seni daha iyi yapar! 🎯",
+    "rewardCollectibleLabel": "Koleksiyona Eklendi!",
+    "rewardBadgeLabel": "Rozet Puanın Arttı!",
+    "rewardStickerLabel": "Yeni Çıkartma Kazandın!",
+    "titleCollectible": "Harika! Koleksiyon Kazandın! 🎁",
+    "titleBadge": "Rozetini İlerlettin! 🏅",
+    "titleSticker": "Yeni Çıkartma Kazandın! ✨",
+    "titleDefault": "Konuşma Tamamlandı! 🎉",
+    "episodeBadge": "{{episode}}/{{total}}. Bölüm",
+    "statAccuracy": "Kelime Başarısı",
+    "statWords": "Hedef Kelime",
+    "statTime": "Süre",
+    "statScore": "Puan",
+    "accuracyPercent": "%{{percent}}",
+    "xpLoading": "XP hesaplanıyor...",
+    "xpStreak": "{{count}} günlük seri 🔥",
+    "xpFirst": "Bugünkü ilk konuşma!",
+    "levelUp": "Seviye {{level}}! 🎊",
+    "newRecord": "Yeni Rekor! 🏆",
+    "nextEpisodeTitle": "Sıradaki bölüm hazır!",
+    "nextEpisodeDesc": "{{episode}}/{{total}}. Bölüm · {{seriesTitle}}",
+    "wordsTitle": "🎯 Pratik Edilen Kelimeler"
   },
 
   "result": {

@@ -77,7 +77,6 @@ export function matchConversationResponse(
   if (foundTarget) {
     const matchingOption =
       options.find((option) => option.text.toLowerCase().includes(foundTarget.toLowerCase())) ??
-      options[0] ??
       null;
 
     if (matchingOption) {
@@ -94,7 +93,7 @@ export function matchConversationResponse(
       .toLowerCase()
       .replace(/[^a-z\s]/g, '')
       .split(/\s+/)
-      .filter((word) => word.length > 2);
+      .filter((word) => word.length > 3);
 
     if (optionWords.some((word) => text.includes(word))) {
       return {

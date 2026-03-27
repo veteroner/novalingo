@@ -26,6 +26,7 @@ import type {
 } from '@/types/content';
 import { shuffle } from '@/utils/array';
 import { generateStoryPlaceholderImage, generateWordPlaceholderImage } from '@/utils/mediaFallback';
+import { getChunksByWorld } from './chunkBank';
 import { COMPREHENSION_TEMPLATES, type ComprehensionTemplate } from './comprehensionTemplates';
 import { findBestTemplate } from './conversationTemplates';
 import { selectConversationScenario, toConversationActivityData } from './conversations';
@@ -6813,8 +6814,34 @@ function generateFillBlank(
   words: string[],
   startOrder: number,
 ): Activity {
-  const sent = getRandomSentence(word);
-  const sentence = sent.en.replace(new RegExp(escapeRegex(word), 'i'), '___');
+  // Try to use a chunk-based sentence for this world first (richer context)
+  const worldId = lessonId.split('_')[0] ?? '';
+  const chunks = getChunksByWorld(worldId);
+  let sentence: string;
+  let translation: string;
+
+  const matchingChunk = chunks.find((c) =>
+    c.examples.some((ex) => ex.toLowerCase().includes(word.toLowerCase())),
+  );
+
+  if (matchingChunk) {
+    const exampleSentence =
+      matchingChunk.examples.find((ex) => ex.toLowerCase().includes(word.toLowerCase())) ??
+      matchingChunk.examples[0];
+    if (exampleSentence) {
+      sentence = exampleSentence.replace(new RegExp(escapeRegex(word), 'i'), '___');
+      translation = matchingChunk.patternTr;
+    } else {
+      const sent = getRandomSentence(word);
+      sentence = sent.en.replace(new RegExp(escapeRegex(word), 'i'), '___');
+      translation = sent.tr;
+    }
+  } else {
+    const sent = getRandomSentence(word);
+    sentence = sent.en.replace(new RegExp(escapeRegex(word), 'i'), '___');
+    translation = sent.tr;
+  }
+
   const distractors = words.filter((w) => w !== word).slice(0, 3);
   const options = shuffle([
     word.charAt(0).toUpperCase() + word.slice(1),
@@ -6829,7 +6856,7 @@ function generateFillBlank(
     data: {
       type: 'fill-blank' as const,
       sentence,
-      translation: sent.tr,
+      translation,
       correctAnswer: word.charAt(0).toUpperCase() + word.slice(1),
       options,
       audioUrl: '',

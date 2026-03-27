@@ -14,6 +14,7 @@ import { useConversationStore } from '@stores/conversationStore';
 import { formatTime } from '@utils/time';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface ScenarioSummary {
@@ -33,6 +34,7 @@ interface ScenarioSummary {
 }
 
 export default function ConversationResultScreen() {
+  const { t } = useTranslation('lesson');
   const location = useLocation();
   const navigate = useNavigate();
   const xpResult = useConversationStore((s) => s.xpResult);
@@ -68,7 +70,7 @@ export default function ConversationResultScreen() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Button variant="primary" onClick={() => navigate('/home')}>
-          Ana Sayfaya Dön
+          {t('conversationResult.home')}
         </Button>
       </div>
     );
@@ -76,10 +78,10 @@ export default function ConversationResultScreen() {
 
   const getMoodMessage = () => {
     if (result.accuracy >= 0.8)
-      return { mood: 'celebrating' as const, msg: 'Harika konuşma! Nova çok mutlu! 🌟' };
+      return { mood: 'celebrating' as const, msg: t('conversationResult.moodGreat') };
     if (result.accuracy >= 0.5)
-      return { mood: 'happy' as const, msg: 'Güzel pratik oldu! Devam et! 💪' };
-    return { mood: 'encouraging' as const, msg: 'Her konuşma seni daha iyi yapar! 🎯' };
+      return { mood: 'happy' as const, msg: t('conversationResult.moodGood') };
+    return { mood: 'encouraging' as const, msg: t('conversationResult.moodEncouraging') };
   };
 
   const getRewardCard = () => {
@@ -124,7 +126,7 @@ export default function ConversationResultScreen() {
       return {
         gradient: 'from-amber-400 to-orange-500',
         icon: emoji,
-        label: 'Koleksiyona Eklendi!',
+        label: t('conversationResult.rewardCollectibleLabel'),
         sublabel: id ? id.replace(/-/g, ' ') : 'Yeni öğe',
       };
     }
@@ -132,7 +134,7 @@ export default function ConversationResultScreen() {
       return {
         gradient: 'from-violet-500 to-purple-600',
         icon: '🏅',
-        label: 'Rozet Puanın Arttı!',
+        label: t('conversationResult.rewardBadgeLabel'),
         sublabel: id ? id.replace(/-/g, ' ') : 'Harika ilerleme',
       };
     }
@@ -140,7 +142,7 @@ export default function ConversationResultScreen() {
       return {
         gradient: 'from-pink-400 to-rose-500',
         icon: '✨',
-        label: 'Yeni Çıkartma Kazandın!',
+        label: t('conversationResult.rewardStickerLabel'),
         sublabel: id ? id.replace(/-/g, ' ') : 'Koleksiyonuna eklendi',
       };
     }
@@ -172,18 +174,21 @@ export default function ConversationResultScreen() {
       >
         <Text variant="h2" align="center">
           {scenario.rewardType === 'collectible'
-            ? 'Harika! Koleksiyon Kazandın! 🎁'
+            ? t('conversationResult.titleCollectible')
             : scenario.rewardType === 'badge_progress'
-              ? 'Rozetini İlerletttin! 🏅'
+              ? t('conversationResult.titleBadge')
               : scenario.rewardType === 'sticker'
-                ? 'Yeni Çıkartma Kazandın! ✨'
-                : 'Konuşma Tamamlandı! 🎉'}
+                ? t('conversationResult.titleSticker')
+                : t('conversationResult.titleDefault')}
         </Text>
         {scenario.series && (
           <div className="mt-1 flex items-center justify-center gap-1">
             <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-600">
-              📖 {scenario.series.seriesTitleTr} · {scenario.series.episodeNumber}/
-              {scenario.series.totalEpisodes}. Bölüm
+              📖 {scenario.series.seriesTitleTr} ·{' '}
+              {t('conversationResult.episodeBadge', {
+                episode: scenario.series.episodeNumber,
+                total: scenario.series.totalEpisodes,
+              })}
             </span>
           </div>
         )}
@@ -201,10 +206,12 @@ export default function ConversationResultScreen() {
       >
         <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
           <Text variant="h3" className="text-success">
-            %{Math.round(result.accuracy * 100)}
+            {t('conversationResult.accuracyPercent', {
+              percent: Math.round(result.accuracy * 100),
+            })}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Kelime Başarısı
+            {t('conversationResult.statAccuracy')}
           </Text>
         </div>
 
@@ -213,7 +220,7 @@ export default function ConversationResultScreen() {
             {result.targetWordsHit}/{result.targetWordsTotal}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Hedef Kelime
+            {t('conversationResult.statWords')}
           </Text>
         </div>
 
@@ -222,7 +229,7 @@ export default function ConversationResultScreen() {
             {formatTime(result.durationSeconds)}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Süre
+            {t('conversationResult.statTime')}
           </Text>
         </div>
 
@@ -231,7 +238,7 @@ export default function ConversationResultScreen() {
             {result.score}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Puan
+            {t('conversationResult.statScore')}
           </Text>
         </div>
       </motion.div>
@@ -246,7 +253,7 @@ export default function ConversationResultScreen() {
         {isSaving && !xpResult ? (
           <div className="rounded-2xl bg-yellow-50 p-4 text-center">
             <Text variant="bodySmall" className="text-text-secondary animate-pulse">
-              XP hesaplanıyor...
+              {t('conversationResult.xpLoading')}
             </Text>
           </div>
         ) : xpResult ? (
@@ -258,22 +265,22 @@ export default function ConversationResultScreen() {
                 </Text>
                 <Text variant="caption" className="text-white/80">
                   {xpResult.streak > 1
-                    ? `${xpResult.streak} günlük seri 🔥`
-                    : 'Bugünkü ilk konuşma!'}
+                    ? t('conversationResult.xpStreak', { count: xpResult.streak })
+                    : t('conversationResult.xpFirst')}
                 </Text>
               </div>
               <div className="text-right">
                 {xpResult.leveledUp && (
                   <div className="mb-1 rounded-full bg-white/20 px-2 py-0.5">
                     <Text variant="caption" className="font-bold text-white">
-                      Seviye {xpResult.newLevel}! 🎊
+                      {t('conversationResult.levelUp', { level: xpResult.newLevel })}
                     </Text>
                   </div>
                 )}
                 {xpResult.isNewBest && (
                   <div className="rounded-full bg-white/20 px-2 py-0.5">
                     <Text variant="caption" className="font-bold text-white">
-                      Yeni Rekor! 🏆
+                      {t('conversationResult.newRecord')}
                     </Text>
                   </div>
                 )}
@@ -325,11 +332,14 @@ export default function ConversationResultScreen() {
             <span className="text-2xl">▶️</span>
             <div>
               <Text variant="caption" className="font-semibold text-purple-700">
-                Sıradaki bölüm hazır!
+                {t('conversationResult.nextEpisodeTitle')}
               </Text>
               <Text variant="caption" className="text-purple-500">
-                {scenario.series.episodeNumber + 1}/{scenario.series.totalEpisodes}. Bölüm ·{' '}
-                {scenario.series.seriesTitleTr}
+                {t('conversationResult.nextEpisodeDesc', {
+                  episode: scenario.series.episodeNumber + 1,
+                  total: scenario.series.totalEpisodes,
+                  seriesTitle: scenario.series.seriesTitleTr,
+                })}
               </Text>
             </div>
           </div>
@@ -345,7 +355,7 @@ export default function ConversationResultScreen() {
           transition={{ delay: 0.9 }}
         >
           <Text variant="h4" align="center" className="mb-3">
-            🎯 Pratik Edilen Kelimeler
+            {t('conversationResult.wordsTitle')}
           </Text>
           <div className="flex flex-wrap justify-center gap-2">
             {scenario.targetWords.map((word) => {
@@ -379,11 +389,11 @@ export default function ConversationResultScreen() {
           fullWidth
           onClick={() => navigate('/conversation', { replace: true })}
         >
-          Yeni Konuşma Başlat 🎭
+          {t('conversationResult.newSession')}
         </Button>
 
         <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
-          Ana Sayfaya Dön
+          {t('conversationResult.home')}
         </Button>
       </motion.div>
 

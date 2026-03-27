@@ -83,8 +83,11 @@ export function matchConversationResponseRule(
     };
   }
 
-  // 3. Accepted variants (includes-based)
+  // 3. Accepted variants (includes-based) — only for rules that don't require a strict confidence
   for (const rule of responses) {
+    const ruleThreshold = rule.minimumConfidence ?? threshold;
+    // Skip rules with high minimumConfidence — they should only pass via pronunciation scoring
+    if (ruleThreshold > 0.75) continue;
     const accVars: string[] | undefined = rule.acceptedVariants;
     const variants = [
       rule.expectedText.toLowerCase(),
@@ -101,8 +104,10 @@ export function matchConversationResponseRule(
     }
   }
 
-  // 4. Accepted words (single-word hits from scenario metadata)
+  // 4. Accepted words (single-word hits from scenario metadata) — only for rules without strict confidence
   for (const rule of responses) {
+    const ruleThreshold = rule.minimumConfidence ?? threshold;
+    if (ruleThreshold > 0.75) continue;
     if (rule.acceptedWords && rule.acceptedWords.length > 0) {
       if (rule.acceptedWords.some((w) => text.includes(w.toLowerCase()))) {
         return {
@@ -116,13 +121,15 @@ export function matchConversationResponseRule(
     }
   }
 
-  // 5. Keyword fallback — any significant word from expectedText
+  // 5. Keyword fallback — any significant word from expectedText; skipped for strict-confidence rules
   for (const rule of responses) {
+    const ruleThreshold = rule.minimumConfidence ?? threshold;
+    if (ruleThreshold > 0.75) continue;
     const keywords = rule.expectedText
       .toLowerCase()
       .replace(/[^a-z\s]/g, '')
       .split(/\s+/)
-      .filter((w) => w.length > 2);
+      .filter((w) => w.length > 3);
     if (keywords.some((kw) => text.includes(kw))) {
       return {
         matched: rule,

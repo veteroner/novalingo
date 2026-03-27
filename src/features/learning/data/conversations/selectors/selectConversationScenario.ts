@@ -4,6 +4,17 @@ import type {
   SelectConversationScenarioParams,
 } from '../types/conversationScenario';
 
+// Maps a worldId to its corresponding conversation phase
+const WORLD_TO_PHASE: Record<string, ConversationScenario['phase']> = {
+  w1: 'phase1',
+  w2: 'phase2',
+  w3: 'phase3',
+  w4: 'phase4',
+  w5: 'phase5',
+  w6: 'phase5', // intentional: W6 reuses phase5 (advanced content)
+};
+
+export { WORLD_TO_PHASE };
 const THEME_LEXICONS: Record<string, Set<string>> = {
   animals: new Set(['dog', 'cat', 'fish', 'bird', 'rabbit', 'lion', 'elephant', 'monkey']),
   food: new Set(['apple', 'banana', 'orange', 'bread', 'cake', 'milk', 'juice', 'water']),
@@ -107,7 +118,20 @@ export function selectConversationScenario(
     throw new Error('No conversation scenarios registered');
   }
 
-  const candidates = params.candidates ?? ALL_CONVERSATION_SCENARIOS;
+  // Resolve target phase: explicit phase > worldId mapping > none
+  const targetPhase: ConversationScenario['phase'] | undefined =
+    params.phase ?? (params.worldId ? (WORLD_TO_PHASE[params.worldId] ?? undefined) : undefined);
+
+  const baseCandidates = params.candidates ?? ALL_CONVERSATION_SCENARIOS;
+
+  // Pre-filter by phase when available — creates a focused candidate pool
+  const phaseCandidates = targetPhase
+    ? baseCandidates.filter((s) => s.phase === targetPhase)
+    : baseCandidates;
+
+  // Fall back to full pool if phase yields nothing
+  const candidates = phaseCandidates.length > 0 ? phaseCandidates : baseCandidates;
+
   const excludeSet = new Set(params.excludeScenarioIds ?? []);
   const detectedTheme = params.preferredTheme ?? detectTheme(params.words);
 

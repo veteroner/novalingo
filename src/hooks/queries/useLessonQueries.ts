@@ -6,6 +6,7 @@
 
 import type { Lesson, World } from '@/types/content';
 import type { LessonProgress, VocabularyCard } from '@/types/progress';
+import { getWorld } from '@features/learning/data/curriculum';
 import {
   collections,
   docs,
@@ -16,7 +17,8 @@ import {
 import { submitLessonResult, type SubmitLessonResultReq } from '@services/firebase/functions';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { childKeys } from './useChildQueries';
 
 // ===== QUERY KEYS =====
@@ -48,6 +50,31 @@ export function useLessons(worldId: string, unitId: string) {
     enabled: !!worldId && !!unitId,
     staleTime: 24 * 60 * 60 * 1000,
   });
+}
+
+// ===== FETCH ALL LESSONS FOR A WORLD (all units in parallel) =====
+export function useWorldLessons(worldId: string) {
+  const world = useMemo(() => getWorld(worldId), [worldId]);
+  const unitIds = useMemo(() => world?.units.map((u) => u.id) ?? ['u1'], [world]);
+
+  const results = useQueries({
+    queries: unitIds.map((unitId) => ({
+      queryKey: lessonKeys.lessons(worldId, unitId),
+      queryFn: () =>
+        queryCollection<Lesson>(collections.lessons(worldId, unitId), orderBy('order')),
+      enabled: !!worldId,
+      staleTime: 24 * 60 * 60 * 1000,
+    })),
+  });
+
+  const data = useMemo(() => {
+    const all = results.flatMap((r) => r.data ?? []);
+    return all.length > 0 ? all : undefined;
+  }, [results]);
+
+  const isLoading = results.some((r) => r.isLoading);
+
+  return { data, isLoading };
 }
 
 // ===== FETCH CHILD LESSON PROGRESS =====

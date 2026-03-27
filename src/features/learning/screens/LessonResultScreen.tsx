@@ -12,6 +12,7 @@ import { StarRating } from '@components/molecules/StarRating';
 import { NovaCompanion } from '@components/organisms/NovaCompanion';
 import { getVocab } from '@features/learning/data/activityGenerator';
 import { getLesson } from '@features/learning/data/curriculum';
+import { getNovaQuip } from '@features/learning/data/novaQuipBank';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
 import type { SubmitLessonResultRes } from '@services/firebase/functions';
 import { unlockAudioPlayback } from '@services/speech/speechService';
@@ -147,12 +148,10 @@ export default function LessonResultScreen() {
   const xpEarned = backendResult?.xpEarned ?? 0;
 
   const getMoodMessage = () => {
-    if (stars === 3) return { mood: 'celebrating' as const, msg: 'MÜKEMMEL! Sen bir dahisin! 🌟' };
-    if (stars === 2)
-      return { mood: 'happy' as const, msg: 'Harika iş! Biraz daha pratik ile mükemmel olursun!' };
-    if (stars === 1)
-      return { mood: 'encouraging' as const, msg: 'İyi başlangıç! Tekrar denemeye ne dersin?' };
-    return { mood: 'encouraging' as const, msg: 'Vazgeçme! Her hata öğrenmenin parçası! 💪' };
+    if (stars === 3) return { mood: 'celebrating' as const, msg: getNovaQuip('perfect').tr };
+    if (stars === 2) return { mood: 'happy' as const, msg: getNovaQuip('lesson-complete').tr };
+    if (stars === 1) return { mood: 'encouraging' as const, msg: getNovaQuip('encouragement').tr };
+    return { mood: 'encouraging' as const, msg: getNovaQuip('encouragement').tr };
   };
 
   const { mood, msg } = getMoodMessage();

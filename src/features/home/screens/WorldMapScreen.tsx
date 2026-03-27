@@ -12,7 +12,7 @@ import { Text } from '@components/atoms/Text';
 import { LessonCard } from '@components/organisms/LessonCard';
 import { MainLayout } from '@components/templates/MainLayout';
 import { getWorld } from '@features/learning/data/curriculum';
-import { useLessonProgress, useLessons } from '@hooks/queries';
+import { useLessonProgress, useWorldLessons } from '@hooks/queries';
 import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { motion } from 'framer-motion';
@@ -51,16 +51,6 @@ function buildCurriculumLessons(worldId: string): LessonWithStatus[] {
   );
 }
 
-// World-to-conversation-phase mapping
-const WORLD_CONVERSATION_PHASE: Record<string, string> = {
-  w1: 'phase1',
-  w2: 'phase2',
-  w3: 'phase3',
-  w4: 'phase4',
-  w5: 'phase5',
-  w6: 'phase5',
-};
-
 // Interleave conversation nodes every N lessons
 const CONVERSATION_INTERVAL = 3;
 
@@ -80,9 +70,8 @@ export default function WorldMapScreen() {
   const curWorld = useMemo(() => getWorld(worldId ?? 'w1'), [worldId]);
   const fallback = useMemo(() => buildCurriculumLessons(worldId ?? 'w1'), [worldId]);
 
-  // Fetch all units' lessons for this world (not just 'u1')
-  const firstUnitId = curWorld?.units[0]?.id ?? 'u1';
-  const { data: firestoreLessons } = useLessons(worldId ?? 'w1', firstUnitId);
+  // Fetch all units' lessons for this world in parallel
+  const { data: firestoreLessons } = useWorldLessons(worldId ?? 'w1');
 
   // Fetch per-lesson progress to determine completion per lesson (not global counter)
   const { data: lessonProgress } = useLessonProgress(child?.id);
@@ -190,7 +179,6 @@ export default function WorldMapScreen() {
               (l) => l.status === 'completed' || l.status === 'perfect',
             );
             const isConvLocked = !allPrecedingDone;
-            const phase = WORLD_CONVERSATION_PHASE[node.worldId ?? 'w1'] ?? 'phase1';
 
             return (
               <motion.button
@@ -207,7 +195,7 @@ export default function WorldMapScreen() {
                 onClick={() => {
                   if (isConvLocked) return;
                   void unlockAudioPlayback();
-                  navigate(`/conversation?phase=${phase}`);
+                  navigate(`/conversation?worldId=${node.worldId ?? 'w1'}`);
                 }}
                 disabled={isConvLocked}
               >

@@ -176,18 +176,7 @@ export default function HomeScreen() {
               emoji: '📖',
               label: 'Hikayeler',
               description: 'İngilizce hikaye oku',
-              onClick: () => {
-                // Find the first story lesson in the current world
-                const world = curriculum.find((w) => w.id === child.currentWorldId);
-                const storyLesson = world?.units
-                  .flatMap((u) => u.lessons)
-                  .find((l) => l.activityTypes.includes('story-time'));
-                if (storyLesson) {
-                  void navigate(`/lesson/${storyLesson.id}`);
-                } else {
-                  void navigate(`/world/${child.currentWorldId}`);
-                }
-              },
+              onClick: () => navigate('/stories'),
             },
           ].map((action) => (
             <Card

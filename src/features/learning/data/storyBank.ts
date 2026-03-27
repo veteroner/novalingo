@@ -2020,6 +2020,643 @@ const rawStoryBank: MicroStory[] = [
       ],
     },
   },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // WORLD 5 — Bilim Adası (Science Island)
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    id: 'story-w5-nova-in-the-lab',
+    title: 'Nova in the Lab',
+    titleTr: 'Nova Laboratuvarda',
+    theme: 'science',
+    suggestedAfterUnit: 'unit-w5-science-tools',
+    data: {
+      type: 'story-time',
+      title: 'Nova in the Lab',
+      pages: [
+        {
+          text: 'Nova enters the science lab. "Let\'s do an experiment!" she says.',
+          translation: 'Nova bilim laboratuvarına giriyor. "Bir deney yapalım!" diyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['science', 'lab', 'experiment'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She puts on her white coat and safety goggles.',
+          translation: 'Beyaz önlüğünü ve koruyucu gözlüklerini takıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['coat', 'goggles', 'safety'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Nova mixes red liquid and blue liquid. They turn green!',
+          translation: 'Nova kırmızı sıvı ile mavi sıvıyı karıştırıyor. Yeşile dönüşüyorlar!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['mixes', 'liquid', 'green'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"I love science!" says Nova. She writes the result in her notebook.',
+          translation: '"Bilimi seviyorum!" diyor Nova. Sonucu defterine yazıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['love', 'result', 'notebook'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-the-robot-helper',
+    title: 'The Robot Helper',
+    titleTr: 'Robot Yardımcı',
+    theme: 'robots',
+    suggestedAfterUnit: 'unit-w5-technology',
+    data: {
+      type: 'story-time',
+      title: 'The Robot Helper',
+      pages: [
+        {
+          text: 'Nova builds a small robot. It has two eyes and four wheels.',
+          translation: 'Nova küçük bir robot inşa ediyor. İki gözü ve dört tekerleği var.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['robot', 'eyes', 'wheels'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'The robot can pick up blocks. It carries them to the shelf.',
+          translation: 'Robot blokları kaldırabiliyor. Onları rafa taşıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['pick up', 'blocks', 'shelf'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"Good job, robot!" says Nova. The robot beeps happily.',
+          translation: '"Aferin robot!" diyor Nova. Robot mutlu bir şekilde bip sesi çıkarıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['good job', 'beeps', 'happily'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-how-plants-grow',
+    title: 'How Plants Grow',
+    titleTr: 'Bitkiler Nasıl Büyür',
+    theme: 'nature',
+    suggestedAfterUnit: 'unit-w5-living-things',
+    data: {
+      type: 'story-time',
+      title: 'How Plants Grow',
+      pages: [
+        {
+          text: 'Nova plants a tiny seed in the soil.',
+          translation: 'Nova toprağa küçük bir tohum ekiyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['plants', 'seed', 'soil'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Every day she gives it water and sunlight.',
+          translation: 'Her gün ona su ve güneş ışığı veriyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['water', 'sunlight', 'every day'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'One week later a green shoot appears!',
+          translation: 'Bir hafta sonra yeşil bir filiz çıkıyor!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['week', 'green', 'shoot'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"It grew!" cheers Nova. "Water plus sunlight equals life!"',
+          translation: '"Büyüdü!" diye sevinç çığlığı atıyor Nova. "Su artı güneş eşittir hayat!"',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['grew', 'plus', 'equals'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-the-weather-chart',
+    title: 'The Weather Chart',
+    titleTr: 'Hava Durumu Grafiği',
+    theme: 'weather',
+    suggestedAfterUnit: 'unit-w5-weather-science',
+    data: {
+      type: 'story-time',
+      title: 'The Weather Chart',
+      pages: [
+        {
+          text: 'Nova keeps a weather chart every day. She draws the sun, clouds, or rain.',
+          translation:
+            'Nova her gün bir hava durumu grafiği tutuyor. Güneş, bulut ya da yağmur çiziyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['weather', 'chart', 'clouds'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Monday is sunny. Tuesday is cloudy. Wednesday is rainy.',
+          translation: 'Pazartesi güneşli. Salı bulutlu. Çarşamba yağmurlu.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['sunny', 'cloudy', 'rainy'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"I see a pattern," says Nova. "Rain comes after clouds."',
+          translation: '"Bir örüntü görüyorum," diyor Nova. "Yağmur, bulutlardan sonra geliyor."',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['pattern', 'rain', 'after'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-space-explorer',
+    title: 'Space Explorer',
+    titleTr: 'Uzay Kaşifi',
+    theme: 'space',
+    suggestedAfterUnit: 'unit-w5-earth-and-space',
+    data: {
+      type: 'story-time',
+      title: 'Space Explorer',
+      pages: [
+        {
+          text: 'Nova looks through her telescope at night.',
+          translation: 'Nova gece teleskobuna bakıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['telescope', 'night'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She can see the moon, stars, and a red planet.',
+          translation: "Ay'ı, yıldızları ve kırmızı bir gezegeni görebiliyor.",
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['moon', 'stars', 'planet'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"That red planet is Mars!" says Nova. "One day I will visit it!"',
+          translation: '"O kırmızı gezegen Mars!" diyor Nova. "Bir gün onu ziyaret edeceğim!"',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['Mars', 'visit'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-the-magnet-mystery',
+    title: 'The Magnet Mystery',
+    titleTr: 'Mıknatıs Gizemi',
+    theme: 'science',
+    suggestedAfterUnit: 'unit-w5-forces',
+    data: {
+      type: 'story-time',
+      title: 'The Magnet Mystery',
+      pages: [
+        {
+          text: 'Nova finds a magnet in the lab. She tests it on different objects.',
+          translation:
+            'Nova laboratuvarda bir mıknatıs buluyor. Farklı nesneler üzerinde test ediyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['magnet', 'tests', 'objects'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'The magnet sticks to the metal spoon but not to the plastic cup.',
+          translation: 'Mıknatıs metal kaşığa yapışıyor ama plastik bardağa yapışmıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['metal', 'plastic', 'sticks'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"Metal is magnetic and plastic is not!" Nova writes it down.',
+          translation: '"Metal manyetik, plastik değil!" Nova bunu not ediyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['magnetic', 'not'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-the-water-cycle',
+    title: 'The Water Cycle',
+    titleTr: 'Su Döngüsü',
+    theme: 'nature',
+    suggestedAfterUnit: 'unit-w5-earth-science',
+    data: {
+      type: 'story-time',
+      title: 'The Water Cycle',
+      pages: [
+        {
+          text: 'The sun heats the ocean. Water rises up as steam.',
+          translation: 'Güneş okyanusu ısıtıyor. Su buhar olarak yükseliyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['heats', 'ocean', 'steam'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'The steam forms clouds high in the sky.',
+          translation: 'Buhar gökyüzünde yüksekte bulutlar oluşturuyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['forms', 'clouds', 'sky'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'The clouds bring rain. The rain fills rivers and lakes.',
+          translation: 'Bulutlar yağmur getiriyor. Yağmur nehirleri ve gölleri dolduruyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['rain', 'rivers', 'lakes'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-code-with-nova',
+    title: 'Code with Nova',
+    titleTr: 'Nova ile Kodla',
+    theme: 'technology',
+    suggestedAfterUnit: 'unit-w5-coding-basics',
+    data: {
+      type: 'story-time',
+      title: 'Code with Nova',
+      pages: [
+        {
+          text: 'Nova opens her computer. She wants to make a game.',
+          translation: 'Nova bilgisayarını açıyor. Bir oyun yapmak istiyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['computer', 'game'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She types: "Move right. Jump. Stop." The character follows every step.',
+          translation: 'Yazıyor: "Sağa git. Zıpla. Dur." Karakter her adımı takip ediyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['move', 'jump', 'stop', 'step'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"Code is like giving instructions," smiles Nova. "Computers always listen!"',
+          translation:
+            '"Kod talimat vermek gibi," gülümsüyor Nova. "Bilgisayarlar her zaman dinler!"',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['instructions', 'computers'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // WORLD 6 — Macera Galaksisi (Adventure Galaxy)
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    id: 'story-w6-journey-to-the-stars',
+    title: 'Journey to the Stars',
+    titleTr: 'Yıldızlara Yolculuk',
+    theme: 'space',
+    suggestedAfterUnit: 'unit-w6-galaxy-explorer',
+    data: {
+      type: 'story-time',
+      title: 'Journey to the Stars',
+      pages: [
+        {
+          text: 'Nova boards her spacecraft. The countdown begins: ten, nine, eight...',
+          translation: 'Nova uzay aracına biniyor. Geri sayım başlıyor: on, dokuz, sekiz...',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['spacecraft', 'countdown', 'begins'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Blast off! Nova flies through stars and galaxies.',
+          translation: 'Kalkış! Nova yıldızlar ve galaksiler arasında uçuyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['blast off', 'flies', 'galaxies'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She lands on a purple moon. The ground feels soft like cotton.',
+          translation: 'Mor bir aya iniyor. Zemin pamuk gibi yumuşak hissettiriyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['lands', 'purple', 'cotton', 'soft'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"The universe is so big!" whispers Nova. "And we are part of it."',
+          translation: '"Evren çok büyük!" diye fısıldıyor Nova. "Ve biz onun bir parçasıyız."',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['universe', 'big', 'part'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-the-alien-friend',
+    title: 'The Alien Friend',
+    titleTr: 'Uzaylı Arkadaş',
+    theme: 'adventure',
+    suggestedAfterUnit: 'unit-w6-first-contact',
+    data: {
+      type: 'story-time',
+      title: 'The Alien Friend',
+      pages: [
+        {
+          text: 'On the moon Nova meets a small green alien named Zib.',
+          translation: 'Ayda Nova, Zib adlı küçük yeşil bir uzaylıyla tanışıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['alien', 'green', 'moon'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Zib speaks a different language. Nova draws pictures to communicate.',
+          translation: 'Zib farklı bir dil konuşuyor. Nova iletişim kurmak için resimler çiziyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['language', 'pictures', 'communicate'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'They draw the sun, stars, and friendship bracelets.',
+          translation: 'Güneşi, yıldızları ve dostluk bilekliklerini çiziyorlar.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['friendship', 'bracelets'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-gravity-game',
+    title: 'The Gravity Game',
+    titleTr: 'Yerçekimi Oyunu',
+    theme: 'science',
+    suggestedAfterUnit: 'unit-w6-forces-in-space',
+    data: {
+      type: 'story-time',
+      title: 'The Gravity Game',
+      pages: [
+        {
+          text: 'Inside the spacecraft there is no gravity. Everything floats!',
+          translation: 'Uzay aracının içinde yerçekimi yok. Her şey uçuşuyor!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['gravity', 'floats'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Nova throws a ball. It drifts slowly across the room.',
+          translation: 'Nova bir top fırlatıyor. Top odada yavaşça sürükleniyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['throws', 'ball', 'drifts'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"On Earth gravity pulls things down," says Nova. "Here we are free!"',
+          translation: '"Dünya\'da yerçekimi şeyleri aşağı çeker," diyor Nova. "Burada özgürüz!"',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['Earth', 'pulls', 'free'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-satellite-mission',
+    title: 'Satellite Mission',
+    titleTr: 'Uydu Görevi',
+    theme: 'technology',
+    suggestedAfterUnit: 'unit-w6-communication',
+    data: {
+      type: 'story-time',
+      title: 'Satellite Mission',
+      pages: [
+        {
+          text: 'Nova launches a satellite into orbit around the Earth.',
+          translation: 'Nova Dünya etrafındaki yörüngeye bir uydu fırlatıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['satellite', 'orbit', 'Earth'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'The satellite takes photos and sends signals back to screen.',
+          translation: 'Uydu fotoğraf çekiyor ve ekrana sinyaller gönderiyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['photos', 'signals', 'screen'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"Satellites help us see weather, maps, and talk to each other," explains Nova.',
+          translation:
+            '"Uydular hava durumunu, haritaları görmemize ve birbirimizle konuşmamıza yardım eder," diye açıklıyor Nova.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['weather', 'maps', 'talk'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-the-black-hole',
+    title: 'The Black Hole',
+    titleTr: 'Kara Delik',
+    theme: 'space',
+    suggestedAfterUnit: 'unit-w6-deep-space',
+    data: {
+      type: 'story-time',
+      title: 'The Black Hole',
+      pages: [
+        {
+          text: 'Nova watches a black hole through a special telescope.',
+          translation: 'Nova özel bir teleskopla kara deliği izliyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['black hole', 'telescope', 'special'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'A black hole is so heavy that even light cannot escape it.',
+          translation: 'Kara delik o kadar ağır ki ışık bile ondan kaçamıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['heavy', 'light', 'escape'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"The universe is full of mysteries," says Nova. "That\'s why I love science!"',
+          translation: '"Evren gizemlerle dolu," diyor Nova. "Bu yüzden bilimi seviyorum!"',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['mysteries', 'universe'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-design-a-planet',
+    title: 'Design a Planet',
+    titleTr: 'Bir Gezegen Tasarla',
+    theme: 'adventure',
+    suggestedAfterUnit: 'unit-w6-creative-science',
+    data: {
+      type: 'story-time',
+      title: 'Design a Planet',
+      pages: [
+        {
+          text: 'Nova gets to design her own planet!',
+          translation: 'Nova kendi gezegenini tasarlayabilecek!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['design', 'planet'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She chooses two moons, bright blue oceans, and purple mountains.',
+          translation: 'İki ay, parlak mavi okyanuslar ve mor dağlar seçiyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['moons', 'oceans', 'mountains'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"My planet is called Nova-Prime!" she announces proudly.',
+          translation: '"Benim gezegenimi adı Nova-Prime!" diye gururla duyuruyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['called', 'announces', 'proudly'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-time-traveller',
+    title: 'The Time Traveller',
+    titleTr: 'Zaman Yolcusu',
+    theme: 'adventure',
+    suggestedAfterUnit: 'unit-w6-advanced-concepts',
+    data: {
+      type: 'story-time',
+      title: 'The Time Traveller',
+      pages: [
+        {
+          text: 'Nova discovers a mysterious machine that can travel through time.',
+          translation: 'Nova zamanda yolculuk yapabilen gizemli bir makine keşfediyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['discovers', 'mysterious', 'machine', 'time'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She travels to the past and sees dinosaurs eating leaves.',
+          translation: 'Geçmişe yolculuk yapıyor ve yaprak yiyen dinozorları görüyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['past', 'dinosaurs', 'leaves'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She travels to the future and sees flying cars and tall crystal towers.',
+          translation:
+            'Geleceğe yolculuk yapıyor ve uçan arabalar ile uzun kristal kuleler görüyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['future', 'flying', 'crystal'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"Home is the best time!" decides Nova. She returns to today.',
+          translation: '"Ev en iyi zaman!" diye karar veriyor Nova. Bugüne geri dönüyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['home', 'returns', 'today'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w6-mission-complete',
+    title: 'Mission Complete',
+    titleTr: 'Görev Tamamlandı',
+    theme: 'adventure',
+    suggestedAfterUnit: 'unit-w6-final-mission',
+    data: {
+      type: 'story-time',
+      title: 'Mission Complete',
+      pages: [
+        {
+          text: 'Nova has explored six worlds. Each one taught her something new.',
+          translation: 'Nova altı dünya keşfetti. Her biri ona yeni bir şey öğretti.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['explored', 'worlds', 'taught'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'Words, grammar, stories, the city, science, and the galaxy.',
+          translation: 'Kelimeler, dil bilgisi, hikayeler, şehir, bilim ve galaksi.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['grammar', 'galaxy', 'science'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: '"Learning never stops," smiles Nova. "Every day is a new adventure!"',
+          translation: '"Öğrenme hiç durmaz," gülümsüyor Nova. "Her gün yeni bir macera!"',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['learning', 'adventure'],
+          interactionType: 'none',
+        },
+      ],
+    },
+  },
 ];
 
 function enrichStoryData(theme: string, data: StoryTimeData): StoryTimeData {
@@ -2052,14 +2689,27 @@ function getStoryVocabulary(story: MicroStory): Set<string> {
 
 export const storyBank: MicroStory[] = rawStoryBank.map(enrichMicroStory);
 
-export function selectStoryForWords(words: string[], preferredTheme?: string): MicroStory {
+export function selectStoryForWords(
+  words: string[],
+  preferredTheme?: string,
+  worldId?: string,
+): MicroStory {
   const normalizedWords = new Set(words.map((word) => word.toLowerCase()));
-  const fallback = getRandomStory(preferredTheme);
+
+  // Narrow pool by world first when worldId is provided
+  const worldPool = worldId
+    ? storyBank.filter((s) => s.id.startsWith(`story-${worldId}-`))
+    : storyBank;
+  // Fall back to full bank if the world has no stories yet
+  const pool = worldPool.length > 0 ? worldPool : storyBank;
+
+  const fallback: MicroStory = (pool[Math.floor(Math.random() * pool.length)] ??
+    storyBank[0]) as MicroStory;
 
   let bestStory: MicroStory | undefined;
   let bestScore = -1;
 
-  for (const story of storyBank) {
+  for (const story of pool) {
     let score = story.theme === preferredTheme ? 3 : 0;
     const storyWords = getStoryVocabulary(story);
 

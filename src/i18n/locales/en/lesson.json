@@ -52,7 +52,41 @@
     "conversationMicNoSpeech": "No speech detected — try again 🔇",
     "conversationMicError": "Mic error — try typing instead ⌨️",
     "conversationGuided": "Nova will guide you step by step",
-    "conversationModeHint": "Speak or type your answer"
+    "conversationModeHint": "Speak or type your answer",
+    "conversationScreenTitle": "Talk to Nova",
+    "conversationScreenSubtitle": "Ready for some English conversation practice?",
+    "conversationScreenStart": "Start 🎤",
+    "conversationScreenLoading": "Preparing scenario...",
+    "conversationScreenEpisode": "Episode {{episode}}/{{total}}"
+  },
+
+  "conversationResult": {
+    "home": "Go Home",
+    "newSession": "New Conversation 🎭",
+    "moodGreat": "Amazing conversation! Nova is so happy! 🌟",
+    "moodGood": "Great practice! Keep it up! 💪",
+    "moodEncouraging": "Every conversation makes you better! 🎯",
+    "rewardCollectibleLabel": "Added to Collection!",
+    "rewardBadgeLabel": "Badge Progress Increased!",
+    "rewardStickerLabel": "New Sticker Earned!",
+    "titleCollectible": "Great! Collection Earned! 🎁",
+    "titleBadge": "Badge Progress! 🏅",
+    "titleSticker": "New Sticker Earned! ✨",
+    "titleDefault": "Conversation Complete! 🎉",
+    "episodeBadge": "Episode {{episode}}/{{total}}",
+    "statAccuracy": "Word Accuracy",
+    "statWords": "Target Words",
+    "statTime": "Time",
+    "statScore": "Score",
+    "accuracyPercent": "{{percent}}%",
+    "xpLoading": "Calculating XP...",
+    "xpStreak": "{{count}}-day streak 🔥",
+    "xpFirst": "First conversation today!",
+    "levelUp": "Level {{level}}! 🎊",
+    "newRecord": "New Record! 🏆",
+    "nextEpisodeTitle": "Next episode ready!",
+    "nextEpisodeDesc": "Episode {{episode}}/{{total}} · {{seriesTitle}}",
+    "wordsTitle": "🎯 Practiced Words"
   },
 
   "result": {

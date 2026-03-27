@@ -158,4 +158,8 @@ export interface SelectConversationScenarioParams {
   weakPatterns?: string[];
   /** Tags the child has shown preference for */
   preferredTags?: string[];
+  /** Narrow candidate pool to a specific phase (e.g. 'phase3') */
+  phase?: ConversationScenario['phase'];
+  /** Narrow candidate pool by world ID (e.g. 'w3') — mapped to phase internally */
+  worldId?: string | null;
 }

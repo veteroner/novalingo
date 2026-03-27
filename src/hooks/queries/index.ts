@@ -20,6 +20,7 @@ export {
   useLessons,
   useSubmitLesson,
   useVocabularyCards,
+  useWorldLessons,
   useWorlds,
 } from './useLessonQueries';
 

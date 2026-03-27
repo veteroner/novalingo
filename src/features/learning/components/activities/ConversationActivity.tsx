@@ -40,6 +40,8 @@ import type { ActivityCallbacks, FeedbackState } from './types';
 
 interface ConversationActivityProps extends ActivityCallbacks {
   data: ConversationActivityData;
+  /** WorldId for analytics — passed from ConversationScreen when launched via world map */
+  worldId?: string | null;
 }
 
 interface ConversationActivityOption {
@@ -121,6 +123,7 @@ interface ChatBubble {
   text: string;
   textTr: string;
   emoji?: string;
+  audioUrl?: string;
 }
 
 const CHILD_ACCEPT_THRESHOLD = 0.65;
@@ -391,7 +394,11 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
 
 /* ─── Main Component ─── */
 
-export default function ConversationActivity({ data, onComplete }: ConversationActivityProps) {
+export default function ConversationActivity({
+  data,
+  onComplete,
+  worldId,
+}: ConversationActivityProps) {
   const { t } = useTranslation('lesson');
   const activeChild = useChildStore((s) => s.activeChild);
   const childAvatarEmoji = AVATAR_EMOJIS[activeChild?.avatarId ?? ''] ?? '🧒';
@@ -409,6 +416,7 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
   // ── Premium UX state ──
   const [novaMood, setNovaMood] = useState<NovaMood>('idle');
   const [currentSpeech, setCurrentSpeech] = useState<{ text: string; textTr: string } | null>(null);
+  const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
   const [showTranslation, setShowTranslation] = useState(true);
   const [speechRateIndex, setSpeechRateIndex] = useState(1); // default 0.8x
   const [currentRound, setCurrentRound] = useState(0);
@@ -416,9 +424,20 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
 
   const startTime = useRef(Date.now());
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autoAdvanceTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // Self-pruning timer: automatically removes its ID from the tracking array after firing,
+  // preventing the array from growing unboundedly across a long session (BUG-11).
+  const pushTimer = useCallback((fn: () => void, ms: number): ReturnType<typeof setTimeout> => {
+    const tid: ReturnType<typeof setTimeout> = setTimeout(() => {
+      fn();
+      autoAdvanceTimers.current = autoAdvanceTimers.current.filter((id) => id !== tid);
+    }, ms);
+    autoAdvanceTimers.current.push(tid);
+    return tid;
+  }, []);
   const hintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const noResponseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nodesMap = useRef<Map<string, ConversationActivityNode>>(new Map());
@@ -443,6 +462,11 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
   // Ref for auto-advance callback when child doesn't respond
   const autoAdvanceRef = useRef<() => void>(() => {});
 
+  // Refs for advanceToNode/finishConversation — kept current so data useEffect always calls
+  // the latest version without needing those callbacks in its own dep array (BUG-13).
+  const advanceToNodeRef = useRef<(node: ConversationActivityNode) => void>(() => {});
+  const finishConversationRef = useRef<() => void>(() => {});
+
   // Pending action to execute after TTS finishes (for intermediate/terminal nodes)
   const pendingAfterSpeechRef = useRef<(() => void) | null>(null);
 
@@ -464,23 +488,19 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
         const pendingAction = pendingAfterSpeechRef.current;
         if (pendingAction) {
           pendingAfterSpeechRef.current = null;
-          const tid = setTimeout(pendingAction, 600);
-          autoAdvanceTimers.current.push(tid);
+          pushTimer(pendingAction, 600);
           setNovaMood('idle');
           return;
         }
 
         setNovaMood((prev) => {
           if (prev === 'speaking') {
-            // Auto-start listening if STT is available and child has options to respond to
-            if (SpeechRecognitionAPI) {
+            // Only start listening if there are still options for the child to respond to
+            if (SpeechRecognitionAPI && optionsRef.current.length > 0) {
               // Small delay so the mic doesn't pick up the tail of TTS
-              const tid = setTimeout(() => {
-                startListeningRef.current();
-              }, 400);
-              autoAdvanceTimers.current.push(tid);
+              pushTimer(() => startListeningRef.current(), 400);
             }
-            return 'listening';
+            return optionsRef.current.length > 0 ? 'listening' : 'idle';
           }
           return prev;
         });
@@ -506,23 +526,23 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
         trackConversationStarted({
           scenarioId: data.scenarioId,
           theme: data.scenarioTheme ?? 'unknown',
+          worldId,
         });
       }
       // Dismiss intro card after a brief delay before starting
       if (data.scenarioSummary) {
         const tid = setTimeout(() => {
           setShowIntro(false);
-          advanceToNode(startNode);
+          advanceToNodeRef.current(startNode);
         }, 2500);
         autoAdvanceTimers.current.push(tid);
       } else {
-        advanceToNode(startNode);
+        advanceToNodeRef.current(startNode);
       }
     } else {
       // No valid start node — finish immediately to avoid blank screen
-      finishConversation();
+      finishConversationRef.current();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   // Cleanup
@@ -662,22 +682,37 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
           text: node.text,
           textTr: node.textTr,
           emoji: node.emoji,
+          audioUrl: node.audioUrl,
         },
       ]);
 
       // Nova speaks — TTS with current rate
       if (node.speaker === 'nova') {
         setCurrentSpeech({ text: node.text, textTr: node.textTr });
+        setCurrentAudioUrl(node.audioUrl ?? null);
         // Brief thinking state before speaking starts
         setNovaMood('thinking');
-        const speakTid = setTimeout(() => {
+        pushTimer(() => {
           setNovaMood('speaking');
           void ttsSpeak(node.text, {
             rate: SPEECH_RATES[speechRateRef.current],
             audioUrl: node.audioUrl,
           });
         }, 500);
-        autoAdvanceTimers.current.push(speakTid);
+      }
+
+      // DEV: warn if a node has both options and next — next is always ignored (BUG-14)
+      if (
+        import.meta.env.DEV &&
+        node.speaker === 'nova' &&
+        node.options &&
+        node.options.length > 0 &&
+        node.next
+      ) {
+        console.warn(
+          `[ConversationActivity] Node "${node.id}" has both options and a "next" field. ` +
+            `"next" is ignored; each response navigates via its own nextNodeId.`,
+        );
       }
 
       // If nova with options → free-form input active + start hint + auto-advance timers
@@ -711,21 +746,19 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
             if (nextNode) advanceToNode(nextNode);
           };
           // Safety fallback in case TTS callback doesn't fire
-          const fallback = setTimeout(() => {
+          pushTimer(() => {
             if (pendingAfterSpeechRef.current) {
               const action = pendingAfterSpeechRef.current;
               pendingAfterSpeechRef.current = null;
               action();
             }
           }, 8000);
-          autoAdvanceTimers.current.push(fallback);
         } else {
           // Child bubble — advance after short delay (no TTS involved)
-          const tid1 = setTimeout(() => {
+          pushTimer(() => {
             const nextNode = nodesMap.current.get(nextNodeId);
             if (nextNode) advanceToNode(nextNode);
           }, 1200);
-          autoAdvanceTimers.current.push(tid1);
         }
       } else {
         currentPromptNodeIdRef.current = null;
@@ -736,22 +769,20 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
             finishConversation();
           };
           // Safety fallback
-          const fallback = setTimeout(() => {
+          pushTimer(() => {
             if (pendingAfterSpeechRef.current) {
               pendingAfterSpeechRef.current = null;
               finishConversation();
             }
           }, 8000);
-          autoAdvanceTimers.current.push(fallback);
         } else {
-          const tid2 = setTimeout(() => {
+          pushTimer(() => {
             finishConversation();
           }, 1500);
-          autoAdvanceTimers.current.push(tid2);
         }
       }
     },
-    [finishConversation, data.scenarioId],
+    [finishConversation, pushTimer, data.scenarioId],
   );
 
   const handleOptionSelect = useCallback(
@@ -810,6 +841,7 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
       setNovaMood('celebrating');
       setFeedback('correct');
       void haptic.success();
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
       feedbackTimerRef.current = setTimeout(() => {
         setFeedback('idle');
         setNovaMood('idle');
@@ -830,14 +862,15 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
 
   // ── Replay helper ──
   const replaySpeech = useCallback(
-    (text?: string) => {
+    (text?: string, audioUrl?: string) => {
       const target = text ?? currentSpeech?.text;
+      const url = audioUrl ?? currentAudioUrl ?? undefined;
       if (target) {
         setNovaMood('speaking');
-        void ttsSpeak(target, { rate: SPEECH_RATES[speechRateRef.current] });
+        void ttsSpeak(target, { rate: SPEECH_RATES[speechRateRef.current], audioUrl: url });
       }
     },
-    [currentSpeech],
+    [currentSpeech, currentAudioUrl],
   );
 
   // ── Free-form input handler (STT transcript or typed text) ──
@@ -908,6 +941,7 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
       setFeedback('wrong');
       setNovaMood('sad');
       void haptic.error();
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
       feedbackTimerRef.current = setTimeout(() => {
         setFeedback('idle');
         setNovaMood('listening');
@@ -975,17 +1009,27 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
 
         // Pass all alternatives so handleFreeInput can try each before giving up
         const [best, ...rest] = transcripts;
-        if (best) handleFreeInput(best, rest);
+        if (best) handleFreeInputRef.current(best, rest);
       };
 
       recognition.start();
     } catch {
       setMicError(t('activities.conversationMicError'));
     }
-  }, [options.length, handleFreeInput, t]);
+  }, [options, t]);
 
   // Keep startListeningRef in sync for auto-listen
   startListeningRef.current = startListening;
+
+  // Keep handleFreeInputRef in sync so STT onresult always calls the latest version
+  // (avoids stale closure when hintVisible changes mid-recognition session)
+  const handleFreeInputRef = useRef<(rawText: string, alternatives?: string[]) => void>(() => {});
+  handleFreeInputRef.current = handleFreeInput;
+
+  // Keep advanceToNode/finishConversation refs current so the data useEffect can call the
+  // latest versions without those callbacks appearing in the effect's dep array (BUG-13).
+  advanceToNodeRef.current = advanceToNode;
+  finishConversationRef.current = finishConversation;
 
   // Keep autoAdvanceRef in sync — called when child doesn't respond in time
   autoAdvanceRef.current = () => {
@@ -1159,7 +1203,7 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
                 {bubble.speaker === 'nova' && (
                   <button
                     onClick={() => {
-                      replaySpeech(bubble.text);
+                      replaySpeech(bubble.text, bubble.audioUrl);
                     }}
                     className="mt-0.5 text-xs text-indigo-300 opacity-60 transition-opacity active:opacity-100"
                     aria-label={t('activities.conversationReplay')}
@@ -1339,9 +1383,6 @@ export default function ConversationActivity({ data, onComplete }: ConversationA
             >
               🔄
             </motion.span>
-            <Text variant="caption" className="absolute bottom-1/3 font-semibold text-red-400">
-              {t('activities.conversationTryAgain')}
-            </Text>
           </motion.div>
         )}
       </AnimatePresence>

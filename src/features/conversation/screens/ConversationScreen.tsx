@@ -14,9 +14,11 @@ import { useChildStore } from '@stores/childStore';
 import { useConversationStore } from '@stores/conversationStore';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function ConversationScreen() {
+  const { t } = useTranslation('lesson');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const child = useChildStore((s) => s.activeChild);
@@ -27,6 +29,9 @@ export default function ConversationScreen() {
   // We show a tap-to-start overlay first; the tap itself unlocks audio.
   const [audioReady, setAudioReady] = useState(false);
   const preferredTheme = searchParams.get('theme')?.trim() || undefined;
+  // worldId param (from WorldMapScreen) takes priority; fall back to child's current world
+  const worldIdParam = searchParams.get('worldId')?.trim() || null;
+  const activeWorldId = worldIdParam ?? child?.currentWorldId ?? null;
 
   // Cleanup only on unmount — session start is triggered by user tap
   useEffect(() => {
@@ -41,9 +46,9 @@ export default function ConversationScreen() {
     hasStartedRef.current = true;
     // Run inside user-gesture context so mobile browsers allow audio playback
     void unlockAudioPlayback();
-    startSession({ worldId: child?.currentWorldId ?? null, preferredTheme });
+    startSession({ worldId: activeWorldId, preferredTheme });
     setAudioReady(true);
-  }, [child?.currentWorldId, preferredTheme, startSession]);
+  }, [activeWorldId, preferredTheme, startSession]);
 
   const handleComplete = useCallback(
     (outcome: ActivityOutcome) => {
@@ -54,7 +59,9 @@ export default function ConversationScreen() {
         accuracy: outcome.score / 100,
         durationSeconds: outcome.timeSpentSeconds,
         attempts: outcome.attempts,
-        targetWordsHit: Math.round((outcome.score / 100) * scenario.targetWords.length),
+        targetWordsHit:
+          outcome.conversationEvidence?.targetWordsHit?.length ??
+          Math.round((outcome.score / 100) * scenario.targetWords.length),
         targetWordsTotal: scenario.targetWords.length,
       });
 
@@ -94,16 +101,16 @@ export default function ConversationScreen() {
           🎭
         </motion.div>
         <Text variant="h3" align="center" className="mb-2">
-          Nova ile Konuş
+          {t('activities.conversationScreenTitle')}
         </Text>
         <Text variant="bodySmall" align="center" className="mb-8 text-gray-500">
-          İngilizce konuşma pratiği yapmaya hazır mısın?
+          {t('activities.conversationScreenSubtitle')}
         </Text>
         <button
           onClick={handleTapToStart}
           className="rounded-2xl bg-indigo-500 px-8 py-4 text-lg font-bold text-white shadow-lg active:bg-indigo-600"
         >
-          Başla 🎤
+          {t('activities.conversationScreenStart')}
         </button>
       </div>
     );
@@ -121,7 +128,7 @@ export default function ConversationScreen() {
           🎭
         </motion.div>
         <Text variant="h3" align="center">
-          Senaryo hazırlanıyor...
+          {t('activities.conversationScreenLoading')}
         </Text>
       </div>
     );
@@ -144,7 +151,7 @@ export default function ConversationScreen() {
         </button>
         <div className="flex flex-col items-center text-center">
           <Text variant="bodySmall" weight="bold">
-            {scenario.sceneEmoji} Nova ile Konuş
+            {scenario.sceneEmoji} {t('activities.conversationScreenTitle')}
           </Text>
           <Text variant="caption" className="text-text-secondary">
             {scenario.titleTr}
@@ -152,8 +159,11 @@ export default function ConversationScreen() {
           {scenario.series && (
             <div className="mt-0.5 flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5">
               <Text variant="caption" className="text-[10px] font-semibold text-purple-600">
-                📖 {scenario.series.seriesTitleTr} · {scenario.series.episodeNumber}/
-                {scenario.series.totalEpisodes}. Bölüm
+                📖 {scenario.series.seriesTitleTr} ·{' '}
+                {t('activities.conversationScreenEpisode', {
+                  episode: scenario.series.episodeNumber,
+                  total: scenario.series.totalEpisodes,
+                })}
               </Text>
             </div>
           )}
@@ -167,6 +177,7 @@ export default function ConversationScreen() {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data={conversationData}
           onComplete={handleComplete}
+          worldId={activeWorldId}
         />
       </div>
     </div>

@@ -77,9 +77,15 @@ export function scoreConversation(params: ConversationScoreParams): Conversation
   const score = Math.max(0, Math.min(100, Math.round(raw)));
 
   // Pass criteria
-  const passed =
-    acceptedTurns >= criteria.minimumAcceptedTurns &&
-    targetWordsHit.length >= criteria.minimumTargetWordsHit;
+  const passedTurns = acceptedTurns >= criteria.minimumAcceptedTurns;
+  const passedWords = targetWordsHit.length >= criteria.minimumTargetWordsHit;
+  const passedPatterns =
+    !criteria.requiredPatterns || criteria.requiredPatterns.length === 0
+      ? true
+      : criteria.requiredPatterns.every((p) => patternsHit.includes(p));
+  const passedHintPolicy =
+    criteria.allowCompletionOnHintedAnswer !== false || hintedTurns < acceptedTurns; // at least one non-hinted accepted turn
+  const passed = passedTurns && passedWords && passedPatterns && passedHintPolicy;
 
   return {
     score,

@@ -41,13 +41,23 @@ function notifySpeaking(speaking: boolean): void {
 /** Subscribe to speaking state changes. Returns unsubscribe function. */
 export function onSpeakingStateChange(listener: SpeakingStateListener): () => void {
   _speakingListeners.add(listener);
-  return () => { _speakingListeners.delete(listener); };
+  return () => {
+    _speakingListeners.delete(listener);
+  };
 }
 
 /** Whether TTS is currently playing audio. */
 export function isSpeakingNow(): boolean {
   return _isSpeaking;
 }
+
+/**
+ * Monotonically incrementing counter — each speak() call gets its own generation.
+ * Only the latest generation may call notifySpeaking(false).
+ * This prevents a cancelled/preempted speak() from firing a spurious "done" event
+ * that would prematurely advance the conversation.
+ */
+let _speakGeneration = 0;
 
 export function isAudioUnlocked(): boolean {
   return audioUnlocked;
@@ -237,31 +247,34 @@ function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<voi
  * Returns true if audio actually played, false if blocked by autoplay policy.
  */
 export async function speak(text: string, options: SpeakOptions = {}): Promise<boolean> {
+  // Claim a generation slot. If another speak() starts before this one finishes,
+  // it will have a higher generation and our notifySpeaking(false) call will be skipped.
+  const myGeneration = ++_speakGeneration;
   notifySpeaking(true);
+
+  const notifyDone = (result: boolean): boolean => {
+    // Only notify if we are still the active speak call (not preempted by a newer one)
+    if (myGeneration === _speakGeneration) notifySpeaking(false);
+    return result;
+  };
 
   try {
     // Priority 1: Explicit pre-recorded audio URL from activity data
     if (options.audioUrl) {
-      const result = await playAudio(options.audioUrl);
-      notifySpeaking(false);
-      return result;
+      return notifyDone(await playAudio(options.audioUrl));
     }
 
     // Priority 2: Auto-lookup from pre-generated audio manifest
     const manifestUrl = getPreRecordedUrl(text);
     if (manifestUrl) {
-      const result = await playAudio(manifestUrl);
-      notifySpeaking(false);
-      return result;
+      return notifyDone(await playAudio(manifestUrl));
     }
 
     // Priority 3: Web Speech API (explicit English voice — last resort)
     await speakWithWebSpeechAPI(text, options);
-    notifySpeaking(false);
-    return true;
+    return notifyDone(true);
   } catch {
-    notifySpeaking(false);
-    return false;
+    return notifyDone(false);
   }
 }
 
@@ -269,6 +282,9 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
  * Seslendirmeyi durdur.
  */
 export function stopSpeaking(): void {
+  // Bump the generation so any in-flight speak() call won't fire notifySpeaking(false)
+  // after we've already signalled the stop here.
+  _speakGeneration++;
   stopCurrentAudio();
   if (synthAvailable) {
     window.speechSynthesis.cancel();
