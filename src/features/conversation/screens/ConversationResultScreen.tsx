@@ -39,6 +39,7 @@ export default function ConversationResultScreen() {
   const navigate = useNavigate();
   const xpResult = useConversationStore((s) => s.xpResult);
   const isSaving = useConversationStore((s) => s.isSaving);
+  const saveError = useConversationStore((s) => s.saveError);
 
   const state = location.state as {
     result?: ConversationResult;
@@ -254,6 +255,17 @@ export default function ConversationResultScreen() {
           <div className="rounded-2xl bg-yellow-50 p-4 text-center">
             <Text variant="bodySmall" className="text-text-secondary animate-pulse">
               {t('conversationResult.xpLoading')}
+            </Text>
+          </div>
+        ) : saveError ? (
+          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-center">
+            <Text variant="bodySmall" className="font-semibold text-orange-600">
+              {saveError === 'offline' ? '⚡️ İnternet bağlantısı kesildi' : '⚠️ Kaydedilemedi'}
+            </Text>
+            <Text variant="caption" className="mt-0.5 block text-orange-400">
+              {saveError === 'offline'
+                ? 'XP bağlantı geri geldiğinde otomatik kaydedilecek.'
+                : 'Bir sorun oluştu. Sonucun yerel olarak saklandı.'}
             </Text>
           </div>
         ) : xpResult ? (

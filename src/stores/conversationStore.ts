@@ -33,6 +33,8 @@ interface ConversationStoreState {
   xpResult: ConversationXpResult | null;
   isActive: boolean;
   isSaving: boolean;
+  /** Set when the Firebase save fails (e.g. offline). Result is still shown locally. */
+  saveError: 'offline' | 'unknown' | null;
 
   // Persistent progress (in-memory; can be synced to backend later)
   progress: ConversationProgress;
@@ -71,6 +73,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
   xpResult: null,
   isActive: false,
   isSaving: false,
+  saveError: null,
   progress: { ...initialProgress },
 
   startSession: ({ worldId, excludeScenarioIds, preferredTheme }) => {
@@ -171,7 +174,14 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
         })
         .catch((err: unknown) => {
           console.error('[conversationStore] submitConversationResult failed:', err);
-          set({ isSaving: false });
+          // Detect offline vs other errors so the UI can show an appropriate message
+          const isOffline =
+            !navigator.onLine ||
+            (err instanceof Error &&
+              (err.message.includes('unavailable') ||
+                err.message.includes('network') ||
+                (err as { code?: string }).code === 'unavailable'));
+          set({ isSaving: false, saveError: isOffline ? 'offline' : 'unknown' });
         });
     } else {
       set({ isSaving: false });
@@ -188,6 +198,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       xpResult: null,
       isActive: false,
       isSaving: false,
+      saveError: null,
     });
   },
 }));
