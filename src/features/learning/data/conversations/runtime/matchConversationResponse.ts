@@ -125,9 +125,10 @@ export function matchConversationResponseRule(
   for (const rule of responses) {
     const ruleThreshold = rule.minimumConfidence ?? threshold;
     if (ruleThreshold > 0.75) continue;
+    // Allow extended-Latin (Turkish: ğ ş ı ö ü ç İ Ğ Ş Ö Ü Ç) and ASCII letters
     const keywords = rule.expectedText
       .toLowerCase()
-      .replace(/[^a-z\s]/g, '')
+      .replace(/[^a-z\u00c0-\u024f\s]/g, '')
       .split(/\s+/)
       .filter((w) => w.length > 3);
     if (keywords.some((kw) => text.includes(kw))) {

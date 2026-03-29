@@ -3,12 +3,14 @@ import { feedThePetScenario } from './phase1/animals/feedThePet';
 import { myFavoriteAnimalScenario } from './phase1/animals/myFavoriteAnimal';
 import { petShopPickScenario } from './phase1/animals/petShopPick';
 import { zooHelperMissionScenario } from './phase1/animals/zooHelperMission';
+import { bodyCheckupScenario } from './phase1/body/bodyCheckup';
 import { colorHuntScenario } from './phase1/colors/colorHunt';
 import { paintNovasRoomScenario } from './phase1/colors/paintNovasRoom';
 import { shapeAndColorBoxScenario } from './phase1/colors/shapeAndColorBox';
 import { cheerUpNovaScenario } from './phase1/emotions/cheerUpNova';
 import { howDoYouFeelScenario } from './phase1/emotions/howDoYouFeel';
 import { myFavoriteColorAndAnimalScenario } from './phase1/emotions/myFavoriteColorAndAnimal';
+import { meetMyFamilyScenario } from './phase1/family/meetMyFamily';
 import { fruitStandOrderScenario } from './phase1/food/fruitStandOrder';
 import { healthyOrYummyScenario } from './phase1/food/healthyOrYummy';
 import { picnicBasketScenario } from './phase1/food/picnicBasket';
@@ -19,6 +21,7 @@ import { packMySchoolBagScenario } from './phase1/routine/packMySchoolBag';
 import { buildAPlayTeamScenario } from './phase1/toys/buildAPlayTeam';
 import { fixTheBrokenToyScenario } from './phase1/toys/fixTheBrokenToy';
 import { toyShopChoiceScenario } from './phase1/toys/toyShopChoice';
+import { weatherReportScenario } from './phase1/weather/weatherReport';
 import { letsPlayScenario } from './phase2/actions/letsPlay';
 import { whatDoYouDoScenario } from './phase2/actions/whatDoYouDo';
 import { biggerThanScenario } from './phase2/adjectives/biggerThan';
@@ -81,6 +84,9 @@ export const PHASE1_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   getReadyInTheMorningScenario,
   packMySchoolBagScenario,
   bedtimeWindDownScenario,
+  bodyCheckupScenario,
+  weatherReportScenario,
+  meetMyFamilyScenario,
 ];
 
 export const PHASE2_CONVERSATION_SCENARIOS: ConversationScenario[] = [

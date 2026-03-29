@@ -1031,12 +1031,22 @@ export default function ConversationActivity({
   advanceToNodeRef.current = advanceToNode;
   finishConversationRef.current = finishConversation;
 
-  // Keep autoAdvanceRef in sync — called when child doesn't respond in time
+  // Keep autoAdvanceRef in sync — called when child doesn't respond in time.
+  // Reveal the hint visually for 2.5 s so the child sees what to say, then
+  // advance using the option whose text the hint was showing (curr[0]).
   autoAdvanceRef.current = () => {
     const curr = optionsRef.current;
-    if (curr.length > 0 && curr[0]) {
-      handleOptionSelect(curr[0]);
-    }
+    if (curr.length === 0) return;
+    // Make the hint & translation visible so the child can read the answer
+    setHintVisible(true);
+    setShowTranslation(true);
+    // After a short pause advance using the first (= hinted) option
+    setTimeout(() => {
+      const latest = optionsRef.current;
+      if (latest.length > 0 && latest[0]) {
+        handleOptionSelect(latest[0]);
+      }
+    }, 2500);
   };
 
   return (
