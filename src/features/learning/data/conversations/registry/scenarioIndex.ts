@@ -23,18 +23,26 @@ import { fixTheBrokenToyScenario } from './phase1/toys/fixTheBrokenToy';
 import { toyShopChoiceScenario } from './phase1/toys/toyShopChoice';
 import { weatherReportScenario } from './phase1/weather/weatherReport';
 import { letsPlayScenario } from './phase2/actions/letsPlay';
+import { whatAreYouDoingScenario } from './phase2/actions/whatAreYouDoing';
 import { whatDoYouDoScenario } from './phase2/actions/whatDoYouDo';
 import { biggerThanScenario } from './phase2/adjectives/biggerThan';
+import { isItBigOrSmallScenario } from './phase2/adjectives/isItBigOrSmall';
 import { meetNovaScenario } from './phase2/family/meetNova';
 import { whoIsThisScenario } from './phase2/family/whoIsThis';
 import { canIHaveScenario } from './phase2/food/canIHave';
+import { iLikeToEatScenario } from './phase2/food/iLikeToEat';
 import { canYouScenario } from './phase2/helpers/canYou';
+import { haveYouGotAScenario } from './phase2/tobe/haveYouGotA';
 import { iAmYouAreScenario } from './phase2/tobe/iAmYouAre';
 import { gettingDressedScenario } from './phase3/clothes/gettingDressed';
 import { whatToWearScenario } from './phase3/clothes/whatToWear';
+import { doYouLikeSchoolScenario } from './phase3/home/doYouLikeSchool';
+import { myFavoriteSportScenario } from './phase3/home/myFavoriteSport';
 import { myRoutineScenario } from './phase3/home/myRoutine';
 import { whereIsTheScenario } from './phase3/home/whereIsThe';
+import { atTheParkScenario } from './phase3/nature/atThePark';
 import { inTheForestScenario } from './phase3/nature/inTheForest';
+import { whatIsTheWeatherScenario } from './phase3/nature/whatIsTheWeather';
 import { whatSeasonScenario } from './phase3/nature/whatSeason';
 import { howDoYouGoScenario } from './phase3/transport/howDoYouGo';
 import { letsGoScenario } from './phase3/transport/letsGo';
@@ -98,6 +106,10 @@ export const PHASE2_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   canYouScenario,
   letsPlayScenario,
   whatDoYouDoScenario,
+  whatAreYouDoingScenario,
+  isItBigOrSmallScenario,
+  iLikeToEatScenario,
+  haveYouGotAScenario,
 ];
 
 export const PHASE3_CONVERSATION_SCENARIOS: ConversationScenario[] = [
@@ -109,6 +121,10 @@ export const PHASE3_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   whatToWearScenario,
   howDoYouGoScenario,
   letsGoScenario,
+  whatIsTheWeatherScenario,
+  myFavoriteSportScenario,
+  doYouLikeSchoolScenario,
+  atTheParkScenario,
 ];
 
 export const PHASE4_CONVERSATION_SCENARIOS: ConversationScenario[] = [
