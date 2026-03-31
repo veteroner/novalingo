@@ -49,25 +49,33 @@ import { letsGoScenario } from './phase3/transport/letsGo';
 import { letsGoShoppingScenario } from './phase4/city/letsGoShopping';
 import { whereIsTheBankScenario } from './phase4/city/whereIsTheBank';
 import { whereIsTheParkScenario } from './phase4/city/whereIsThePark';
+import { howWeMetScenario } from './phase4/friends/howWeMet';
 import { myBestFriendScenario } from './phase4/friends/myBestFriend';
 import { iWantToBeScenario } from './phase4/jobs/iWantToBe';
 import { whatDoYouWorkScenario } from './phase4/jobs/whatDoYouWork';
+import { whoHelpsOurCityScenario } from './phase4/jobs/whoHelpsOurCity';
 import { canIBorrowScenario } from './phase4/school/canIBorrow';
 import { doYouHaveAScenario } from './phase4/school/doYouHaveA';
+import { myFavoriteSubjectScenario } from './phase4/school/myFavoriteSubject';
 import { doYouLikeToPlayScenario } from './phase4/sports/doYouLikeToPlay';
 import { letsPlaySportsScenario } from './phase4/sports/letsPlaySports';
+import { myFavoriteTeamScenario } from './phase4/sports/myFavoriteTeam';
 import { myDailyScheduleScenario } from './phase4/time/myDailySchedule';
 import { whatTimeIsItScenario } from './phase4/time/whatTimeIsIt';
 import { atTheLibraryScenario } from './phase5/city/atTheLibrary';
+import { atTheMarketScenario } from './phase5/city/atTheMarket';
 import { atThePostOfficeScenario } from './phase5/city/atThePostOffice';
 import { orderAtTheCafeScenario } from './phase5/city/orderAtTheCafe';
 import { planningAPartyScenario } from './phase5/friends/planningAParty';
+import { whoIsYourHeroScenario } from './phase5/friends/whoIsYourHero';
 import { meetTheDoctorScenario } from './phase5/jobs/meetTheDoctor';
+import { myDreamJobScenario } from './phase5/jobs/myDreamJob';
 import { theFirefighterMissionScenario } from './phase5/jobs/theFirefighterMission';
 import { lunchAtSchoolScenario } from './phase5/school/lunchAtSchool';
 import { scienceClassScenario } from './phase5/school/scienceClass';
 import { writingALetterScenario } from './phase5/school/writingALetter';
 import { joinTheTeamScenario } from './phase5/sports/joinTheTeam';
+import { playingFairScenario } from './phase5/sports/playingFair';
 import { howLongDoesItTakeScenario } from './phase5/time/howLongDoesItTake';
 import { planningMyWeekScenario } from './phase5/time/planningMyWeek';
 
@@ -140,6 +148,10 @@ export const PHASE4_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   doYouLikeToPlayScenario,
   letsPlaySportsScenario,
   myBestFriendScenario,
+  howWeMetScenario,
+  myFavoriteTeamScenario,
+  myFavoriteSubjectScenario,
+  whoHelpsOurCityScenario,
 ];
 
 export const PHASE5_CONVERSATION_SCENARIOS: ConversationScenario[] = [
@@ -155,6 +167,10 @@ export const PHASE5_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   scienceClassScenario,
   planningAPartyScenario,
   writingALetterScenario,
+  whoIsYourHeroScenario,
+  playingFairScenario,
+  atTheMarketScenario,
+  myDreamJobScenario,
 ];
 
 export const ALL_CONVERSATION_SCENARIOS: ConversationScenario[] = [
