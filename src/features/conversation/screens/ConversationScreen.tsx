@@ -22,7 +22,7 @@ export default function ConversationScreen() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const child = useChildStore((s) => s.activeChild);
-  const { session, scenario, isActive, startSession, completeSession, reset } =
+  const { session, scenario, isActive, startSession, completeSession, reset, initProgress } =
     useConversationStore();
   const hasStartedRef = useRef(false);
   // On mobile browsers audio is blocked until a direct user gesture.
@@ -40,6 +40,13 @@ export default function ConversationScreen() {
       hasStartedRef.current = false;
     };
   }, [reset]);
+
+  // Load persisted conversation progress for the active child (survives app restarts)
+  useEffect(() => {
+    if (child?.id) {
+      initProgress(child.id);
+    }
+  }, [child?.id, initProgress]);
 
   const handleTapToStart = useCallback(() => {
     if (hasStartedRef.current) return;

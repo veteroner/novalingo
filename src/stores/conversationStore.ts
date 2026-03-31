@@ -16,6 +16,27 @@ import { submitConversationResult } from '@/services/firebase/functions';
 import { useChildStore } from '@/stores/childStore';
 import { create } from 'zustand';
 
+// ── localStorage persistence (keyed by childId — works without login) ──
+const CONV_PROGRESS_KEY = (childId: string) => `conv_progress_${childId}`;
+
+function loadStoredProgress(childId: string): ConversationProgress {
+  try {
+    const raw = localStorage.getItem(CONV_PROGRESS_KEY(childId));
+    if (!raw) return { ...initialProgress };
+    return JSON.parse(raw) as ConversationProgress;
+  } catch {
+    return { ...initialProgress };
+  }
+}
+
+function saveStoredProgress(childId: string, progress: ConversationProgress): void {
+  try {
+    localStorage.setItem(CONV_PROGRESS_KEY(childId), JSON.stringify(progress));
+  } catch {
+    // localStorage unavailable (private browsing, quota exceeded) — ignore
+  }
+}
+
 /** Mirrors SubmitConversationResultRes from functions.ts — kept local to avoid ESLint type resolution issues */
 interface ConversationXpResult {
   xpEarned: number;
@@ -54,6 +75,7 @@ interface ConversationStoreState {
     targetWordsTotal: number;
   }) => ConversationResult;
   reset: () => void;
+  initProgress: (childId: string) => void;
 }
 
 let sessionCounter = 0;
@@ -87,6 +109,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       words: [], // standalone mode — let selector use theme/world/age matching
       preferredTheme,
       excludeScenarioIds: exclude,
+      recentlyCompletedIds: progress.completedScenarioIds,
       worldId, // narrows candidate pool to the correct phase for this world
     });
 
@@ -135,21 +158,28 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       bestScores[state.scenario.id] = outcome.score;
     }
 
+    const newProgress: ConversationProgress = {
+      completedScenarioIds: [...completedSet],
+      totalSessions: prev.totalSessions + 1,
+      bestScores,
+      lastScenarioId: state.scenario.id,
+      lastPlayedAt: Date.now(),
+    };
+
     set({
       result,
       isActive: false,
       isSaving: true,
-      progress: {
-        completedScenarioIds: [...completedSet],
-        totalSessions: prev.totalSessions + 1,
-        bestScores,
-        lastScenarioId: state.scenario.id,
-        lastPlayedAt: Date.now(),
-      },
+      progress: newProgress,
     });
 
-    // Persist to Firebase asynchronously — don't block the result screen
+    // Persist to localStorage (keyed by childId — works even without login, survives reloads)
     const activeChild = useChildStore.getState().activeChild;
+    if (activeChild?.id) {
+      saveStoredProgress(activeChild.id, newProgress);
+    }
+
+    // Persist to Firebase asynchronously — don't block the result screen
     if (activeChild) {
       void (
         submitConversationResult({
@@ -200,5 +230,10 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       isSaving: false,
       saveError: null,
     });
+  },
+
+  initProgress: (childId) => {
+    const stored = loadStoredProgress(childId);
+    set({ progress: stored });
   },
 }));

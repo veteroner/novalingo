@@ -75,6 +75,8 @@ export default function HomeScreen() {
     return <Navigate to="/create-profile" replace />;
   }
 
+  const currentWorldOrder = curriculum.find((w) => w.id === child.currentWorldId)?.order ?? 1;
+
   return (
     <MainLayout>
       <div className="space-y-6 px-4 py-6">
@@ -206,19 +208,20 @@ export default function HomeScreen() {
           </Text>
           <div className="space-y-3">
             {worlds.map((world) => {
-              const isLocked = child.level < world.requiredLevel;
+              const isWorldLocked = world.order > currentWorldOrder;
               const isCurrent = child.currentWorldId === world.id;
+              const isCompleted = world.order < currentWorldOrder;
               const curWorld = curriculum.find((w) => w.id === world.id);
               const emoji = curWorld?.emoji ?? '🌍';
 
               return (
                 <Card
                   key={world.id}
-                  variant={isLocked ? 'outlined' : 'elevated'}
-                  pressable={!isLocked}
+                  variant={isWorldLocked ? 'outlined' : 'elevated'}
+                  pressable={!isWorldLocked}
                   padding="md"
-                  onClick={() => !isLocked && navigate(`/world/${world.id}`)}
-                  className={isLocked ? 'opacity-60' : ''}
+                  onClick={() => !isWorldLocked && navigate(`/world/${world.id}`)}
+                  className={isWorldLocked ? 'opacity-60' : ''}
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-success/20 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl">
@@ -233,12 +236,14 @@ export default function HomeScreen() {
                         {isCurrent ? ' · Devam ediyor' : ''}
                       </Text>
                     </div>
-                    {isLocked ? (
+                    {isWorldLocked ? (
                       <span className="text-xl">🔒</span>
                     ) : isCurrent ? (
                       <Badge variant="success" size="sm">
                         Aktif
                       </Badge>
+                    ) : isCompleted ? (
+                      <span className="text-xl">✅</span>
                     ) : null}
                   </div>
                 </Card>

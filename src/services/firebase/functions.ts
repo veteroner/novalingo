@@ -1192,6 +1192,18 @@ export function submitConversationResult(
   });
 }
 
+// --- World Progression ---
+export interface AdvanceToNextWorldReq {
+  childId: string;
+  nextWorldId: string;
+}
+
+export async function advanceToNextWorld(data: AdvanceToNextWorldReq): Promise<void> {
+  const uid = requireCurrentUserId();
+  const { childRef } = await getOwnedChild(data.childId, uid);
+  await updateDoc(childRef, { currentWorldId: data.nextWorldId, updatedAt: serverTimestamp() });
+}
+
 export async function ensureDailyQuests(childId: string): Promise<void> {
   const uid = requireCurrentUserId();
   await getOwnedChild(childId, uid);

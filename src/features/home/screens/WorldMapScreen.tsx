@@ -7,6 +7,7 @@
  */
 
 import type { Lesson } from '@/types';
+import type { LessonProgress } from '@/types/progress';
 import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
 import { LessonCard } from '@components/organisms/LessonCard';
@@ -73,11 +74,11 @@ export default function WorldMapScreen() {
   // Fetch all units' lessons for this world in parallel
   const { data: firestoreLessons } = useWorldLessons(worldId ?? 'w1');
 
-  // Fetch per-lesson progress to determine completion per lesson (not global counter)
+  // Fetch per-lesson progress to determine completion and star rating per lesson
   const { data: lessonProgress } = useLessonProgress(child?.id);
-  const completedLessonIds = useMemo(() => {
-    if (!lessonProgress) return new Set<string>();
-    return new Set(lessonProgress.map((lp) => lp.lessonId));
+  const lessonProgressMap = useMemo(() => {
+    if (!lessonProgress) return new Map<string, LessonProgress>();
+    return new Map(lessonProgress.map((lp) => [lp.lessonId, lp]));
   }, [lessonProgress]);
 
   const emoji = curWorld?.emoji ?? '🌍';
@@ -87,20 +88,22 @@ export default function WorldMapScreen() {
   const applyStatus = (list: LessonWithStatus[]): LessonWithStatus[] => {
     let foundFirstIncomplete = false;
     return list.map((lesson) => {
-      const isCompleted = completedLessonIds.has(lesson.id);
+      const lp = lessonProgressMap.get(lesson.id);
+      const starsEarned = lp?.starsEarned ?? 0;
+      const isCompleted = lessonProgressMap.has(lesson.id);
       const isActive = !isCompleted && !foundFirstIncomplete;
       if (isActive) foundFirstIncomplete = true;
-      return {
-        ...lesson,
-        status: isCompleted
-          ? 'completed'
-          : isActive
-            ? 'active'
-            : !foundFirstIncomplete
-              ? 'active'
-              : 'locked',
-        stars: isCompleted ? 2 : 0,
-      } as LessonWithStatus;
+      let status: LessonWithStatus['status'];
+      if (isCompleted) {
+        status = starsEarned === 3 ? 'perfect' : 'completed';
+      } else if (isActive) {
+        status = 'active';
+      } else if (!foundFirstIncomplete) {
+        status = 'active';
+      } else {
+        status = 'locked';
+      }
+      return { ...lesson, status, stars: starsEarned } as LessonWithStatus;
     });
   };
 
@@ -114,8 +117,7 @@ export default function WorldMapScreen() {
       return applyStatus(withStatus);
     }
     return applyStatus(fallback);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firestoreLessons, fallback, child]);
+  }, [firestoreLessons, fallback, lessonProgressMap]);
 
   const completedCount = lessons.filter(
     (l) => l.status === 'completed' || l.status === 'perfect',

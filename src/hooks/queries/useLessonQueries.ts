@@ -6,7 +6,7 @@
 
 import type { Lesson, World } from '@/types/content';
 import type { LessonProgress, VocabularyCard } from '@/types/progress';
-import { getWorld } from '@features/learning/data/curriculum';
+import { curriculum, getWorld, getWorldLessons } from '@features/learning/data/curriculum';
 import {
   collections,
   docs,
@@ -14,7 +14,11 @@ import {
   orderBy,
   queryCollection,
 } from '@services/firebase/firestore';
-import { submitLessonResult, type SubmitLessonResultReq } from '@services/firebase/functions';
+import {
+  advanceToNextWorld,
+  submitLessonResult,
+  type SubmitLessonResultReq,
+} from '@services/firebase/functions';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -128,7 +132,7 @@ export function useSubmitLesson() {
 
   return useMutation({
     mutationFn: (data: SubmitLessonResultReq) => submitLessonResult(data),
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       addXP(result.xpEarned);
       if (child) {
         updateActiveChild({
@@ -142,6 +146,42 @@ export function useSubmitLesson() {
       }
       if (uid) {
         void queryClient.invalidateQueries({ queryKey: childKeys.list(uid) });
+      }
+      // Check if current world is fully completed → advance to next world
+      if (child?.id && child?.currentWorldId) {
+        const childId = child.id;
+        const currentWorldId = child.currentWorldId;
+        try {
+          const worldLessons = getWorldLessons(currentWorldId);
+          if (worldLessons.length > 0) {
+            const freshProgress = await queryClient.fetchQuery({
+              queryKey: lessonKeys.progress(childId),
+              queryFn: () =>
+                queryCollection<LessonProgress>(
+                  collections.childLessonProgress(childId),
+                  orderBy('completedAt', 'desc'),
+                ),
+            });
+            const completedWithStars = new Set(
+              freshProgress.filter((p) => (p.starsEarned ?? 0) >= 1).map((p) => p.lessonId),
+            );
+            const allComplete = worldLessons.every((l) => completedWithStars.has(l.id));
+            if (allComplete) {
+              const worldIds = curriculum.map((w) => w.id);
+              const currentIdx = worldIds.indexOf(currentWorldId);
+              if (currentIdx >= 0 && currentIdx < worldIds.length - 1) {
+                const nextWorldId = worldIds[currentIdx + 1]!;
+                await advanceToNextWorld({ childId, nextWorldId });
+                updateActiveChild({ currentWorldId: nextWorldId });
+                if (uid) {
+                  void queryClient.invalidateQueries({ queryKey: childKeys.list(uid) });
+                }
+              }
+            }
+          }
+        } catch (err) {
+          console.warn('[useSubmitLesson] World advancement check failed:', err);
+        }
       }
     },
   });
