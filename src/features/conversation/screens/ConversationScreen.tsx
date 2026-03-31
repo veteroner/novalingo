@@ -11,7 +11,7 @@ import { toConversationActivityData } from '@/features/learning/data/conversatio
 import { Text } from '@components/atoms/Text';
 import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
-import { useConversationStore } from '@stores/conversationStore';
+import { initConversationProgress, useConversationStore } from '@stores/conversationStore';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ export default function ConversationScreen() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const child = useChildStore((s) => s.activeChild);
-  const { session, scenario, isActive, startSession, completeSession, reset, initProgress } =
+  const { session, scenario, isActive, startSession, completeSession, reset } =
     useConversationStore();
   const hasStartedRef = useRef(false);
   // On mobile browsers audio is blocked until a direct user gesture.
@@ -32,6 +32,8 @@ export default function ConversationScreen() {
   // worldId param (from WorldMapScreen) takes priority; fall back to child's current world
   const worldIdParam = searchParams.get('worldId')?.trim() || null;
   const activeWorldId = worldIdParam ?? child?.currentWorldId ?? null;
+  // Optional: start with a specific scenario selected from the topics screen
+  const scenarioIdParam = searchParams.get('scenarioId')?.trim() || undefined;
 
   // Cleanup only on unmount — session start is triggered by user tap
   useEffect(() => {
@@ -44,18 +46,18 @@ export default function ConversationScreen() {
   // Load persisted conversation progress for the active child (survives app restarts)
   useEffect(() => {
     if (child?.id) {
-      initProgress(child.id);
+      initConversationProgress(child.id);
     }
-  }, [child?.id, initProgress]);
+  }, [child?.id]);
 
   const handleTapToStart = useCallback(() => {
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
     // Run inside user-gesture context so mobile browsers allow audio playback
     void unlockAudioPlayback();
-    startSession({ worldId: activeWorldId, preferredTheme });
+    startSession({ worldId: activeWorldId, preferredTheme, scenarioId: scenarioIdParam });
     setAudioReady(true);
-  }, [activeWorldId, preferredTheme, startSession]);
+  }, [activeWorldId, preferredTheme, scenarioIdParam, startSession]);
 
   const handleComplete = useCallback(
     (outcome: ActivityOutcome) => {
@@ -67,7 +69,7 @@ export default function ConversationScreen() {
         durationSeconds: outcome.timeSpentSeconds,
         attempts: outcome.attempts,
         targetWordsHit:
-          outcome.conversationEvidence?.targetWordsHit?.length ??
+          outcome.conversationEvidence?.targetWordsHit.length ??
           Math.round((outcome.score / 100) * scenario.targetWords.length),
         targetWordsTotal: scenario.targetWords.length,
       });
@@ -99,7 +101,7 @@ export default function ConversationScreen() {
   // Tap-to-start overlay — ensures audio is unlocked via direct user gesture on mobile
   if (!audioReady) {
     return (
-      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-white px-6">
+      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-indigo-50 to-white px-6">
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
@@ -143,7 +145,7 @@ export default function ConversationScreen() {
 
   // Convert scenario to legacy ConversationData for the existing component
   // TODO: Phase 4 — ConversationActivity should consume ConversationScenario directly
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
   const conversationData = toConversationActivityData(scenario);
 
   return (
@@ -181,7 +183,6 @@ export default function ConversationScreen() {
       {/* Conversation Activity */}
       <div className="flex flex-1 flex-col">
         <ConversationActivity
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data={conversationData}
           onComplete={handleComplete}
           worldId={activeWorldId}

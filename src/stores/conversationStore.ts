@@ -11,7 +11,10 @@ import type {
   ConversationSession,
 } from '@/features/conversation/types/conversationSession';
 import type { ConversationScenario } from '@/features/learning/data/conversations';
-import { selectConversationScenario } from '@/features/learning/data/conversations';
+import {
+  getConversationScenarioById,
+  selectConversationScenario,
+} from '@/features/learning/data/conversations';
 import { submitConversationResult } from '@/services/firebase/functions';
 import { useChildStore } from '@/stores/childStore';
 import { create } from 'zustand';
@@ -65,6 +68,8 @@ interface ConversationStoreState {
     worldId: string | null;
     excludeScenarioIds?: string[];
     preferredTheme?: string;
+    /** Force a specific scenario by ID — bypasses random selection. */
+    scenarioId?: string;
   }) => void;
   completeSession: (outcome: {
     score: number;
@@ -98,20 +103,27 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
   saveError: null,
   progress: { ...initialProgress },
 
-  startSession: ({ worldId, excludeScenarioIds, preferredTheme }) => {
+  startSession: ({ worldId, excludeScenarioIds, preferredTheme, scenarioId }) => {
     const progress = get().progress;
 
-    // Select a scenario — prefer variety by excluding recently completed
-    const exclude =
-      excludeScenarioIds ?? (progress.lastScenarioId ? [progress.lastScenarioId] : []);
-
-    const scenario = selectConversationScenario({
-      words: [], // standalone mode — let selector use theme/world/age matching
-      preferredTheme,
-      excludeScenarioIds: exclude,
-      recentlyCompletedIds: progress.completedScenarioIds,
-      worldId, // narrows candidate pool to the correct phase for this world
-    });
+    // If a specific scenario was requested, use it directly.
+    // Otherwise run the random selection algorithm.
+    let scenario: ConversationScenario;
+    if (scenarioId) {
+      const found = getConversationScenarioById(scenarioId);
+      if (!found) throw new Error(`Scenario not found: ${scenarioId}`);
+      scenario = found;
+    } else {
+      const exclude =
+        excludeScenarioIds ?? (progress.lastScenarioId ? [progress.lastScenarioId] : []);
+      scenario = selectConversationScenario({
+        words: [], // standalone mode — let selector use theme/world/age matching
+        preferredTheme,
+        excludeScenarioIds: exclude,
+        recentlyCompletedIds: progress.completedScenarioIds,
+        worldId, // narrows candidate pool to the correct phase for this world
+      });
+    }
 
     const session: ConversationSession = {
       id: `session-${String(++sessionCounter)}`,
@@ -237,3 +249,8 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
     set({ progress: stored });
   },
 }));
+
+/** Stable helper — safe to call outside React render (no selector resolution issues). */
+export function initConversationProgress(childId: string): void {
+  useConversationStore.getState().initProgress(childId);
+}

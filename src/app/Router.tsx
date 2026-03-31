@@ -21,6 +21,9 @@ const StoryLibraryScreen = lazy(() => import('@features/learning/screens/StoryLi
 const StoryViewerScreen = lazy(() => import('@features/learning/screens/StoryViewerScreen'));
 
 // Conversation (standalone)
+const ConversationTopicsScreen = lazy(
+  () => import('@features/conversation/screens/ConversationTopicsScreen'),
+);
 const ConversationScreen = lazy(() => import('@features/conversation/screens/ConversationScreen'));
 const ConversationResultScreen = lazy(
   () => import('@features/conversation/screens/ConversationResultScreen'),
@@ -107,6 +110,14 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <WorldMapScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/conversation/topics"
+          element={
+            <ProtectedRoute>
+              <ConversationTopicsScreen />
             </ProtectedRoute>
           }
         />

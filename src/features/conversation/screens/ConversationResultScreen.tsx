@@ -269,7 +269,7 @@ export default function ConversationResultScreen() {
             </Text>
           </div>
         ) : xpResult ? (
-          <div className="rounded-2xl bg-gradient-to-r from-yellow-300 to-orange-400 p-4 shadow-md">
+          <div className="rounded-2xl bg-linear-to-r from-yellow-300 to-orange-400 p-4 shadow-md">
             <div className="flex items-center justify-between">
               <div>
                 <Text variant="h3" className="font-bold text-white">
@@ -311,7 +311,7 @@ export default function ConversationResultScreen() {
           transition={{ delay: 0.95, type: 'spring', stiffness: 220 }}
         >
           <div
-            className={`flex items-center gap-4 rounded-2xl bg-gradient-to-r ${rewardCard.gradient} p-4 shadow-md`}
+            className={`flex items-center gap-4 rounded-2xl bg-linear-to-r ${rewardCard.gradient} p-4 shadow-md`}
           >
             <motion.span
               className="text-4xl"

@@ -121,7 +121,7 @@ export default function HomeScreen() {
             variant="elevated"
             pressable
             padding="md"
-            onClick={() => navigate('/conversation')}
+            onClick={() => navigate('/conversation/topics')}
             className="border-nova-blue/20 border bg-linear-to-r from-purple-50 to-blue-50"
           >
             <div className="flex items-center gap-4">
