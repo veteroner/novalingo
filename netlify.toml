@@ -1,9 +1,10 @@
 [build]
-  command = "pnpm run build"
+  command = "pnpm exec tsc -b && pnpm exec vite build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
+  PNPM_VERSION = "9"
 
 # SPA routing — tüm istekleri index.html'e yönlendir
 [[redirects]]
