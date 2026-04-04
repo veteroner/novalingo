@@ -1,18 +1,35 @@
 /**
  * SubscriptionScreen
  *
- * Abonelik yönetimi — mevcut plan, premium özellikleri, plan değişikliği.
+ * Abonelik yönetimi — mevcut plan, premium özellikleri, plan seçimi ve satın alma.
  * Ebeveyn panelinden erişilir.
+ *
+ * Satın alma akışı:
+ *  1. Kullanıcı plan seçer (aylık / yıllık).
+ *  2. "7 Gün Ücretsiz Dene" butonuna basar.
+ *  3. subscriptionService.purchaseSubscription() çağrılır.
+ *  4. Native: App Store / Google Play abonelik sayfası açılır.
+ *  5. Sunucu webhook'u aboneliği onaylar ve Firestore'da isPremium = true yapar.
+ *  6. Yenileme sırasında: "Geri Yükle" butonu kullanılır.
  */
 
+import {
+  IAP_PRODUCTS,
+  IOS_MANAGE_SUBSCRIPTIONS_URL,
+  PRIVACY_POLICY_URL,
+  TERMS_OF_SERVICE_URL,
+} from '@/config/constants';
+import { Capacitor } from '@capacitor/core';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { MainLayout } from '@components/templates/MainLayout';
+import { purchaseSubscription, restorePurchases } from '@services/subscription/subscriptionService';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PREMIUM_FEATURES = [
@@ -28,18 +45,18 @@ const PREMIUM_FEATURES = [
 
 const PLANS = [
   {
-    id: 'monthly',
+    id: IAP_PRODUCTS.MONTHLY,
+    key: 'monthly',
     label: 'Aylık',
     priceTRY: '₺149.99',
-    priceUSD: '$4.99',
     period: '/ay',
     highlighted: false,
   },
   {
-    id: 'yearly',
+    id: IAP_PRODUCTS.YEARLY,
+    key: 'yearly',
     label: 'Yıllık',
     priceTRY: '₺899.99',
-    priceUSD: '$29.99',
     period: '/yıl',
     highlighted: true,
     badge: '%50 Tasarruf',
@@ -53,6 +70,68 @@ export default function SubscriptionScreen() {
   const child = useChildStore((s) => s.activeChild);
   const showToast = useUIStore((s) => s.showToast);
   const isPremium = user?.isPremium ?? false;
+
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(IAP_PRODUCTS.YEARLY);
+  const [purchasing, setPurchasing] = useState(false);
+  const [restoring, setRestoring] = useState(false);
+
+  const platform = Capacitor.getPlatform();
+  const isNativePlatform = platform === 'ios' || platform === 'android';
+
+  async function handlePurchase() {
+    if (purchasing) return;
+    setPurchasing(true);
+    try {
+      const result = await purchaseSubscription(
+        selectedPlanId as (typeof IAP_PRODUCTS)[keyof typeof IAP_PRODUCTS],
+      );
+      if (result.status === 'success') {
+        showToast({
+          type: 'success',
+          title: 'Abonelik Aktif!',
+          message: 'NovaLingo Plus başladı.',
+        });
+      } else if (result.status === 'store_redirect') {
+        showToast({
+          type: 'info',
+          title: 'Mağaza Açıldı',
+          message: isNativePlatform
+            ? 'Aboneliğinizi mağaza üzerinden tamamlayın. İşlem sonrasında "Geri Yükle" butonuna basın.'
+            : 'Uygulamayı mobil cihazınızdan indirerek abone olabilirsiniz.',
+        });
+      } else if (result.status === 'cancelled') {
+        // User cancelled — no toast needed
+      } else {
+        showToast({ type: 'error', title: 'Hata', message: result.message });
+      }
+    } finally {
+      setPurchasing(false);
+    }
+  }
+
+  async function handleRestore() {
+    if (restoring) return;
+    setRestoring(true);
+    try {
+      const result = await restorePurchases();
+      if (result.status === 'success') {
+        showToast({
+          type: 'success',
+          title: 'Abonelik Bulundu!',
+          message: 'Premium erişiminiz yeniden etkinleştirildi.',
+        });
+        navigate(-1);
+      } else {
+        showToast({
+          type: 'error',
+          title: 'Abonelik Bulunamadı',
+          message: result.status === 'error' ? result.message : 'Aktif abonelik bulunamadı.',
+        });
+      }
+    } finally {
+      setRestoring(false);
+    }
+  }
 
   return (
     <MainLayout showNavigation={false}>
@@ -92,7 +171,7 @@ export default function SubscriptionScreen() {
           </div>
         </Card>
 
-        {/* Premium Features */}
+        {/* Upgrade flow — shown only for free users */}
         {!isPremium && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -102,6 +181,8 @@ export default function SubscriptionScreen() {
             <Text variant="h4" align="center">
               ⭐ NovaLingo Plus
             </Text>
+
+            {/* Feature list */}
             <Card variant="glass" padding="md">
               <div className="space-y-3">
                 {PREMIUM_FEATURES.map((feat) => (
@@ -113,63 +194,82 @@ export default function SubscriptionScreen() {
               </div>
             </Card>
 
-            {/* Plans */}
+            {/* Plan picker */}
             <div className="grid grid-cols-2 gap-3">
-              {PLANS.map((plan) => (
-                <Card
-                  key={plan.id}
-                  variant={plan.highlighted ? 'elevated' : 'outlined'}
-                  padding="md"
-                  className={plan.highlighted ? 'ring-nova-blue ring-2' : ''}
-                >
-                  <div className="space-y-2 text-center">
-                    {plan.highlighted && plan.badge && (
-                      <span className="bg-nova-orange inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white">
-                        {plan.badge}
-                      </span>
-                    )}
-                    <Text variant="body" weight="bold">
-                      {plan.label}
-                    </Text>
-                    <Text variant="h3" className="text-nova-blue">
-                      {plan.priceTRY}
-                    </Text>
-                    <Text variant="caption" className="text-text-secondary">
-                      {plan.period}
-                    </Text>
-                    {'monthlyEquiv' in plan && plan.monthlyEquiv && (
-                      <Text variant="caption" className="text-success font-semibold">
-                        {plan.monthlyEquiv}
-                      </Text>
-                    )}
-                  </div>
-                </Card>
-              ))}
+              {PLANS.map((plan) => {
+                const isSelected = plan.id === selectedPlanId;
+                return (
+                  <button
+                    key={plan.key}
+                    onClick={() => setSelectedPlanId(plan.id)}
+                    className="text-left"
+                  >
+                    <Card
+                      variant={isSelected ? 'elevated' : 'outlined'}
+                      padding="md"
+                      className={isSelected ? 'ring-nova-blue ring-2' : ''}
+                    >
+                      <div className="space-y-2 text-center">
+                        {plan.highlighted && plan.badge && (
+                          <span className="bg-nova-orange inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white">
+                            {plan.badge}
+                          </span>
+                        )}
+                        <Text variant="body" weight="bold">
+                          {plan.label}
+                        </Text>
+                        <Text variant="h3" className="text-nova-blue">
+                          {plan.priceTRY}
+                        </Text>
+                        <Text variant="caption" className="text-text-secondary">
+                          {plan.period}
+                        </Text>
+                        {'monthlyEquiv' in plan && plan.monthlyEquiv && (
+                          <Text variant="caption" className="text-success font-semibold">
+                            {plan.monthlyEquiv}
+                          </Text>
+                        )}
+                        {isSelected && (
+                          <span className="text-nova-blue block text-xs font-semibold">
+                            ✔ Seçildi
+                          </span>
+                        )}
+                      </div>
+                    </Card>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* CTA */}
+            {/* Primary CTA */}
             <Button
               variant="primary"
               size="lg"
               fullWidth
-              onClick={() => {
-                showToast({
-                  type: 'info',
-                  title: 'Yakında Aktif',
-                  message:
-                    'Abonelik sistemi çok yakında devreye girecek. Şimdilik tüm içerikler ücretsiz!',
-                });
-              }}
+              onClick={handlePurchase}
+              disabled={purchasing}
             >
-              7 Gün Ücretsiz Dene
+              {purchasing ? 'İşleniyor…' : '7 Gün Ücretsiz Dene'}
             </Button>
             <Text variant="caption" align="center" className="text-text-secondary">
-              İstediğin zaman iptal et. Deneme süresi sonunda ücretlendirilir.
+              7 günlük deneme süresi sonunda seçtiğiniz plan üzerinden ücretlendirilirsiniz.
+              İstediğiniz zaman iptal edebilirsiniz.
             </Text>
+
+            {/* Restore */}
+            <Button
+              variant="ghost"
+              size="sm"
+              fullWidth
+              onClick={handleRestore}
+              disabled={restoring}
+            >
+              {restoring ? 'Kontrol ediliyor…' : 'Satın alma geçmişini geri yükle'}
+            </Button>
           </motion.div>
         )}
 
-        {/* Premium user: management */}
+        {/* Premium user: subscription management */}
         {isPremium && (
           <div className="space-y-4">
             <Card variant="elevated" padding="md">
@@ -194,7 +294,7 @@ export default function SubscriptionScreen() {
                 {child && (
                   <div className="flex justify-between">
                     <Text variant="bodySmall" className="text-text-secondary">
-                      Profiller
+                      Aktif Profil
                     </Text>
                     <Text variant="bodySmall" weight="bold">
                       {child.name}
@@ -205,10 +305,25 @@ export default function SubscriptionScreen() {
             </Card>
 
             <Card variant="outlined" padding="md">
-              <div className="space-y-2 text-center">
+              <div className="space-y-3 text-center">
                 <Text variant="bodySmall" className="text-text-secondary">
-                  Aboneliğinizi App Store veya Google Play üzerinden yönetebilirsiniz.
+                  Aboneliğinizi{' '}
+                  {platform === 'ios'
+                    ? 'App Store'
+                    : platform === 'android'
+                      ? 'Google Play'
+                      : 'mağaza'}{' '}
+                  üzerinden yönetebilirsiniz.
                 </Text>
+                {platform === 'ios' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => window.open(IOS_MANAGE_SUBSCRIPTIONS_URL, '_system')}
+                  >
+                    App Store Aboneliklerini Yönet
+                  </Button>
+                )}
               </div>
             </Card>
           </div>
@@ -216,12 +331,18 @@ export default function SubscriptionScreen() {
 
         {/* Legal links */}
         <div className="flex justify-center gap-4 pt-2">
-          <Text variant="caption" className="text-text-secondary underline">
+          <button
+            className="text-text-secondary text-xs underline"
+            onClick={() => window.open(PRIVACY_POLICY_URL, '_blank', 'noopener,noreferrer')}
+          >
             Gizlilik Politikası
-          </Text>
-          <Text variant="caption" className="text-text-secondary underline">
+          </button>
+          <button
+            className="text-text-secondary text-xs underline"
+            onClick={() => window.open(TERMS_OF_SERVICE_URL, '_blank', 'noopener,noreferrer')}
+          >
             Kullanım Koşulları
-          </Text>
+          </button>
         </div>
       </div>
     </MainLayout>

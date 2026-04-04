@@ -7,6 +7,85 @@
 
 @import 'tailwindcss';
 
+/* ─── Self-hosted Fonts ───────────────────────────────────── */
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/baloo2/baloo2-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/baloo2/baloo2-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/baloo2/baloo2-600.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/baloo2/baloo2-700.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/baloo2/baloo2-800.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/nunito/nunito-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/nunito/nunito-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/nunito/nunito-600.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/nunito/nunito-700.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/nunito/nunito-800.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/nunito/nunito-900.ttf') format('truetype');
+}
+
 /* ─── Custom Design Tokens ────────────────────────────────── */
 @theme {
   /* Nova Brand Colors */
@@ -155,7 +234,7 @@
     border-radius: 4px;
   }
 
-  /* Fonts loaded via Google Fonts stylesheet in index.html — no @font-face needed */
+  /* Fonts self-hosted — @font-face declarations at the top of this file */
 }
 
 /* ─── Utility Classes ─────────────────────────────────────── */

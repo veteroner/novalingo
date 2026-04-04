@@ -9,8 +9,23 @@ export const APP_NAME = 'NovaLingo';
 export const APP_VERSION = '1.0.0';
 export const APP_BUNDLE_ID = 'com.novalingo.app';
 export const SUPPORT_EMAIL = 'support@novalingo.app';
-export const PRIVACY_POLICY_URL = 'https://novalingo.app/privacy';
-export const TERMS_OF_SERVICE_URL = 'https://novalingo.app/terms';
+export const PRIVACY_POLICY_URL = 'https://teknovagroup.com/novalingo-gizlilik-politikasi.html';
+export const TERMS_OF_SERVICE_URL = 'https://teknovagroup.com/novalingo-kullanim-kosullari.html';
+
+// ─── Subscriptions ───────────────────────────────────────────────
+// Product IDs must match exactly what's registered in App Store Connect / Google Play Console.
+// The 7-day free trial period is configured in App Store Connect / Play Console, not in code.
+export const IAP_PRODUCTS = {
+  MONTHLY: 'com.novalingo.app.monthly',
+  YEARLY: 'com.novalingo.app.yearly',
+} as const;
+
+export type IAPProductId = (typeof IAP_PRODUCTS)[keyof typeof IAP_PRODUCTS];
+
+// Store management URLs (used as fallback on web and for "Manage Subscription" links)
+export const IOS_MANAGE_SUBSCRIPTIONS_URL = 'itms-apps://apps.apple.com/account/subscriptions';
+export const ANDROID_MANAGE_SUBSCRIPTIONS_URL =
+  'https://play.google.com/store/account/subscriptions?sku=com.novalingo.app.yearly&package=com.novalingo.app';
 
 // ─── Age Groups ──────────────────────────────────────────────────
 export const AGE_GROUPS = {

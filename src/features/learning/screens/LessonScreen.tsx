@@ -17,7 +17,7 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { LessonLayout } from '@components/templates/LessonLayout';
 import { useLessonProgress, useSubmitLesson, useVocabularyCards } from '@hooks/queries';
-import { sfxCorrect, sfxIncorrect, sfxLessonComplete } from '@services/audio/synthSfx';
+import { playSfx } from '@services/audio/synthSfx';
 import {
   checkNovaEvolution,
   processLessonResult,
@@ -225,7 +225,7 @@ export default function LessonScreen() {
     if (!isBoss || bossLives > 0) return;
     setBossTimerActive(false);
     const summary = endLesson();
-    sfxIncorrect();
+    playSfx('wrong');
     navigateToResult({
       summary,
       bossGameOver: true,
@@ -263,9 +263,9 @@ export default function LessonScreen() {
 
       // Play SFX feedback
       if (outcome.isCorrect) {
-        sfxCorrect();
+        playSfx('correct');
       } else {
-        sfxIncorrect();
+        playSfx('wrong');
         // Boss lesson: lose a life on wrong answer
         if (isBoss) {
           setBossLives((prev) => prev - 1);
@@ -286,7 +286,7 @@ export default function LessonScreen() {
           const storeState = useLessonStore.getState();
 
           // Play lesson complete SFX
-          sfxLessonComplete();
+          playSfx('lesson-complete');
 
           // Process SRS updates for vocabulary cards involved in this lesson
           const session = sessionRef.current;

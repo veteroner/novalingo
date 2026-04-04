@@ -1,3 +1,4 @@
+import { Sentry } from '@/config/sentry';
 import { isNative } from '@/utils/platform';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -50,6 +51,9 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error('[AppErrorBoundary]', error, info.componentStack);
+    Sentry.captureException(error, {
+      contexts: { react: { componentStack: info.componentStack } },
+    });
   }
 
   render() {

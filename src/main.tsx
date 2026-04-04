@@ -1,6 +1,11 @@
-import { App } from '@/app/App';
+import { initSentry } from '@/config/sentry';
 import '@/i18n';
 import '@/styles/globals.css';
+
+// Initialize Sentry before React renders so it captures all errors
+initSentry();
+
+import { App } from '@/app/App';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
