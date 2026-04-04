@@ -1,84 +1,66 @@
 /**
  * Subscription Service
  *
- * Wraps native App Store / Google Play billing.
+ * Native App Store / Google Play billing via cordova-plugin-purchase v13.
  *
- * HOW IT WORKS:
- *  1. User taps "7 Gün Ücretsiz Dene" on SubscriptionScreen.
- *  2. This service calls the platform's native purchase sheet (StoreKit 2 / Play Billing).
- *  3. On successful transaction, the OS sends a server-side webhook to our Firebase Function
- *     → the function marks user.isPremium = true in Firestore.
- *  4. The auth listener in AppProviders picks up the Firestore change and refreshes the UI.
+ * PURCHASE FLOW:
+ *  1. App calls initializeStore() on launch (via useAppInit).
+ *  2. User taps "Satın Al" → purchaseSubscription() opens the native payment sheet.
+ *  3. User completes payment in the OS sheet.
+ *  4. cordova-plugin-purchase calls: approved() → finish() → finished().
+ *  5. finished() grants isPremium in Firestore immediately for instant UI feedback.
+ *  6. Apple/Google server also sends a webhook (→ appleNotification / googleNotification
+ *     Firebase Functions) which handles renewals, expirations and cancellations.
  *
- * NATIVE PLUGIN TODO:
- *  Capacitor 6 does not yet have a stable first-party IAP plugin.
- *  When a plugin becomes available (e.g. @capacitor/purchases or a stable community fork),
- *  replace the TODO stubs below with real plugin calls.
- *  Product IDs are defined in src/config/constants.ts → IAP_PRODUCTS.
- *  The 7-day free trial is configured in App Store Connect / Google Play Console — not in code.
+ * LINKING USERS TO WEBHOOKS:
+ *  We pass the Firebase UID as `applicationUsername` when ordering.
+ *  iOS stores this as `appAccountToken`; Android as `obfuscatedExternalAccountId`.
+ *  This allows the backend webhook to find the correct Firestore user document.
+ *
+ * VALIDATOR:
+ *  We skip server-side receipt validation for MVP — StoreKit / Play Billing
+ *  validate the receipt on the device. Add a validator URL to store.validator
+ *  when you need cross-device receipt checks.
  */
 
-import type { IAPProductId } from '@/config/constants';
-import { ANDROID_MANAGE_SUBSCRIPTIONS_URL, IOS_MANAGE_SUBSCRIPTIONS_URL } from '@/config/constants';
+import { IAP_PRODUCTS, type IAPProductId } from '@/config/constants';
 import { Capacitor } from '@capacitor/core';
-import { auth, db } from '@services/firebase/app';
+import { auth, db, functions } from '@services/firebase/app';
+import 'cordova-plugin-purchase'; // injects CdvPurchase global namespace + types
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 
 export type PurchaseResult =
   | { status: 'success' }
   | { status: 'cancelled' }
   | { status: 'error'; message: string }
-  | { status: 'store_redirect' }; // web / pending IAP plugin
+  | { status: 'store_redirect' }; // native sheet is open; completion via Firestore listener
 
-/**
- * Initiate a subscription purchase for the given product ID.
- *
- * On iOS / Android native: currently opens the store's subscription management
- * page until a Capacitor IAP plugin is integrated (see TODO above).
- *
- * On web: shows how to subscribe via mobile stores.
- */
-export function purchaseSubscription(_productId: IAPProductId): Promise<PurchaseResult> {
-  const platform = Capacitor.getPlatform();
+let storeInitialized = false;
 
-  if (platform === 'ios') {
-    // TODO: Replace with native StoreKit 2 purchase call once IAP plugin is integrated.
-    // Example (future): await Purchases.purchasePackage({ aPackage: monthlyPackage })
-    window.open(IOS_MANAGE_SUBSCRIPTIONS_URL, '_system');
-    return Promise.resolve({ status: 'store_redirect' });
-  }
+// ---------------------------------------------------------------------------
+// Internal helpers
+// ---------------------------------------------------------------------------
 
-  if (platform === 'android') {
-    // TODO: Replace with native Play Billing call once IAP plugin is integrated.
-    window.open(ANDROID_MANAGE_SUBSCRIPTIONS_URL, '_system');
-    return Promise.resolve({ status: 'store_redirect' });
-  }
-
-  // Web browser — can't do native IAP; direct users to the mobile app.
-  return Promise.resolve({ status: 'store_redirect' });
+/** Write isPremium: true to Firestore after a confirmed purchase. */
+async function grantPremiumLocally(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await updateDoc(doc(db, 'users', uid), { isPremium: true });
 }
 
-/**
- * Restore previously purchased subscriptions.
- *
- * On native: delegates to the store's restore flow (StoreKit / Play Billing).
- * As a fallback, re-checks the user's Firestore document for isPremium status
- * (which may already have been set by a server-side webhook).
- */
-export async function restorePurchases(): Promise<PurchaseResult> {
-  // TODO: Replace with native restore call once IAP plugin is integrated.
-  // Example (future): await Purchases.restorePurchases()
-
-  // Fallback: re-read Firestore to pick up server-webhook-granted premium status.
+/** Read Firestore to check premium state (fallback for restore flow). */
+async function readPremiumFromFirestore(): Promise<PurchaseResult> {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const uid = auth.currentUser?.uid;
   if (!uid) return { status: 'error', message: 'Giriş yapmanız gerekiyor.' };
-
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const snap = await getDoc(doc(db, 'users', uid));
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (snap.exists() && snap.data()?.isPremium === true) {
+    if (snap.exists() && (snap.data()?.isPremium as boolean) === true) {
       return { status: 'success' };
     }
     return { status: 'error', message: 'Aktif abonelik bulunamadı.' };
@@ -87,15 +69,135 @@ export async function restorePurchases(): Promise<PurchaseResult> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
 /**
- * Dev-only helper: manually grant premium for testing without a real IAP transaction.
- * Never called in production builds.
+ * Initialize the store. Called once on app start via useAppInit.
+ * No-op on web.
  */
+export function initializeStore(): void {
+  const platform = Capacitor.getPlatform();
+  if (platform !== 'ios' && platform !== 'android') return;
+  if (storeInitialized) return;
+
+  const { store, Platform, ProductType, LogLevel } = CdvPurchase;
+
+  store.verbosity = import.meta.env.PROD ? LogLevel.WARNING : LogLevel.DEBUG;
+
+  // Register products declared in App Store Connect / Google Play Console.
+  const storePlatform = platform === 'ios' ? Platform.APPLE_APPSTORE : Platform.GOOGLE_PLAY;
+
+  store.register([
+    { id: IAP_PRODUCTS.MONTHLY, type: ProductType.PAID_SUBSCRIPTION, platform: storePlatform },
+    { id: IAP_PRODUCTS.YEARLY, type: ProductType.PAID_SUBSCRIPTION, platform: storePlatform },
+  ]);
+
+  // Skip server validator for MVP — finish approved transactions directly.
+  store.when().approved((transaction) => {
+    void transaction.finish();
+  });
+
+  // After a transaction is fully finished, grant premium immediately.
+  // The backend webhook will also fire and can set premiumExpiresAt.
+  store.when().finished((transaction) => {
+    void grantPremiumLocally();
+
+    // Android: register the purchaseToken → UID mapping in Firestore so that the
+    // googleNotification webhook can resolve which user to update on renewals/cancellations.
+    if (Capacitor.getPlatform() === 'android') {
+      const productId = transaction.products[0]?.id ?? '';
+      // parentReceipt is CdvPurchase.GooglePlay.Receipt on Android — cast to access purchaseToken
+      const purchaseToken = (transaction.parentReceipt as CdvPurchase.GooglePlay.Receipt)
+        ?.purchaseToken;
+      if (purchaseToken && productId) {
+        const registerFn = httpsCallable(functions, 'registerAndroidPurchase');
+        void registerFn({ purchaseToken, productId });
+      }
+    }
+  });
+
+  void store.initialize([storePlatform]);
+  storeInitialized = true;
+}
+
+/**
+ * Open the native subscription purchase sheet for the given product.
+ *
+ * Returns:
+ * - `store_redirect` — native sheet is open; purchase completion fires
+ *   grantPremiumLocally() via the finished() callback → Firestore listener
+ *   updates the UI automatically.
+ * - `cancelled` — user tapped Cancel in the payment sheet.
+ * - `error` — product not loaded or unrecoverable store error.
+ */
+export function purchaseSubscription(productId: IAPProductId): Promise<PurchaseResult> {
+  const platform = Capacitor.getPlatform();
+
+  if (platform !== 'ios' && platform !== 'android') {
+    return Promise.resolve({ status: 'store_redirect' });
+  }
+
+  return new Promise((resolve) => {
+    const { store, ErrorCode } = CdvPurchase;
+
+    const product = store.get(productId);
+    const offer = product?.getOffer();
+
+    if (!offer) {
+      resolve({
+        status: 'error',
+        message: 'Ürün yüklenemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.',
+      });
+      return;
+    }
+
+    // Pass Firebase UID so Apple/Google can include it in server-side webhooks,
+    // allowing our backend functions to match the notification to a Firestore user.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const uid = auth.currentUser?.uid as string | undefined;
+    const additionalData: CdvPurchase.AdditionalData = uid ? { applicationUsername: uid } : {};
+
+    void store.order(offer, additionalData).then((error) => {
+      if (!error) {
+        // Native sheet presented. Purchase result arrives via finished() → Firestore listener.
+        resolve({ status: 'store_redirect' });
+      } else if (error.code === ErrorCode.PAYMENT_CANCELLED) {
+        resolve({ status: 'cancelled' });
+      } else {
+        resolve({ status: 'error', message: error.message });
+      }
+    });
+  });
+}
+
+/**
+ * Restore previously purchased subscriptions via the native store.
+ * Falls back to reading Firestore if the native restore finds nothing new.
+ */
+export async function restorePurchases(): Promise<PurchaseResult> {
+  const platform = Capacitor.getPlatform();
+
+  if (platform !== 'ios' && platform !== 'android') {
+    return { status: 'error', message: "Geri yükleme yalnızca iOS ve Android'de kullanılabilir." };
+  }
+
+  const { store } = CdvPurchase;
+  const error = await store.restorePurchases();
+
+  if (error) {
+    // Native restore failed — fall back to Firestore (webhook may have already granted premium)
+    return readPremiumFromFirestore();
+  }
+
+  // Restored transactions will fire the approved → finished callbacks above,
+  // which update Firestore. Re-read to return a definitive result.
+  return readPremiumFromFirestore();
+}
+
+/** Dev-only: grant premium manually for testing without a real transaction. */
 export async function devGrantPremium(): Promise<void> {
   if (import.meta.env.PROD) return;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const uid = auth.currentUser?.uid;
-  if (!uid) throw new Error('Not authenticated');
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await updateDoc(doc(db, 'users', uid), { isPremium: true });
+  await grantPremiumLocally();
 }

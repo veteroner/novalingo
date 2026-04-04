@@ -41,9 +41,6 @@ importers:
       '@phosphor-icons/react':
         specifier: ^2.1.0
         version: 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@revenuecat/purchases-capacitor':
-        specifier: ^12.3.1
-        version: 12.3.1(@capacitor/core@6.2.1)
       '@sentry/react':
         specifier: ^8.0.0
         version: 8.55.0(react@19.2.4)
@@ -53,6 +50,9 @@ importers:
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
+      cordova-plugin-purchase:
+        specifier: ^13.13.1
+        version: 13.13.1
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1125,14 +1125,6 @@ packages:
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
 
-  '@revenuecat/purchases-capacitor@12.3.1':
-    resolution: {integrity: sha512-J+0p1t0tkddESXt32ihzyiXQWe1bhDb0f+FxonSrQc8vtTUFLWZv4C5uiPs9Jz0spgYYNGkvkfQOciLfLXGKQQ==}
-    peerDependencies:
-      '@capacitor/core': '>=8.0.0'
-
-  '@revenuecat/purchases-typescript-internal-esm@17.54.0':
-    resolution: {integrity: sha512-Y1VNatAKqELypXtwqVYRokGl2S+ldMnxcNaDnuLXmjuXtcHnO1HpKw/7He5UV51QL7zw+GR9CcSQii06MYbflw==}
-
   '@rolldown/pluginutils@1.0.0-rc.2':
     resolution: {integrity: sha512-izyXV/v+cHiRfozX62W9htOAvwMo4/bXKDrQ+vom1L1qRuexPock/7VZDAhnpHCLNejd3NJ6hiab+tO0D44Rgw==}
 
@@ -2069,6 +2061,9 @@ packages:
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
+
+  cordova-plugin-purchase@13.13.1:
+    resolution: {integrity: sha512-w86O2odlMBx0Yho3x3OeGKyUjwjUsbGYZ+gPlrFSMoyLj/YZ63rJyhXFrJzpYUW0a472wE63yIKLONgBFg59BQ==}
 
   cosmiconfig-typescript-loader@6.2.0:
     resolution: {integrity: sha512-GEN39v7TgdxgIoNcdkRE3uiAzQt3UXLyHbRHD6YoL048XAeOomyxaP+Hh/+2C6C2wYjxJ2onhJcsQp+L4YEkVQ==}
@@ -4963,13 +4958,6 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@revenuecat/purchases-capacitor@12.3.1(@capacitor/core@6.2.1)':
-    dependencies:
-      '@capacitor/core': 6.2.1
-      '@revenuecat/purchases-typescript-internal-esm': 17.54.0
-
-  '@revenuecat/purchases-typescript-internal-esm@17.54.0': {}
-
   '@rolldown/pluginutils@1.0.0-rc.2': {}
 
   '@rollup/pluginutils@5.3.0(rollup@4.59.0)':
@@ -5877,6 +5865,8 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   cookie@1.1.1: {}
+
+  cordova-plugin-purchase@13.13.1: {}
 
   cosmiconfig-typescript-loader@6.2.0(@types/node@25.3.2)(cosmiconfig@9.0.0(typescript@5.9.3))(typescript@5.9.3):
     dependencies:

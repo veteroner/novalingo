@@ -12,6 +12,7 @@ export { deleteAccount } from './callables/deleteAccount';
 export { deleteChildProfile } from './callables/deleteChildProfile';
 export { getLeaderboard } from './callables/getLeaderboard';
 export { purchaseShopItem } from './callables/purchaseShopItem';
+export { registerAndroidPurchase } from './callables/registerAndroidPurchase';
 export { setParentPin } from './callables/setParentPin';
 export { spinDailyWheel } from './callables/spinDailyWheel';
 export { submitLessonResult } from './callables/submitLessonResult';
@@ -35,4 +36,6 @@ export { updateLeaderboards } from './scheduled/updateLeaderboards';
 export { weeklyReport } from './scheduled/weeklyReport';
 
 // HTTP endpoints
+export { appleNotification } from './http/appleNotification';
+export { googleNotification } from './http/googleNotification';
 export { healthCheck } from './http/healthCheck';

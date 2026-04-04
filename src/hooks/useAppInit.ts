@@ -7,6 +7,7 @@
 
 import { initializeNotifications } from '@services/notification/notificationService';
 import { startSyncManager, stopSyncManager } from '@services/offline/syncManager';
+import { initializeStore } from '@services/subscription/subscriptionService';
 import { useAuthStore } from '@stores/authStore';
 import { useEffect, useRef } from 'react';
 
@@ -21,6 +22,9 @@ export function useAppInit(): void {
     // Platform-agnostic services (safe to call on web — they no-op gracefully)
     startSyncManager();
     void initializeNotifications(user.id);
+    
+    // Initialize native IAP subscriptions
+    initializeStore();
 
     return () => {
       void stopSyncManager();
