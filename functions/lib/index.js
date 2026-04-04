@@ -6,7 +6,7 @@
  * All callable, trigger, and scheduled functions exported here.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.healthCheck = exports.weeklyReport = exports.updateLeaderboards = exports.streakCheckMidnight = exports.resetDailyQuests = exports.cleanupExpiredCache = exports.onUserCreated = exports.onStreakUpdate = exports.onLessonCompleted = exports.onAchievementUnlocked = exports.verifyParentPin = exports.useStreakFreeze = exports.updateVocabulary = exports.updateChildProfile = exports.syncOfflineProgress = exports.submitLessonResult = exports.spinDailyWheel = exports.setParentPin = exports.purchaseShopItem = exports.getLeaderboard = exports.deleteChildProfile = exports.deleteAccount = exports.createChildProfile = exports.claimQuestReward = void 0;
+exports.healthCheck = exports.googleNotification = exports.appleNotification = exports.weeklyReport = exports.updateLeaderboards = exports.streakCheckMidnight = exports.resetDailyQuests = exports.cleanupExpiredCache = exports.onUserCreated = exports.onStreakUpdate = exports.onLessonCompleted = exports.onAchievementUnlocked = exports.verifyParentPin = exports.useStreakFreeze = exports.updateVocabulary = exports.updateChildProfile = exports.syncOfflineProgress = exports.submitLessonResult = exports.spinDailyWheel = exports.setParentPin = exports.registerAndroidPurchase = exports.purchaseShopItem = exports.getLeaderboard = exports.deleteChildProfile = exports.deleteAccount = exports.createChildProfile = exports.claimQuestReward = void 0;
 // Callable functions (client-invoked)
 var claimQuestReward_1 = require("./callables/claimQuestReward");
 Object.defineProperty(exports, "claimQuestReward", { enumerable: true, get: function () { return claimQuestReward_1.claimQuestReward; } });
@@ -20,6 +20,8 @@ var getLeaderboard_1 = require("./callables/getLeaderboard");
 Object.defineProperty(exports, "getLeaderboard", { enumerable: true, get: function () { return getLeaderboard_1.getLeaderboard; } });
 var purchaseShopItem_1 = require("./callables/purchaseShopItem");
 Object.defineProperty(exports, "purchaseShopItem", { enumerable: true, get: function () { return purchaseShopItem_1.purchaseShopItem; } });
+var registerAndroidPurchase_1 = require("./callables/registerAndroidPurchase");
+Object.defineProperty(exports, "registerAndroidPurchase", { enumerable: true, get: function () { return registerAndroidPurchase_1.registerAndroidPurchase; } });
 var setParentPin_1 = require("./callables/setParentPin");
 Object.defineProperty(exports, "setParentPin", { enumerable: true, get: function () { return setParentPin_1.setParentPin; } });
 var spinDailyWheel_1 = require("./callables/spinDailyWheel");
@@ -57,6 +59,10 @@ Object.defineProperty(exports, "updateLeaderboards", { enumerable: true, get: fu
 var weeklyReport_1 = require("./scheduled/weeklyReport");
 Object.defineProperty(exports, "weeklyReport", { enumerable: true, get: function () { return weeklyReport_1.weeklyReport; } });
 // HTTP endpoints
+var appleNotification_1 = require("./http/appleNotification");
+Object.defineProperty(exports, "appleNotification", { enumerable: true, get: function () { return appleNotification_1.appleNotification; } });
+var googleNotification_1 = require("./http/googleNotification");
+Object.defineProperty(exports, "googleNotification", { enumerable: true, get: function () { return googleNotification_1.googleNotification; } });
 var healthCheck_1 = require("./http/healthCheck");
 Object.defineProperty(exports, "healthCheck", { enumerable: true, get: function () { return healthCheck_1.healthCheck; } });
 //# sourceMappingURL=index.js.map
