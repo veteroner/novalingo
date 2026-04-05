@@ -26,7 +26,6 @@
 import { IAP_PRODUCTS, type IAPProductId } from '@/config/constants';
 import { Capacitor } from '@capacitor/core';
 import { auth, db, functions } from '@services/firebase/app';
-import 'cordova-plugin-purchase'; // injects CdvPurchase global namespace + types
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 
@@ -38,29 +37,107 @@ export type PurchaseResult =
 
 let storeInitialized = false;
 
+type PurchaseStorePlatform = string;
+type PurchaseProductType = string;
+type PurchaseLogLevel = number;
+type PurchaseErrorCode = number;
+
+interface PurchaseAdditionalData {
+  applicationUsername?: string;
+}
+
+type PurchaseOffer = object;
+
+interface PurchaseOrderError {
+  code: PurchaseErrorCode;
+  message: string;
+}
+
+interface PurchaseProduct {
+  id: string;
+}
+
+interface PurchaseReceipt {
+  purchaseToken?: string | null;
+}
+
+interface PurchaseTransaction {
+  finish(): Promise<void>;
+  products: PurchaseProduct[];
+  parentReceipt?: PurchaseReceipt | null;
+}
+
+interface PurchaseLoadedProduct {
+  getOffer(): PurchaseOffer | undefined;
+}
+
+interface PurchaseStoreEvents {
+  approved(callback: (transaction: PurchaseTransaction) => void): void;
+  finished(callback: (transaction: PurchaseTransaction) => void): void;
+}
+
+interface PurchaseStore {
+  verbosity: PurchaseLogLevel;
+  register(
+    products: Array<{
+      id: IAPProductId;
+      type: PurchaseProductType;
+      platform: PurchaseStorePlatform;
+    }>,
+  ): void;
+  when(): PurchaseStoreEvents;
+  initialize(platforms: PurchaseStorePlatform[]): unknown;
+  get(productId: IAPProductId): PurchaseLoadedProduct | undefined;
+  order(
+    offer: PurchaseOffer,
+    additionalData: PurchaseAdditionalData,
+  ): Promise<PurchaseOrderError | undefined>;
+  restorePurchases(): Promise<PurchaseOrderError | undefined>;
+}
+
+interface PurchaseSdk {
+  store: PurchaseStore;
+  Platform: {
+    APPLE_APPSTORE: PurchaseStorePlatform;
+    GOOGLE_PLAY: PurchaseStorePlatform;
+  };
+  ProductType: {
+    PAID_SUBSCRIPTION: PurchaseProductType;
+  };
+  LogLevel: {
+    WARNING: PurchaseLogLevel;
+    DEBUG: PurchaseLogLevel;
+  };
+  ErrorCode: {
+    PAYMENT_CANCELLED: PurchaseErrorCode;
+  };
+}
+
+function getPurchaseSdk(): PurchaseSdk | null {
+  const runtime = globalThis as typeof globalThis & { CdvPurchase?: PurchaseSdk };
+  return runtime.CdvPurchase ?? null;
+}
+
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
 
 /** Write isPremium: true to Firestore after a confirmed purchase. */
 async function grantPremiumLocally(): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const uid = auth.currentUser?.uid;
   if (!uid) return;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   await updateDoc(doc(db, 'users', uid), { isPremium: true });
 }
 
 /** Read Firestore to check premium state (fallback for restore flow). */
 async function readPremiumFromFirestore(): Promise<PurchaseResult> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const uid = auth.currentUser?.uid;
   if (!uid) return { status: 'error', message: 'Giriş yapmanız gerekiyor.' };
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const snap = await getDoc(doc(db, 'users', uid));
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (snap.exists() && (snap.data()?.isPremium as boolean) === true) {
+    if (snap.exists() && (snap.data()?.isPremium as boolean)) {
       return { status: 'success' };
     }
     return { status: 'error', message: 'Aktif abonelik bulunamadı.' };
@@ -82,7 +159,13 @@ export function initializeStore(): void {
   if (platform !== 'ios' && platform !== 'android') return;
   if (storeInitialized) return;
 
-  const { store, Platform, ProductType, LogLevel } = CdvPurchase;
+  const purchaseSdk = getPurchaseSdk();
+  if (!purchaseSdk) {
+    console.warn('Purchase SDK is unavailable; skipping store initialization.');
+    return;
+  }
+
+  const { store, Platform, ProductType, LogLevel } = purchaseSdk;
 
   store.verbosity = import.meta.env.PROD ? LogLevel.WARNING : LogLevel.DEBUG;
 
@@ -108,9 +191,7 @@ export function initializeStore(): void {
     // googleNotification webhook can resolve which user to update on renewals/cancellations.
     if (Capacitor.getPlatform() === 'android') {
       const productId = transaction.products[0]?.id ?? '';
-      // parentReceipt is CdvPurchase.GooglePlay.Receipt on Android — cast to access purchaseToken
-      const purchaseToken = (transaction.parentReceipt as CdvPurchase.GooglePlay.Receipt)
-        ?.purchaseToken;
+      const purchaseToken = transaction.parentReceipt?.purchaseToken ?? undefined;
       if (purchaseToken && productId) {
         const registerFn = httpsCallable(functions, 'registerAndroidPurchase');
         void registerFn({ purchaseToken, productId });
@@ -140,7 +221,13 @@ export function purchaseSubscription(productId: IAPProductId): Promise<PurchaseR
   }
 
   return new Promise((resolve) => {
-    const { store, ErrorCode } = CdvPurchase;
+    const purchaseSdk = getPurchaseSdk();
+    if (!purchaseSdk) {
+      resolve({ status: 'error', message: 'Satın alma servisi şu anda kullanılamıyor.' });
+      return;
+    }
+
+    const { store, ErrorCode } = purchaseSdk;
 
     const product = store.get(productId);
     const offer = product?.getOffer();
@@ -155,9 +242,9 @@ export function purchaseSubscription(productId: IAPProductId): Promise<PurchaseR
 
     // Pass Firebase UID so Apple/Google can include it in server-side webhooks,
     // allowing our backend functions to match the notification to a Firestore user.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const uid = auth.currentUser?.uid as string | undefined;
-    const additionalData: CdvPurchase.AdditionalData = uid ? { applicationUsername: uid } : {};
+
+    const uid = auth.currentUser?.uid;
+    const additionalData: PurchaseAdditionalData = uid ? { applicationUsername: uid } : {};
 
     void store.order(offer, additionalData).then((error) => {
       if (!error) {
@@ -183,7 +270,12 @@ export async function restorePurchases(): Promise<PurchaseResult> {
     return { status: 'error', message: "Geri yükleme yalnızca iOS ve Android'de kullanılabilir." };
   }
 
-  const { store } = CdvPurchase;
+  const purchaseSdk = getPurchaseSdk();
+  if (!purchaseSdk) {
+    return { status: 'error', message: 'Satın alma servisi şu anda kullanılamıyor.' };
+  }
+
+  const { store } = purchaseSdk;
   const error = await store.restorePurchases();
 
   if (error) {
