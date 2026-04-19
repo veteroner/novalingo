@@ -89,6 +89,8 @@ export interface EvaluateOpenEndedConversationRes {
     };
   };
   repairPrompt?: string;
+  /** Child-friendly coaching line Nova speaks when the answer is rejected. */
+  novaResponseText?: string;
 }
 
 export interface SubmitLessonResultReq {

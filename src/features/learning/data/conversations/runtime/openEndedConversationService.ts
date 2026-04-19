@@ -35,6 +35,8 @@ export interface OpenEndedTurnEvaluation {
   resolution: OpenEndedResolution | null;
   rubric: OpenEndedRubricAssessment;
   repairPrompt?: string;
+  /** Child-friendly coaching line Nova should speak when the answer is rejected. */
+  novaResponseText?: string;
 }
 
 export interface OpenEndedConversationService {

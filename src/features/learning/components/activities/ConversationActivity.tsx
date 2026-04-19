@@ -1073,6 +1073,26 @@ export default function ConversationActivity({
           });
           return;
         }
+
+        // Rejected — if LLM provided coaching text, Nova speaks it
+        if (openEndedMatch.novaResponseText) {
+          void haptic.error();
+          const coachText = openEndedMatch.novaResponseText;
+          setBubbles((prev) => [
+            ...prev,
+            { id: `nova-coach-${Date.now()}`, speaker: 'nova', text: coachText, textTr: '' },
+          ]);
+          setNovaMood('thinking');
+          pushTimer(() => {
+            setNovaMood('speaking');
+            void ttsSpeak(coachText, { rate: SPEECH_RATES[speechRateRef.current] });
+          }, 300);
+          if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+          feedbackTimerRef.current = setTimeout(() => {
+            setNovaMood('listening');
+          }, 5000);
+          return;
+        }
       }
 
       const shouldTryAutomaticSemiOpenFallback =
@@ -1113,6 +1133,26 @@ export default function ConversationActivity({
             });
             return;
           }
+
+          // Rejected — if LLM provided coaching text, Nova speaks it
+          if (automaticMatch.novaResponseText) {
+            void haptic.error();
+            const coachText = automaticMatch.novaResponseText;
+            setBubbles((prev) => [
+              ...prev,
+              { id: `nova-coach-${Date.now()}`, speaker: 'nova', text: coachText, textTr: '' },
+            ]);
+            setNovaMood('thinking');
+            pushTimer(() => {
+              setNovaMood('speaking');
+              void ttsSpeak(coachText, { rate: SPEECH_RATES[speechRateRef.current] });
+            }, 300);
+            if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+            feedbackTimerRef.current = setTimeout(() => {
+              setNovaMood('listening');
+            }, 5000);
+            return;
+          }
         }
       }
 
@@ -1133,6 +1173,7 @@ export default function ConversationActivity({
       haptic,
       rememberConversationSlot,
       acceptConversationResponse,
+      pushTimer,
     ],
   );
 

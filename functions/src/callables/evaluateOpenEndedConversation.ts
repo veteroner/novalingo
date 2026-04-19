@@ -31,6 +31,8 @@ interface ModelEvaluationPayload {
   targetWordHits?: string[];
   repairPrompt?: string;
   slotValue?: string | null;
+  /** Child-friendly sentence Nova should speak when the answer is rejected. */
+  novaResponseText?: string | null;
   rubricDimensions?: {
     relevanceScore?: number;
     patternAccuracyScore?: number;
@@ -98,12 +100,16 @@ async function callOpenAI(
     'Accept answers that are meaningfully correct even if grammar is imperfect.',
     'Do not invent new branches. Only accept if the child answered the prompt well enough to continue.',
     'When the prompt expects an open slot, extract only the minimal slot value.',
-    'Return strict JSON with keys: accepted, rationale, matchedPattern, targetWordHits, repairPrompt, slotValue, rubricDimensions.',
+    'Return strict JSON with keys: accepted, rationale, matchedPattern, targetWordHits, repairPrompt, slotValue, novaResponseText, rubricDimensions.',
     'rubricDimensions must contain integers 0-100 for relevanceScore, patternAccuracyScore, vocabularyCoverageScore, childSafetyScore, encouragementScore.',
     'targetWordHits must only include words from the provided targetWords list when they clearly appear.',
     'repairPrompt must be short, child-friendly English when rejected.',
     'childSafetyScore should be high only when the answer is safe, age-appropriate, and non-harmful.',
     'encouragementScore measures whether the child made enough effort to merit warm positive reinforcement.',
+    'novaResponseText: when accepted=false, write a warm 1-2 sentence child-friendly English coaching response that',
+    'acknowledges what the child said (use their exact words if possible), then gently models the correct answer.',
+    'Example: "Çomar is such a cool name! Can you try saying: My dog is Çomar?"',
+    'When accepted=true, set novaResponseText to null.',
   ].join(' ');
 
   const userPayload = {
@@ -290,6 +296,7 @@ export const evaluateOpenEndedConversation = onCall(
       repairPrompt: accepted
         ? undefined
         : modelResult.repairPrompt?.trim() || 'Try answering with the target pattern.',
+      novaResponseText: accepted ? undefined : modelResult.novaResponseText?.trim() || undefined,
     };
   },
 );
