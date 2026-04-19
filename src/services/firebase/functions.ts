@@ -413,12 +413,36 @@ export async function evaluateOpenEndedConversation(
   data: EvaluateOpenEndedConversationReq,
 ): Promise<EvaluateOpenEndedConversationRes> {
   requireCurrentUserId();
-  const evaluateFn = httpsCallable<
-    EvaluateOpenEndedConversationReq,
-    EvaluateOpenEndedConversationRes
-  >(functions, 'evaluateOpenEndedConversation');
-  const result = await evaluateFn(data);
-  return result.data;
+
+  const useEmulators = import.meta.env.VITE_USE_EMULATORS === 'true';
+
+  if (useEmulators) {
+    // Local dev: Firebase emulator callable
+    const evaluateFn = httpsCallable<
+      EvaluateOpenEndedConversationReq,
+      EvaluateOpenEndedConversationRes
+    >(functions, 'evaluateOpenEndedConversation');
+    const result = await evaluateFn(data);
+    return result.data;
+  }
+
+  // Production: Netlify serverless function (no Blaze plan required)
+  const token = await auth.currentUser?.getIdToken();
+  const response = await fetch('/.netlify/functions/evaluateOpenEndedConversation', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Remote evaluator failed: ${response.status} ${errorText.slice(0, 200)}`);
+  }
+
+  return response.json();
 }
 
 export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitLessonResultRes> {

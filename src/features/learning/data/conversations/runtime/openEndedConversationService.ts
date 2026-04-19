@@ -162,7 +162,16 @@ export const openEndedConversationService: OpenEndedConversationService = {
 
     try {
       return await remoteOpenEndedConversationService.evaluateTurn(request);
-    } catch {
+    } catch (error) {
+      console.warn(
+        '[openEndedConversationService] Remote evaluator failed, falling back to local result.',
+        {
+          provider: configuredProvider,
+          scenarioId: request.scenarioId,
+          nodeId: request.nodeId,
+          reason: error instanceof Error ? error.message : String(error),
+        },
+      );
       return localResult;
     }
   },
