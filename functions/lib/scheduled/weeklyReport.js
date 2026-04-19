@@ -9,6 +9,18 @@ exports.weeklyReport = void 0;
 const scheduler_1 = require("firebase-functions/v2/scheduler");
 const notificationService_1 = require("../services/notificationService");
 const admin_1 = require("../utils/admin");
+function buildWeeklyUtterancePreview(theme) {
+    return theme.sampleUtterances[0] ? `, örnek: "${theme.sampleUtterances[0]}"` : '';
+}
+function buildWeeklyThemeExamplesBlock(themes) {
+    const lines = themes
+        .filter((theme) => theme.sampleUtterances.length > 0)
+        .slice(0, 3)
+        .map((theme) => `- ${theme.theme}: "${theme.sampleUtterances[0]}"`);
+    if (lines.length === 0)
+        return '';
+    return `\nÖrnek cümleler:\n${lines.join('\n')}`;
+}
 function buildWeeklyConversationThemeProgress(lessonDocs) {
     const grouped = new Map();
     for (const lessonDoc of lessonDocs) {
@@ -23,12 +35,14 @@ function buildWeeklyConversationThemeProgress(lessonDocs) {
                 totalScore: 0,
                 totalHints: 0,
                 words: [],
+                utterances: [],
             };
             current.attempts += 1;
             current.passedCount += evidence.passed ? 1 : 0;
             current.totalScore += evidence.score ?? 0;
             current.totalHints += evidence.hintedTurns ?? 0;
             current.words.push(...(evidence.targetWordsHit ?? []));
+            current.utterances.push(...(evidence.rawChildResponses ?? []).slice(0, 2));
             grouped.set(theme, current);
         }
     }
@@ -40,6 +54,7 @@ function buildWeeklyConversationThemeProgress(lessonDocs) {
         averageScore: stats.attempts > 0 ? stats.totalScore / stats.attempts : 0,
         averageHints: stats.attempts > 0 ? stats.totalHints / stats.attempts : 0,
         focusWords: [...new Set(stats.words)].slice(0, 2),
+        sampleUtterances: [...new Set(stats.utterances)].slice(0, 1),
     }))
         .sort((left, right) => right.averageScore - left.averageScore);
 }
@@ -101,9 +116,10 @@ exports.weeklyReport = (0, scheduler_1.onSchedule)({
             const streak = childData?.streak?.current ?? 0;
             const level = childData?.level ?? 1;
             const recommendationText = recommendedTheme
-                ? ` • konuşma odağı: ${recommendedTheme.theme} (%${recommendedTheme.averageScore}${recommendedTheme.focusWords.length > 0 ? `, ${recommendedTheme.focusWords.join(', ')}` : ''})`
+                ? ` • konuşma odağı: ${recommendedTheme.theme} (%${recommendedTheme.averageScore}${recommendedTheme.focusWords.length > 0 ? `, ${recommendedTheme.focusWords.join(', ')}` : ''}${buildWeeklyUtterancePreview(weeklyConversationThemes.find((item) => item.theme === recommendedTheme.theme) ?? { theme: recommendedTheme.theme, attempts: 0, successRate: 0, averageScore: 0, averageHints: 0, focusWords: [], sampleUtterances: [] })})`
                 : '';
-            summaries.push(`${child.name}: ${lessonsCount} ders, ${streak} günlük seri, seviye ${level}${recommendationText}`);
+            const themeExamplesText = buildWeeklyThemeExamplesBlock(weeklyConversationThemes);
+            summaries.push(`${child.name}: ${lessonsCount} ders, ${streak} günlük seri, seviye ${level}${recommendationText}${themeExamplesText}`);
         }
         if (summaries.length > 0) {
             const body = summaries.join('\n');

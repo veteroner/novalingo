@@ -16,7 +16,7 @@ dependencies {
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-push-notifications')
     implementation project(':capacitor-network')
-
+    implementation "com.android.billingclient:billing:8.3.0"
 }
 
 

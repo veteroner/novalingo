@@ -1,12 +1,21 @@
 {
   "projects": {
-    "default": "novalingo-app"
+    "default": "novalingo-app",
+    "production": "novalingo-app",
+    "staging": "novalingo-b0c92"
   },
   "targets": {
     "novalingo-app": {
       "hosting": {
         "default": [
           "novalingo-app"
+        ]
+      }
+    },
+    "novalingo-b0c92": {
+      "hosting": {
+        "default": [
+          "novalingo-b0c92"
         ]
       }
     }

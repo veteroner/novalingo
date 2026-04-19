@@ -14,6 +14,7 @@ interface WeeklyConversationEvidence {
   passed?: boolean;
   score?: number;
   targetWordsHit?: string[];
+  rawChildResponses?: string[];
 }
 
 interface WeeklyConversationThemeProgress {
@@ -23,6 +24,22 @@ interface WeeklyConversationThemeProgress {
   averageScore: number;
   averageHints: number;
   focusWords: string[];
+  sampleUtterances: string[];
+}
+
+function buildWeeklyUtterancePreview(theme: WeeklyConversationThemeProgress): string {
+  return theme.sampleUtterances[0] ? `, örnek: "${theme.sampleUtterances[0]}"` : '';
+}
+
+function buildWeeklyThemeExamplesBlock(themes: WeeklyConversationThemeProgress[]): string {
+  const lines = themes
+    .filter((theme) => theme.sampleUtterances.length > 0)
+    .slice(0, 3)
+    .map((theme) => `- ${theme.theme}: "${theme.sampleUtterances[0]}"`);
+
+  if (lines.length === 0) return '';
+
+  return `\nÖrnek cümleler:\n${lines.join('\n')}`;
 }
 
 function buildWeeklyConversationThemeProgress(
@@ -36,6 +53,7 @@ function buildWeeklyConversationThemeProgress(
       totalScore: number;
       totalHints: number;
       words: string[];
+      utterances: string[];
     }
   >();
 
@@ -51,6 +69,7 @@ function buildWeeklyConversationThemeProgress(
         totalScore: 0,
         totalHints: 0,
         words: [],
+        utterances: [],
       };
 
       current.attempts += 1;
@@ -58,6 +77,7 @@ function buildWeeklyConversationThemeProgress(
       current.totalScore += evidence.score ?? 0;
       current.totalHints += evidence.hintedTurns ?? 0;
       current.words.push(...(evidence.targetWordsHit ?? []));
+      current.utterances.push(...(evidence.rawChildResponses ?? []).slice(0, 2));
       grouped.set(theme, current);
     }
   }
@@ -70,6 +90,7 @@ function buildWeeklyConversationThemeProgress(
       averageScore: stats.attempts > 0 ? stats.totalScore / stats.attempts : 0,
       averageHints: stats.attempts > 0 ? stats.totalHints / stats.attempts : 0,
       focusWords: [...new Set(stats.words)].slice(0, 2),
+      sampleUtterances: [...new Set(stats.utterances)].slice(0, 1),
     }))
     .sort((left, right) => right.averageScore - left.averageScore);
 }
@@ -150,11 +171,12 @@ export const weeklyReport = onSchedule(
         const level = childData?.level ?? 1;
 
         const recommendationText = recommendedTheme
-          ? ` • konuşma odağı: ${recommendedTheme.theme} (%${recommendedTheme.averageScore}${recommendedTheme.focusWords.length > 0 ? `, ${recommendedTheme.focusWords.join(', ')}` : ''})`
+          ? ` • konuşma odağı: ${recommendedTheme.theme} (%${recommendedTheme.averageScore}${recommendedTheme.focusWords.length > 0 ? `, ${recommendedTheme.focusWords.join(', ')}` : ''}${buildWeeklyUtterancePreview(weeklyConversationThemes.find((item) => item.theme === recommendedTheme.theme) ?? { theme: recommendedTheme.theme, attempts: 0, successRate: 0, averageScore: 0, averageHints: 0, focusWords: [], sampleUtterances: [] })})`
           : '';
+        const themeExamplesText = buildWeeklyThemeExamplesBlock(weeklyConversationThemes);
 
         summaries.push(
-          `${child.name}: ${lessonsCount} ders, ${streak} günlük seri, seviye ${level}${recommendationText}`,
+          `${child.name}: ${lessonsCount} ders, ${streak} günlük seri, seviye ${level}${recommendationText}${themeExamplesText}`,
         );
       }
 

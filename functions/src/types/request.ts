@@ -37,9 +37,58 @@ export interface ActivityResult {
     hintedTurns: number;
     targetWordsHit: string[];
     patternsHit: string[];
+    rawChildResponses?: string[];
     passed: boolean;
     score: number;
   };
+}
+
+export interface EvaluateOpenEndedConversationReq {
+  rawText: string;
+  scenarioId?: string;
+  nodeId: string;
+  nodeText?: string;
+  targetWords: string[];
+  targetPatterns?: string[];
+  slots?: Record<string, string>;
+  defaultNextNodeId?: string | null;
+  responseExamples?: string[];
+  config?: {
+    enabled: boolean;
+    strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+    domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
+    slotKey: string;
+    nextNodeId: string;
+    marksPattern?: string[];
+    countCapturedValueAsTargetWord?: boolean;
+  };
+}
+
+export interface EvaluateOpenEndedConversationRes {
+  accepted: boolean;
+  source: 'llm';
+  modelUsed?: string;
+  resolution: {
+    slotKey: string;
+    slotValue: string;
+    nextNodeId: string;
+    marksPattern: string[];
+    markedTargetWords: string[];
+  } | null;
+  rubric: {
+    matchedPattern: boolean;
+    targetWordHits: string[];
+    score: number;
+    rationale: string;
+    dimensions: {
+      relevanceScore: number;
+      patternAccuracyScore: number;
+      vocabularyCoverageScore: number;
+      childSafetyScore: number;
+      encouragementScore: number;
+    };
+  };
+  repairPrompt?: string;
 }
 
 export interface SubmitLessonResultReq {

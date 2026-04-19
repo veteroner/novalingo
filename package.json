@@ -36,7 +36,11 @@
     "firebase:emulators": "FUNCTIONS_DISCOVERY_TIMEOUT=60 firebase emulators:start --only auth,firestore,functions,storage,hosting --import=./emulator-data --export-on-exit=./emulator-data",
     "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage",
     "firebase:deploy:functions": "firebase deploy --only functions",
+    "firebase:deploy:functions:staging": "firebase deploy --only functions --project staging",
+    "firebase:deploy:functions:prod": "firebase deploy --only functions --project production",
     "firebase:deploy:hosting": "firebase deploy --only hosting",
+    "firebase:deploy:hosting:staging": "firebase deploy --only hosting --project staging",
+    "firebase:deploy:hosting:prod": "firebase deploy --only hosting --project production",
     "prepare": "husky"
   },
   "dependencies": {

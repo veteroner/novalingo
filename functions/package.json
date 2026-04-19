@@ -9,6 +9,8 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
+    "deploy:staging": "firebase deploy --only functions --project staging",
+    "deploy:prod": "firebase deploy --only functions --project production",
     "logs": "firebase functions:log",
     "lint": "eslint src/",
     "test": "vitest run",

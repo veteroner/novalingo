@@ -31,23 +31,37 @@
 
 ```
 Firebase Projeleri:
-  ├── novalingo-dev        (Development/Staging)
+  ├── novalingo-b0c92      (Staging)
   │   ├── Firestore: test verisi
   │   ├── Auth: test kullanıcılar
   │   ├── Functions: staging deploy
-  │   └── Hosting: staging.novalingo.app
+  │   └── Hosting: staging alias
   │
-  └── novalingo-prod       (Production)
+  └── novalingo-app        (Production)
       ├── Firestore: canlı veri
       ├── Auth: gerçek kullanıcılar
       ├── Functions: production deploy
-      └── Hosting: app.novalingo.app
+      └── Hosting: production alias
 
 Konfigürasyon:
-  .env.development    → novalingo-dev kimlik bilgileri
-  .env.staging        → novalingo-dev kimlik bilgileri (farklı ayarlar)
-  .env.production     → novalingo-prod kimlik bilgileri
+  .env.development    → novalingo-app kimlik bilgileri
+  .env.staging        → novalingo-b0c92 kimlik bilgileri
+  .env.production     → novalingo-app kimlik bilgileri
+  functions/.env.staging    → staging Functions runtime env
+  functions/.env.production → production Functions runtime env
 ```
+
+### 2.1 Güncel Alias Eşlemesi
+
+```json
+{
+  "staging": "novalingo-b0c92",
+  "production": "novalingo-app"
+}
+```
+
+Bu eşleşme repo içindeki `.firebaserc` ile uyumludur. `firebase deploy --project staging` ve
+`firebase deploy --project production` komutları bu alias'ları kullanır.
 
 ---
 
@@ -72,10 +86,52 @@ VITE_APP_ENV=production
 VITE_APP_VERSION=$npm_package_version
 VITE_SENTRY_DSN=https://xxx@sentry.io/yyy
 
-# Functions .env (Secret Manager tarafından inject edilir)
-REVENUECAT_WEBHOOK_SECRET=whsec_xxx
-ADMOB_SERVER_KEY=xxx
-FCM_SERVER_KEY=xxx
+# Functions runtime env (dotenv)
+GEMINI_DEFAULT_MODEL=gemini-3.1-flash-lite
+GEMINI_FALLBACK_MODEL=gemini-2.5-flash-lite
+
+# Functions secret (Secret Manager)
+GEMINI_API_KEY=AIzaSy... # Secret Manager'da tutulur, repo'ya yazılmaz
+```
+
+### 3.1 Gemini Evaluator İçin Functions Env Dosyaları
+
+Repo içinde şu dosyalar oluşturulmuştur:
+
+```bash
+functions/.env.staging
+functions/.env.production
+```
+
+İçerik:
+
+```bash
+GEMINI_DEFAULT_MODEL=gemini-3.1-flash-lite
+GEMINI_FALLBACK_MODEL=gemini-2.5-flash-lite
+```
+
+Bu iki değişken deploy sırasında Firebase CLI tarafından ilgili alias için yüklenir.
+
+### 3.2 Gemini API Secret Durumu
+
+`GEMINI_API_KEY` artık code tarafında `defineSecret('GEMINI_API_KEY')` ile bekleniyor.
+
+Ancak mevcut iki proje de şu anda Spark planında olduğu için Firebase CLI `functions:secrets:set`
+ve `functions:secrets:get` komutlarını çalıştırmıyor. Secret Manager ancak Blaze planında aktif
+edilebiliyor.
+
+Blaze'e geçildiğinde secret şu komutlarla eklenmeli:
+
+```bash
+firebase functions:secrets:set GEMINI_API_KEY --project staging
+firebase functions:secrets:set GEMINI_API_KEY --project production
+```
+
+Doğrulama:
+
+```bash
+firebase functions:secrets:get GEMINI_API_KEY --project staging
+firebase functions:secrets:get GEMINI_API_KEY --project production
 ```
 
 ---
@@ -241,14 +297,14 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         run: |
           npx firebase-tools deploy --only functions \
-            --project novalingo-dev \
+            --project staging \
             --token ${{ secrets.FIREBASE_TOKEN_DEV }}
 
       - name: Deploy to production
         if: github.ref == 'refs/heads/main'
         run: |
           npx firebase-tools deploy --only functions \
-            --project novalingo-prod \
+            --project production \
             --token ${{ secrets.FIREBASE_TOKEN_PROD }}
 
   # ─────────────────────────────────────
@@ -465,24 +521,24 @@ jobs:
     "build:staging": "tsc && vite build --mode staging",
     "build:production": "tsc && vite build --mode production",
     "preview": "vite preview",
-    
+
     "lint": "eslint src/ --ext .ts,.tsx",
     "lint:fix": "eslint src/ --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
-    
+
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    
+
     "cap:sync": "cap sync",
     "cap:android": "cap open android",
     "cap:ios": "cap open ios",
-    
+
     "firebase:emulators": "firebase emulators:start",
-    "firebase:deploy:staging": "firebase deploy --project novalingo-dev",
-    "firebase:deploy:prod": "firebase deploy --project novalingo-prod",
-    
+    "firebase:deploy:staging": "firebase deploy --project staging",
+    "firebase:deploy:prod": "firebase deploy --project production",
+
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
   }
@@ -498,70 +554,73 @@ import react from '@vitejs/plugin-react-swc';
 import { VitePWA } from 'vite-plugin-pwa';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 
-export default defineConfig(({ mode }): UserConfig => ({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/firebasestorage\.googleapis\.com/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'firebase-storage',
-              expiration: { maxEntries: 500, maxAgeSeconds: 30 * 24 * 60 * 60 },
+export default defineConfig(
+  ({ mode }): UserConfig => ({
+    plugins: [
+      react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff2}'],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/firebasestorage\.googleapis\.com/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'firebase-storage',
+                expiration: { maxEntries: 500, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              },
             },
-          },
-        ],
+          ],
+        },
+      }),
+      mode === 'production' &&
+        sentryVitePlugin({
+          org: 'novalingo',
+          project: 'novalingo-web',
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+        }),
+    ],
+
+    resolve: {
+      alias: {
+        '@': '/src',
+        '@components': '/src/components',
+        '@features': '/src/features',
+        '@services': '/src/services',
+        '@stores': '/src/stores',
+        '@hooks': '/src/hooks',
+        '@utils': '/src/utils',
+        '@assets': '/src/assets',
+        '@types': '/src/types',
       },
-    }),
-    mode === 'production' && sentryVitePlugin({
-      org: 'novalingo',
-      project: 'novalingo-web',
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-    }),
-  ],
-  
-  resolve: {
-    alias: {
-      '@': '/src',
-      '@components': '/src/components',
-      '@features': '/src/features',
-      '@services': '/src/services',
-      '@stores': '/src/stores',
-      '@hooks': '/src/hooks',
-      '@utils': '/src/utils',
-      '@assets': '/src/assets',
-      '@types': '/src/types',
     },
-  },
-  
-  build: {
-    target: 'es2022',
-    sourcemap: mode === 'production',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
-          'vendor-animation': ['framer-motion', 'lottie-react'],
-          'vendor-audio': ['howler'],
-          'vendor-state': ['zustand', '@tanstack/react-query'],
+
+    build: {
+      target: 'es2022',
+      sourcemap: mode === 'production',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+            'vendor-animation': ['framer-motion', 'lottie-react'],
+            'vendor-audio': ['howler'],
+            'vendor-state': ['zustand', '@tanstack/react-query'],
+          },
         },
       },
+      chunkSizeWarningLimit: 300,
     },
-    chunkSizeWarningLimit: 300,
-  },
-  
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
-    css: true,
-  },
-}));
+
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: './src/test/setup.ts',
+      css: true,
+    },
+  }),
+);
 ```
 
 ---
@@ -576,12 +635,12 @@ const config: CapacitorConfig = {
   appId: 'com.novalingo.app',
   appName: 'NovaLingo',
   webDir: 'dist',
-  
+
   server: {
     androidScheme: 'https',
     iosScheme: 'capacitor',
   },
-  
+
   plugins: {
     SplashScreen: {
       launchAutoHide: false,
@@ -590,21 +649,21 @@ const config: CapacitorConfig = {
       splashImmersive: true,
       backgroundColor: '#0D8FDB',
     },
-    
+
     StatusBar: {
       style: 'light',
       backgroundColor: '#0D8FDB',
     },
-    
+
     Keyboard: {
       resize: 'body',
       style: 'light',
     },
-    
+
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
-    
+
     // AdMob
     AdMob: {
       // Test ads in non-production
@@ -612,14 +671,14 @@ const config: CapacitorConfig = {
       initializeForTesting: process.env.NODE_ENV !== 'production',
     },
   },
-  
+
   // iOS-specific
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',
     scheme: 'NovaLingo',
   },
-  
+
   // Android-specific
   android: {
     allowMixedContent: false,
@@ -650,37 +709,30 @@ export default config;
     "headers": [
       {
         "source": "**/*.@(js|css)",
-        "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
       },
       {
         "source": "**/*.@(json|png|jpg|webp|svg|woff2)",
-        "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=86400" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
       }
     ]
   },
-  
+
   "functions": {
     "source": "functions",
     "runtime": "nodejs20",
-    "predeploy": [
-      "npm --prefix functions run lint",
-      "npm --prefix functions run build"
-    ]
+    "predeploy": ["npm --prefix functions run lint", "npm --prefix functions run build"]
   },
-  
+
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  
+
   "storage": {
     "rules": "storage.rules"
   },
-  
+
   "emulators": {
     "auth": { "port": 9099 },
     "functions": { "port": 5001 },
@@ -720,7 +772,7 @@ App Store Review Notları:
   - Reklam politikası açıklaması
   - Veri toplama açıklaması (COPPA)
   - Auto-renewable subscription bilgileri
-  
+
 Beklenen Review Süresi: 1-3 gün
 İlk submission'da rejection riski: Yüksek (Kids Category strict rules)
 ```
@@ -756,7 +808,7 @@ Google Play Families Policy:
 
 ```
 Semantic Versioning: MAJOR.MINOR.PATCH
-  
+
   MAJOR: Büyük özellik (yeni dünyalar, yeni aktivite tipleri)
   MINOR: Orta özellik (iyileştirmeler, yeni içerik)
   PATCH: Bug fix, küçük düzeltme
@@ -796,15 +848,15 @@ Build Number: Her build'de artan sayı
 
 ### 9.2 Alert Kuralları
 
-| Metrik | Eşik | Aksiyon |
-|--------|-------|---------|
-| Error rate | >1% | Slack alert |
-| API latency | >3s (p95) | Slack alert |
-| Cloud Function error | Any | Email + Slack |
-| Crash rate | >0.5% | Pager (critical) |
-| Firestore reads | >500K/day | Email (budget) |
-| Auth failures | >100/hour | Slack alert |
-| Monthly cost | >$100 | Email warning |
+| Metrik               | Eşik      | Aksiyon          |
+| -------------------- | --------- | ---------------- |
+| Error rate           | >1%       | Slack alert      |
+| API latency          | >3s (p95) | Slack alert      |
+| Cloud Function error | Any       | Email + Slack    |
+| Crash rate           | >0.5%     | Pager (critical) |
+| Firestore reads      | >500K/day | Email (budget)   |
+| Auth failures        | >100/hour | Slack alert      |
+| Monthly cost         | >$100     | Email warning    |
 
 ### 9.3 Sentry Integration
 
@@ -816,16 +868,16 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.VITE_APP_ENV,
   release: `novalingo@${import.meta.env.VITE_APP_VERSION}`,
-  
+
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({ maskAllText: true }), // COPPA: mask user text
   ],
-  
-  tracesSampleRate: 0.1,       // %10 performance tracing
-  replaysSessionSampleRate: 0,  // No session replay (COPPA)
+
+  tracesSampleRate: 0.1, // %10 performance tracing
+  replaysSessionSampleRate: 0, // No session replay (COPPA)
   replaysOnErrorSampleRate: 0.1, // %10 error replay
-  
+
   beforeSend(event) {
     // COPPA: Çocuk verisini temizle
     if (event.user) {
@@ -857,7 +909,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run SAST (Semgrep)
         uses: returntocorp/semgrep-action@v1
         with:
@@ -870,7 +922,7 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          
+
       - name: License check
         run: npx license-checker --failOn "GPL-3.0"
 ```
