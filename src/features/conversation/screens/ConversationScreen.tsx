@@ -150,9 +150,9 @@ export default function ConversationScreen() {
   const conversationData = toConversationActivityData(scenario);
 
   return (
-    <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col bg-white">
+    <div className="safe-area-top safe-area-bottom flex h-dvh flex-col overflow-hidden bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex shrink-0 items-center justify-between px-4 py-3">
         <button
           className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100"
           onClick={handleClose}
@@ -182,7 +182,7 @@ export default function ConversationScreen() {
       </div>
 
       {/* Conversation Activity */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <ConversationActivity
           data={conversationData}
           onComplete={handleComplete}
