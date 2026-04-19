@@ -153,6 +153,7 @@ const CHILD_ACCEPT_THRESHOLD = 0.65;
 const SPEECH_RATES = [0.6, 0.8, 1.0] as const;
 const HINT_DELAY_MS = 8000; // Show hint after 8 s of no response
 const AUTO_ADVANCE_MS = 20000; // Auto-advance after 20 s if child is stuck
+const MAX_NODE_REJECTIONS = 3; // Auto-accept first option after this many wrong attempts
 type NovaMood = 'idle' | 'speaking' | 'listening' | 'celebrating' | 'sad' | 'thinking';
 
 function withArticle(value: string): string {
@@ -497,6 +498,7 @@ export default function ConversationActivity({
   const hintedTurnsRef = useRef(0);
   const conversationSlotsRef = useRef<Record<string, string>>({});
   const rawChildResponsesRef = useRef<string[]>([]);
+  const nodeRejectionsRef = useRef(0);
   const completedWordsRef = useRef(completedWords);
   const attemptsRef = useRef(attempts);
   completedWordsRef.current = completedWords;
@@ -746,6 +748,7 @@ export default function ConversationActivity({
 
   const advanceToNode = useCallback(
     (node: ConversationActivityNode) => {
+      nodeRejectionsRef.current = 0;
       setFeedback('idle');
       setHintVisible(false);
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
@@ -1074,7 +1077,24 @@ export default function ConversationActivity({
           return;
         }
 
-        // Rejected — if LLM provided coaching text, Nova speaks it
+        // Rejected — increment per-node rejection counter
+        nodeRejectionsRef.current += 1;
+
+        // After MAX_NODE_REJECTIONS, auto-accept first option so child isn't stuck
+        if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && options.length > 0) {
+          const fallback = options[0]!;
+          const helpText = `Let's say: ${fallback.text}`;
+          setBubbles((prev) => [
+            ...prev,
+            { id: `nova-help-${Date.now()}`, speaker: 'nova', text: helpText, textTr: '' },
+          ]);
+          setNovaMood('speaking');
+          void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
+          pushTimer(() => handleOptionSelect(fallback), 2500);
+          return;
+        }
+
+        // If LLM provided coaching text, Nova speaks it
         if (openEndedMatch.novaResponseText) {
           void haptic.error();
           const coachText = openEndedMatch.novaResponseText;
@@ -1134,7 +1154,24 @@ export default function ConversationActivity({
             return;
           }
 
-          // Rejected — if LLM provided coaching text, Nova speaks it
+          // Rejected — increment per-node rejection counter
+          nodeRejectionsRef.current += 1;
+
+          // After MAX_NODE_REJECTIONS, auto-accept first option so child isn't stuck
+          if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && options.length > 0) {
+            const fallback = options[0]!;
+            const helpText = `Let's say: ${fallback.text}`;
+            setBubbles((prev) => [
+              ...prev,
+              { id: `nova-help-${Date.now()}`, speaker: 'nova', text: helpText, textTr: '' },
+            ]);
+            setNovaMood('speaking');
+            void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
+            pushTimer(() => handleOptionSelect(fallback), 2500);
+            return;
+          }
+
+          // If LLM provided coaching text, Nova speaks it
           if (automaticMatch.novaResponseText) {
             void haptic.error();
             const coachText = automaticMatch.novaResponseText;
@@ -1156,7 +1193,23 @@ export default function ConversationActivity({
         }
       }
 
-      // No match in any alternative — give feedback but keep child in the same round
+      // No match in any alternative — increment rejection counter
+      nodeRejectionsRef.current += 1;
+
+      // After MAX_NODE_REJECTIONS, auto-accept first option so child isn't stuck
+      if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && options.length > 0) {
+        const fallback = options[0]!;
+        const helpText = `Let's say: ${fallback.text}`;
+        setBubbles((prev) => [
+          ...prev,
+          { id: `nova-help-${Date.now()}`, speaker: 'nova', text: helpText, textTr: '' },
+        ]);
+        setNovaMood('speaking');
+        void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
+        pushTimer(() => handleOptionSelect(fallback), 2500);
+        return;
+      }
+
       setFeedback('wrong');
       setNovaMood('sad');
       void haptic.error();
