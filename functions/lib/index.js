@@ -6,7 +6,7 @@
  * All callable, trigger, and scheduled functions exported here.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.healthCheck = exports.googleNotification = exports.appleNotification = exports.weeklyReport = exports.updateLeaderboards = exports.streakCheckMidnight = exports.resetDailyQuests = exports.cleanupExpiredCache = exports.onUserCreated = exports.onStreakUpdate = exports.onLessonCompleted = exports.onAchievementUnlocked = exports.verifyParentPin = exports.useStreakFreeze = exports.updateVocabulary = exports.updateChildProfile = exports.syncOfflineProgress = exports.submitLessonResult = exports.spinDailyWheel = exports.setParentPin = exports.registerAndroidPurchase = exports.purchaseShopItem = exports.getLeaderboard = exports.deleteChildProfile = exports.deleteAccount = exports.createChildProfile = exports.claimQuestReward = void 0;
+exports.healthCheck = exports.googleNotification = exports.appleNotification = exports.weeklyReport = exports.updateLeaderboards = exports.streakCheckMidnight = exports.resetDailyQuests = exports.cleanupExpiredCache = exports.onUserCreated = exports.onStreakUpdate = exports.onLessonCompleted = exports.onAchievementUnlocked = exports.verifyParentPin = exports.useStreakFreeze = exports.updateVocabulary = exports.updateChildProfile = exports.syncOfflineProgress = exports.submitLessonResult = exports.spinDailyWheel = exports.setParentPin = exports.registerAndroidPurchase = exports.purchaseShopItem = exports.getLeaderboard = exports.evaluateOpenEndedConversation = exports.deleteChildProfile = exports.deleteAccount = exports.createChildProfile = exports.claimQuestReward = void 0;
 // Callable functions (client-invoked)
 var claimQuestReward_1 = require("./callables/claimQuestReward");
 Object.defineProperty(exports, "claimQuestReward", { enumerable: true, get: function () { return claimQuestReward_1.claimQuestReward; } });
@@ -16,6 +16,8 @@ var deleteAccount_1 = require("./callables/deleteAccount");
 Object.defineProperty(exports, "deleteAccount", { enumerable: true, get: function () { return deleteAccount_1.deleteAccount; } });
 var deleteChildProfile_1 = require("./callables/deleteChildProfile");
 Object.defineProperty(exports, "deleteChildProfile", { enumerable: true, get: function () { return deleteChildProfile_1.deleteChildProfile; } });
+var evaluateOpenEndedConversation_1 = require("./callables/evaluateOpenEndedConversation");
+Object.defineProperty(exports, "evaluateOpenEndedConversation", { enumerable: true, get: function () { return evaluateOpenEndedConversation_1.evaluateOpenEndedConversation; } });
 var getLeaderboard_1 = require("./callables/getLeaderboard");
 Object.defineProperty(exports, "getLeaderboard", { enumerable: true, get: function () { return getLeaderboard_1.getLeaderboard; } });
 var purchaseShopItem_1 = require("./callables/purchaseShopItem");

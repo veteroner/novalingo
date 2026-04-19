@@ -24,6 +24,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 import {
   calculateLessonXP,
   createSRSCard,
@@ -40,7 +41,7 @@ import {
   verifyPinHash,
   xpForLevel,
 } from '../spark/gameLogic';
-import { auth, db } from './app';
+import { auth, db, functions } from './app';
 
 function requireCurrentUserId(): string {
   const uid = auth.currentUser?.uid;
@@ -337,11 +338,60 @@ export interface SubmitLessonResultReq {
       hintedTurns: number;
       targetWordsHit: string[];
       patternsHit: string[];
+      rawChildResponses?: string[];
       passed: boolean;
       score: number;
     };
   }[];
   totalTimeMs: number;
+}
+
+export interface EvaluateOpenEndedConversationReq {
+  rawText: string;
+  scenarioId?: string;
+  nodeId: string;
+  nodeText?: string;
+  targetWords: string[];
+  targetPatterns?: string[];
+  slots?: Record<string, string>;
+  defaultNextNodeId?: string | null;
+  responseExamples?: string[];
+  config?: {
+    enabled: boolean;
+    strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+    domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
+    slotKey: string;
+    nextNodeId: string;
+    marksPattern?: string[];
+    countCapturedValueAsTargetWord?: boolean;
+  };
+}
+
+export interface EvaluateOpenEndedConversationRes {
+  accepted: boolean;
+  source: 'llm';
+  modelUsed?: string;
+  resolution: {
+    slotKey: string;
+    slotValue: string;
+    nextNodeId: string;
+    marksPattern: string[];
+    markedTargetWords: string[];
+  } | null;
+  rubric: {
+    matchedPattern: boolean;
+    targetWordHits: string[];
+    score: number;
+    rationale: string;
+    dimensions: {
+      relevanceScore: number;
+      patternAccuracyScore: number;
+      vocabularyCoverageScore: number;
+      childSafetyScore: number;
+      encouragementScore: number;
+    };
+  };
+  repairPrompt?: string;
 }
 
 export interface SubmitLessonResultRes {
@@ -355,6 +405,18 @@ export interface SubmitLessonResultRes {
   leveledUp: boolean;
   newLevel: number;
   isPerfect: boolean;
+}
+
+export async function evaluateOpenEndedConversation(
+  data: EvaluateOpenEndedConversationReq,
+): Promise<EvaluateOpenEndedConversationRes> {
+  requireCurrentUserId();
+  const evaluateFn = httpsCallable<
+    EvaluateOpenEndedConversationReq,
+    EvaluateOpenEndedConversationRes
+  >(functions, 'evaluateOpenEndedConversation');
+  const result = await evaluateFn(data);
+  return result.data;
 }
 
 export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitLessonResultRes> {

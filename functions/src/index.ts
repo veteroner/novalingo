@@ -10,6 +10,7 @@ export { claimQuestReward } from './callables/claimQuestReward';
 export { createChildProfile } from './callables/createChildProfile';
 export { deleteAccount } from './callables/deleteAccount';
 export { deleteChildProfile } from './callables/deleteChildProfile';
+export { evaluateOpenEndedConversation } from './callables/evaluateOpenEndedConversation';
 export { getLeaderboard } from './callables/getLeaderboard';
 export { purchaseShopItem } from './callables/purchaseShopItem';
 export { registerAndroidPurchase } from './callables/registerAndroidPurchase';

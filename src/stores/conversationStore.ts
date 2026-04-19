@@ -78,6 +78,7 @@ interface ConversationStoreState {
     attempts: number;
     targetWordsHit: number;
     targetWordsTotal: number;
+    rawChildResponses?: string[];
   }) => ConversationResult;
   reset: () => void;
   initProgress: (childId: string) => void;
@@ -156,6 +157,7 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
       attempts: outcome.attempts,
       targetWordsHit: outcome.targetWordsHit,
       targetWordsTotal: outcome.targetWordsTotal,
+      rawChildResponses: outcome.rawChildResponses,
       completedAt: Date.now(),
     };
 
