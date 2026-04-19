@@ -34,6 +34,11 @@ function logEvent(name: string, params?: Record<string, string | number | boolea
   }
 }
 
+function normalizeRawAnswerPreview(rawAnswer: string | undefined): string | undefined {
+  if (!rawAnswer) return undefined;
+  return rawAnswer.trim().replace(/\s+/g, ' ').slice(0, 80) || undefined;
+}
+
 // ===== USER PROPERTIES =====
 
 /**
@@ -148,12 +153,18 @@ export function trackConversationTurnCompleted(params: {
   nodeId: string;
   matched: boolean;
   hintUsed: boolean;
+  matchSource?: 'rule' | 'open_ended_local' | 'open_ended_llm';
+  rawAnswer?: string;
 }): void {
   logEvent('conversation_turn_completed', {
     scenario_id: params.scenarioId,
     node_id: params.nodeId,
     matched: params.matched,
     hint_used: params.hintUsed,
+    ...(params.matchSource ? { match_source: params.matchSource } : {}),
+    ...(normalizeRawAnswerPreview(params.rawAnswer)
+      ? { raw_answer_preview: normalizeRawAnswerPreview(params.rawAnswer) as string }
+      : {}),
   });
 }
 
@@ -179,6 +190,8 @@ export function trackConversationCompleted(params: {
   durationSeconds: number;
   acceptedTurns: number;
   hintedTurns: number;
+  rawAnswerCount?: number;
+  rawAnswerPreview?: string;
 }): void {
   logEvent('conversation_completed', {
     scenario_id: params.scenarioId,
@@ -188,6 +201,10 @@ export function trackConversationCompleted(params: {
     duration_seconds: params.durationSeconds,
     accepted_turns: params.acceptedTurns,
     hinted_turns: params.hintedTurns,
+    ...(params.rawAnswerCount != null ? { raw_answer_count: params.rawAnswerCount } : {}),
+    ...(normalizeRawAnswerPreview(params.rawAnswerPreview)
+      ? { raw_answer_preview: normalizeRawAnswerPreview(params.rawAnswerPreview) as string }
+      : {}),
   });
 }
 

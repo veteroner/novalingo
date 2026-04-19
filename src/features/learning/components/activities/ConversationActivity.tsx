@@ -8,6 +8,7 @@
 
 import {
   matchConversationResponseRule,
+  openEndedConversationService,
   scoreConversation,
   type ConversationTurnResult,
 } from '@/features/learning/data/conversations';
@@ -65,7 +66,18 @@ interface ConversationActivityNode {
   audioUrl?: string;
   emoji?: string;
   options?: ConversationActivityOption[];
+  openEnded?: ConversationActivityOpenEnded;
   next?: string;
+}
+
+interface ConversationActivityOpenEnded {
+  enabled: boolean;
+  strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+  domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
+  slotKey: string;
+  nextNodeId: string;
+  marksPattern?: string[];
+  countCapturedValueAsTargetWord?: boolean;
 }
 
 interface ConversationActivityData {
@@ -104,8 +116,19 @@ interface CompletedConversationEvidence {
   hintedTurns: number;
   targetWordsHit: string[];
   patternsHit: string[];
+  rawChildResponses?: string[];
   passed: boolean;
   score: number;
+}
+
+interface AcceptedConversationResponse {
+  nextNodeId: string;
+  childText: string;
+  childTextTr: string;
+  emoji?: string;
+  markedTargetWords: string[];
+  markedPatterns: string[];
+  matchSource: 'rule' | 'open_ended_local' | 'open_ended_llm';
 }
 
 // Feature detection for SpeechRecognition
@@ -131,6 +154,33 @@ const SPEECH_RATES = [0.6, 0.8, 1.0] as const;
 const HINT_DELAY_MS = 8000; // Show hint after 8 s of no response
 const AUTO_ADVANCE_MS = 20000; // Auto-advance after 20 s if child is stuck
 type NovaMood = 'idle' | 'speaking' | 'listening' | 'celebrating' | 'sad' | 'thinking';
+
+function withArticle(value: string): string {
+  return /^[aeiou]/i.test(value) ? `an ${value}` : `a ${value}`;
+}
+
+function capitalize(value: string): string {
+  if (!value) return value;
+  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+}
+
+function getSingleNextNodeId(options: ConversationActivityOption[]): string | null {
+  const nextNodeIds = [...new Set(options.map((option) => option.nextNodeId))];
+  return nextNodeIds.length === 1 ? (nextNodeIds[0] ?? null) : null;
+}
+
+function interpolateTemplate(
+  template: string,
+  slots: Record<string, string>,
+  fallback?: string,
+): string {
+  const interpolated = template.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_match, key) => {
+    return slots[key] ?? '';
+  });
+  const normalized = interpolated.replace(/\s+/g, ' ').trim();
+  if (normalized.length > 0) return normalized;
+  return fallback ?? template;
+}
 
 const AVATAR_EMOJIS: Record<string, string> = {
   fox: '🦊',
@@ -442,8 +492,11 @@ export default function ConversationActivity({
   const noResponseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nodesMap = useRef<Map<string, ConversationActivityNode>>(new Map());
   const currentPromptNodeIdRef = useRef<string | null>(null);
+  const currentPromptOpenEndedRef = useRef<ConversationActivityOpenEnded | null>(null);
   const turnResultsRef = useRef<ConversationTurnResult[]>([]);
   const hintedTurnsRef = useRef(0);
+  const conversationSlotsRef = useRef<Record<string, string>>({});
+  const rawChildResponsesRef = useRef<string[]>([]);
   const completedWordsRef = useRef(completedWords);
   const attemptsRef = useRef(attempts);
   completedWordsRef.current = completedWords;
@@ -516,8 +569,11 @@ export default function ConversationActivity({
     }
     nodesMap.current = map;
     currentPromptNodeIdRef.current = null;
+    currentPromptOpenEndedRef.current = null;
     turnResultsRef.current = [];
     hintedTurnsRef.current = 0;
+    conversationSlotsRef.current = {};
+    rawChildResponsesRef.current = [];
 
     // Start the dialogue
     const startNode = map.get(data.startNodeId);
@@ -590,6 +646,24 @@ export default function ConversationActivity({
     [data.targetWords],
   );
 
+  const rememberConversationSlot = useCallback((slotKey: string, slotValue: string) => {
+    const trimmed = slotValue.trim().toLowerCase();
+    if (!trimmed) return;
+    conversationSlotsRef.current[slotKey] = trimmed;
+    conversationSlotsRef.current[`${slotKey}Capitalized`] = capitalize(trimmed);
+    conversationSlotsRef.current[`${slotKey}WithArticle`] = withArticle(trimmed);
+    conversationSlotsRef.current[`${slotKey}WithArticleCapitalized`] = capitalize(
+      withArticle(trimmed),
+    );
+  }, []);
+
+  const resolveNodeContent = useCallback((node: ConversationActivityNode) => {
+    const text = interpolateTemplate(node.text, conversationSlotsRef.current, node.text);
+    const textTr = interpolateTemplate(node.textTr, conversationSlotsRef.current, node.textTr);
+    const audioUrl = text === node.text ? node.audioUrl : undefined;
+    return { text, textTr, audioUrl };
+  }, []);
+
   const getConversationOutcome = useCallback((): ComputedConversationOutcome => {
     const durationSeconds = Math.round((Date.now() - startTime.current) / 1000);
 
@@ -641,6 +715,7 @@ export default function ConversationActivity({
       hintedTurns: outcome.hintedTurns,
       targetWordsHit: outcome.targetWordsHit,
       patternsHit: outcome.patternsHit,
+      rawChildResponses: rawChildResponsesRef.current,
       passed: outcome.passed,
       score: outcome.score,
     };
@@ -654,6 +729,8 @@ export default function ConversationActivity({
         durationSeconds: outcome.durationSeconds,
         acceptedTurns: outcome.acceptedTurns,
         hintedTurns: outcome.hintedTurns,
+        rawAnswerCount: rawChildResponsesRef.current.length,
+        rawAnswerPreview: rawChildResponsesRef.current.slice(0, 3).join(' | '),
       });
     }
 
@@ -672,6 +749,7 @@ export default function ConversationActivity({
       setFeedback('idle');
       setHintVisible(false);
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+      const resolvedNode = resolveNodeContent(node);
 
       // Add bubble
       setBubbles((prev) => [
@@ -679,24 +757,24 @@ export default function ConversationActivity({
         {
           id: node.id,
           speaker: node.speaker,
-          text: node.text,
-          textTr: node.textTr,
+          text: resolvedNode.text,
+          textTr: resolvedNode.textTr,
           emoji: node.emoji,
-          audioUrl: node.audioUrl,
+          audioUrl: resolvedNode.audioUrl,
         },
       ]);
 
       // Nova speaks — TTS with current rate
       if (node.speaker === 'nova') {
-        setCurrentSpeech({ text: node.text, textTr: node.textTr });
-        setCurrentAudioUrl(node.audioUrl ?? null);
+        setCurrentSpeech({ text: resolvedNode.text, textTr: resolvedNode.textTr });
+        setCurrentAudioUrl(resolvedNode.audioUrl ?? null);
         // Brief thinking state before speaking starts
         setNovaMood('thinking');
         pushTimer(() => {
           setNovaMood('speaking');
-          void ttsSpeak(node.text, {
+          void ttsSpeak(resolvedNode.text, {
             rate: SPEECH_RATES[speechRateRef.current],
-            audioUrl: node.audioUrl,
+            audioUrl: resolvedNode.audioUrl,
           });
         }, 500);
       }
@@ -718,6 +796,7 @@ export default function ConversationActivity({
       // If nova with options → free-form input active + start hint + auto-advance timers
       if (node.speaker === 'nova' && node.options && node.options.length > 0) {
         currentPromptNodeIdRef.current = node.id;
+        currentPromptOpenEndedRef.current = node.openEnded ?? null;
         setOptions(node.options);
         // Hint timer — subtly suggest the first option after HINT_DELAY_MS
         hintTimerRef.current = setTimeout(() => {
@@ -737,6 +816,7 @@ export default function ConversationActivity({
         }, AUTO_ADVANCE_MS);
       } else if (node.next) {
         currentPromptNodeIdRef.current = null;
+        currentPromptOpenEndedRef.current = null;
         const nextNodeId = node.next;
 
         if (node.speaker === 'nova') {
@@ -762,6 +842,7 @@ export default function ConversationActivity({
         }
       } else {
         currentPromptNodeIdRef.current = null;
+        currentPromptOpenEndedRef.current = null;
         // End of conversation — no next, no options → complete
         if (node.speaker === 'nova') {
           // Wait for TTS to finish before ending
@@ -782,20 +863,22 @@ export default function ConversationActivity({
         }
       }
     },
-    [finishConversation, pushTimer, data.scenarioId],
+    [finishConversation, pushTimer, data.scenarioId, resolveNodeContent],
   );
 
-  const handleOptionSelect = useCallback(
-    (option: ConversationActivityOption) => {
+  const acceptConversationResponse = useCallback(
+    (response: AcceptedConversationResponse) => {
       const hintUsed = hintVisible;
-      const promptNodeId = currentPromptNodeIdRef.current ?? option.nextNodeId;
-      const markedTargetWords = getLegacyMarkedWords(option);
-      const markedPatterns = option.marksPatterns ?? [];
+      const promptNodeId = currentPromptNodeIdRef.current ?? response.nextNodeId;
+      const markedTargetWords = response.markedTargetWords;
+      const markedPatterns = response.markedPatterns;
+      const trimmedChildText = response.childText.trim();
 
       setAttempts((a) => a + 1);
       setOptions([]);
       setCurrentRound((r) => r + 1);
       setHintVisible(false);
+      currentPromptOpenEndedRef.current = null;
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
       if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
 
@@ -817,7 +900,13 @@ export default function ConversationActivity({
           nodeId: promptNodeId,
           matched: true,
           hintUsed,
+          matchSource: response.matchSource,
+          rawAnswer: trimmedChildText,
         });
+      }
+
+      if (trimmedChildText.length > 0) {
+        rawChildResponsesRef.current.push(trimmedChildText);
       }
 
       setCompletedWords((prev) => {
@@ -832,9 +921,9 @@ export default function ConversationActivity({
       const childBubble: ChatBubble = {
         id: `child-${Date.now()}`,
         speaker: 'child',
-        text: option.text,
-        textTr: option.textTr,
-        emoji: option.emoji,
+        text: response.childText,
+        textTr: response.childTextTr,
+        emoji: response.emoji,
       };
       setBubbles((prev) => [...prev, childBubble]);
 
@@ -847,8 +936,8 @@ export default function ConversationActivity({
         setNovaMood('idle');
         // Skip child echo node (templates have explicit child nodes that
         // mirror the option text — we already added the child bubble above)
-        const echoNode = nodesMap.current.get(option.nextNodeId);
-        const targetNodeId = echoNode?.speaker === 'child' ? echoNode.next : option.nextNodeId;
+        const echoNode = nodesMap.current.get(response.nextNodeId);
+        const targetNodeId = echoNode?.speaker === 'child' ? echoNode.next : response.nextNodeId;
         const nextNode = targetNodeId ? nodesMap.current.get(targetNodeId) : undefined;
         if (nextNode) {
           advanceToNode(nextNode);
@@ -857,7 +946,22 @@ export default function ConversationActivity({
         }
       }, 800);
     },
-    [advanceToNode, finishConversation, getLegacyMarkedWords, haptic, data.scenarioId, hintVisible],
+    [advanceToNode, finishConversation, haptic, data.scenarioId, hintVisible],
+  );
+
+  const handleOptionSelect = useCallback(
+    (option: ConversationActivityOption) => {
+      acceptConversationResponse({
+        nextNodeId: option.nextNodeId,
+        childText: option.text,
+        childTextTr: option.textTr,
+        emoji: option.emoji,
+        markedTargetWords: getLegacyMarkedWords(option),
+        markedPatterns: option.marksPatterns ?? [],
+        matchSource: 'rule',
+      });
+    },
+    [acceptConversationResponse, getLegacyMarkedWords],
   );
 
   // ── Replay helper ──
@@ -876,9 +980,10 @@ export default function ConversationActivity({
   // ── Free-form input handler (STT transcript or typed text) ──
   // alternatives: additional STT candidates to try if rawText doesn't match
   const handleFreeInput = useCallback(
-    (rawText: string, alternatives: string[] = []) => {
+    async (rawText: string, alternatives: string[] = []) => {
       if (!rawText.trim() || options.length === 0) return;
       abortRecognition();
+      const openEndedConfig = currentPromptOpenEndedRef.current;
 
       const responseRules = options.map((option) => ({
         id: option.responseId ?? option.nextNodeId,
@@ -937,6 +1042,80 @@ export default function ConversationActivity({
         }
       }
 
+      if (openEndedConfig) {
+        const openEndedMatch = await openEndedConversationService.evaluateTurn({
+          rawText,
+          nodeId: currentPromptNodeIdRef.current ?? 'unknown',
+          scenarioId: data.scenarioId,
+          nodeText:
+            (currentPromptNodeIdRef.current
+              ? nodesMap.current.get(currentPromptNodeIdRef.current)?.text
+              : undefined) ?? '',
+          config: openEndedConfig,
+          targetWords: data.targetWords,
+          targetPatterns: data.targetPatterns,
+          slots: conversationSlotsRef.current,
+          responseExamples: options.map((option) => option.text),
+        });
+
+        if (openEndedMatch.accepted && openEndedMatch.resolution) {
+          rememberConversationSlot(
+            openEndedMatch.resolution.slotKey,
+            openEndedMatch.resolution.slotValue,
+          );
+          acceptConversationResponse({
+            nextNodeId: openEndedMatch.resolution.nextNodeId,
+            childText: rawText.trim(),
+            childTextTr: '',
+            markedTargetWords: openEndedMatch.resolution.markedTargetWords,
+            markedPatterns: openEndedMatch.resolution.marksPattern,
+            matchSource: openEndedMatch.source === 'llm' ? 'open_ended_llm' : 'open_ended_local',
+          });
+          return;
+        }
+      }
+
+      const shouldTryAutomaticSemiOpenFallback =
+        data.scenarioMode === 'semi_open' && !openEndedConfig && options.length > 0;
+
+      if (shouldTryAutomaticSemiOpenFallback) {
+        const defaultNextNodeId = getSingleNextNodeId(options);
+        if (defaultNextNodeId) {
+          const automaticMatch = await openEndedConversationService.evaluateTurn({
+            rawText,
+            scenarioId: data.scenarioId,
+            nodeId: currentPromptNodeIdRef.current ?? 'unknown',
+            nodeText:
+              (currentPromptNodeIdRef.current
+                ? nodesMap.current.get(currentPromptNodeIdRef.current)?.text
+                : undefined) ?? '',
+            targetWords: data.targetWords,
+            targetPatterns: data.targetPatterns,
+            slots: conversationSlotsRef.current,
+            defaultNextNodeId,
+            responseExamples: options.map((option) => option.text),
+          });
+
+          if (automaticMatch.accepted && automaticMatch.resolution) {
+            if (automaticMatch.resolution.slotKey && automaticMatch.resolution.slotValue) {
+              rememberConversationSlot(
+                automaticMatch.resolution.slotKey,
+                automaticMatch.resolution.slotValue,
+              );
+            }
+            acceptConversationResponse({
+              nextNodeId: automaticMatch.resolution.nextNodeId,
+              childText: rawText.trim(),
+              childTextTr: '',
+              markedTargetWords: automaticMatch.resolution.markedTargetWords,
+              markedPatterns: automaticMatch.resolution.marksPattern,
+              matchSource: automaticMatch.source === 'llm' ? 'open_ended_llm' : 'open_ended_local',
+            });
+            return;
+          }
+        }
+      }
+
       // No match in any alternative — give feedback but keep child in the same round
       setFeedback('wrong');
       setNovaMood('sad');
@@ -947,7 +1126,14 @@ export default function ConversationActivity({
         setNovaMood('listening');
       }, 1200);
     },
-    [options, data.targetWords, handleOptionSelect, haptic],
+    [
+      options,
+      data.targetWords,
+      handleOptionSelect,
+      haptic,
+      rememberConversationSlot,
+      acceptConversationResponse,
+    ],
   );
 
   // ===== STT =====
@@ -1032,21 +1218,13 @@ export default function ConversationActivity({
   finishConversationRef.current = finishConversation;
 
   // Keep autoAdvanceRef in sync — called when child doesn't respond in time.
-  // Reveal the hint visually for 2.5 s so the child sees what to say, then
-  // advance using the option whose text the hint was showing (curr[0]).
+  // Timeout should reveal support, not fabricate a child answer.
   autoAdvanceRef.current = () => {
     const curr = optionsRef.current;
     if (curr.length === 0) return;
-    // Make the hint & translation visible so the child can read the answer
     setHintVisible(true);
     setShowTranslation(true);
-    // After a short pause advance using the first (= hinted) option
-    setTimeout(() => {
-      const latest = optionsRef.current;
-      if (latest.length > 0 && latest[0]) {
-        handleOptionSelect(latest[0]);
-      }
-    }, 2500);
+    setNovaMood('listening');
   };
 
   return (
@@ -1201,7 +1379,7 @@ export default function ConversationActivity({
                 >
                   {bubble.text}
                 </p>
-                {showTranslation && (
+                {showTranslation && bubble.textTr.trim().length > 0 && (
                   <p
                     className={`text-xs ${
                       bubble.speaker === 'nova' ? 'text-gray-400' : 'text-indigo-200'
@@ -1275,7 +1453,7 @@ export default function ConversationActivity({
                 if (e.key === 'Enter' && freeInputText.trim()) {
                   const val = freeInputText.trim();
                   setFreeInputText('');
-                  handleFreeInput(val);
+                  void handleFreeInput(val);
                 }
               }}
               placeholder={t('activities.conversationTypeHere')}
@@ -1291,7 +1469,7 @@ export default function ConversationActivity({
                   onClick={() => {
                     const val = freeInputText.trim();
                     setFreeInputText('');
-                    handleFreeInput(val);
+                    void handleFreeInput(val);
                   }}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white shadow-md"
                 >

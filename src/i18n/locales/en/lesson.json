@@ -86,7 +86,8 @@
     "newRecord": "New Record! 🏆",
     "nextEpisodeTitle": "Next episode ready!",
     "nextEpisodeDesc": "Episode {{episode}}/{{total}} · {{seriesTitle}}",
-    "wordsTitle": "🎯 Practiced Words"
+    "wordsTitle": "🎯 Practiced Words",
+    "rawAnswersTitle": "🗣 Your Real Answers"
   },
 
   "result": {

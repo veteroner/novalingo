@@ -388,6 +388,31 @@ export default function ConversationResultScreen() {
         </motion.div>
       )}
 
+      {result.rawChildResponses && result.rawChildResponses.length > 0 && (
+        <motion.div
+          className="mt-6 w-full max-w-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1 }}
+        >
+          <Text variant="h4" align="center" className="mb-3">
+            {t('conversationResult.rawAnswersTitle')}
+          </Text>
+          <div className="space-y-2">
+            {result.rawChildResponses.slice(0, 5).map((answer, index) => (
+              <div key={`${answer}-${index}`} className="rounded-2xl bg-white px-4 py-3 shadow-sm">
+                <Text variant="caption" className="text-text-secondary">
+                  #{index + 1}
+                </Text>
+                <Text variant="bodySmall" className="mt-1 font-semibold text-gray-700">
+                  {answer}
+                </Text>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       {/* Actions */}
       <motion.div
         className="mt-8 w-full max-w-sm space-y-3"

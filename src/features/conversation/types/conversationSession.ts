@@ -39,6 +39,8 @@ export interface ConversationResult {
   targetWordsHit: number;
   /** Total target words in the scenario */
   targetWordsTotal: number;
+  /** Raw child utterances kept for recap and future analytics */
+  rawChildResponses?: string[];
   /** Timestamp when session was completed */
   completedAt: number;
 }

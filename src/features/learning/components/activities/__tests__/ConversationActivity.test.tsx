@@ -4,6 +4,8 @@
  * Renders chat bubbles, handles option selection, computes scoring.
  */
 
+import { toConversationActivityData } from '@/features/learning/data/conversations';
+import { myFavoriteAnimalScenario } from '@/features/learning/data/conversations/registry/phase1/animals/myFavoriteAnimal';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -300,5 +302,48 @@ describe('ConversationActivity', () => {
 
     unmount();
     expect(mockStopSpeaking).toHaveBeenCalled();
+  });
+
+  it('accepts open-ended animal answers and preserves the raw child utterance', async () => {
+    const onComplete = vi.fn();
+    const activityData = toConversationActivityData(myFavoriteAnimalScenario);
+    render(<ConversationActivity data={activityData} onComplete={onComplete} />);
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    const input = screen.getByPlaceholderText('activities.conversationTypeHere');
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'snake' } });
+      fireEvent.click(screen.getByRole('button', { name: '➤' }));
+      await Promise.resolve();
+    });
+
+    expect(screen.getByText('snake')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(800);
+    });
+
+    expect(
+      screen.getAllByText('A snake! Nice choice. That sounds interesting!').length,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it('keeps the prompt active after timeout instead of auto-selecting the first option', () => {
+    const onComplete = vi.fn();
+    render(<ConversationActivity data={buildSimpleData()} onComplete={onComplete} />);
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(23000);
+    });
+
+    expect(screen.getByPlaceholderText('activities.conversationTypeHere')).toBeInTheDocument();
+    expect(onComplete).not.toHaveBeenCalled();
   });
 });

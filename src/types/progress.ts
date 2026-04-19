@@ -12,6 +12,7 @@ export interface ConversationEvidence {
   hintedTurns: number;
   targetWordsHit: string[];
   patternsHit: string[];
+  rawChildResponses?: string[];
   passed: boolean;
   score: number;
 }

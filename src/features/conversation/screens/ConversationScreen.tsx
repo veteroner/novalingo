@@ -72,6 +72,7 @@ export default function ConversationScreen() {
           outcome.conversationEvidence?.targetWordsHit.length ??
           Math.round((outcome.score / 100) * scenario.targetWords.length),
         targetWordsTotal: scenario.targetWords.length,
+        rawChildResponses: outcome.conversationEvidence?.rawChildResponses,
       });
 
       void navigate('/conversation/result', {

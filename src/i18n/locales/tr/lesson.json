@@ -86,7 +86,8 @@
     "newRecord": "Yeni Rekor! 🏆",
     "nextEpisodeTitle": "Sıradaki bölüm hazır!",
     "nextEpisodeDesc": "{{episode}}/{{total}}. Bölüm · {{seriesTitle}}",
-    "wordsTitle": "🎯 Pratik Edilen Kelimeler"
+    "wordsTitle": "🎯 Pratik Edilen Kelimeler",
+    "rawAnswersTitle": "🗣 Gerçek Cevapların"
   },
 
   "result": {

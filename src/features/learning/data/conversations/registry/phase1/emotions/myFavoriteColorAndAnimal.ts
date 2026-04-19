@@ -60,6 +60,15 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
         promptTr: '\u015e\u00f6yle s\u00f6yle: My favorite color is blue.',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'favorite_thing',
+        domain: 'color',
+        slotKey: 'favoriteColor',
+        nextNodeId: 'n2_color_bridge',
+        marksPattern: ['My favorite ... is ...'],
+        countCapturedValueAsTargetWord: true,
+      },
       responses: [
         {
           id: 'r1_blue',
@@ -125,12 +134,25 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
         promptTr: '\u015e\u00f6yle s\u00f6yle: I like it because it is beautiful.',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'because_reason',
+        domain: 'descriptor',
+        slotKey: 'favoriteColorReason',
+        nextNodeId: 'n4',
+        marksPattern: ['I like ... because ...'],
+        countCapturedValueAsTargetWord: true,
+      },
       responses: [
         {
           id: 'r3_beautiful',
           expectedText: 'I like it because it is beautiful.',
           expectedTextTr: 'Onu seviyorum cunku guzel.',
-          acceptedVariants: ['beautiful', 'because it is beautiful', 'i like it because it is beautiful'],
+          acceptedVariants: [
+            'beautiful',
+            'because it is beautiful',
+            'i like it because it is beautiful',
+          ],
           acceptedWords: ['beautiful'],
           nextNodeId: 'n4',
           emoji: '✨',
@@ -154,7 +176,7 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
       id: 'n4',
       speaker: 'nova',
       role: 'friend',
-      text: 'Great reason! Now let\'s talk about animals.',
+      text: "Great reason! Now let's talk about animals.",
       textTr: 'Harika bir neden! Simdi hayvanlar hakkinda konusalim.',
       next: 'n5',
       emoji: '🐾',
@@ -178,6 +200,15 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
         prompt: 'Say: My favorite animal is a rabbit.',
         promptTr: '\u015e\u00f6yle s\u00f6yle: My favorite animal is a rabbit.',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'favorite_thing',
+        domain: 'animal',
+        slotKey: 'favoriteAnimal',
+        nextNodeId: 'n6_animal_bridge',
+        marksPattern: ['My favorite ... is ...'],
+        countCapturedValueAsTargetWord: true,
       },
       responses: [
         {
@@ -244,6 +275,15 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
         promptTr: '\u015e\u00f6yle s\u00f6yle: I like it because it is cute.',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'because_reason',
+        domain: 'descriptor',
+        slotKey: 'favoriteAnimalReason',
+        nextNodeId: 'n8',
+        marksPattern: ['I like ... because ...'],
+        countCapturedValueAsTargetWord: true,
+      },
       responses: [
         {
           id: 'r7_cute',
@@ -282,8 +322,8 @@ export const myFavoriteColorAndAnimalScenario: ConversationScenario = {
       id: 'n9',
       speaker: 'nova',
       role: 'guide',
-      text: 'What is Nova\'s favorite? Say: Your favorite animal is a cat.',
-      textTr: 'Nova\'nın favorisi ne? Soyle: Your favorite animal is a cat.',
+      text: "What is Nova's favorite? Say: Your favorite animal is a cat.",
+      textTr: "Nova'nın favorisi ne? Soyle: Your favorite animal is a cat.",
       goalType: 'answer',
       targetPattern: 'Your favorite ... is ...',
       hint: {

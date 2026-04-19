@@ -47,6 +47,7 @@ function toLegacyNovaNode(node: ConversationNodeV2): ConversationNode {
     next: node.next,
     targetWord: node.targetWord,
     options: toLegacyOptions(node.id, node.responses),
+    openEnded: node.openEnded,
   };
 }
 

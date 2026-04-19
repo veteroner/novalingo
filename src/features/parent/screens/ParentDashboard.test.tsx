@@ -44,6 +44,8 @@ const queryState = {
       score: 68,
       targetWordsHit: ['coat', 'boots'],
       patternsHit: ['I wear ___'],
+      rawChildResponses: ['I wear my blue coat', 'boots for rain'],
+      rawAnswerPreview: 'I wear my blue coat • boots for rain',
       completedAtMs: Date.now() - 60_000,
     },
   ],
@@ -56,6 +58,7 @@ const queryState = {
       averageAcceptedTurns: 3.6,
       averageHints: 0.1,
       recentWords: ['juice', 'sandwich'],
+      recentUtterances: ['I like apple juice', 'I want a sandwich'],
     },
     {
       theme: 'school',
@@ -65,6 +68,7 @@ const queryState = {
       averageAcceptedTurns: 3,
       averageHints: 0.3,
       recentWords: ['pencil', 'book'],
+      recentUtterances: ['I bring my pencil case'],
     },
     {
       theme: 'clothes',
@@ -74,6 +78,7 @@ const queryState = {
       averageAcceptedTurns: 2.1,
       averageHints: 1.2,
       recentWords: ['coat', 'boots', 'hat'],
+      recentUtterances: ['I wear my blue coat', 'boots for rain'],
     },
   ],
   weeklyStats: {
@@ -210,8 +215,11 @@ describe('ParentDashboard', () => {
     expect(screen.getByText('Biraz daha destek isteyen temalar')).toBeInTheDocument();
     expect(screen.getByText('Tekrar için önerilen tema: clothes')).toBeInTheDocument();
     expect(screen.getByText(/Bu temada oturum başına ortalama 1.2 ipucu/)).toBeInTheDocument();
+    expect(screen.getByText('Tema bazlı gerçek cümle örnekleri')).toBeInTheDocument();
     expect(screen.getAllByText('coat').length).toBeGreaterThan(0);
     expect(screen.getAllByText('boots').length).toBeGreaterThan(0);
+    expect(screen.getByText('I wear my blue coat • boots for rain')).toBeInTheDocument();
+    expect(screen.getByText('“I like apple juice”')).toBeInTheDocument();
   });
 
   it('starts a conversation directly from the recommended theme CTA', async () => {

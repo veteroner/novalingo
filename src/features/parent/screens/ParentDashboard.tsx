@@ -474,6 +474,41 @@ export default function ParentDashboard() {
                   </div>
                 </div>
               )}
+
+              {conversationThemeProgress.some(
+                (item) => (item.recentUtterances?.length ?? 0) > 0,
+              ) && (
+                <div>
+                  <Text variant="label" className="text-text-secondary mb-2">
+                    Tema bazlı gerçek cümle örnekleri
+                  </Text>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {conversationThemeProgress
+                      .filter((item) => (item.recentUtterances?.length ?? 0) > 0)
+                      .slice(0, 4)
+                      .map((item) => (
+                        <div
+                          key={`${item.theme}-utterances`}
+                          className="rounded-2xl border border-violet-100 bg-violet-50/60 px-4 py-3"
+                        >
+                          <Text variant="bodySmall" weight="bold" className="text-violet-950">
+                            {item.theme}
+                          </Text>
+                          <div className="mt-2 space-y-2">
+                            {(item.recentUtterances ?? []).slice(0, 2).map((utterance, index) => (
+                              <div
+                                key={`${item.theme}-${utterance}-${index}`}
+                                className="rounded-xl bg-white px-3 py-2 text-sm text-violet-900 shadow-sm"
+                              >
+                                “{utterance}”
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         )}
@@ -1000,6 +1035,17 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {item.rawAnswerPreview && (
+        <div className="mt-2 rounded-xl bg-violet-50 px-3 py-2">
+          <Text variant="caption" className="text-text-secondary mb-1 block">
+            Çocuğun söylediği
+          </Text>
+          <Text variant="caption" className="text-violet-900">
+            {item.rawAnswerPreview}
+          </Text>
         </div>
       )}
     </div>

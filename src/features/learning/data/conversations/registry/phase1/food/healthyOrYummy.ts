@@ -60,6 +60,15 @@ export const healthyOrYummyScenario: ConversationScenario = {
         promptTr: 'Soyle: I choose salad.',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'choose_thing',
+        domain: 'food',
+        slotKey: 'chosenFood',
+        nextNodeId: 'n2_choice_any',
+        marksPattern: ['I choose...'],
+        countCapturedValueAsTargetWord: true,
+      },
       responses: [
         {
           id: 'r1_salad',
@@ -104,6 +113,15 @@ export const healthyOrYummyScenario: ConversationScenario = {
       emoji: '🍰',
     },
     {
+      id: 'n2_choice_any',
+      speaker: 'nova',
+      role: 'friend',
+      text: '{{chosenFoodWithArticleCapitalized}}! Interesting choice. Why do you choose it?',
+      textTr: 'Ilginc bir secim! Neden onu seciyorsun?',
+      next: 'n3',
+      emoji: '🍽️',
+    },
+    {
       id: 'n3',
       speaker: 'nova',
       role: 'guide',
@@ -122,6 +140,15 @@ export const healthyOrYummyScenario: ConversationScenario = {
         prompt: 'Say: Because it is healthy.',
         promptTr: 'Soyle: Because it is healthy.',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'because_reason',
+        domain: 'descriptor',
+        slotKey: 'foodChoiceReason',
+        nextNodeId: 'n4',
+        marksPattern: ['because...'],
+        countCapturedValueAsTargetWord: true,
       },
       responses: [
         {
@@ -188,6 +215,15 @@ export const healthyOrYummyScenario: ConversationScenario = {
         promptTr: 'Soyle: I choose fruit.',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'choose_thing',
+        domain: 'food',
+        slotKey: 'secondChosenFood',
+        nextNodeId: 'n6',
+        marksPattern: ['I choose...'],
+        countCapturedValueAsTargetWord: true,
+      },
       responses: [
         {
           id: 'r5_fruit',
@@ -241,6 +277,15 @@ export const healthyOrYummyScenario: ConversationScenario = {
         prompt: 'Say: It is healthy.',
         promptTr: 'Soyle: It is healthy.',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'because_reason',
+        domain: 'descriptor',
+        slotKey: 'foodDescriptor',
+        nextNodeId: 'n8',
+        marksPattern: ['It is...'],
+        countCapturedValueAsTargetWord: true,
       },
       responses: [
         {

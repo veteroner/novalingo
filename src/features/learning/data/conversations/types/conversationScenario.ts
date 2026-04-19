@@ -1,6 +1,6 @@
 export type ConversationAgeBand = '4_6' | '7_9' | '10_12';
 export type ConversationDifficulty = 'starter' | 'core' | 'stretch';
-export type ConversationMode = 'guided' | 'semi_open' | 'mission' | 'story';
+export type ConversationMode = 'guided' | 'semi_open' | 'mission' | 'story' | 'open_ended';
 export type ConversationEnergy = 'calm' | 'playful' | 'exciting';
 export type ConversationGoalType =
   | 'choose'
@@ -76,6 +76,16 @@ export interface ConversationScoringRule {
   weight: number;
 }
 
+export interface ConversationOpenEndedConfig {
+  enabled: boolean;
+  strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+  domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
+  slotKey: string;
+  nextNodeId: string;
+  marksPattern?: string[];
+  countCapturedValueAsTargetWord?: boolean;
+}
+
 export interface ConversationResponseRule {
   id: string;
   expectedText: string;
@@ -109,6 +119,7 @@ export interface ConversationNodeV2 {
   repair?: ConversationRepair;
   scoring?: ConversationScoringRule;
   responses?: ConversationResponseRule[];
+  openEnded?: ConversationOpenEndedConfig;
   next?: string;
 }
 

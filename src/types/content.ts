@@ -288,6 +288,8 @@ export interface ConversationNode {
   next?: string;
   /** Primary target vocabulary word for this prompt — used in free-form matching */
   targetWord?: string;
+  /** Optional open-ended fallback for semi-open / open-ended prompts */
+  openEnded?: ConversationOpenEndedData;
 }
 
 export interface ConversationOption {
@@ -311,6 +313,16 @@ export interface ConversationOption {
   marksTargetWords?: string[];
   /** Patterns to mark as demonstrated when this response is accepted */
   marksPatterns?: string[];
+}
+
+export interface ConversationOpenEndedData {
+  enabled: boolean;
+  strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+  domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
+  slotKey: string;
+  nextNodeId: string;
+  marksPattern?: string[];
+  countCapturedValueAsTargetWord?: boolean;
 }
 
 export interface ConversationSuccessCriteriaData {

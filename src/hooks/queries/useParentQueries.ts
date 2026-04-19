@@ -86,6 +86,7 @@ interface ParentConversationEvidence {
   score: number;
   targetWordsHit: string[];
   patternsHit: string[];
+  rawChildResponses?: string[];
 }
 
 interface DatedConversationEvidence extends ParentConversationEvidence {
@@ -112,6 +113,16 @@ function formatConversationEvidenceStatement(evidence: ParentConversationEvidenc
   return null;
 }
 
+function getRawAnswerPreview(rawChildResponses: string[] | undefined): string | null {
+  const preview = (rawChildResponses ?? [])
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(' • ');
+
+  return preview || null;
+}
+
 function getConversationEvidenceFromRecord(record: LessonProgress): DatedConversationEvidence[] {
   const evidences = (record.conversationEvidence ?? []) as ParentConversationEvidence[];
 
@@ -124,6 +135,7 @@ function getConversationEvidenceFromRecord(record: LessonProgress): DatedConvers
     score: evidence.score,
     targetWordsHit: evidence.targetWordsHit,
     patternsHit: evidence.patternsHit,
+    rawChildResponses: evidence.rawChildResponses,
     completedAtMs: record.completedAt.toMillis(),
   }));
 }
@@ -153,6 +165,8 @@ export interface ConversationHighlight {
   score: number;
   targetWordsHit: string[];
   patternsHit: string[];
+  rawChildResponses?: string[];
+  rawAnswerPreview?: string;
   completedAtMs: number;
 }
 
@@ -164,6 +178,7 @@ export interface ConversationThemeProgress {
   averageAcceptedTurns: number;
   averageHints: number;
   recentWords: string[];
+  recentUtterances?: string[];
 }
 
 export function useParentSettings() {
@@ -333,6 +348,8 @@ export function useConversationHighlights(childId: string | undefined) {
           score: evidence.score,
           targetWordsHit: evidence.targetWordsHit,
           patternsHit: evidence.patternsHit,
+          rawChildResponses: evidence.rawChildResponses,
+          rawAnswerPreview: getRawAnswerPreview(evidence.rawChildResponses) ?? undefined,
           completedAtMs: evidence.completedAtMs,
         }));
     },
@@ -360,6 +377,7 @@ export function useConversationThemeProgress(childId: string | undefined) {
           totalAcceptedTurns: number;
           totalHints: number;
           words: string[];
+          utterances: string[];
         }
       >();
 
@@ -372,6 +390,7 @@ export function useConversationThemeProgress(childId: string | undefined) {
           totalAcceptedTurns: 0,
           totalHints: 0,
           words: [],
+          utterances: [],
         };
 
         current.attempts += 1;
@@ -380,6 +399,7 @@ export function useConversationThemeProgress(childId: string | undefined) {
         current.totalAcceptedTurns += evidence.acceptedTurns;
         current.totalHints += evidence.hintedTurns;
         current.words.push(...evidence.targetWordsHit);
+        current.utterances.push(...(evidence.rawChildResponses ?? []).slice(0, 2));
 
         grouped.set(theme, current);
       }
@@ -393,6 +413,7 @@ export function useConversationThemeProgress(childId: string | undefined) {
           averageAcceptedTurns: stats.attempts > 0 ? stats.totalAcceptedTurns / stats.attempts : 0,
           averageHints: stats.attempts > 0 ? stats.totalHints / stats.attempts : 0,
           recentWords: [...new Set(stats.words)].slice(0, 4),
+          recentUtterances: [...new Set(stats.utterances)].slice(0, 2),
         }))
         .sort((a, b) => b.averageScore - a.averageScore);
     },
