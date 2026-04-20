@@ -42,6 +42,7 @@ import {
   xpForLevel,
 } from '../spark/gameLogic';
 import { auth, db, functions } from './app';
+import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectibleCatalog';
 
 function requireCurrentUserId(): string {
   const uid = auth.currentUser?.uid;
@@ -344,6 +345,7 @@ export interface SubmitLessonResultReq {
     };
   }[];
   totalTimeMs: number;
+  lessonType?: 'normal' | 'boss' | 'review' | 'bonus';
 }
 
 export interface EvaluateOpenEndedConversationReq {
@@ -407,6 +409,12 @@ export interface SubmitLessonResultRes {
   leveledUp: boolean;
   newLevel: number;
   isPerfect: boolean;
+  collectibleGranted?: {
+    id: string;
+    name: string;
+    emoji: string;
+    rarity: string;
+  };
 }
 
 export async function evaluateOpenEndedConversation(
@@ -447,7 +455,7 @@ export async function evaluateOpenEndedConversation(
 
 export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitLessonResultRes> {
   const uid = requireCurrentUserId();
-  const { childId, lessonId, activities, totalTimeMs } = data;
+  const { childId, lessonId, activities, totalTimeMs, lessonType } = data;
   const childRef = doc(db, 'children', childId);
   const lessonRef = doc(db, 'children', childId, 'lessonProgress', lessonId);
   const correctCount = activities.filter((activity) => activity.correct).length;
@@ -524,7 +532,40 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
         conversationEvidence: a.conversationEvidence ?? null,
       })),
       conversationEvidence,
+      lessonType: lessonType ?? 'normal',
     });
+
+    // ── Grant collectible if eligible ────────────────────
+    let collectibleGranted: SubmitLessonResultRes['collectibleGranted'] = undefined;
+    const completedLessons = (child.completedLessons ?? 0) + 1;
+    const isBossLesson = lessonType === 'boss';
+    const isCollectibleMilestone = completedLessons > 0 && completedLessons % 10 === 0;
+
+    if (isBossLesson || isCollectibleMilestone) {
+      try {
+        const invSnap = await getDocs(collection(db, 'children', childId, 'inventory'));
+        const ownedIds = new Set(invSnap.docs.map((d) => d.id));
+        const picked = isBossLesson
+          ? getRandomRareCollectible(ownedIds)
+          : getRandomCollectible(ownedIds);
+
+        const invRef = doc(db, 'children', childId, 'inventory', picked.id);
+        tx.set(invRef, {
+          itemId: picked.id,
+          obtainedAt: serverTimestamp(),
+          obtainedFrom: 'lesson',
+        });
+
+        collectibleGranted = {
+          id: picked.id,
+          name: picked.name,
+          emoji: picked.emoji,
+          rarity: picked.rarity,
+        };
+      } catch (err) {
+        console.error('Collectible grant error:', err);
+      }
+    }
 
     // Update leaderboard entry (inside tx for consistency)
     const weekId = getWeekId();
@@ -554,6 +595,7 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
       leveledUp: newLevel > (child.level ?? 1),
       newLevel,
       isPerfect: xp.isPerfect,
+      collectibleGranted,
     };
   });
 }

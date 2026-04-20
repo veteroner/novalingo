@@ -85,6 +85,9 @@ export const onLessonCompleted = onDocumentWritten(
 
     await batch.commit();
 
+    // NOTE: Collectible grants are handled client-side in submitLessonResult
+    // for immediate UI feedback. Do NOT grant here to avoid double-granting.
+
     console.log(`Lesson completed: child=${childId}, lesson=${event.params.lessonId}`);
   },
 );

@@ -4,6 +4,7 @@
  */
 
 import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
+import { grantRandomCollectible, grantRareCollectible } from '../services/collectibleService';
 import { notifyParentAboutChild } from '../services/notificationService';
 import { db, increment, REGION, serverTimestamp } from '../utils/admin';
 
@@ -57,6 +58,17 @@ export const onStreakUpdate = onDocumentUpdated(
         });
 
         await batch.commit();
+
+        // Grant collectible at key milestones
+        try {
+          if (milestone === 100 || milestone === 365) {
+            await grantRareCollectible(childId, 'achievement');
+          } else if (milestone === 7 || milestone === 30) {
+            await grantRandomCollectible(childId, 'achievement');
+          }
+        } catch (err) {
+          console.error(`Streak collectible error: child=${childId}, milestone=${milestone}`, err);
+        }
 
         // Notify parent
         await notifyParentAboutChild(childId, {

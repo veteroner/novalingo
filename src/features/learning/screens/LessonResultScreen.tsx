@@ -282,6 +282,42 @@ export default function LessonResultScreen() {
         </motion.div>
       )}
 
+      {/* Collectible Earned */}
+      {backendResult?.collectibleGranted && (
+        <motion.div
+          className="mt-4 w-full max-w-sm overflow-hidden rounded-2xl bg-linear-to-r from-purple-500 to-indigo-600 p-1 shadow-lg"
+          initial={{ opacity: 0, scale: 0.5, rotate: -5 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ delay: 1.8, type: 'spring', stiffness: 200, damping: 12 }}
+        >
+          <div className="rounded-xl bg-white/95 px-5 py-4 text-center dark:bg-surface-900/95">
+            <motion.span
+              className="inline-block text-5xl"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ delay: 2.2, duration: 0.6, repeat: 2 }}
+            >
+              {backendResult.collectibleGranted.emoji}
+            </motion.span>
+            <Text variant="caption" className="text-nova-purple mt-2 font-bold tracking-wide uppercase">
+              🎁 Yeni Collectible!
+            </Text>
+            <Text variant="h4" align="center" className="mt-1">
+              {backendResult.collectibleGranted.name}
+            </Text>
+            <Badge
+              variant={backendResult.collectibleGranted.rarity === 'legendary' ? 'xp' : 'info'}
+              size="sm"
+            >
+              {backendResult.collectibleGranted.rarity === 'common' && '⚪ Yaygın'}
+              {backendResult.collectibleGranted.rarity === 'uncommon' && '🟢 Nadir Değil'}
+              {backendResult.collectibleGranted.rarity === 'rare' && '🔵 Nadir'}
+              {backendResult.collectibleGranted.rarity === 'epic' && '🟣 Destansı'}
+              {backendResult.collectibleGranted.rarity === 'legendary' && '🟡 Efsanevi'}
+            </Badge>
+          </div>
+        </motion.div>
+      )}
+
       {/* Can Do Achievement */}
       {lesson?.canDo && (
         <motion.div

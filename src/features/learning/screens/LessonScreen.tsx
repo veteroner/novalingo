@@ -336,6 +336,7 @@ export default function LessonScreen() {
                 lessonId: summary.lessonId,
                 activities: activitiesPayload,
                 totalTimeMs: summary.durationSeconds * 1000,
+                lessonType: lessonTypeRef.current,
               },
               {
                 onSuccess: (backendResult) => {

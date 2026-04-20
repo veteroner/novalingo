@@ -151,12 +151,12 @@ export interface InventoryItem {
 // ===== COLLECTION =====
 export type CollectionCategory =
   | 'animals'
-  | 'food'
-  | 'nature'
-  | 'vehicles'
-  | 'space'
-  | 'fantasy'
-  | 'sports';
+  | 'flags'
+  | 'stickers'
+  | 'characters'
+  | 'landmarks'
+  | 'foods'
+  | 'vehicles';
 export type CollectionRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
 export interface CollectibleItem {

@@ -166,14 +166,14 @@ Aynı 280 ders → etkili süre 3x (40 saat → 120 saat hissiyatı)
 
 ### Mevcut Durum (Tamamlanmış)
 
-| Faz     | Başlangıç | Şimdi | Eklenen |
-| ------- | --------- | ----- | ------- |
-| Phase 1 | 23        | 30    | +7      |
-| Phase 2 | 12        | 22    | +10     |
-| Phase 3 | 12        | 20    | +8      |
-| Phase 4 | 16        | 26    | +10     |
-| Phase 5 | 16        | 28    | +12     |
-| **Toplam** | **82** | **126** | **+44** |
+| Faz        | Başlangıç | Şimdi   | Eklenen |
+| ---------- | --------- | ------- | ------- |
+| Phase 1    | 23        | 30      | +7      |
+| Phase 2    | 12        | 22      | +10     |
+| Phase 3    | 12        | 20      | +8      |
+| Phase 4    | 16        | 26      | +10     |
+| Phase 5    | 16        | 28      | +12     |
+| **Toplam** | **82**    | **126** | **+44** |
 
 ### Kalan Hedef (6 ay)
 
@@ -286,22 +286,27 @@ Cuma       → Tümünü test + commit + deploy
 - [x] Streak-lost modal: otomatik gösterim (HomeScreen) ✅
 - [x] Backend: `functions/src/scheduled/streakCheck.ts` (günlük reset) ✅
 
-### 5B: Collectible Sistemi
+### 5B: Collectible Sistemi ✅ TAMAMLANDI
 
 ```
-Kategoriler:
-├── 🎒 Nova Aksesuarları (şapka, gözlük, pelerin)
-├── 🏠 Nova'nın Odası (mobilya, dekorasyon)
-├── 🐾 Hayvan Dostları (her dünyadan 1 maskot)
-├── 🏆 Rozetler (ders, streak, senaryo başarıları)
-└── 🎨 Temalar (uygulama renk temaları)
+Kategoriler (7 adet, toplam 50 item):
+├── 🐾 Hayvanlar (8 item)
+├── 🏳️ Bayraklar (7 item)
+├── 🎨 Stickers (7 item)
+├── 👤 Karakterler (7 item)
+├── 🏛️ Landmarks (7 item)
+├── 🍕 Yiyecekler (7 item)
+└── 🚗 Araçlar (7 item)
 ```
 
-- [ ] Boss ders → guaranteed collectible drop
-- [ ] Her 10 ders → random collectible
-- [ ] Streak milestone → özel collectible
-- [ ] Koleksiyon ekranı: "Nova'nın Dolabı"
-- [ ] Toplam: 50 collectible (başlangıç), 6 ayda 100+
+- [x] 50 item'lık collectible kataloğu: `src/data/collectibleCatalog.ts` ✅
+- [x] Firestore seed script: `scripts/seedCollectibles.ts` ✅
+- [x] Boss ders → guaranteed rare+ collectible drop (client-side) ✅
+- [x] Her 10 ders → random collectible (client-side) ✅
+- [x] Streak milestone → özel collectible: `onStreakUpdate.ts` (7,30,100,365 gün) ✅
+- [x] Koleksiyon ekranı mevcut: `CollectionScreen.tsx` ✅
+- [x] Ders sonuç ekranında collectible kazanım kartı ✅
+- [x] Rarity sistemi: common/uncommon/rare/epic/legendary ✅
 
 ### 5C: Seasonal Events
 
