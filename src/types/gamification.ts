@@ -218,3 +218,69 @@ export interface LeagueInfo {
   promotionThreshold: number;
   relegationThreshold: number;
 }
+
+// ===== SEASONAL EVENTS =====
+export type SeasonalEventId =
+  | 'halloween'
+  | 'winter-festival'
+  | 'valentine'
+  | 'spring'
+  | 'summer'
+  | 'back-to-school';
+
+export interface SeasonalEvent {
+  id: SeasonalEventId;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  emoji: string;
+  theme: string;
+  /** Gradient colors for banner/card backgrounds */
+  colors: [string, string];
+  /** Month (1-12) and day range */
+  startMonth: number;
+  startDay: number;
+  endMonth: number;
+  endDay: number;
+  /** Duration label for display */
+  durationDays: number;
+  /** Lessons specific to this event */
+  lessons: SeasonalLesson[];
+  /** Limited-time collectibles obtainable only during event */
+  collectibles: SeasonalCollectible[];
+  /** Bonus XP multiplier during event */
+  xpMultiplier: number;
+}
+
+export interface SeasonalLesson {
+  id: string;
+  title: string;
+  titleEn: string;
+  description: string;
+  order: number;
+  xpReward: number;
+  /** Vocabulary words taught in this lesson */
+  vocabulary: string[];
+}
+
+export interface SeasonalCollectible {
+  id: string;
+  name: string;
+  nameEn: string;
+  emoji: string;
+  rarity: CollectionRarity;
+  description: string;
+  /** How to obtain: lesson completion, all lessons done, daily login during event */
+  obtainMethod: 'lesson-complete' | 'event-complete' | 'daily-login';
+  /** Which lesson grants it (if method is lesson-complete) */
+  lessonId?: string;
+}
+
+export interface UserEventProgress {
+  eventId: SeasonalEventId;
+  lessonsCompleted: string[];
+  collectiblesEarned: string[];
+  startedAt: Timestamp;
+  completedAt?: Timestamp;
+}

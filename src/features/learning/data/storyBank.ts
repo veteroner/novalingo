@@ -2730,7 +2730,7 @@ const rawStoryBank: MicroStory[] = [
         },
         {
           text: 'The ___ is in the ___. Can you help Nova?',
-          translation: 'Kedi bahçede. Nova\'ya yardım edebilir misin?',
+          translation: "Kedi bahçede. Nova'ya yardım edebilir misin?",
           imageUrl: '/story/story-w3-missing-words-p2.jpg',
           audioUrl: '',
           highlightWords: ['cat', 'garden'],

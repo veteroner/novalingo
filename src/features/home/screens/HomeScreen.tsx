@@ -12,6 +12,7 @@ import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
 import { NovaStageAvatar } from '@components/molecules/NovaStageAvatar';
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
+import { SeasonalEventBanner } from '@features/gamification/components/SeasonalEventBanner';
 import { curriculum } from '@features/learning/data/curriculum';
 import { useVocabularyCards, useWorlds } from '@hooks/queries';
 import { getReviewQueue } from '@services/srs/srsEngine';
@@ -116,6 +117,9 @@ export default function HomeScreen() {
             <XPDisplay currentXP={child.totalXP} level={child.level} compact />
           </Card>
         </div>
+
+        {/* Seasonal Event Banner */}
+        <SeasonalEventBanner />
 
         {/* Conversation Practice — Prominent CTA */}
         <motion.div

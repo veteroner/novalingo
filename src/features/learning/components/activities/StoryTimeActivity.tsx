@@ -114,8 +114,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
     switch (page.interactionType) {
       case 'tap-reveal': {
         // All blanks revealed?
-        const blankCount =
-          pageWords.filter((w) => w === '___' || w.startsWith('___')).length;
+        const blankCount = pageWords.filter((w) => w === '___' || w.startsWith('___')).length;
         return revealedBlanks.size >= blankCount;
       }
       case 'drag-word':
@@ -335,9 +334,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
               <div className="flex flex-wrap gap-1 leading-relaxed">
                 {pageWords.map((word, idx) => {
                   const clean = cleanWord(word);
-                  const isHighlight = page.highlightWords.some(
-                    (hw) => hw.toLowerCase() === clean,
-                  );
+                  const isHighlight = page.highlightWords.some((hw) => hw.toLowerCase() === clean);
                   const isTapped = tappedWords.has(clean);
                   const isRhymeWord =
                     isRhyme && page.rhymeWords?.some((rw) => rw.toLowerCase() === clean);
@@ -411,9 +408,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                     const isBlank = word === '___' || word.startsWith('___');
                     if (isBlank) blankIdx++;
                     const currentBlankIdx = blankIdx;
-                    const blankDef = dragWordData.blanks.find(
-                      (b) => b.index === currentBlankIdx,
-                    );
+                    const blankDef = dragWordData.blanks.find((b) => b.index === currentBlankIdx);
                     const filled = filledBlanks.get(currentBlankIdx);
 
                     if (isBlank && blankDef) {
@@ -428,9 +423,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                           onDragOver={(e) => e.preventDefault()}
                           onDrop={() => handleDropOnBlank(currentBlankIdx, blankDef.answer)}
                           animate={
-                            dragFeedback === 'wrong' && !filled
-                              ? { x: [-4, 4, -4, 4, 0] }
-                              : {}
+                            dragFeedback === 'wrong' && !filled ? { x: [-4, 4, -4, 4, 0] } : {}
                           }
                           transition={{ duration: 0.3 }}
                         >
@@ -480,7 +473,11 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                 </div>
 
                 <div className="rounded-2xl bg-purple-50 p-4">
-                  <Text variant="bodySmall" weight="bold" className="mb-3 text-center text-purple-700">
+                  <Text
+                    variant="bodySmall"
+                    weight="bold"
+                    className="mb-3 text-center text-purple-700"
+                  >
                     {choiceData.question}
                   </Text>
                   <div className="flex flex-col gap-2">

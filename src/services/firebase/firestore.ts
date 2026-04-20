@@ -48,6 +48,7 @@ export const collections = {
   leaderboardEntries: (leagueId: string) => collection(db, 'leaderboards', leagueId, 'entries'),
   shopItems: () => collection(db, 'shopItems'),
   collectibles: () => collection(db, 'collectibles'),
+  childEventProgress: (childId: string) => collection(db, 'children', childId, 'eventProgress'),
   achievementsCatalog: () => collection(db, 'achievementsCatalog'),
   config: () => collection(db, 'config'),
 } as const;

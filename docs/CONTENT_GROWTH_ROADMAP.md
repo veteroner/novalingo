@@ -247,14 +247,14 @@ Cuma       → Tümünü test + commit + deploy
 
 ### Demo Hikayeler (6 yeni)
 
-| ID | Tip | Açıklama |
-|----|-----|----------|
-| story-w2-mystery-picnic | tap-reveal | Piknik + gizli kelime keşfi |
-| story-w3-missing-words | drag-word | Kayıp kelimeleri sürükle |
-| story-w4-two-paths | choice | Şehirde dallanma: park vs market |
-| story-w1-night-sounds | ambient | Gece sesleri: cırcır böceği, baykuş |
-| story-w2-rhyme-cat-hat | rhyme | Kafiyeli: cat-hat-mat, dog-log-fog |
-| story-w5-lab-experiment | combined | Tüm tipler: tap → reveal → drag → choice |
+| ID                      | Tip        | Açıklama                                 |
+| ----------------------- | ---------- | ---------------------------------------- |
+| story-w2-mystery-picnic | tap-reveal | Piknik + gizli kelime keşfi              |
+| story-w3-missing-words  | drag-word  | Kayıp kelimeleri sürükle                 |
+| story-w4-two-paths      | choice     | Şehirde dallanma: park vs market         |
+| story-w1-night-sounds   | ambient    | Gece sesleri: cırcır böceği, baykuş      |
+| story-w2-rhyme-cat-hat  | rhyme      | Kafiyeli: cat-hat-mat, dog-log-fog       |
+| story-w5-lab-experiment | combined   | Tüm tipler: tap → reveal → drag → choice |
 
 ### Etki
 
@@ -320,7 +320,7 @@ Kategoriler (7 adet, toplam 50 item):
 - [x] Ders sonuç ekranında collectible kazanım kartı ✅
 - [x] Rarity sistemi: common/uncommon/rare/epic/legendary ✅
 
-### 5C: Seasonal Events
+### 5C: Seasonal Events ✅ TAMAMLANDI
 
 ```
 Takvim:
@@ -332,10 +332,20 @@ Takvim:
 └── Eylül: Back to School — "Classroom English"
 ```
 
-- Her event: 1 hafta, 5-7 özel ders, 3 collectible, 1 özel senaryo
-- [ ] Event banner ana ekranda
-- [ ] Sınırlı süreli collectible → FOMO + retention
-- [ ] Yılda 6 event = sürekli taze içerik hissi
+| Dosya | Açıklama |
+| ----- | -------- |
+| `src/types/gamification.ts` | `SeasonalEvent`, `SeasonalLesson`, `SeasonalCollectible`, `UserEventProgress` tipleri |
+| `src/features/gamification/data/seasonalEvents.ts` | 6 event (Halloween→Back-to-School), 5-6 ders + 3 collectible her event |
+| `src/hooks/useSeasonalEvent.ts` | TanStack Query hook — aktif event, ilerleme, kalan gün |
+| `src/services/firebase/firestore.ts` | `childEventProgress` Firestore koleksiyonu eklendi |
+| `src/features/gamification/components/SeasonalEventBanner.tsx` | Ana ekranda gradient banner (aktif/yaklaşan) |
+| `src/features/gamification/screens/SeasonalEventScreen.tsx` | Event detay ekranı: ders listesi, collectible grid, vocab chips |
+| `src/features/home/screens/HomeScreen.tsx` | Banner wired — streak/XP satırı altına eklendi |
+| `src/app/Router.tsx` | `/event/:eventId` route eklendi |
+
+- [x] Event banner ana ekranda ✅
+- [x] Sınırlı süreli collectible → FOMO + retention ✅
+- [x] Yılda 6 event = sürekli taze içerik hissi ✅
 
 ### Etki
 
