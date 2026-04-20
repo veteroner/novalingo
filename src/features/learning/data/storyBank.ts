@@ -2657,6 +2657,316 @@ const rawStoryBank: MicroStory[] = [
       ],
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // INTERACTIVE STORY DEMOS — Tap-Reveal, Drag-Word, Choice Branch, Sound, Rhyme
+  // ═══════════════════════════════════════════════════════════════════════════════
+
+  // ─── TAP-REVEAL Demo ────────────────────────────────────────────────────────
+  {
+    id: 'story-w2-mystery-picnic',
+    title: 'The Mystery Picnic',
+    titleTr: 'Gizemli Piknik',
+    theme: 'food',
+    suggestedAfterUnit: 'unit-w2-food',
+    data: {
+      type: 'story-time',
+      title: 'The Mystery Picnic',
+      pages: [
+        {
+          text: 'Nova packs a basket. She brings bread, cheese, and juice.',
+          translation: 'Nova bir sepet hazırlıyor. Ekmek, peynir ve meyve suyu getiriyor.',
+          imageUrl: '/story/story-w2-mystery-picnic-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['bread', 'cheese', 'juice'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'At the park, Nova finds a note: "Find the ___ behind the ___!"',
+          translation: 'Parkta Nova bir not buluyor: "Ağacın arkasındaki elmayı bul!"',
+          imageUrl: '/story/story-w2-mystery-picnic-p2.jpg',
+          audioUrl: '',
+          highlightWords: ['apple', 'tree'],
+          interactionType: 'tap-reveal',
+        },
+        {
+          text: 'She looks behind the tree and finds a red ___! Yummy!',
+          translation: 'Ağacın arkasına bakıyor ve kırmızı bir elma buluyor! Lezzetli!',
+          imageUrl: '/story/story-w2-mystery-picnic-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['apple'],
+          interactionType: 'tap-reveal',
+        },
+        {
+          text: 'Nova shares the apple with her friend. Sharing is caring!',
+          translation: 'Nova elmayı arkadaşıyla paylaşıyor. Paylaşmak güzeldir!',
+          imageUrl: '/story/story-w2-mystery-picnic-p4.jpg',
+          audioUrl: '',
+          highlightWords: ['shares', 'friend'],
+          interactionType: 'tap-word',
+        },
+      ],
+    },
+  },
+
+  // ─── DRAG-WORD Demo ─────────────────────────────────────────────────────────
+  {
+    id: 'story-w3-missing-words',
+    title: 'The Missing Words',
+    titleTr: 'Kayıp Kelimeler',
+    theme: 'school',
+    suggestedAfterUnit: 'unit-w3-school',
+    data: {
+      type: 'story-time',
+      title: 'The Missing Words',
+      pages: [
+        {
+          text: 'Nova opens her book. Oh no! Some words are missing!',
+          translation: 'Nova kitabını açıyor. Eyvah! Bazı kelimeler kayıp!',
+          imageUrl: '/story/story-w3-missing-words-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['book', 'words'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'The ___ is in the ___. Can you help Nova?',
+          translation: 'Kedi bahçede. Nova\'ya yardım edebilir misin?',
+          imageUrl: '/story/story-w3-missing-words-p2.jpg',
+          audioUrl: '',
+          highlightWords: ['cat', 'garden'],
+          interactionType: 'drag-word',
+          interactionData: {
+            blanks: [
+              { index: 0, answer: 'cat' },
+              { index: 1, answer: 'garden' },
+            ],
+            options: ['cat', 'garden', 'house'],
+          },
+        },
+        {
+          text: 'The ___ flies over the ___.',
+          translation: 'Kuş evin üzerinden uçuyor.',
+          imageUrl: '/story/story-w3-missing-words-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['bird', 'house'],
+          interactionType: 'drag-word',
+          interactionData: {
+            blanks: [
+              { index: 0, answer: 'bird' },
+              { index: 1, answer: 'house' },
+            ],
+            options: ['house', 'bird', 'tree'],
+          },
+        },
+        {
+          text: 'Nova fixed all the words! The book is happy again.',
+          translation: 'Nova tüm kelimeleri düzeltti! Kitap yine mutlu.',
+          imageUrl: '/story/story-w3-missing-words-p4.jpg',
+          audioUrl: '',
+          highlightWords: ['fixed', 'happy'],
+          interactionType: 'tap-word',
+        },
+      ],
+    },
+  },
+
+  // ─── CHOICE BRANCH Demo ─────────────────────────────────────────────────────
+  {
+    id: 'story-w4-two-paths',
+    title: 'Two Paths',
+    titleTr: 'İki Yol',
+    theme: 'city',
+    suggestedAfterUnit: 'unit-w4-city',
+    data: {
+      type: 'story-time',
+      title: 'Two Paths',
+      pages: [
+        {
+          text: 'Nova is walking in the city. She reaches a crossroad.',
+          translation: 'Nova şehirde yürüyor. Bir kavşağa geliyor.',
+          imageUrl: '/story/story-w4-two-paths-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['city', 'crossroad'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'One path goes to the park. The other goes to the market.',
+          translation: 'Bir yol parka gidiyor. Diğeri markete.',
+          imageUrl: '/story/story-w4-two-paths-p2.jpg',
+          audioUrl: '',
+          highlightWords: ['park', 'market'],
+          interactionType: 'choice',
+          interactionData: {
+            question: 'Where should Nova go?',
+            options: [
+              {
+                label: 'Go to the park',
+                emoji: '🌳',
+                nextText: 'Nova runs to the park and finds a swing! She swings high into the sky.',
+              },
+              {
+                label: 'Go to the market',
+                emoji: '🛒',
+                nextText: 'Nova walks to the market and buys a yummy ice cream. Delicious!',
+              },
+            ],
+          },
+        },
+        {
+          text: 'What a wonderful day! Nova loves exploring the city.',
+          translation: 'Ne güzel bir gün! Nova şehri keşfetmeyi seviyor.',
+          imageUrl: '/story/story-w4-two-paths-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['wonderful', 'exploring'],
+          interactionType: 'tap-word',
+        },
+      ],
+    },
+  },
+
+  // ─── AMBIENT SOUND Demo ─────────────────────────────────────────────────────
+  {
+    id: 'story-w1-night-sounds',
+    title: 'Night Sounds',
+    titleTr: 'Gece Sesleri',
+    theme: 'animals',
+    suggestedAfterUnit: 'unit-w1-animals',
+    data: {
+      type: 'story-time',
+      title: 'Night Sounds',
+      pages: [
+        {
+          text: 'The sun goes down. Nova hears the crickets chirping.',
+          translation: 'Güneş batıyor. Nova cırcır böceklerini duyuyor.',
+          imageUrl: '/story/story-w1-night-sounds-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['sun', 'crickets'],
+          interactionType: 'tap-word',
+          ambientSound: '/audio/ambient/crickets.mp3',
+        },
+        {
+          text: 'An owl says HOO HOO from the tree. The frog says RIBBIT!',
+          translation: 'Ağaçtan bir baykuş HU HU diyor. Kurbağa VRAK diyor!',
+          imageUrl: '/story/story-w1-night-sounds-p2.jpg',
+          audioUrl: '',
+          highlightWords: ['owl', 'frog'],
+          interactionType: 'tap-word',
+          ambientSound: '/audio/ambient/owl.mp3',
+        },
+        {
+          text: 'Nova whispers "goodnight" to all the animals and falls asleep.',
+          translation: 'Nova tüm hayvanlara "iyi geceler" fısıldıyor ve uykuya dalıyor.',
+          imageUrl: '/story/story-w1-night-sounds-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['goodnight', 'animals', 'asleep'],
+          interactionType: 'tap-word',
+          ambientSound: '/audio/ambient/night.mp3',
+        },
+      ],
+    },
+  },
+
+  // ─── RHYME STORY Demo ───────────────────────────────────────────────────────
+  {
+    id: 'story-w2-rhyme-cat-hat',
+    title: 'Cat in a Hat',
+    titleTr: 'Şapkalı Kedi',
+    theme: 'animals',
+    suggestedAfterUnit: 'unit-w2-animals',
+    data: {
+      type: 'story-time',
+      variant: 'rhyme',
+      title: 'Cat in a Hat',
+      pages: [
+        {
+          text: 'I see a cat, it wears a hat. It sits on a mat, imagine that!',
+          translation: 'Bir kedi görüyorum, şapka takıyor. Paspasın üstünde oturuyor, baksana!',
+          imageUrl: '/story/story-w2-rhyme-cat-hat-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['cat', 'hat', 'mat'],
+          interactionType: 'tap-word',
+          rhymeWords: ['cat', 'hat', 'mat', 'that'],
+        },
+        {
+          text: 'The cat sees a dog on a log. They play in the fog, what a jog!',
+          translation: 'Kedi kütükte bir köpek görüyor. Siste oynuyorlar, ne koşu!',
+          imageUrl: '/story/story-w2-rhyme-cat-hat-p2.jpg',
+          audioUrl: '',
+          highlightWords: ['dog', 'log', 'fog'],
+          interactionType: 'tap-word',
+          rhymeWords: ['dog', 'log', 'fog', 'jog'],
+        },
+        {
+          text: 'At night they say hey, what a day! Let us play another day!',
+          translation: 'Gece diyorlar ne güzel gün! Başka gün yine oynayalım!',
+          imageUrl: '/story/story-w2-rhyme-cat-hat-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['night', 'day', 'play'],
+          interactionType: 'tap-word',
+          rhymeWords: ['hey', 'day', 'play', 'day'],
+        },
+      ],
+    },
+  },
+
+  // ─── COMBINED INTERACTIONS Demo ─────────────────────────────────────────────
+  {
+    id: 'story-w5-lab-experiment',
+    title: 'The Lab Experiment',
+    titleTr: 'Laboratuvar Deneyi',
+    theme: 'science',
+    suggestedAfterUnit: 'unit-w5-science',
+    data: {
+      type: 'story-time',
+      title: 'The Lab Experiment',
+      pages: [
+        {
+          text: 'Nova puts on her lab coat. Today she will mix colors!',
+          translation: 'Nova önlüğünü giyiyor. Bugün renk karıştıracak!',
+          imageUrl: '/story/story-w5-lab-experiment-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['lab', 'colors'],
+          interactionType: 'tap-word',
+        },
+        {
+          text: 'She mixes ___ and ___ together. What color does it make?',
+          translation: 'Kırmızı ve maviyi karıştırıyor. Hangi renk oluyor?',
+          imageUrl: '/story/story-w5-lab-experiment-p2.jpg',
+          audioUrl: '',
+          highlightWords: ['red', 'blue'],
+          interactionType: 'tap-reveal',
+        },
+        {
+          text: 'It makes purple! Now mix yellow and blue to get ___.',
+          translation: 'Mor oluyor! Şimdi sarı ve maviyi karıştırarak yeşil yap.',
+          imageUrl: '/story/story-w5-lab-experiment-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['green'],
+          interactionType: 'drag-word',
+          interactionData: {
+            blanks: [{ index: 0, answer: 'green' }],
+            options: ['green', 'orange', 'pink'],
+          },
+        },
+        {
+          text: 'Nova made a rainbow! Red, orange, yellow, green, blue, purple!',
+          translation: 'Nova bir gökkuşağı yaptı! Kırmızı, turuncu, sarı, yeşil, mavi, mor!',
+          imageUrl: '/story/story-w5-lab-experiment-p4.jpg',
+          audioUrl: '',
+          highlightWords: ['rainbow'],
+          interactionType: 'choice',
+          interactionData: {
+            question: 'What is your favorite color?',
+            options: [
+              { label: 'Red', emoji: '❤️', nextText: 'Red like a beautiful rose! Great choice!' },
+              { label: 'Blue', emoji: '💙', nextText: 'Blue like the ocean! Wonderful!' },
+              { label: 'Green', emoji: '💚', nextText: 'Green like the leaves! Amazing!' },
+            ],
+          },
+        },
+      ],
+    },
+  },
 ];
 
 function enrichStoryData(theme: string, data: StoryTimeData): StoryTimeData {

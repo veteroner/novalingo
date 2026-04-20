@@ -216,7 +216,7 @@ Cuma       → Tümünü test + commit + deploy
 
 ---
 
-## Öncelik 4: Hikaye Derinliği 🟢 ORTA
+## Öncelik 4: Hikaye Derinliği ✅ TAMAMLANDI
 
 ### Problem
 
@@ -228,27 +228,39 @@ Cuma       → Tümünü test + commit + deploy
 
 #### Parallax Scroll Hikayeleri
 
-- [ ] Sayfa geçişinde parallax efekt (arka plan yavaş, ön plan hızlı kayar)
-- [ ] CSS transform + will-change ile performanslı
-- [ ] Mevcut 217 görsel kullanılır, ek asset gerekmez
+- [x] Sayfa geçişinde parallax efekt (arka plan yavaş, ön plan hızlı kayar) ✅
+- [x] CSS transform + will-change ile performanslı (framer-motion scale/x) ✅
+- [x] Mevcut 217 görsel kullanılır, ek asset gerekmez ✅
 
 #### Interaktif Elementler
 
-- [ ] Tap-to-reveal: Cümledeki boşluğa dokunarak kelime açma
-- [ ] Drag-the-word: Doğru kelimeyi doğru yere sürükleme
-- [ ] Sound effect: Hayvan hikayesinde hayvan sesi, yemek hikayesinde çıtırtı
-- [ ] Choice branch: "Nova should go left or right?" → çocuk seçer, hikaye dallanır
+- [x] Tap-to-reveal: Cümledeki boşluğa dokunarak kelime açma ✅
+- [x] Drag-the-word: Doğru kelimeyi doğru yere sürükleme ✅
+- [x] Sound effect: Sayfa bazlı ambientSound URL desteği ✅
+- [x] Choice branch: "Nova should go left or right?" → çocuk seçer, hikaye dallanır ✅
 
 #### Yeni Hikaye Tipleri
 
-- [ ] **Rhyme Stories**: Kafiyeli kısa şiirler (çocuklar bayılır)
-- [ ] **Chain Stories**: Çocuk bir kelime seçer, hikaye o yöne gider
-- [ ] **Picture Stories**: Sadece resim göster, çocuk anlatır (speak-it entegrasyonu)
+- [x] **Rhyme Stories**: Kafiyeli kısa şiirler — variant='rhyme' + rhymeWords ✅
+- [ ] **Chain Stories**: Çocuk bir kelime seçer, hikaye o yöne gider (future)
+- [ ] **Picture Stories**: Sadece resim göster, çocuk anlatır — speak-it entegrasyonu (future)
+
+### Demo Hikayeler (6 yeni)
+
+| ID | Tip | Açıklama |
+|----|-----|----------|
+| story-w2-mystery-picnic | tap-reveal | Piknik + gizli kelime keşfi |
+| story-w3-missing-words | drag-word | Kayıp kelimeleri sürükle |
+| story-w4-two-paths | choice | Şehirde dallanma: park vs market |
+| story-w1-night-sounds | ambient | Gece sesleri: cırcır böceği, baykuş |
+| story-w2-rhyme-cat-hat | rhyme | Kafiyeli: cat-hat-mat, dog-log-fog |
+| story-w5-lab-experiment | combined | Tüm tipler: tap → reveal → drag → choice |
 
 ### Etki
 
-- Aynı 56 hikaye 2x daha engaging
+- Aynı 56+ hikaye 2x daha engaging
 - Yeni tiplerde haftalık 1 hikaye ekleme kolaylaşır
+- Next button artık etkileşim tamamlanana kadar disabled
 
 ---
 

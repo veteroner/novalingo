@@ -290,7 +290,7 @@ export default function LessonResultScreen() {
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ delay: 1.8, type: 'spring', stiffness: 200, damping: 12 }}
         >
-          <div className="rounded-xl bg-white/95 px-5 py-4 text-center dark:bg-surface-900/95">
+          <div className="dark:bg-surface-900/95 rounded-xl bg-white/95 px-5 py-4 text-center">
             <motion.span
               className="inline-block text-5xl"
               animate={{ scale: [1, 1.2, 1] }}
@@ -298,7 +298,10 @@ export default function LessonResultScreen() {
             >
               {backendResult.collectibleGranted.emoji}
             </motion.span>
-            <Text variant="caption" className="text-nova-purple mt-2 font-bold tracking-wide uppercase">
+            <Text
+              variant="caption"
+              className="text-nova-purple mt-2 font-bold tracking-wide uppercase"
+            >
               🎁 Yeni Collectible!
             </Text>
             <Text variant="h4" align="center" className="mt-1">

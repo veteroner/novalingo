@@ -177,14 +177,27 @@ export interface SpeakItData {
 export interface StoryTimeData {
   type: 'story-time';
   title: string;
+  /** Optional story variant for specialized rendering */
+  variant?: 'default' | 'rhyme';
   pages: Array<{
     text: string;
     translation: string;
     imageUrl: string;
     audioUrl: string;
     highlightWords: string[];
-    interactionType: 'tap-word' | 'choose-image' | 'drag-item' | 'none';
+    interactionType:
+      | 'tap-word'
+      | 'tap-reveal'
+      | 'drag-word'
+      | 'choose-image'
+      | 'drag-item'
+      | 'choice'
+      | 'none';
     interactionData?: Record<string, unknown>;
+    /** Optional ambient sound URL for the page */
+    ambientSound?: string;
+    /** Rhyme words to highlight with a different color (for rhyme stories) */
+    rhymeWords?: string[];
   }>;
 }
 

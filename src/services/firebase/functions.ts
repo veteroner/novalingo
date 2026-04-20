@@ -5,6 +5,7 @@
  * Blaze planı gerektirmez.
  */
 
+import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectibleCatalog';
 import type { AgeGroup } from '@/types/user';
 import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
 import {
@@ -42,7 +43,6 @@ import {
   xpForLevel,
 } from '../spark/gameLogic';
 import { auth, db, functions } from './app';
-import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectibleCatalog';
 
 function requireCurrentUserId(): string {
   const uid = auth.currentUser?.uid;
