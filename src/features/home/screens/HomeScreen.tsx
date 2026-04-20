@@ -13,7 +13,8 @@ import { NovaStageAvatar } from '@components/molecules/NovaStageAvatar';
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { curriculum } from '@features/learning/data/curriculum';
-import { useWorlds } from '@hooks/queries';
+import { useVocabularyCards, useWorlds } from '@hooks/queries';
+import { getReviewQueue } from '@services/srs/srsEngine';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
@@ -41,6 +42,11 @@ export default function HomeScreen() {
   const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
   const { data: firestoreWorlds } = useWorlds();
+  const { data: vocabCards } = useVocabularyCards(child?.id);
+  const dueCount = useMemo(
+    () => (vocabCards ? getReviewQueue(vocabCards).length : 0),
+    [vocabCards],
+  );
 
   // Otomatik streak-lost modal: seri kırılmışsa (currentStreak===0 ve daha önce bir seri vardıysa)
   // her profil için oturum başına yalnızca bir kez göster.
@@ -140,6 +146,40 @@ export default function HomeScreen() {
             </div>
           </Card>
         </motion.div>
+
+        {/* Daily Review — prominent CTA when cards are due */}
+        {dueCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <Card
+              variant="elevated"
+              pressable
+              padding="md"
+              onClick={() => navigate('/review')}
+              className="border-nova-orange/20 border bg-linear-to-r from-orange-50 to-yellow-50"
+            >
+              <div className="flex items-center gap-4">
+                <div className="bg-nova-orange/10 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl">
+                  🧠
+                </div>
+                <div className="flex-1">
+                  <Text variant="body" weight="bold">
+                    Günlük Tekrar
+                  </Text>
+                  <Text variant="caption" className="text-text-secondary">
+                    {dueCount} kelime tekrar bekliyor
+                  </Text>
+                </div>
+                <Badge variant="warning" size="lg">
+                  {dueCount}
+                </Badge>
+              </div>
+            </Card>
+          </motion.div>
+        )}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">

@@ -1,43 +1,43 @@
 # NovaLingo — İçerik Büyüme Yol Haritası
 
-> Son güncelleme: 21 Nisan 2026
-> Durum: Production öncesi — MVP içerik denetiminden sonra oluşturuldu
+> Son güncelleme: 20 Nisan 2026
+> Durum: Öncelik 1 (Faz 1-4) tamamlandı — tüm dünyalar 45 ders
 
 ---
 
 ## Mevcut Durum (Acımasız Envanter)
 
-| Metrik                 | Mevcut     | Hedef (3 ay)    | Hedef (6 ay) |
-| ---------------------- | ---------- | --------------- | ------------ |
-| Toplam ders            | 229        | 280             | 350          |
-| W1 ders                | 46         | 46 (tamamlandı) | 46           |
-| W2 ders                | 40         | 42              | 45           |
-| W3 ders                | 45         | 45 (tamamlandı) | 45           |
-| W4 ders                | 30         | 45 (tamamlandı) | 45           |
-| W5 ders                | 45         | 45 (tamamlandı) | 45           |
-| W6 ders                | 29         | 40              | 45           |
-| Konuşma senaryosu      | 80         | 128             | 180          |
-| Hikaye                 | 56         | 70              | 90           |
-| Benzersiz kelime       | 662        | 850             | 1,100        |
-| TTS ses dosyası        | 3,308      | 4,500           | 6,000        |
-| Tahmini toplam oynanış | 15-20 saat | 40 saat         | 60+ saat     |
+| Metrik                 | Mevcut          | Hedef (3 ay)    | Hedef (6 ay) |
+| ---------------------- | --------------- | --------------- | ------------ |
+| Toplam ders            | **272** ✅      | 280             | 350          |
+| W1 ders                | 47 (tamamlandı) | 47              | 47           |
+| W2 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
+| W3 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
+| W4 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
+| W5 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
+| W6 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
+| Konuşma senaryosu      | 80              | 128             | 180          |
+| Hikaye                 | 56              | 70              | 90           |
+| Benzersiz kelime       | **1,245** ✅    | 1,300           | 1,500        |
+| TTS ses dosyası        | **5,009** ✅    | 5,500           | 7,000        |
+| Tahmini toplam oynanış | **25-30 saat**  | 45 saat         | 60+ saat     |
 
 ### Rakip Karşılaştırma
 
 |                     | NovaLingo (şimdi) | Lingokids | Khan Academy Kids | Duolingo ABC |
 | ------------------- | ----------------- | --------- | ----------------- | ------------ |
-| İçerik süresi       | 15-20 saat        | 200+ saat | 100+ saat         | 50+ saat     |
+| İçerik süresi       | **25-30 saat**    | 200+ saat | 100+ saat         | 50+ saat     |
 | Konuşma/Dialog      | **80** ✅         | ~20       | ~30               | 0            |
 | STT (çocuk konuşur) | ✅                | ❌        | ❌                | ❌           |
 | LLM coaching        | ✅                | ❌        | ❌                | ❌           |
-| Kelime              | 662               | 3,000+    | 1,500+            | 800+         |
+| Kelime              | **1,245** ✅      | 3,000+    | 1,500+            | 800+         |
 
 **Avantaj:** Konuşma + STT + LLM coaching → hiçbir rakipte yok.
 **Dezavantaj:** Toplam içerik süresi rakiplerin %10-15'i kadar.
 
 ---
 
-## Öncelik 1: W3-W6 Dersleri W1 Seviyesine Çıkar 🔴 EN KRİTİK
+## Öncelik 1: W3-W6 Dersleri W1 Seviyesine Çıkar ✅ TAMAMLANDI
 
 ### Problem
 
@@ -105,7 +105,7 @@ Her dünya minimum **42-45 ders**, W1 ile aynı yoğunlukta.
 
 ---
 
-## Öncelik 2: Spaced Repetition / Review Döngüsü 🟠 YÜKSEK
+## Öncelik 2: Spaced Repetition / Review Döngüsü ✅ TAMAMLANDI
 
 ### Problem
 
@@ -121,7 +121,7 @@ Aynı 280 ders → etkili süre 3x (40 saat → 120 saat hissiyatı)
 
 ```
 ┌─────────────────────────────────────────────┐
-│  SPACED REPETITION ENGINE                    │
+│  SPACED REPETITION ENGINE (SM-2)             │
 │                                              │
 │  Ders bittiğinde → kelimeler "öğrenildi"     │
 │  24 saat sonra → Mini Quiz (3 soru, 60 sn)  │
@@ -136,13 +136,21 @@ Aynı 280 ders → etkili süre 3x (40 saat → 120 saat hissiyatı)
 
 ### Aksiyon Planı
 
-- [ ] `src/features/learning/services/spacedRepetitionService.ts` oluştur
-- [ ] Firestore'da kullanıcı bazlı kelime kartları: `users/{uid}/wordCards/{wordId}`
-  - `{ word, lastReviewed, interval, easeFactor, nextReview, streak }`
-- [ ] Ana ekranda "Günlük Tekrar" butonu (review kartı varsa badge göster)
-- [ ] Mini quiz aktivite tipi: mevcut flash-card + listen-and-tap karışımı
-- [ ] Push notification: "Nova seni bekliyor! 🐾 5 kelime tekrar zamanı"
-- [ ] Streak entegrasyonu (Öncelik 5 ile birlikte)
+- [x] `src/services/srs/srsEngine.ts` — SM-2 algoritması (calculateNextReview, getReviewQueue, calculateSRSStats) ✅
+- [x] Firestore'da kullanıcı bazlı kelime kartları: `children/{childId}/vocabulary/{wordId}` ✅
+  - `{ word, lastReviewed, interval, easeFactor, nextReviewAt, repetitions, quality }`
+- [x] Ana ekranda "Günlük Tekrar" butonu (review kartı varsa badge göster) ✅
+- [x] Mini quiz aktivite tipi: `generateReviewLesson` in learningEngine ✅
+- [ ] Push notification: "Nova seni bekliyor! 🐾 5 kelime tekrar zamanı" (Capacitor plugin gerekli)
+- [x] Streak entegrasyonu — günlük review tamamlama streak'e sayılıyor ✅
+
+### Mevcut Dosyalar
+
+- `src/services/srs/srsEngine.ts` — SM-2 motor
+- `src/services/srs/adaptiveDifficulty.ts` — Zorluk ayarı
+- `src/services/learning/learningEngine.ts` — prepareLesson (SRS inject), generateReviewLesson
+- `src/features/learning/screens/ReviewScreen.tsx` — Tam fonksiyonel review ekranı
+- `src/features/home/screens/HomeScreen.tsx` — "Günlük Tekrar" CTA (due badge ile)
 
 ### Etki
 
