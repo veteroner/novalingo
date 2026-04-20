@@ -6080,6 +6080,196 @@ const vocabDB: Record<string, VocabEntry> = {
       { en: 'The rope is nice.', tr: 'İp güzel.' },
     ],
   },
+  bathroom: {
+    tr: 'Banyo',
+    emoji: '🛁',
+    sentence: 'I am in the bathroom.',
+    sentenceTr: 'Banyodayım.',
+    altSentences: [
+      { en: 'The bathroom is clean.', tr: 'Banyo temiz.' },
+      { en: 'Go to the bathroom.', tr: 'Banyoya git.' },
+    ],
+  },
+  sink: {
+    tr: 'Lavabo',
+    emoji: '🚰',
+    sentence: 'Wash your hands in the sink.',
+    sentenceTr: 'Ellerini lavaboda yıka.',
+    altSentences: [
+      { en: 'The sink is white.', tr: 'Lavabo beyaz.' },
+      { en: 'There is water in the sink.', tr: 'Lavaboda su var.' },
+    ],
+  },
+  toilet: {
+    tr: 'Tuvalet',
+    emoji: '🚽',
+    sentence: 'Where is the toilet?',
+    sentenceTr: 'Tuvalet nerede?',
+    altSentences: [
+      { en: 'I need the toilet.', tr: 'Tuvalete ihtiyacım var.' },
+      { en: 'The toilet is there.', tr: 'Tuvalet orada.' },
+    ],
+  },
+  swing: {
+    tr: 'Salıncak',
+    emoji: '🎠',
+    sentence: 'I am on the swing.',
+    sentenceTr: 'Salıncaktayım.',
+    altSentences: [
+      { en: 'The swing is fun.', tr: 'Salıncak eğlenceli.' },
+      { en: 'Push the swing.', tr: 'Salıncağı it.' },
+    ],
+  },
+  slide: {
+    tr: 'Kaydırak',
+    emoji: '🛝',
+    sentence: 'I go down the slide.',
+    sentenceTr: 'Kaydıraktan kayıyorum.',
+    altSentences: [
+      { en: 'The slide is tall.', tr: 'Kaydırak uzun.' },
+      { en: 'The slide is fun.', tr: 'Kaydırak eğlenceli.' },
+    ],
+  },
+  bedroom: {
+    tr: 'Yatak odası',
+    emoji: '🛏️',
+    sentence: 'I sleep in the bedroom.',
+    sentenceTr: 'Yatak odasında uyurum.',
+    altSentences: [
+      { en: 'The bedroom is quiet.', tr: 'Yatak odası sessiz.' },
+      { en: 'My bedroom is small.', tr: 'Yatak odam küçük.' },
+    ],
+  },
+  closet: {
+    tr: 'Dolap',
+    emoji: '🚪',
+    sentence: 'My clothes are in the closet.',
+    sentenceTr: 'Kıyafetlerim dolapta.',
+    altSentences: [
+      { en: 'Open the closet.', tr: 'Dolabı aç.' },
+      { en: 'The closet is full.', tr: 'Dolap dolu.' },
+    ],
+  },
+  shelf: {
+    tr: 'Raf',
+    emoji: '📚',
+    sentence: 'The book is on the shelf.',
+    sentenceTr: 'Kitap rafta.',
+    altSentences: [
+      { en: 'The shelf is high.', tr: 'Raf yüksek.' },
+      { en: 'Put it on the shelf.', tr: 'Onu rafa koy.' },
+    ],
+  },
+  spider: {
+    tr: 'Örümcek',
+    emoji: '🕷️',
+    sentence: 'The spider is on the wall.',
+    sentenceTr: 'Örümcek duvarda.',
+    altSentences: [
+      { en: 'I see a spider.', tr: 'Bir örümcek görüyorum.' },
+      { en: 'The spider is black.', tr: 'Örümcek siyah.' },
+    ],
+  },
+  ladybug: {
+    tr: 'Uğur böceği',
+    emoji: '🐞',
+    sentence: 'The ladybug is red.',
+    sentenceTr: 'Uğur böceği kırmızı.',
+    altSentences: [
+      { en: 'I see a ladybug.', tr: 'Bir uğur böceği görüyorum.' },
+      { en: 'The ladybug is on the leaf.', tr: 'Uğur böceği yaprakta.' },
+    ],
+  },
+  worm: {
+    tr: 'Solucan',
+    emoji: '🪱',
+    sentence: 'The worm is in the ground.',
+    sentenceTr: 'Solucan toprakta.',
+    altSentences: [
+      { en: 'I see a worm.', tr: 'Bir solucan görüyorum.' },
+      { en: 'The worm is long.', tr: 'Solucan uzun.' },
+    ],
+  },
+  duck: {
+    tr: 'Ördek',
+    emoji: '🦆',
+    sentence: 'The duck is in the water.',
+    sentenceTr: 'Ördek suda.',
+    altSentences: [
+      { en: 'I see a duck.', tr: 'Bir ördek görüyorum.' },
+      { en: 'The duck is yellow.', tr: 'Ördek sarı.' },
+    ],
+  },
+  belt: {
+    tr: 'Kemer',
+    emoji: '👔',
+    sentence: 'I wear a belt.',
+    sentenceTr: 'Kemer takıyorum.',
+    altSentences: [
+      { en: 'The belt is brown.', tr: 'Kemer kahverengi.' },
+      { en: 'Where is my belt?', tr: 'Kemerim nerede?' },
+    ],
+  },
+  boots: {
+    tr: 'Çizme',
+    emoji: '👢',
+    sentence: 'I wear boots.',
+    sentenceTr: 'Çizme giyiyorum.',
+    altSentences: [
+      { en: 'The boots are black.', tr: 'Çizmeler siyah.' },
+      { en: 'My boots are new.', tr: 'Çizmelerim yeni.' },
+    ],
+  },
+  umbrella: {
+    tr: 'Şemsiye',
+    emoji: '☂️',
+    sentence: 'I have an umbrella.',
+    sentenceTr: 'Bir şemsiyem var.',
+    altSentences: [
+      { en: 'The umbrella is blue.', tr: 'Şemsiye mavi.' },
+      { en: 'Open the umbrella.', tr: 'Şemsiyeyi aç.' },
+    ],
+  },
+  glasses: {
+    tr: 'Gözlük',
+    emoji: '👓',
+    sentence: 'I wear glasses.',
+    sentenceTr: 'Gözlük takıyorum.',
+    altSentences: [
+      { en: 'Where are my glasses?', tr: 'Gözlüğüm nerede?' },
+      { en: 'The glasses are new.', tr: 'Gözlük yeni.' },
+    ],
+  },
+  striped: {
+    tr: 'Çizgili',
+    emoji: '🦓',
+    sentence: 'I have a striped shirt.',
+    sentenceTr: 'Çizgili bir tişörtüm var.',
+    altSentences: [
+      { en: 'The cat is striped.', tr: 'Kedi çizgili.' },
+      { en: 'I like striped socks.', tr: 'Çizgili çorapları severim.' },
+    ],
+  },
+  dotted: {
+    tr: 'Puanlı',
+    emoji: '🔵',
+    sentence: 'I have a dotted dress.',
+    sentenceTr: 'Puanlı bir elbisem var.',
+    altSentences: [
+      { en: 'The ball is dotted.', tr: 'Top puanlı.' },
+      { en: 'I like the dotted bag.', tr: 'Puanlı çantayı seviyorum.' },
+    ],
+  },
+  plain: {
+    tr: 'Düz',
+    emoji: '⬜',
+    sentence: 'I wear a plain shirt.',
+    sentenceTr: 'Düz bir tişört giyiyorum.',
+    altSentences: [
+      { en: 'The wall is plain.', tr: 'Duvar düz.' },
+      { en: 'I like plain clothes.', tr: 'Düz kıyafetleri severim.' },
+    ],
+  },
 };
 
 // ===== EMOJI MAP for entries without inline emoji =====
@@ -6662,6 +6852,25 @@ const EMOJI_MAP: Record<string, string> = {
   can: '💪',
   should: '👆',
   must: '⚠️',
+  bathroom: '🛁',
+  sink: '🚰',
+  toilet: '🚽',
+  swing: '🎠',
+  slide: '🛝',
+  bedroom: '🛏️',
+  closet: '🚪',
+  shelf: '📚',
+  spider: '🕷️',
+  ladybug: '🐞',
+  worm: '🪱',
+  duck: '🦆',
+  belt: '👔',
+  boots: '👢',
+  umbrella: '☂️',
+  glasses: '👓',
+  striped: '🦓',
+  dotted: '⚫',
+  plain: '⬜',
 };
 
 // ===== HELPER — vocab entry lookup =====

@@ -176,6 +176,10 @@ def extract_all_texts() -> dict[str, dict]:
     all_entries.extend(extract_comprehension_passages(comp_path))
     all_entries.extend(extract_grammar_sentences(gram_path))
 
+    # Unescape TypeScript string escapes (e.g. \' → ')
+    for entry in all_entries:
+        entry["text"] = entry["text"].replace("\\'", "'")
+
     # Deduplicate by normalized text
     unique = {}
     for entry in all_entries:
