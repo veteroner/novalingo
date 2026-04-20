@@ -249,10 +249,10 @@ Cuma       → Tümünü test + commit + deploy
 ### Problem
 
 - XP, yıldız, seviye var — temel gamification mevcut
-- AMA: collectible yok, streak yok, seasonal event yok
+- Collectible infrastructure var, streak tam, seasonal event yok
 - Retention'ın %60'ı gamification'dan gelir
 
-### 5A: Streak Sistemi
+### 5A: Streak Sistemi ✅ TAMAMLANDI
 
 ```
 ┌──────────────────────────────────┐
@@ -271,10 +271,12 @@ Cuma       → Tümünü test + commit + deploy
 └──────────────────────────────────┘
 ```
 
-- [ ] `users/{uid}/streak` Firestore dokümanı
-- [ ] Ana ekranda streak badge
-- [ ] Streak freeze: günlük login olmasa bile 1 gün koruma
-- [ ] Streak milestone ödülleri
+- [x] `children/{childId}` profilinde currentStreak, longestStreak alanları ✅
+- [x] Ana ekranda streak badge (🔥 sayaç + "Gün Seri") ✅
+- [x] Streak freeze: `useStreakFreezeAction` + modal UI ✅
+- [x] Streak milestone ödülleri: `functions/src/triggers/onStreakUpdate.ts` (3,7,14,30 gün) ✅
+- [x] Streak-lost modal: otomatik gösterim (HomeScreen) ✅
+- [x] Backend: `functions/src/scheduled/streakCheck.ts` (günlük reset) ✅
 
 ### 5B: Collectible Sistemi
 
