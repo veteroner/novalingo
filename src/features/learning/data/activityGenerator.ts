@@ -7282,6 +7282,526 @@ const vocabDB: Record<string, VocabEntry> = {
       { en: 'The road is wide.', tr: 'Yol geniş.' },
     ],
   },
+  kettle: {
+    tr: 'su ısıtıcısı',
+    emoji: '🫖',
+    sentence: 'The kettle is boiling.',
+    sentenceTr: 'Su ısıtıcısı kaynıyor.',
+    altSentences: [
+      { en: 'Put the kettle on.', tr: 'Su ısıtıcısını aç.' },
+      { en: 'The kettle is on the stove.', tr: 'Su ısıtıcısı ocakta.' },
+    ],
+  },
+  trophy: {
+    tr: 'kupa',
+    emoji: '🏆',
+    sentence: 'She won a trophy.',
+    sentenceTr: 'Bir kupa kazandı.',
+    altSentences: [
+      { en: 'The trophy is on the shelf.', tr: 'Kupa rafta.' },
+      { en: 'He held the trophy high.', tr: 'Kupayı yukarı kaldırdı.' },
+    ],
+  },
+  ribbon: {
+    tr: 'kurdele',
+    emoji: '🎀',
+    sentence: 'She tied a ribbon in her hair.',
+    sentenceTr: 'Saçına bir kurdele bağladı.',
+    altSentences: [
+      { en: 'The gift has a red ribbon.', tr: 'Hediyenin kırmızı bir kurdelesi var.' },
+      { en: 'Cut the ribbon please.', tr: 'Lütfen kurdeleyi kes.' },
+    ],
+  },
+  compass: {
+    tr: 'pusula',
+    emoji: '🧭',
+    sentence: 'The compass points north.',
+    sentenceTr: 'Pusula kuzeyi gösterir.',
+    altSentences: [
+      { en: 'I need a compass for the hike.', tr: 'Yürüyüş için pusulaya ihtiyacım var.' },
+      { en: 'The compass is broken.', tr: 'Pusula bozuk.' },
+    ],
+  },
+  diary: {
+    tr: 'günlük',
+    emoji: '📓',
+    sentence: 'I write in my diary every night.',
+    sentenceTr: 'Her gece günlüğüme yazarım.',
+    altSentences: [
+      { en: 'Her diary is on the desk.', tr: 'Günlüğü masanın üzerinde.' },
+      { en: 'Keep a diary of your trip.', tr: 'Gezinin günlüğünü tut.' },
+    ],
+  },
+  postcard: {
+    tr: 'kartpostal',
+    emoji: '📮',
+    sentence: 'I sent a postcard from Paris.',
+    sentenceTr: "Paris'ten bir kartpostal gönderdim.",
+    altSentences: [
+      { en: 'The postcard has a beautiful picture.', tr: 'Kartpostalın güzel bir resmi var.' },
+      { en: 'Buy a postcard for your friend.', tr: 'Arkadaşın için bir kartpostal al.' },
+    ],
+  },
+  answer: {
+    tr: 'cevap',
+    emoji: '💬',
+    sentence: 'Do you know the answer?',
+    sentenceTr: 'Cevabı biliyor musun?',
+    altSentences: [
+      { en: 'Please answer the question.', tr: 'Lütfen soruyu cevapla.' },
+      { en: 'The answer is correct.', tr: 'Cevap doğru.' },
+    ],
+  },
+  maybe: {
+    tr: 'belki',
+    emoji: '🤔',
+    sentence: 'Maybe we can go tomorrow.',
+    sentenceTr: 'Belki yarın gidebiliriz.',
+    altSentences: [
+      { en: 'Maybe it will rain.', tr: 'Belki yağmur yağar.' },
+      { en: 'Maybe she is right.', tr: 'Belki o haklıdır.' },
+    ],
+  },
+  perhaps: {
+    tr: 'belki',
+    emoji: '💭',
+    sentence: 'Perhaps we should wait.',
+    sentenceTr: 'Belki beklemeliyiz.',
+    altSentences: [
+      { en: 'Perhaps it is too late.', tr: 'Belki çok geç.' },
+      { en: 'Perhaps they will come.', tr: 'Belki gelirler.' },
+    ],
+  },
+  wish: {
+    tr: 'dilek',
+    emoji: '⭐',
+    sentence: 'I wish you a happy birthday.',
+    sentenceTr: 'Sana mutlu yıllar dilerim.',
+    altSentences: [
+      { en: 'Make a wish!', tr: 'Bir dilek tut!' },
+      { en: 'I wish I could fly.', tr: 'Keşke uçabilsem.' },
+    ],
+  },
+  promise: {
+    tr: 'söz',
+    emoji: '🤝',
+    sentence: 'I promise to help you.',
+    sentenceTr: 'Sana yardım edeceğime söz veriyorum.',
+    altSentences: [
+      { en: 'Keep your promise.', tr: 'Sözünü tut.' },
+      { en: 'She made a promise.', tr: 'Bir söz verdi.' },
+    ],
+  },
+  forgot: {
+    tr: 'unuttu',
+    emoji: '😅',
+    sentence: 'I forgot my keys.',
+    sentenceTr: 'Anahtarlarımı unuttum.',
+    altSentences: [
+      { en: 'She forgot her name.', tr: 'Adını unuttu.' },
+      { en: 'I forgot the answer.', tr: 'Cevabı unuttum.' },
+    ],
+  },
+  polite: {
+    tr: 'kibar',
+    emoji: '🎩',
+    sentence: 'She is very polite.',
+    sentenceTr: 'O çok kibar.',
+    altSentences: [
+      { en: 'Be polite to everyone.', tr: 'Herkese kibar ol.' },
+      { en: 'That was a polite thing to say.', tr: 'Bu söylemek kibar bir şeydi.' },
+    ],
+  },
+  'excuse me': {
+    tr: 'affedersiniz',
+    emoji: '🙏',
+    sentence: 'Excuse me, where is the station?',
+    sentenceTr: 'Affedersiniz, istasyon nerede?',
+    altSentences: [
+      { en: 'Excuse me, can I pass?', tr: 'Affedersiniz, geçebilir miyim?' },
+      { en: 'Excuse me, what time is it?', tr: 'Affedersiniz, saat kaç?' },
+    ],
+  },
+  village: {
+    tr: 'köy',
+    emoji: '🏘️',
+    sentence: 'The village is very small.',
+    sentenceTr: 'Köy çok küçük.',
+    altSentences: [
+      { en: 'I was born in a village.', tr: 'Bir köyde doğdum.' },
+      { en: 'The village has a river.', tr: 'Köyün bir nehri var.' },
+    ],
+  },
+  country: {
+    tr: 'ülke',
+    emoji: '🌍',
+    sentence: 'Turkey is a beautiful country.',
+    sentenceTr: 'Türkiye güzel bir ülke.',
+    altSentences: [
+      { en: 'What country are you from?', tr: 'Hangi ülkedensin?' },
+      { en: 'I want to visit many countries.', tr: 'Birçok ülkeyi ziyaret etmek istiyorum.' },
+    ],
+  },
+  visited: {
+    tr: 'ziyaret etti',
+    emoji: '✈️',
+    sentence: 'We visited the museum yesterday.',
+    sentenceTr: 'Dün müzeyi ziyaret ettik.',
+    altSentences: [
+      { en: 'She visited her grandmother.', tr: 'Büyükannesini ziyaret etti.' },
+      { en: 'I visited London last year.', tr: "Geçen yıl Londra'yı ziyaret ettim." },
+    ],
+  },
+  discovered: {
+    tr: 'keşfetti',
+    emoji: '🔬',
+    sentence: 'They discovered a new island.',
+    sentenceTr: 'Yeni bir ada keşfettiler.',
+    altSentences: [
+      { en: 'She discovered a secret door.', tr: 'Gizli bir kapı keşfetti.' },
+      { en: 'Scientists discovered a new star.', tr: 'Bilim insanları yeni bir yıldız keşfetti.' },
+    ],
+  },
+  finished: {
+    tr: 'bitirdi',
+    emoji: '✅',
+    sentence: 'I finished my homework.',
+    sentenceTr: 'Ödevimi bitirdim.',
+    altSentences: [
+      { en: 'She finished the book.', tr: 'Kitabı bitirdi.' },
+      { en: 'We finished eating.', tr: 'Yemeği bitirdik.' },
+    ],
+  },
+  started: {
+    tr: 'başladı',
+    emoji: '▶️',
+    sentence: 'The movie started at seven.',
+    sentenceTr: 'Film yedide başladı.',
+    altSentences: [
+      { en: 'She started a new job.', tr: 'Yeni bir işe başladı.' },
+      { en: 'It started to rain.', tr: 'Yağmur yağmaya başladı.' },
+    ],
+  },
+  hope: {
+    tr: 'umut',
+    emoji: '🙏',
+    sentence: 'I hope you feel better.',
+    sentenceTr: 'Umarım daha iyi hissedersin.',
+    altSentences: [
+      { en: 'I hope it is sunny tomorrow.', tr: 'Umarım yarın güneşli olur.' },
+      { en: 'There is always hope.', tr: 'Her zaman umut vardır.' },
+    ],
+  },
+  someday: {
+    tr: 'bir gün',
+    emoji: '🌅',
+    sentence: 'Someday I will travel the world.',
+    sentenceTr: 'Bir gün dünyayı gezeceğim.',
+    altSentences: [
+      { en: 'Someday we will meet again.', tr: 'Bir gün tekrar buluşacağız.' },
+      { en: 'I will be a doctor someday.', tr: 'Bir gün doktor olacağım.' },
+    ],
+  },
+  become: {
+    tr: 'olmak',
+    emoji: '🦋',
+    sentence: 'I want to become a teacher.',
+    sentenceTr: 'Öğretmen olmak istiyorum.',
+    altSentences: [
+      { en: 'She will become a doctor.', tr: 'Doktor olacak.' },
+      { en: 'The caterpillar will become a butterfly.', tr: 'Tırtıl bir kelebeğe dönüşecek.' },
+    ],
+  },
+  imagine: {
+    tr: 'hayal etmek',
+    emoji: '💫',
+    sentence: 'Imagine you are on the moon.',
+    sentenceTr: 'Ayda olduğunu hayal et.',
+    altSentences: [
+      { en: 'I can imagine a big castle.', tr: 'Büyük bir kale hayal edebiliyorum.' },
+      { en: 'Imagine a world without war.', tr: 'Savaşsız bir dünya hayal et.' },
+    ],
+  },
+  forecast: {
+    tr: 'tahmin',
+    emoji: '📊',
+    sentence: 'The weather forecast says rain.',
+    sentenceTr: 'Hava tahmini yağmur diyor.',
+    altSentences: [
+      { en: 'Check the forecast before going out.', tr: 'Çıkmadan önce tahmini kontrol et.' },
+      { en: 'The forecast was wrong.', tr: 'Tahmin yanlıştı.' },
+    ],
+  },
+  temperature: {
+    tr: 'sıcaklık',
+    emoji: '🌡️',
+    sentence: 'The temperature is thirty degrees.',
+    sentenceTr: 'Sıcaklık otuz derece.',
+    altSentences: [
+      { en: 'The temperature is dropping.', tr: 'Sıcaklık düşüyor.' },
+      { en: 'Check the temperature outside.', tr: 'Dışarıdaki sıcaklığı kontrol et.' },
+    ],
+  },
+  degree: {
+    tr: 'derece',
+    emoji: '°️',
+    sentence: 'It is twenty degrees today.',
+    sentenceTr: 'Bugün yirmi derece.',
+    altSentences: [
+      { en: 'The water is one hundred degrees.', tr: 'Su yüz derece.' },
+      { en: 'It is below zero degrees.', tr: 'Sıfırın altında derece.' },
+    ],
+  },
+  language: {
+    tr: 'dil',
+    emoji: '🗣️',
+    sentence: 'English is a global language.',
+    sentenceTr: 'İngilizce küresel bir dil.',
+    altSentences: [
+      { en: 'How many languages do you speak?', tr: 'Kaç dil konuşuyorsun?' },
+      { en: 'I am learning a new language.', tr: 'Yeni bir dil öğreniyorum.' },
+    ],
+  },
+  world: {
+    tr: 'dünya',
+    emoji: '🌍',
+    sentence: 'The world is very big.',
+    sentenceTr: 'Dünya çok büyük.',
+    altSentences: [
+      { en: 'I want to see the world.', tr: 'Dünyayı görmek istiyorum.' },
+      { en: 'She traveled around the world.', tr: 'Dünyayı gezdi.' },
+    ],
+  },
+  famous: {
+    tr: 'ünlü',
+    emoji: '⭐',
+    sentence: 'He is a famous singer.',
+    sentenceTr: 'O ünlü bir şarkıcı.',
+    altSentences: [
+      { en: 'This is a famous restaurant.', tr: 'Bu ünlü bir restoran.' },
+      { en: 'She became famous for her art.', tr: 'Sanatıyla ünlü oldu.' },
+    ],
+  },
+  speak: {
+    tr: 'konuşmak',
+    emoji: '🗣️',
+    sentence: 'Can you speak English?',
+    sentenceTr: 'İngilizce konuşabiliyor musun?',
+    altSentences: [
+      { en: 'Please speak slowly.', tr: 'Lütfen yavaş konuş.' },
+      { en: 'I speak three languages.', tr: 'Üç dil konuşuyorum.' },
+    ],
+  },
+  recipe: {
+    tr: 'tarif',
+    emoji: '📖',
+    sentence: 'This recipe is easy.',
+    sentenceTr: 'Bu tarif kolay.',
+    altSentences: [
+      { en: 'Can I have the recipe?', tr: 'Tarifi alabilir miyim?' },
+      { en: 'She follows the recipe carefully.', tr: 'Tarifi dikkatle takip ediyor.' },
+    ],
+  },
+  menu: {
+    tr: 'menü',
+    emoji: '📋',
+    sentence: 'Can I see the menu?',
+    sentenceTr: 'Menüyü görebilir miyim?',
+    altSentences: [
+      { en: 'The menu has many choices.', tr: 'Menüde birçok seçenek var.' },
+      { en: 'What is on the menu today?', tr: 'Bugün menüde ne var?' },
+    ],
+  },
+  snack: {
+    tr: 'atıştırmalık',
+    emoji: '🍿',
+    sentence: 'I had a snack after school.',
+    sentenceTr: 'Okuldan sonra atıştırmalık yedim.',
+    altSentences: [
+      { en: 'Do you want a snack?', tr: 'Atıştırmalık ister misin?' },
+      { en: 'Fruit is a healthy snack.', tr: 'Meyve sağlıklı bir atıştırmalıktır.' },
+    ],
+  },
+  dessert: {
+    tr: 'tatlı',
+    emoji: '🍰',
+    sentence: 'I want chocolate cake for dessert.',
+    sentenceTr: 'Tatlı olarak çikolatalı pasta istiyorum.',
+    altSentences: [
+      { en: 'What is for dessert?', tr: 'Tatlı ne?' },
+      { en: 'The dessert is delicious.', tr: 'Tatlı lezzetli.' },
+    ],
+  },
+  delicious: {
+    tr: 'lezzetli',
+    emoji: '😋',
+    sentence: 'This food is delicious.',
+    sentenceTr: 'Bu yemek lezzetli.',
+    altSentences: [
+      { en: 'The cake tastes delicious.', tr: 'Pasta lezzetli.' },
+      { en: 'She cooks delicious meals.', tr: 'Lezzetli yemekler pişirir.' },
+    ],
+  },
+  ingredient: {
+    tr: 'malzeme',
+    emoji: '🧂',
+    sentence: 'We need more ingredients.',
+    sentenceTr: 'Daha fazla malzemeye ihtiyacımız var.',
+    altSentences: [
+      { en: 'What are the ingredients?', tr: 'Malzemeler neler?' },
+      { en: 'Mix all the ingredients together.', tr: 'Tüm malzemeleri karıştır.' },
+    ],
+  },
+  grocery: {
+    tr: 'bakkal',
+    emoji: '🛒',
+    sentence: 'I went to the grocery store.',
+    sentenceTr: 'Bakkala gittim.',
+    altSentences: [
+      { en: 'We need to buy groceries.', tr: 'Bakkaldan alışveriş yapmamız lazım.' },
+      { en: 'The grocery store is nearby.', tr: 'Bakkal yakınlarda.' },
+    ],
+  },
+  mall: {
+    tr: 'alışveriş merkezi',
+    emoji: '🏬',
+    sentence: 'Let us go to the mall.',
+    sentenceTr: 'Alışveriş merkezine gidelim.',
+    altSentences: [
+      { en: 'The mall is very big.', tr: 'Alışveriş merkezi çok büyük.' },
+      { en: 'I met my friend at the mall.', tr: 'Arkadaşımla alışveriş merkezinde buluştum.' },
+    ],
+  },
+  price: {
+    tr: 'fiyat',
+    emoji: '💰',
+    sentence: 'What is the price of this shirt?',
+    sentenceTr: 'Bu gömleğin fiyatı ne?',
+    altSentences: [
+      { en: 'The price is too high.', tr: 'Fiyat çok yüksek.' },
+      { en: 'Check the price tag.', tr: 'Fiyat etiketine bak.' },
+    ],
+  },
+  laundry: {
+    tr: 'çamaşır',
+    emoji: '🧺',
+    sentence: 'I need to do the laundry.',
+    sentenceTr: 'Çamaşır yıkamam lazım.',
+    altSentences: [
+      { en: 'The laundry is drying outside.', tr: 'Çamaşırlar dışarıda kuruyor.' },
+      { en: 'Put your clothes in the laundry basket.', tr: 'Kıyafetlerini çamaşır sepetine koy.' },
+    ],
+  },
+  souvenir: {
+    tr: 'hediyelik eşya',
+    emoji: '🎁',
+    sentence: 'I bought a souvenir from the trip.',
+    sentenceTr: 'Geziden bir hediyelik eşya aldım.',
+    altSentences: [
+      { en: 'This shop sells souvenirs.', tr: 'Bu dükkan hediyelik eşya satıyor.' },
+      { en: 'The souvenir is for my mother.', tr: 'Hediyelik eşya annem için.' },
+    ],
+  },
+  hobby: {
+    tr: 'hobi',
+    emoji: '🎨',
+    sentence: 'Reading is my hobby.',
+    sentenceTr: 'Okumak benim hobim.',
+    altSentences: [
+      { en: 'What is your hobby?', tr: 'Hobin ne?' },
+      { en: 'I have many hobbies.', tr: 'Birçok hobim var.' },
+    ],
+  },
+  relax: {
+    tr: 'dinlenmek',
+    emoji: '😌',
+    sentence: 'I like to relax on Sundays.',
+    sentenceTr: 'Pazar günleri dinlenmeyi seviyorum.',
+    altSentences: [
+      { en: 'Sit down and relax.', tr: 'Otur ve dinlen.' },
+      { en: 'We need to relax after work.', tr: 'İşten sonra dinlenmemiz lazım.' },
+    ],
+  },
+  chore: {
+    tr: 'ev işi',
+    emoji: '🧹',
+    sentence: 'Cleaning is a daily chore.',
+    sentenceTr: 'Temizlik günlük bir ev işi.',
+    altSentences: [
+      { en: 'I do my chores every morning.', tr: 'Her sabah ev işlerimi yaparım.' },
+      { en: 'Washing dishes is a boring chore.', tr: 'Bulaşık yıkamak sıkıcı bir iş.' },
+    ],
+  },
+  magazine: {
+    tr: 'dergi',
+    emoji: '📰',
+    sentence: 'She reads a fashion magazine.',
+    sentenceTr: 'Bir moda dergisi okuyor.',
+    altSentences: [
+      { en: 'Buy me a magazine please.', tr: 'Bana bir dergi al lütfen.' },
+      { en: 'The magazine is on the table.', tr: 'Dergi masanın üzerinde.' },
+    ],
+  },
+  forward: {
+    tr: 'ileri',
+    emoji: '➡️',
+    sentence: 'Move forward slowly.',
+    sentenceTr: 'Yavaşça ileri git.',
+    altSentences: [
+      { en: 'Step forward please.', tr: 'Lütfen ileri adım at.' },
+      { en: 'The car moved forward.', tr: 'Araba ileri gitti.' },
+    ],
+  },
+  across: {
+    tr: 'karşısında',
+    emoji: '🔀',
+    sentence: 'The store is across the street.',
+    sentenceTr: 'Mağaza sokağın karşısında.',
+    altSentences: [
+      { en: 'Walk across the bridge.', tr: 'Köprünün karşısına yürü.' },
+      { en: 'She ran across the field.', tr: 'Tarlanın karşısına koştu.' },
+    ],
+  },
+  outside: {
+    tr: 'dışarıda',
+    emoji: '🌤️',
+    sentence: 'The children are playing outside.',
+    sentenceTr: 'Çocuklar dışarıda oynuyor.',
+    altSentences: [
+      { en: 'Wait outside please.', tr: 'Lütfen dışarıda bekle.' },
+      { en: 'It is cold outside.', tr: 'Dışarısı soğuk.' },
+    ],
+  },
+  inside: {
+    tr: 'içeride',
+    emoji: '🏠',
+    sentence: 'Come inside, it is raining.',
+    sentenceTr: 'İçeri gel, yağmur yağıyor.',
+    altSentences: [
+      { en: 'The cat is inside the box.', tr: 'Kedi kutunun içinde.' },
+      { en: 'Stay inside today.', tr: 'Bugün içeride kal.' },
+    ],
+  },
+  beside: {
+    tr: 'yanında',
+    emoji: '👫',
+    sentence: 'Sit beside me.',
+    sentenceTr: 'Yanıma otur.',
+    altSentences: [
+      { en: 'The park is beside the school.', tr: 'Park okulun yanında.' },
+      { en: 'She stood beside her friend.', tr: 'Arkadaşının yanında durdu.' },
+    ],
+  },
+  toward: {
+    tr: 'doğru',
+    emoji: '🎯',
+    sentence: 'Walk toward the door.',
+    sentenceTr: 'Kapıya doğru yürü.',
+    altSentences: [
+      { en: 'She ran toward the bus.', tr: 'Otobüse doğru koştu.' },
+      { en: 'The bird flew toward the tree.', tr: 'Kuş ağaca doğru uçtu.' },
+    ],
+  },
 };
 
 // ===== EMOJI MAP for entries without inline emoji =====

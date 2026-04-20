@@ -78,10 +78,10 @@ Her dünya minimum **42-45 ders**, W1 ile aynı yoğunlukta.
 - [x] U5 (Şekiller): 3 yeni ders (3D Shapes, Measurements, Shape Master) ✅
 - [x] vocabDB 46 yeni kelime + TTS audio (210 dosya) ✅
 
-#### Faz 4 — W2 & W6 İnce Ayar (Hafta 8-9)
+#### Faz 4 — W2 & W6 İnce Ayar (Hafta 8-9) ✅
 
-- [ ] W2: 40 → 45 (5 ders ekle — helper verbs, comparisons, questions)
-- [ ] W6: 29 → 45 (16 ders — en büyük sıçrama, ileri seviye içerik)
+- [x] W2: 42 → 45 (+3 ders eklendi — kettle, trophy, ribbon, compass, diary, postcard)
+- [x] W6: 32 → 45 (+13 ders eklendi — polite expressions, past tense, future tense, world food, positions)
 
 ### Her Yeni Ders Standardı (Golden Checklist)
 
