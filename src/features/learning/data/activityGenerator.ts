@@ -6732,6 +6732,556 @@ const vocabDB: Record<string, VocabEntry> = {
       { en: 'Every point matters.', tr: 'Her puan önemli.' },
     ],
   },
+
+  // ── W5 Uzay (Space) ──
+  galaxy: {
+    tr: 'Galaksi',
+    emoji: '🌌',
+    sentence: 'Our galaxy is the Milky Way.',
+    sentenceTr: 'Bizim galaksimiz Samanyolu.',
+    altSentences: [
+      { en: 'There are billions of galaxies.', tr: 'Milyarlarca galaksi var.' },
+      { en: 'A galaxy has many stars.', tr: 'Bir galakside çok yıldız var.' },
+    ],
+  },
+  constellation: {
+    tr: 'Takımyıldız',
+    emoji: '✨',
+    sentence: 'I can see a constellation in the sky.',
+    sentenceTr: 'Gökyüzünde bir takımyıldız görebiliyorum.',
+    altSentences: [
+      { en: 'This constellation looks like a bear.', tr: 'Bu takımyıldız bir ayıya benziyor.' },
+      { en: 'We learned about constellations.', tr: 'Takımyıldızları öğrendik.' },
+    ],
+  },
+  comet: {
+    tr: 'Kuyruklu yıldız',
+    emoji: '☄️',
+    sentence: 'A comet has a bright tail.',
+    sentenceTr: 'Kuyruklu yıldızın parlak bir kuyruğu var.',
+    altSentences: [
+      { en: 'The comet flies through space.', tr: 'Kuyruklu yıldız uzayda uçuyor.' },
+      { en: 'I saw a comet last night.', tr: 'Dün gece bir kuyruklu yıldız gördüm.' },
+    ],
+  },
+  meteor: {
+    tr: 'Meteor',
+    emoji: '🌠',
+    sentence: 'A meteor is a shooting star.',
+    sentenceTr: 'Meteor bir kayan yıldızdır.',
+    altSentences: [
+      { en: 'We watched a meteor shower.', tr: 'Bir meteor yağmuru izledik.' },
+      { en: 'The meteor was very bright.', tr: 'Meteor çok parlaktı.' },
+    ],
+  },
+  telescope: {
+    tr: 'Teleskop',
+    emoji: '🔭',
+    sentence: 'I look at stars with a telescope.',
+    sentenceTr: 'Teleskopla yıldızlara bakıyorum.',
+    altSentences: [
+      { en: 'The telescope is very big.', tr: 'Teleskop çok büyük.' },
+      { en: 'Can I use the telescope?', tr: 'Teleskopu kullanabilir miyim?' },
+    ],
+  },
+  launch: {
+    tr: 'Fırlatmak',
+    emoji: '🚀',
+    sentence: 'We launch the rocket today.',
+    sentenceTr: 'Bugün roketi fırlatıyoruz.',
+    altSentences: [
+      { en: 'The launch was amazing.', tr: 'Fırlatma harikaydı.' },
+      { en: 'They launched a satellite.', tr: 'Bir uydu fırlattılar.' },
+    ],
+  },
+  orbit: {
+    tr: 'Yörünge',
+    emoji: '🪐',
+    sentence: 'The Earth orbits the Sun.',
+    sentenceTr: 'Dünya Güneş etrafında döner.',
+    altSentences: [
+      { en: 'The Moon orbits the Earth.', tr: 'Ay Dünya etrafında döner.' },
+      { en: 'The rocket is in orbit.', tr: 'Roket yörüngede.' },
+    ],
+  },
+  land: {
+    tr: 'İnmek / Kara',
+    emoji: '🛬',
+    sentence: 'The rocket will land on the Moon.',
+    sentenceTr: "Roket Ay'a inecek.",
+    altSentences: [
+      { en: 'We landed safely.', tr: 'Güvenli bir şekilde indik.' },
+      { en: 'The bird landed on the tree.', tr: 'Kuş ağaca kondu.' },
+    ],
+  },
+  float: {
+    tr: 'Süzülmek',
+    emoji: '🫧',
+    sentence: 'Astronauts float in space.',
+    sentenceTr: 'Astronotlar uzayda süzülür.',
+    altSentences: [
+      { en: 'The balloon floats in the air.', tr: 'Balon havada süzülüyor.' },
+      { en: 'I can float in the water.', tr: 'Suda süzülebilirim.' },
+    ],
+  },
+  explore: {
+    tr: 'Keşfetmek',
+    emoji: '🧭',
+    sentence: "Let's explore the forest.",
+    sentenceTr: 'Ormanı keşfedelim.',
+    altSentences: [
+      { en: 'We explore new places.', tr: 'Yeni yerler keşfediyoruz.' },
+      { en: 'I love to explore.', tr: 'Keşfetmeyi seviyorum.' },
+    ],
+  },
+  alien: {
+    tr: 'Uzaylı',
+    emoji: '👽',
+    sentence: 'The alien is friendly.',
+    sentenceTr: 'Uzaylı dost canlısı.',
+    altSentences: [
+      { en: 'Have you seen an alien?', tr: 'Hiç uzaylı gördün mü?' },
+      { en: 'The alien came from Mars.', tr: "Uzaylı Mars'tan geldi." },
+    ],
+  },
+  spaceship: {
+    tr: 'Uzay gemisi',
+    emoji: '🛸',
+    sentence: 'The spaceship is very fast.',
+    sentenceTr: 'Uzay gemisi çok hızlı.',
+    altSentences: [
+      { en: 'We fly in a spaceship.', tr: 'Bir uzay gemisiyle uçuyoruz.' },
+      { en: 'The spaceship landed.', tr: 'Uzay gemisi indi.' },
+    ],
+  },
+  friendly: {
+    tr: 'Dost canlısı',
+    emoji: '😊',
+    sentence: 'She is very friendly.',
+    sentenceTr: 'O çok dost canlısı.',
+    altSentences: [
+      { en: 'The dog is friendly.', tr: 'Köpek dost canlısı.' },
+      { en: 'He is friendly to everyone.', tr: 'Herkese dostça davranıyor.' },
+    ],
+  },
+  universe: {
+    tr: 'Evren',
+    emoji: '🌌',
+    sentence: 'The universe is very big.',
+    sentenceTr: 'Evren çok büyük.',
+    altSentences: [
+      { en: 'There are many stars in the universe.', tr: 'Evrende çok yıldız var.' },
+      { en: 'We live in the universe.', tr: 'Evrende yaşıyoruz.' },
+    ],
+  },
+
+  // ── W5 Teknoloji (Technology) ──
+  code: {
+    tr: 'Kod',
+    emoji: '💻',
+    sentence: 'I can write code.',
+    sentenceTr: 'Kod yazabiliyorum.',
+    altSentences: [
+      { en: 'The code makes the game work.', tr: 'Kod oyunun çalışmasını sağlıyor.' },
+      { en: 'Learning code is fun.', tr: 'Kod öğrenmek eğlenceli.' },
+    ],
+  },
+  program: {
+    tr: 'Program',
+    emoji: '🖥️',
+    sentence: 'I wrote a computer program.',
+    sentenceTr: 'Bir bilgisayar programı yazdım.',
+    altSentences: [
+      { en: 'This program is very useful.', tr: 'Bu program çok yararlı.' },
+      { en: 'Can you open the program?', tr: 'Programı açabilir misin?' },
+    ],
+  },
+  bug: {
+    tr: 'Hata / Böcek',
+    emoji: '🐛',
+    sentence: 'There is a bug in the code.',
+    sentenceTr: 'Kodda bir hata var.',
+    altSentences: [
+      { en: 'I found the bug.', tr: 'Hatayı buldum.' },
+      { en: 'A ladybug is a cute bug.', tr: 'Uğur böceği sevimli bir böcek.' },
+    ],
+  },
+  click: {
+    tr: 'Tıklamak',
+    emoji: '🖱️',
+    sentence: 'Click the button.',
+    sentenceTr: 'Düğmeye tıkla.',
+    altSentences: [
+      { en: 'Please click here.', tr: 'Lütfen buraya tıkla.' },
+      { en: 'I clicked on the picture.', tr: 'Resme tıkladım.' },
+    ],
+  },
+  screen: {
+    tr: 'Ekran',
+    emoji: '📺',
+    sentence: 'The screen is bright.',
+    sentenceTr: 'Ekran parlak.',
+    altSentences: [
+      { en: 'Look at the screen.', tr: 'Ekrana bak.' },
+      { en: 'My phone has a big screen.', tr: 'Telefonumun büyük bir ekranı var.' },
+    ],
+  },
+  speaker: {
+    tr: 'Hoparlör',
+    emoji: '🔈',
+    sentence: 'Turn on the speaker.',
+    sentenceTr: 'Hoparlörü aç.',
+    altSentences: [
+      { en: 'The speaker is very loud.', tr: 'Hoparlör çok yüksek.' },
+      { en: 'We have a smart speaker.', tr: 'Akıllı bir hoparlörümüz var.' },
+    ],
+  },
+  remote: {
+    tr: 'Kumanda',
+    emoji: '📡',
+    sentence: 'Where is the remote?',
+    sentenceTr: 'Kumanda nerede?',
+    altSentences: [
+      { en: 'Give me the remote please.', tr: 'Lütfen kumandayı ver.' },
+      { en: 'The remote controls the TV.', tr: 'Kumanda televizyonu kontrol eder.' },
+    ],
+  },
+  charger: {
+    tr: 'Şarj aleti',
+    emoji: '🔌',
+    sentence: 'I need a charger for my phone.',
+    sentenceTr: 'Telefonum için şarj aleti lazım.',
+    altSentences: [
+      { en: 'Where is the charger?', tr: 'Şarj aleti nerede?' },
+      { en: 'The charger is on the table.', tr: 'Şarj aleti masanın üstünde.' },
+    ],
+  },
+  battery: {
+    tr: 'Pil',
+    emoji: '🔋',
+    sentence: 'The battery is low.',
+    sentenceTr: 'Pil azaldı.',
+    altSentences: [
+      { en: 'I need a new battery.', tr: 'Yeni bir pil lazım.' },
+      { en: 'The battery is full.', tr: 'Pil dolu.' },
+    ],
+  },
+  switch: {
+    tr: 'Anahtar',
+    emoji: '🔘',
+    sentence: 'Turn the switch on.',
+    sentenceTr: 'Anahtarı aç.',
+    altSentences: [
+      { en: 'Press the switch.', tr: 'Anahtara bas.' },
+      { en: 'The light switch is on the wall.', tr: 'Işık anahtarı duvarda.' },
+    ],
+  },
+  future: {
+    tr: 'Gelecek',
+    emoji: '🔮',
+    sentence: 'In the future robots will help us.',
+    sentenceTr: 'Gelecekte robotlar bize yardım edecek.',
+    altSentences: [
+      { en: 'What will the future be like?', tr: 'Gelecek nasıl olacak?' },
+      { en: 'The future is exciting.', tr: 'Gelecek heyecan verici.' },
+    ],
+  },
+  invention: {
+    tr: 'İcat',
+    emoji: '💡',
+    sentence: 'The telephone is a great invention.',
+    sentenceTr: 'Telefon harika bir icat.',
+    altSentences: [
+      { en: 'I want to make an invention.', tr: 'Bir icat yapmak istiyorum.' },
+      { en: 'What is your favorite invention?', tr: 'En sevdiğin icat ne?' },
+    ],
+  },
+  machine: {
+    tr: 'Makine',
+    emoji: '⚙️',
+    sentence: 'This machine is very big.',
+    sentenceTr: 'Bu makine çok büyük.',
+    altSentences: [
+      { en: 'The machine makes toys.', tr: 'Makine oyuncak yapıyor.' },
+      { en: 'Turn off the machine.', tr: 'Makineyi kapat.' },
+    ],
+  },
+  smart: {
+    tr: 'Akıllı',
+    emoji: '🧠',
+    sentence: 'She is very smart.',
+    sentenceTr: 'O çok akıllı.',
+    altSentences: [
+      { en: 'This is a smart robot.', tr: 'Bu akıllı bir robot.' },
+      { en: 'Smart phones can do many things.', tr: 'Akıllı telefonlar çok şey yapabilir.' },
+    ],
+  },
+  fly: {
+    tr: 'Uçmak',
+    emoji: '🦅',
+    sentence: 'Birds can fly.',
+    sentenceTr: 'Kuşlar uçabilir.',
+    altSentences: [
+      { en: 'The airplane can fly high.', tr: 'Uçak yüksekten uçabilir.' },
+      { en: 'I want to fly like a bird.', tr: 'Bir kuş gibi uçmak istiyorum.' },
+    ],
+  },
+
+  // ── W5 Duygular (Emotions) ──
+  worried: {
+    tr: 'Endişeli',
+    emoji: '😟',
+    sentence: 'I am worried about the test.',
+    sentenceTr: 'Sınav için endişeliyim.',
+    altSentences: [
+      { en: 'She looks worried.', tr: 'Endişeli görünüyor.' },
+      { en: "Don't be worried.", tr: 'Endişelenme.' },
+    ],
+  },
+  cheerful: {
+    tr: 'Neşeli',
+    emoji: '😄',
+    sentence: 'She is always cheerful.',
+    sentenceTr: 'O her zaman neşeli.',
+    altSentences: [
+      { en: 'The music makes me cheerful.', tr: 'Müzik beni neşelendiriyor.' },
+      { en: 'What a cheerful day!', tr: 'Ne neşeli bir gün!' },
+    ],
+  },
+  lonely: {
+    tr: 'Yalnız',
+    emoji: '😔',
+    sentence: 'I feel lonely today.',
+    sentenceTr: 'Bugün kendimi yalnız hissediyorum.',
+    altSentences: [
+      { en: 'He looks lonely.', tr: 'Yalnız görünüyor.' },
+      { en: "Don't feel lonely, I am here.", tr: 'Yalnız hissetme, ben buradayım.' },
+    ],
+  },
+  grateful: {
+    tr: 'Minnettar',
+    emoji: '🙏',
+    sentence: 'I am grateful for my friends.',
+    sentenceTr: 'Arkadaşlarıma minnettarım.',
+    altSentences: [
+      { en: 'We are grateful for the food.', tr: 'Yemek için minnettarız.' },
+      { en: 'She is grateful for help.', tr: 'Yardım için minnettar.' },
+    ],
+  },
+  calm: {
+    tr: 'Sakin',
+    emoji: '😌',
+    sentence: 'Stay calm and breathe.',
+    sentenceTr: 'Sakin ol ve nefes al.',
+    altSentences: [
+      { en: 'The sea is calm today.', tr: 'Deniz bugün sakin.' },
+      { en: 'She is very calm.', tr: 'O çok sakin.' },
+    ],
+  },
+  smile: {
+    tr: 'Gülümsemek',
+    emoji: '😊',
+    sentence: 'Please smile for the photo.',
+    sentenceTr: 'Lütfen fotoğraf için gülümse.',
+    altSentences: [
+      { en: 'Her smile is beautiful.', tr: 'Gülümsemesi güzel.' },
+      { en: 'I always smile at my friends.', tr: 'Arkadaşlarıma her zaman gülümserim.' },
+    ],
+  },
+  cry: {
+    tr: 'Ağlamak',
+    emoji: '😢',
+    sentence: 'The baby is crying.',
+    sentenceTr: 'Bebek ağlıyor.',
+    altSentences: [
+      { en: "Don't cry, it is okay.", tr: 'Ağlama, sorun yok.' },
+      { en: 'She cried because she was sad.', tr: 'Üzgün olduğu için ağladı.' },
+    ],
+  },
+  laugh: {
+    tr: 'Gülmek',
+    emoji: '😂',
+    sentence: 'We laugh together.',
+    sentenceTr: 'Birlikte gülüyoruz.',
+    altSentences: [
+      { en: 'The joke made me laugh.', tr: 'Şaka beni güldürdü.' },
+      { en: 'I love to laugh.', tr: 'Gülmeyi seviyorum.' },
+    ],
+  },
+  hug: {
+    tr: 'Sarılmak',
+    emoji: '🤗',
+    sentence: 'Can I have a hug?',
+    sentenceTr: 'Sarılabilir miyim?',
+    altSentences: [
+      { en: 'She gave me a big hug.', tr: 'Bana büyük bir sarılma verdi.' },
+      { en: 'Hugs make me happy.', tr: 'Sarılmak beni mutlu eder.' },
+    ],
+  },
+  understand: {
+    tr: 'Anlamak',
+    emoji: '💡',
+    sentence: 'I understand now.',
+    sentenceTr: 'Şimdi anlıyorum.',
+    altSentences: [
+      { en: 'Do you understand?', tr: 'Anlıyor musun?' },
+      { en: 'I understand how you feel.', tr: 'Nasıl hissettiğini anlıyorum.' },
+    ],
+  },
+  comfort: {
+    tr: 'Teselli etmek',
+    emoji: '💗',
+    sentence: 'I will comfort my friend.',
+    sentenceTr: 'Arkadaşımı teselli edeceğim.',
+    altSentences: [
+      { en: 'She comforted the baby.', tr: 'Bebeği teselli etti.' },
+      { en: 'A hug gives comfort.', tr: 'Sarılmak teselli verir.' },
+    ],
+  },
+  share: {
+    tr: 'Paylaşmak',
+    emoji: '🤝',
+    sentence: 'I share my toys with friends.',
+    sentenceTr: 'Oyuncaklarımı arkadaşlarımla paylaşırım.',
+    altSentences: [
+      { en: "Let's share the cake.", tr: 'Pastayı paylaşalım.' },
+      { en: 'Sharing is caring.', tr: 'Paylaşmak önemsemektir.' },
+    ],
+  },
+
+  // ── W5 Böcekler & Egzotikler (Habitats & Sounds) ──
+  jungle: {
+    tr: 'Orman / Cangıl',
+    emoji: '🌴',
+    sentence: 'Parrots live in the jungle.',
+    sentenceTr: 'Papağanlar ormanda yaşar.',
+    altSentences: [
+      { en: 'The jungle is hot and green.', tr: 'Orman sıcak ve yeşil.' },
+      { en: 'We explored the jungle.', tr: 'Ormanı keşfettik.' },
+    ],
+  },
+  pond: {
+    tr: 'Gölet',
+    emoji: '🐸',
+    sentence: 'The frog lives in the pond.',
+    sentenceTr: 'Kurbağa gölette yaşıyor.',
+    altSentences: [
+      { en: 'There are fish in the pond.', tr: 'Gölette balıklar var.' },
+      { en: 'The duck swims in the pond.', tr: 'Ördek gölette yüzüyor.' },
+    ],
+  },
+  buzz: {
+    tr: 'Vızıldamak',
+    emoji: '🐝',
+    sentence: 'The bee goes buzz buzz.',
+    sentenceTr: 'Arı vız vız yapıyor.',
+    altSentences: [
+      { en: 'I hear a buzzing sound.', tr: 'Vızıldayan bir ses duyuyorum.' },
+      { en: 'Bees buzz around the flowers.', tr: 'Arılar çiçeklerin etrafında vızıldıyor.' },
+    ],
+  },
+  croak: {
+    tr: 'Vraklamak',
+    emoji: '🐸',
+    sentence: 'The frog croaks at night.',
+    sentenceTr: 'Kurbağa gece vaklar.',
+    altSentences: [
+      { en: 'I can hear the frog croaking.', tr: 'Kurbağanın vaklamasını duyabiliyorum.' },
+      { en: 'Frogs croak near the pond.', tr: 'Kurbağalar gölet kenarında vaklar.' },
+    ],
+  },
+  roar: {
+    tr: 'Kükremek',
+    emoji: '🦁',
+    sentence: 'The lion goes roar!',
+    sentenceTr: 'Aslan kükredi!',
+    altSentences: [
+      { en: 'I heard a loud roar.', tr: 'Yüksek bir kükreme duydum.' },
+      { en: 'The dinosaur can roar.', tr: 'Dinozor kükrer.' },
+    ],
+  },
+  chirp: {
+    tr: 'Cıvıldamak',
+    emoji: '🐦',
+    sentence: 'The bird chirps in the morning.',
+    sentenceTr: 'Kuş sabah cıvıldıyor.',
+    altSentences: [
+      { en: 'I love the chirping birds.', tr: 'Cıvıldayan kuşları seviyorum.' },
+      { en: 'Baby birds chirp for food.', tr: 'Yavru kuşlar yemek için cıvıldıyor.' },
+    ],
+  },
+  hiss: {
+    tr: 'Tıslamak',
+    emoji: '🐍',
+    sentence: 'The snake goes hiss.',
+    sentenceTr: 'Yılan tıslıyor.',
+    altSentences: [
+      { en: 'Snakes hiss when they are scared.', tr: 'Yılanlar korktuklarında tıslar.' },
+      { en: 'I heard a hissing sound.', tr: 'Bir tıslama sesi duydum.' },
+    ],
+  },
+
+  // ── W5 Şekiller (3D Shapes & Measurements) ──
+  cube: {
+    tr: 'Küp',
+    emoji: '🧊',
+    sentence: 'A cube has six faces.',
+    sentenceTr: 'Bir küpün altı yüzü var.',
+    altSentences: [
+      { en: 'This block is a cube.', tr: 'Bu blok bir küp.' },
+      { en: 'An ice cube is cold.', tr: 'Bir buz küpü soğuktur.' },
+    ],
+  },
+  sphere: {
+    tr: 'Küre',
+    emoji: '🌐',
+    sentence: 'A ball is a sphere.',
+    sentenceTr: 'Top bir küredir.',
+    altSentences: [
+      { en: 'The Earth is like a sphere.', tr: 'Dünya bir küre gibidir.' },
+      { en: 'Roll the sphere.', tr: 'Küreyi yuvarlat.' },
+    ],
+  },
+  cone: {
+    tr: 'Koni',
+    emoji: '🍦',
+    sentence: 'An ice cream cone is yummy.',
+    sentenceTr: 'Dondurma külahı çok lezzetli.',
+    altSentences: [
+      { en: 'This hat looks like a cone.', tr: 'Bu şapka koniye benziyor.' },
+      { en: 'A cone has a point on top.', tr: 'Bir koninin üstünde bir uç var.' },
+    ],
+  },
+  cylinder: {
+    tr: 'Silindir',
+    emoji: '🥫',
+    sentence: 'A can is shaped like a cylinder.',
+    sentenceTr: 'Bir kutu silindir şeklinde.',
+    altSentences: [
+      { en: 'The cylinder can roll.', tr: 'Silindir yuvarlanabilir.' },
+      { en: 'I found a cylinder shape.', tr: 'Bir silindir şekli buldum.' },
+    ],
+  },
+  pyramid: {
+    tr: 'Piramit',
+    emoji: '🔺',
+    sentence: 'A pyramid has a triangle on each side.',
+    sentenceTr: 'Bir piramidin her yüzünde üçgen var.',
+    altSentences: [
+      { en: 'The pyramids are in Egypt.', tr: "Piramitler Mısır'da." },
+      { en: 'I made a pyramid with blocks.', tr: 'Bloklarla bir piramit yaptım.' },
+    ],
+  },
+  wide: {
+    tr: 'Geniş',
+    emoji: '↔️',
+    sentence: 'The river is very wide.',
+    sentenceTr: 'Nehir çok geniş.',
+    altSentences: [
+      { en: 'Open your arms wide.', tr: 'Kollarını geniş aç.' },
+      { en: 'The road is wide.', tr: 'Yol geniş.' },
+    ],
+  },
 };
 
 // ===== EMOJI MAP for entries without inline emoji =====

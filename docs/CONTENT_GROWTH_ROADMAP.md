@@ -9,12 +9,12 @@
 
 | Metrik                 | Mevcut     | Hedef (3 ay)    | Hedef (6 ay) |
 | ---------------------- | ---------- | --------------- | ------------ |
-| Toplam ders            | 211        | 280             | 350          |
+| Toplam ders            | 229        | 280             | 350          |
 | W1 ders                | 46         | 46 (tamamlandı) | 46           |
 | W2 ders                | 40         | 42              | 45           |
 | W3 ders                | 45         | 45 (tamamlandı) | 45           |
 | W4 ders                | 30         | 45 (tamamlandı) | 45           |
-| W5 ders                | 24         | 38              | 45           |
+| W5 ders                | 45         | 45 (tamamlandı) | 45           |
 | W6 ders                | 29         | 40              | 45           |
 | Konuşma senaryosu      | 80         | 128             | 180          |
 | Hikaye                 | 56         | 70              | 90           |
@@ -69,12 +69,14 @@ Her dünya minimum **42-45 ders**, W1 ile aynı yoğunlukta.
 - [x] U4 (Okul Malzemeleri): 3 yeni ders (school subjects, my school day, class schedule)
 - [x] U5 (Spor & Arkadaşlar): 3 yeni ders (sports equipment, different sports, scoreboard)
 
-#### Faz 3 — W5 Bilim Adası (24 → 45 ders) — Hafta 5-7
+#### Faz 3 — W5 Bilim Adası (27 → 45 ders) — ✅ TAMAMLANDI
 
-- [ ] En zayıf dünya — 21 ders eklenecek
-- [ ] Yeni ünite önerisi: "Bilim Deneyleri" (experiment, measure, observe, predict)
-- [ ] Mevcut ünitelere 3-4'er ders eklenmeli
-- [ ] Boss/review ders yoğunluğu artırılmalı
+- [x] U1 (Uzay): 4 yeni ders (Galaxy & Stars, Space Travel, Alien Story, Solar System Master) ✅
+- [x] U2 (Teknoloji): 4 yeni ders (Coding Words, Smart Home, Future Technology, Tech Master) ✅
+- [x] U3 (Duygular): 4 yeni ders (Express Your Feelings, Body Language, Empathy, Emotion Master) ✅
+- [x] U4 (Böcekler): 3 yeni ders (Animal Habitats, Animal Sounds, Animal World Master) ✅
+- [x] U5 (Şekiller): 3 yeni ders (3D Shapes, Measurements, Shape Master) ✅
+- [x] vocabDB 46 yeni kelime + TTS audio (210 dosya) ✅
 
 #### Faz 4 — W2 & W6 İnce Ayar (Hafta 8-9)
 
