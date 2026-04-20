@@ -160,16 +160,24 @@ Aynı 280 ders → etkili süre 3x (40 saat → 120 saat hissiyatı)
 
 ---
 
-## Öncelik 3: Haftalık Yeni Senaryo (80 → 180) 🟡 ORTA-YÜKSEK
+## Öncelik 3: Haftalık Yeni Senaryo (80 → 126) ✅ TAMAMLANDI
 
-### Problem
+> **3-ay hedefine ulaşıldı:** 82 → 126 senaryo (+44 yeni senaryo eklendi)
 
-- 80 senaryo güçlü başlangıç ama 2-3 haftada tükenir
-- Phase 2-5 daha seyrek (12-16 senaryo vs W1'in 23'ü)
+### Mevcut Durum (Tamamlanmış)
 
-### Hedef
+| Faz     | Başlangıç | Şimdi | Eklenen |
+| ------- | --------- | ----- | ------- |
+| Phase 1 | 23        | 30    | +7      |
+| Phase 2 | 12        | 22    | +10     |
+| Phase 3 | 12        | 20    | +8      |
+| Phase 4 | 16        | 26    | +10     |
+| Phase 5 | 16        | 28    | +12     |
+| **Toplam** | **82** | **126** | **+44** |
 
-- 6 ayda 80 → 180 senaryo
+### Kalan Hedef (6 ay)
+
+- 6 ayda 126 → 180 senaryo
 - Haftada 4 yeni senaryo
 
 ### Haftalık Senaryo Üretim Pipeline'ı
@@ -182,15 +190,15 @@ Perşembe   → 2 yeni senaryo yazımı
 Cuma       → Tümünü test + commit + deploy
 ```
 
-### Senaryo Dağılım Planı
+### 6 Ay Hedef Dağılımı
 
-| Faz     | Mevcut | 3 ay hedef | 6 ay hedef | Öncelik konular                       |
-| ------- | ------ | ---------- | ---------- | ------------------------------------- |
-| Phase 1 | 23     | 30         | 35         | Routine, playground, birthday         |
-| Phase 2 | 12     | 22         | 30         | Cooking, shopping, helping            |
-| Phase 3 | 12     | 22         | 35         | Weather talk, picnic, camping         |
-| Phase 4 | 16     | 26         | 40         | Doctor visit, restaurant, museum      |
-| Phase 5 | 16     | 28         | 40         | Science experiment, book club, travel |
+| Faz     | Şimdi | 6 ay hedef | Öncelik konular                       |
+| ------- | ----- | ---------- | ------------------------------------- |
+| Phase 1 | 30    | 35         | Routine, playground, birthday         |
+| Phase 2 | 22    | 30         | Cooking, shopping, helping            |
+| Phase 3 | 20    | 35         | Weather talk, picnic, camping         |
+| Phase 4 | 26    | 40         | Doctor visit, restaurant, museum      |
+| Phase 5 | 28    | 40         | Science experiment, book club, travel |
 
 ### Senaryo Kalite Kontrol Checklist
 
