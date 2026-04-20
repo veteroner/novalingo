@@ -6270,6 +6270,468 @@ const vocabDB: Record<string, VocabEntry> = {
       { en: 'I like plain clothes.', tr: 'Düz kıyafetleri severim.' },
     ],
   },
+
+  // ===== W4 EXPANSION: Şehir Meydanı =====
+  bakery: {
+    tr: 'Fırın',
+    emoji: '🥖',
+    sentence: 'I buy bread at the bakery.',
+    sentenceTr: 'Fırından ekmek alıyorum.',
+    altSentences: [
+      { en: 'The bakery smells nice.', tr: 'Fırın güzel kokuyor.' },
+      { en: 'We go to the bakery every morning.', tr: 'Her sabah fırına gidiyoruz.' },
+    ],
+  },
+  pharmacy: {
+    tr: 'Eczane',
+    emoji: '💊',
+    sentence: 'I go to the pharmacy for medicine.',
+    sentenceTr: 'İlaç için eczaneye gidiyorum.',
+    altSentences: [
+      { en: 'The pharmacy is near the hospital.', tr: 'Eczane hastanenin yakınında.' },
+      { en: 'My mum works at a pharmacy.', tr: 'Annem bir eczanede çalışıyor.' },
+    ],
+  },
+  supermarket: {
+    tr: 'Süpermarket',
+    emoji: '🛒',
+    sentence: 'We shop at the supermarket.',
+    sentenceTr: 'Süpermarketten alışveriş yapıyoruz.',
+    altSentences: [
+      { en: 'The supermarket is big.', tr: 'Süpermarket büyük.' },
+      { en: 'I need to go to the supermarket.', tr: 'Süpermarkete gitmem lazım.' },
+    ],
+  },
+  cinema: {
+    tr: 'Sinema',
+    emoji: '🎬',
+    sentence: 'We watch a film at the cinema.',
+    sentenceTr: 'Sinemada film izliyoruz.',
+    altSentences: [
+      { en: 'The cinema is next to the park.', tr: 'Sinema parkın yanında.' },
+      { en: 'I love going to the cinema.', tr: 'Sinemaya gitmeyi seviyorum.' },
+    ],
+  },
+  museum: {
+    tr: 'Müze',
+    emoji: '🏛️',
+    sentence: 'We visit the museum on Saturday.',
+    sentenceTr: 'Cumartesi müzeyi ziyaret ediyoruz.',
+    altSentences: [
+      { en: 'The museum is very old.', tr: 'Müze çok eski.' },
+      { en: 'There are paintings in the museum.', tr: 'Müzede tablolar var.' },
+    ],
+  },
+  'across from': {
+    tr: 'Karşısında',
+    emoji: '↔️',
+    sentence: 'The bank is across from the park.',
+    sentenceTr: 'Banka parkın karşısında.',
+    altSentences: [
+      { en: 'The school is across from my house.', tr: 'Okul evimin karşısında.' },
+      { en: 'The shop is across from the library.', tr: 'Dükkan kütüphanenin karşısında.' },
+    ],
+  },
+  opposite: {
+    tr: 'Karşı',
+    emoji: '🔄',
+    sentence: 'The shop is opposite the school.',
+    sentenceTr: 'Dükkan okulun karşısında.',
+    altSentences: [
+      { en: 'They sit opposite each other.', tr: 'Birbirlerinin karşısında oturuyorlar.' },
+      { en: 'The café is opposite the park.', tr: 'Kafe parkın karşısında.' },
+    ],
+  },
+  market: {
+    tr: 'Pazar',
+    emoji: '🏪',
+    sentence: 'We go to the market on Sunday.',
+    sentenceTr: 'Pazar günü pazara gidiyoruz.',
+    altSentences: [
+      { en: 'The market sells fresh fruit.', tr: 'Pazarda taze meyve satılıyor.' },
+      { en: 'I like the market.', tr: 'Pazarı seviyorum.' },
+    ],
+  },
+  parking: {
+    tr: 'Otopark',
+    emoji: '🅿️',
+    sentence: 'The car is in the parking.',
+    sentenceTr: 'Araba otoparkta.',
+    altSentences: [
+      { en: 'The parking is full.', tr: 'Otopark dolu.' },
+      { en: 'We find parking near the cinema.', tr: 'Sinemanın yakınında otopark buluyoruz.' },
+    ],
+  },
+  season: {
+    tr: 'Mevsim',
+    emoji: '🍂',
+    sentence: 'My favourite season is spring.',
+    sentenceTr: 'En sevdiğim mevsim ilkbahar.',
+    altSentences: [
+      { en: 'There are four seasons in a year.', tr: 'Bir yılda dört mevsim var.' },
+      { en: 'What season is it now?', tr: 'Şimdi hangi mevsim?' },
+    ],
+  },
+  weather: {
+    tr: 'Hava',
+    emoji: '🌤️',
+    sentence: 'The weather is sunny today.',
+    sentenceTr: 'Bugün hava güneşli.',
+    altSentences: [
+      { en: 'What is the weather like?', tr: 'Hava nasıl?' },
+      { en: 'I like warm weather.', tr: 'Sıcak havayı severim.' },
+    ],
+  },
+  breakfast: {
+    tr: 'Kahvaltı',
+    emoji: '🥞',
+    sentence: 'I have breakfast at eight.',
+    sentenceTr: 'Saat sekizde kahvaltı yapıyorum.',
+    altSentences: [
+      { en: 'Breakfast is ready!', tr: 'Kahvaltı hazır!' },
+      { en: 'I eat eggs for breakfast.', tr: 'Kahvaltıda yumurta yerim.' },
+    ],
+  },
+  lunch: {
+    tr: 'Öğle yemeği',
+    emoji: '🥪',
+    sentence: 'We eat lunch at school.',
+    sentenceTr: 'Okulda öğle yemeği yiyoruz.',
+    altSentences: [
+      { en: 'Lunch is at twelve.', tr: 'Öğle yemeği saat on ikide.' },
+      { en: 'What is for lunch?', tr: 'Öğle yemeğinde ne var?' },
+    ],
+  },
+  dinner: {
+    tr: 'Akşam yemeği',
+    emoji: '🍽️',
+    sentence: 'We have dinner at seven.',
+    sentenceTr: 'Saat yedide akşam yemeği yiyoruz.',
+    altSentences: [
+      { en: 'Dinner smells delicious.', tr: 'Akşam yemeği lezzetli kokuyor.' },
+      { en: 'I help with dinner.', tr: 'Akşam yemeğine yardım ediyorum.' },
+    ],
+  },
+  'go to bed': {
+    tr: 'Yatmak',
+    emoji: '🛏️',
+    sentence: 'I go to bed at nine.',
+    sentenceTr: 'Saat dokuzda yatıyorum.',
+    altSentences: [
+      { en: 'It is time to go to bed.', tr: 'Yatma vakti.' },
+      { en: 'I read a book before I go to bed.', tr: 'Yatmadan önce kitap okurum.' },
+    ],
+  },
+  schedule: {
+    tr: 'Program',
+    emoji: '📅',
+    sentence: 'My schedule is busy today.',
+    sentenceTr: 'Bugün programım yoğun.',
+    altSentences: [
+      { en: 'What is on the schedule?', tr: 'Programda ne var?' },
+      { en: 'I check my schedule every morning.', tr: 'Her sabah programıma bakarım.' },
+    ],
+  },
+  plan: {
+    tr: 'Plan',
+    emoji: '📋',
+    sentence: 'I have a plan for the weekend.',
+    sentenceTr: 'Hafta sonu için bir planım var.',
+    altSentences: [
+      { en: 'What is your plan?', tr: 'Planın ne?' },
+      { en: 'We make a plan together.', tr: 'Birlikte plan yapıyoruz.' },
+    ],
+  },
+  busy: {
+    tr: 'Meşgul',
+    emoji: '🏃',
+    sentence: 'I am busy on Monday.',
+    sentenceTr: 'Pazartesi meşgulüm.',
+    altSentences: [
+      { en: 'She is very busy today.', tr: 'Bugün çok meşgul.' },
+      { en: 'Are you busy tomorrow?', tr: 'Yarın meşgul müsün?' },
+    ],
+  },
+  free: {
+    tr: 'Boş',
+    emoji: '🆓',
+    sentence: 'I am free on Saturday.',
+    sentenceTr: 'Cumartesi boşum.',
+    altSentences: [
+      { en: 'Are you free after school?', tr: 'Okuldan sonra boş musun?' },
+      { en: 'I have a free hour.', tr: 'Bir boş saatim var.' },
+    ],
+  },
+  weekend: {
+    tr: 'Hafta sonu',
+    emoji: '🎉',
+    sentence: 'I play football at the weekend.',
+    sentenceTr: 'Hafta sonu futbol oynuyorum.',
+    altSentences: [
+      { en: 'What do you do at the weekend?', tr: 'Hafta sonu ne yapıyorsun?' },
+      { en: 'The weekend is here!', tr: 'Hafta sonu geldi!' },
+    ],
+  },
+  office: {
+    tr: 'Ofis',
+    emoji: '🏢',
+    sentence: 'My dad works in an office.',
+    sentenceTr: 'Babam bir ofiste çalışıyor.',
+    altSentences: [
+      { en: 'The office is on the second floor.', tr: 'Ofis ikinci katta.' },
+      { en: 'There is a computer in the office.', tr: 'Ofiste bir bilgisayar var.' },
+    ],
+  },
+  station: {
+    tr: 'İstasyon',
+    emoji: '🚉',
+    sentence: 'The train is at the station.',
+    sentenceTr: 'Tren istasyonda.',
+    altSentences: [
+      { en: 'We walk to the station.', tr: 'İstasyona yürüyoruz.' },
+      { en: 'The bus station is near.', tr: 'Otobüs istasyonu yakın.' },
+    ],
+  },
+  stethoscope: {
+    tr: 'Stetoskop',
+    emoji: '🩺',
+    sentence: 'The doctor uses a stethoscope.',
+    sentenceTr: 'Doktor stetoskop kullanıyor.',
+    altSentences: [
+      { en: 'A stethoscope listens to your heart.', tr: 'Stetoskop kalbini dinler.' },
+      { en: 'I see a stethoscope at the hospital.', tr: 'Hastanede bir stetoskop görüyorum.' },
+    ],
+  },
+  chalk: {
+    tr: 'Tebeşir',
+    emoji: '🖍️',
+    sentence: 'The teacher writes with chalk.',
+    sentenceTr: 'Öğretmen tebeşirle yazıyor.',
+    altSentences: [
+      { en: 'The chalk is white.', tr: 'Tebeşir beyaz.' },
+      { en: 'We draw with chalk on the ground.', tr: 'Yerde tebeşirle çiziyoruz.' },
+    ],
+  },
+  uniform: {
+    tr: 'Üniforma',
+    emoji: '👔',
+    sentence: 'I wear a uniform to school.',
+    sentenceTr: 'Okula üniforma giyiyorum.',
+    altSentences: [
+      { en: 'The police officer has a uniform.', tr: 'Polis memurunun üniforması var.' },
+      { en: 'My uniform is blue.', tr: 'Üniformam mavi.' },
+    ],
+  },
+  tools: {
+    tr: 'Aletler',
+    emoji: '🧰',
+    sentence: 'The worker uses many tools.',
+    sentenceTr: 'İşçi birçok alet kullanıyor.',
+    altSentences: [
+      { en: 'Where are the tools?', tr: 'Aletler nerede?' },
+      { en: 'I need tools to fix this.', tr: 'Bunu tamir etmek için alete ihtiyacım var.' },
+    ],
+  },
+  dream: {
+    tr: 'Hayal',
+    emoji: '💭',
+    sentence: 'My dream is to be a doctor.',
+    sentenceTr: 'Hayalim doktor olmak.',
+    altSentences: [
+      { en: 'I have a big dream.', tr: 'Büyük bir hayalim var.' },
+      { en: 'Never give up your dream.', tr: 'Hayalinden asla vazgeçme.' },
+    ],
+  },
+  job: {
+    tr: 'İş / Meslek',
+    emoji: '💼',
+    sentence: 'What is your dream job?',
+    sentenceTr: 'Hayal ettiğin meslek ne?',
+    altSentences: [
+      { en: 'A teacher is a great job.', tr: 'Öğretmenlik harika bir meslek.' },
+      { en: 'I want a fun job.', tr: 'Eğlenceli bir iş istiyorum.' },
+    ],
+  },
+  work: {
+    tr: 'Çalışmak',
+    emoji: '👷',
+    sentence: 'I work hard at school.',
+    sentenceTr: 'Okulda çok çalışıyorum.',
+    altSentences: [
+      { en: 'My parents work every day.', tr: 'Ailem her gün çalışıyor.' },
+      { en: 'We work together.', tr: 'Birlikte çalışıyoruz.' },
+    ],
+  },
+  math: {
+    tr: 'Matematik',
+    emoji: '➗',
+    sentence: 'I like math class.',
+    sentenceTr: 'Matematik dersini seviyorum.',
+    altSentences: [
+      { en: 'Math is fun.', tr: 'Matematik eğlenceli.' },
+      { en: 'We have math on Monday.', tr: 'Pazartesi matematik dersimiz var.' },
+    ],
+  },
+  science: {
+    tr: 'Fen Bilgisi',
+    emoji: '🔬',
+    sentence: 'Science is my favourite subject.',
+    sentenceTr: 'Fen bilgisi en sevdiğim ders.',
+    altSentences: [
+      { en: 'We do experiments in science.', tr: 'Fen dersinde deney yapıyoruz.' },
+      { en: 'I love science class.', tr: 'Fen dersini seviyorum.' },
+    ],
+  },
+  art: {
+    tr: 'Resim',
+    emoji: '🎨',
+    sentence: 'We paint pictures in art class.',
+    sentenceTr: 'Resim dersinde resim yapıyoruz.',
+    altSentences: [
+      { en: 'Art is creative.', tr: 'Resim dersi yaratıcı.' },
+      { en: 'I draw flowers in art.', tr: 'Resim dersinde çiçek çiziyorum.' },
+    ],
+  },
+  history: {
+    tr: 'Tarih',
+    emoji: '📜',
+    sentence: 'History is interesting.',
+    sentenceTr: 'Tarih ilginç.',
+    altSentences: [
+      { en: 'We learn about history.', tr: 'Tarih hakkında öğreniyoruz.' },
+      { en: 'I have history on Wednesday.', tr: 'Çarşamba tarih dersim var.' },
+    ],
+  },
+  practice: {
+    tr: 'Pratik yapmak',
+    emoji: '🔁',
+    sentence: 'I practice English every day.',
+    sentenceTr: 'Her gün İngilizce pratik yapıyorum.',
+    altSentences: [
+      { en: 'Practice makes perfect.', tr: 'Pratik mükemmelleştirir.' },
+      { en: 'We practice reading.', tr: 'Okuma pratiği yapıyoruz.' },
+    ],
+  },
+  subject: {
+    tr: 'Ders / Konu',
+    emoji: '📚',
+    sentence: 'What is your favourite subject?',
+    sentenceTr: 'En sevdiğin ders ne?',
+    altSentences: [
+      { en: 'I have six subjects today.', tr: 'Bugün altı dersim var.' },
+      { en: 'English is a fun subject.', tr: 'İngilizce eğlenceli bir ders.' },
+    ],
+  },
+  break: {
+    tr: 'Teneffüs',
+    emoji: '⏸️',
+    sentence: 'We play during break.',
+    sentenceTr: 'Teneffüste oynuyoruz.',
+    altSentences: [
+      { en: 'Break is at ten thirty.', tr: 'Teneffüs on buçukta.' },
+      { en: 'I eat my snack during break.', tr: 'Teneffüste atıştırmalığımı yerim.' },
+    ],
+  },
+  gym: {
+    tr: 'Spor salonu',
+    emoji: '🏋️',
+    sentence: 'We exercise in the gym.',
+    sentenceTr: 'Spor salonunda egzersiz yapıyoruz.',
+    altSentences: [
+      { en: 'The gym is big.', tr: 'Spor salonu büyük.' },
+      { en: 'I go to the gym after school.', tr: 'Okuldan sonra spor salonuna gidiyorum.' },
+    ],
+  },
+  racket: {
+    tr: 'Raket',
+    emoji: '🏸',
+    sentence: 'I hit the ball with my racket.',
+    sentenceTr: 'Topa raketimle vuruyorum.',
+    altSentences: [
+      { en: 'My racket is new.', tr: 'Raketim yeni.' },
+      { en: 'You need a racket to play tennis.', tr: 'Tenis oynamak için rakete ihtiyacın var.' },
+    ],
+  },
+  helmet: {
+    tr: 'Kask',
+    emoji: '⛑️',
+    sentence: 'I wear a helmet when I ride my bike.',
+    sentenceTr: 'Bisiklete bindiğimde kask takıyorum.',
+    altSentences: [
+      { en: 'The helmet keeps you safe.', tr: 'Kask seni güvende tutar.' },
+      { en: 'My helmet is red.', tr: 'Kaskım kırmızı.' },
+    ],
+  },
+  net: {
+    tr: 'Ağ / File',
+    emoji: '🥅',
+    sentence: 'The ball goes over the net.',
+    sentenceTr: 'Top filenin üzerinden geçiyor.',
+    altSentences: [
+      { en: 'We set up the net.', tr: 'Fileyi kuruyoruz.' },
+      { en: 'The net is very high.', tr: 'File çok yüksek.' },
+    ],
+  },
+  whistle: {
+    tr: 'Düdük',
+    emoji: '📣',
+    sentence: 'The coach blows the whistle.',
+    sentenceTr: 'Koç düdüğü çalıyor.',
+    altSentences: [
+      { en: 'I hear the whistle.', tr: 'Düdüğü duyuyorum.' },
+      { en: 'The game starts with a whistle.', tr: 'Oyun düdükle başlıyor.' },
+    ],
+  },
+  volleyball: {
+    tr: 'Voleybol',
+    emoji: '🏐',
+    sentence: 'We play volleyball at school.',
+    sentenceTr: 'Okulda voleybol oynuyoruz.',
+    altSentences: [
+      { en: 'Volleyball is a team sport.', tr: 'Voleybol bir takım sporu.' },
+      { en: 'I love volleyball.', tr: 'Voleybolu seviyorum.' },
+    ],
+  },
+  gymnastics: {
+    tr: 'Jimnastik',
+    emoji: '🤸',
+    sentence: 'She is good at gymnastics.',
+    sentenceTr: 'Jimnastikte çok iyi.',
+    altSentences: [
+      { en: 'Gymnastics is exciting.', tr: 'Jimnastik heyecan verici.' },
+      { en: 'I do gymnastics after school.', tr: 'Okuldan sonra jimnastik yapıyorum.' },
+    ],
+  },
+  skating: {
+    tr: 'Buz pateni',
+    emoji: '⛸️',
+    sentence: 'I go skating in winter.',
+    sentenceTr: 'Kışın buz pateni yapıyorum.',
+    altSentences: [
+      { en: 'Skating is so much fun.', tr: 'Buz pateni çok eğlenceli.' },
+      { en: 'We go skating on Saturday.', tr: 'Cumartesi buz pateni yapıyoruz.' },
+    ],
+  },
+  score: {
+    tr: 'Skor',
+    emoji: '📊',
+    sentence: 'The score is three to two.',
+    sentenceTr: 'Skor üçe iki.',
+    altSentences: [
+      { en: 'What is the score?', tr: 'Skor ne?' },
+      { en: 'We score a goal!', tr: 'Gol atıyoruz!' },
+    ],
+  },
+  point: {
+    tr: 'Puan',
+    emoji: '🎯',
+    sentence: 'We get one point.',
+    sentenceTr: 'Bir puan alıyoruz.',
+    altSentences: [
+      { en: 'She scores five points.', tr: 'Beş puan alıyor.' },
+      { en: 'Every point matters.', tr: 'Her puan önemli.' },
+    ],
+  },
 };
 
 // ===== EMOJI MAP for entries without inline emoji =====

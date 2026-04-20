@@ -1,6 +1,6 @@
 # NovaLingo — İçerik Büyüme Yol Haritası
 
-> Son güncelleme: 20 Nisan 2026
+> Son güncelleme: 21 Nisan 2026
 > Durum: Production öncesi — MVP içerik denetiminden sonra oluşturuldu
 
 ---
@@ -9,11 +9,11 @@
 
 | Metrik                 | Mevcut     | Hedef (3 ay)    | Hedef (6 ay) |
 | ---------------------- | ---------- | --------------- | ------------ |
-| Toplam ders            | 194        | 280             | 350          |
+| Toplam ders            | 211        | 280             | 350          |
 | W1 ders                | 46         | 46 (tamamlandı) | 46           |
 | W2 ders                | 40         | 42              | 45           |
-| W3 ders                | 28         | 42              | 45           |
-| W4 ders                | 27         | 40              | 45           |
+| W3 ders                | 45         | 45 (tamamlandı) | 45           |
+| W4 ders                | 30         | 45 (tamamlandı) | 45           |
 | W5 ders                | 24         | 38              | 45           |
 | W6 ders                | 29         | 40              | 45           |
 | Konuşma senaryosu      | 80         | 128             | 180          |
@@ -51,24 +51,23 @@ Her dünya minimum **42-45 ders**, W1 ile aynı yoğunlukta.
 
 ### Aksiyon Planı
 
-#### Faz 1 — W3 Hikaye Ormanı (28 → 45 ders) — Hafta 1-2
+#### Faz 1 — W3 Hikaye Ormanı (28 → 45 ders) — ✅ TAMAMLANDI
 
-- [ ] U1 (Ev): 3 yeni ders ekle (bathroom, garden, garage)
-- [ ] U2 (Doğa): 3 yeni ders ekle (weather, seasons, plants)
-- [ ] U3 (Giysiler): 3 yeni ders ekle (accessories, patterns, dressing up)
-- [ ] U4 (Ulaşım): 3 yeni ders ekle (travel, directions, tickets)
-- [ ] U5: 2 yeni review/boss ders
-- [ ] Her yeni ders için: objective, canDo, chunks, introLine, outroLine
-- [ ] Her ders minimum 8 aktivite (flash-card, listen-and-tap, match-pairs, word-builder, speak-it, quiz-battle, story-time veya conversation)
+- [x] U1 (Ev): 3 yeni ders (bathroom items, garden, garage) ✅
+- [x] U2 (Doğa): 3 yeni ders (weather, seasons, garden creatures) ✅
+- [x] U3 (Giysiler): 3 yeni ders (accessories, patterns, dressing up) ✅
+- [x] U4 (Ulaşım): 3 yeni ders (vehicles 2, travel prep, tickets) ✅
+- [x] U5: 2 review/boss ders + bonus ✅
+- [x] vocabDB + EMOJI_MAP + TTS audio (140+ dosya) ✅
+- [x] Commit: 10b288a
 
-#### Faz 2 — W4 Şehir Meydanı (27 → 45 ders) — Hafta 3-4
+#### Faz 2 — W4 Şehir Meydanı (30 → 45 ders) — ✅ TAMAMLANDI
 
-- [ ] U1 (Meslekler): 3 yeni ders (workplace, tools, uniforms)
-- [ ] U2 (Okul): 3 yeni ders (classroom objects, subjects, school day)
-- [ ] U3 (Spor): 3 yeni ders (equipment, scores, team sports)
-- [ ] U4 (Zaman): 3 yeni ders (calendar, routines, planning)
-- [ ] U5 (Şehir): 3 yeni ders (shops, parks, buildings)
-- [ ] 3 review/boss ders
+- [x] U1 (Şehirde): 3 yeni ders (more places, giving directions practice, a day in the city)
+- [x] U2 (Zaman): 3 yeni ders (seasons, daily routines, my week plan)
+- [x] U3 (Meslekler): 3 yeni ders (workplaces, work tools, when I grow up)
+- [x] U4 (Okul Malzemeleri): 3 yeni ders (school subjects, my school day, class schedule)
+- [x] U5 (Spor & Arkadaşlar): 3 yeni ders (sports equipment, different sports, scoreboard)
 
 #### Faz 3 — W5 Bilim Adası (24 → 45 ders) — Hafta 5-7
 
