@@ -9,7 +9,7 @@
 
 | Metrik                 | Mevcut          | Hedef (3 ay)    | Hedef (6 ay) |
 | ---------------------- | --------------- | --------------- | ------------ |
-| Toplam ders            | **272** ✅      | 280             | 350          |
+| Toplam ders            | **272** ✅      | 280             | 420+         |
 | W1 ders                | 47 (tamamlandı) | 47              | 47           |
 | W2 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
 | W3 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
@@ -141,7 +141,7 @@ Aynı 280 ders → etkili süre 3x (40 saat → 120 saat hissiyatı)
   - `{ word, lastReviewed, interval, easeFactor, nextReviewAt, repetitions, quality }`
 - [x] Ana ekranda "Günlük Tekrar" butonu (review kartı varsa badge göster) ✅
 - [x] Mini quiz aktivite tipi: `generateReviewLesson` in learningEngine ✅
-- [ ] Push notification: "Nova seni bekliyor! 🐾 5 kelime tekrar zamanı" (Capacitor plugin gerekli)
+- [ ] Push notification: "Nova seni bekliyor! 🐾 5 kelime tekrar zamanı" — P1 listesinde, Capacitor FCM eklendikten sonra
 - [x] Streak entegrasyonu — günlük review tamamlama streak'e sayılıyor ✅
 
 ### Mevcut Dosyalar
@@ -242,8 +242,8 @@ Cuma       → Tümünü test + commit + deploy
 #### Yeni Hikaye Tipleri
 
 - [x] **Rhyme Stories**: Kafiyeli kısa şiirler — variant='rhyme' + rhymeWords ✅
-- [ ] **Chain Stories**: Çocuk bir kelime seçer, hikaye o yöne gider (future)
-- [ ] **Picture Stories**: Sadece resim göster, çocuk anlatır — speak-it entegrasyonu (future)
+- [ ] **Chain Stories**: Çocuk bir kelime seçer, hikaye o yöne gider — P2 backlog
+- [ ] **Picture Stories**: Sadece resim göster, çocuk anlatır — speak-it entegrasyonu, P2 backlog
 
 ### Demo Hikayeler (6 yeni)
 
@@ -332,16 +332,16 @@ Takvim:
 └── Eylül: Back to School — "Classroom English"
 ```
 
-| Dosya | Açıklama |
-| ----- | -------- |
-| `src/types/gamification.ts` | `SeasonalEvent`, `SeasonalLesson`, `SeasonalCollectible`, `UserEventProgress` tipleri |
-| `src/features/gamification/data/seasonalEvents.ts` | 6 event (Halloween→Back-to-School), 5-6 ders + 3 collectible her event |
-| `src/hooks/useSeasonalEvent.ts` | TanStack Query hook — aktif event, ilerleme, kalan gün |
-| `src/services/firebase/firestore.ts` | `childEventProgress` Firestore koleksiyonu eklendi |
-| `src/features/gamification/components/SeasonalEventBanner.tsx` | Ana ekranda gradient banner (aktif/yaklaşan) |
-| `src/features/gamification/screens/SeasonalEventScreen.tsx` | Event detay ekranı: ders listesi, collectible grid, vocab chips |
-| `src/features/home/screens/HomeScreen.tsx` | Banner wired — streak/XP satırı altına eklendi |
-| `src/app/Router.tsx` | `/event/:eventId` route eklendi |
+| Dosya                                                          | Açıklama                                                                              |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `src/types/gamification.ts`                                    | `SeasonalEvent`, `SeasonalLesson`, `SeasonalCollectible`, `UserEventProgress` tipleri |
+| `src/features/gamification/data/seasonalEvents.ts`             | 6 event (Halloween→Back-to-School), 5-6 ders + 3 collectible her event                |
+| `src/hooks/useSeasonalEvent.ts`                                | TanStack Query hook — aktif event, ilerleme, kalan gün                                |
+| `src/services/firebase/firestore.ts`                           | `childEventProgress` Firestore koleksiyonu eklendi                                    |
+| `src/features/gamification/components/SeasonalEventBanner.tsx` | Ana ekranda gradient banner (aktif/yaklaşan)                                          |
+| `src/features/gamification/screens/SeasonalEventScreen.tsx`    | Event detay ekranı: ders listesi, collectible grid, vocab chips                       |
+| `src/features/home/screens/HomeScreen.tsx`                     | Banner wired — streak/XP satırı altına eklendi                                        |
+| `src/app/Router.tsx`                                           | `/event/:eventId` route eklendi                                                       |
 
 - [x] Event banner ana ekranda ✅
 - [x] Sınırlı süreli collectible → FOMO + retention ✅
@@ -395,6 +395,43 @@ Takvim:
 - Bu hem İngilizce hem mantık öğretir
 - Yeni aktivite tipi: `math-word-problem`
 - **Zamanı**: İngilizce içerik 60+ saat olduğunda (Ay 6 sonrası)
+
+---
+
+## Öncelik 6: W7-W12 — İçerik Derinliği (P2 — 30 Gün İçinde) ⬜
+
+> **Hedef:** 272 → 420+ ders, 25-30 saat → 60+ saat oynanış
+> Rakip Duolingo ABC'nin %30'una ulaşmak için minimum eşik.
+
+### Yeni Dünyalar
+
+| Dünya | Tema                   | Ünite Sayısı | Hedef Ders | Odak Kelimeler           |
+| ----- | ---------------------- | ------------ | ---------- | ------------------------ |
+| W7    | 🏖️ Tatil & Seyahat    | 5            | 45         | airport, hotel, beach    |
+| W8    | 🍕 Yemek & Mutfak     | 5            | 45         | cook, recipe, ingredient |
+| W9    | 🎨 Sanat & Müzik      | 5            | 45         | draw, paint, sing, play  |
+| W10   | 🏥 Sağlık & Vücut     | 5            | 45         | doctor, body, feel, hurt |
+| W11   | 🌍 Çevre & Doğa       | 5            | 45         | recycle, tree, water     |
+| W12   | 🔢 Sayılar & Zaman 2  | 5            | 45         | hundred, calendar, clock |
+
+### Üretim Pipeline (W7-W12)
+
+```
+Her dünya için:
+  ✅ 5 ünite × 9 ders = 45 ders
+  ✅ 45 ders × 4-6 hedef kelime = ~200 yeni kelime
+  ✅ TTS ses üretimi (generate-audio.py)
+  ✅ SRS entegrasyonu (otomatik — mevcut engine)
+  ✅ En az 2 konuşma senaryosu per ünite
+  ✅ 1 interaktif hikaye per ünite
+```
+
+### Öncelik Sırası
+
+1. **W7 (Tatil & Seyahat)** — yaz lansmanı için zamanında (Haziran 2026)
+2. **W10 (Sağlık & Vücut)** — ebeveyn güveni için kritik konu
+3. **W8 (Yemek & Mutfak)** — günlük yaşam vocabulary, yüksek kullanım
+4. W9, W11, W12 — ay 3-4
 
 ---
 

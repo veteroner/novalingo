@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import { CalendarDots, CaretRight, Gift, Sparkle } from '@phosphor-icons/react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 import { useSeasonalEvent } from '@/hooks/useSeasonalEvent';

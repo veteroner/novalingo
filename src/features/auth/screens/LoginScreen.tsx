@@ -13,7 +13,7 @@ import { signInAnonymousUser, signInWithApple, signInWithGoogle } from '@service
 import { useAuthStore } from '@stores/authStore';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
@@ -154,17 +154,26 @@ export default function LoginScreen() {
                 className="accent-nova-blue mt-1 h-5 w-5 shrink-0 rounded"
               />
               <Text variant="caption" className="text-text-tertiary">
-                <span className="text-text-secondary font-medium underline">
+                <Link
+                  to="/legal/terms"
+                  className="text-text-secondary font-medium underline"
+                >
                   Kullanım Koşulları
-                </span>
+                </Link>
                 ,{' '}
-                <span className="text-text-secondary font-medium underline">
+                <Link
+                  to="/legal/privacy"
+                  className="text-text-secondary font-medium underline"
+                >
                   Gizlilik Politikası
-                </span>{' '}
+                </Link>{' '}
                 ve{' '}
-                <span className="text-text-secondary font-medium underline">
+                <Link
+                  to="/legal/privacy"
+                  className="text-text-secondary font-medium underline"
+                >
                   KVKK Aydınlatma Metni
-                </span>
+                </Link>
                 &#39;ni okudum ve kabul ediyorum.
               </Text>
             </label>

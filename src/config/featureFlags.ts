@@ -39,7 +39,7 @@ export interface FeatureFlags {
  * Override via Firebase Remote Config.
  */
 export const defaultFeatureFlags: FeatureFlags = {
-  speechRecognition: false, // Phase 2
+  speechRecognition: true, // P0 launch — main differentiator vs competitors
   novaAIChat: false, // Phase 3
   dailyWheel: true,
   leaderboard: true,

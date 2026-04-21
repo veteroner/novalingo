@@ -783,6 +783,23 @@ export default function ParentSettings() {
           >
             {saveMutation.isPending ? 'Kaydediliyor...' : 'Kaydet'}
           </Button>
+
+          {/* Legal Links */}
+          <div className="mt-4 flex justify-center gap-4">
+            <button
+              className="text-xs text-gray-400 underline"
+              onClick={() => { void navigate('/legal/privacy'); }}
+            >
+              Gizlilik Politikası
+            </button>
+            <span className="text-xs text-gray-300">·</span>
+            <button
+              className="text-xs text-gray-400 underline"
+              onClick={() => { void navigate('/legal/terms'); }}
+            >
+              Kullanım Koşulları
+            </button>
+          </div>
         </div>
       </div>
     </MainLayout>

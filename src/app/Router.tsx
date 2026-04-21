@@ -47,6 +47,9 @@ const ParentDashboard = lazy(() => import('@features/parent/screens/ParentDashbo
 const ParentSettings = lazy(() => import('@features/parent/screens/ParentSettings'));
 const SubscriptionScreen = lazy(() => import('@features/parent/screens/SubscriptionScreen'));
 
+// Legal (public — no auth required)
+const LegalScreen = lazy(() => import('@features/legal/screens/LegalScreen'));
+
 // ===== Route Guards =====
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -265,6 +268,10 @@ export function AppRouter() {
         {/* Default & 404 */}
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
+
+        {/* Legal Routes — public, no auth required, App Store links here */}
+        <Route path="/legal/:type" element={<LegalScreen />} />
+        <Route path="/legal" element={<Navigate to="/legal/privacy" replace />} />
       </Routes>
     </Suspense>
   );

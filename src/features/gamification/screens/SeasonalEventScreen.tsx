@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import { ArrowLeft, CalendarDots, CheckCircle, Gift, Lock, Sparkle } from '@phosphor-icons/react';
+import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SEASONAL_EVENTS } from '@/features/gamification/data/seasonalEvents';
