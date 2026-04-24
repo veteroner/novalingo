@@ -11,7 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { StarRating } from '@components/molecules/StarRating';
 import { NovaCompanion } from '@components/organisms/NovaCompanion';
 import { getVocab } from '@features/learning/data/activityGenerator';
-import { getLesson } from '@features/learning/data/curriculum';
+import { curriculum, getLesson, getWorld } from '@features/learning/data/curriculum';
 import { getNovaQuip } from '@features/learning/data/novaQuipBank';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
 import {
@@ -25,7 +25,7 @@ import { useChildStore } from '@stores/childStore';
 import { formatTime } from '@utils/time';
 import { calculateStars } from '@utils/xp';
 import { motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface LessonSummary {
@@ -194,6 +194,69 @@ export default function LessonResultScreen() {
 
   const { mood, msg } = getMoodMessage();
   const lesson = getLesson(summary.lessonId);
+  const currentWorldId = summary.lessonId.split('_')[0] ?? '';
+  const currentWorld = getWorld(currentWorldId);
+  const flatWorldLessons = currentWorld ? currentWorld.units.flatMap((unit) => unit.lessons) : [];
+  const currentLessonIndex = flatWorldLessons.findIndex((item) => item.id === summary.lessonId);
+  const nextLesson =
+    currentLessonIndex >= 0 ? (flatWorldLessons[currentLessonIndex + 1] ?? null) : null;
+  const currentWorldIndex = curriculum.findIndex((world) => world.id === currentWorldId);
+  const nextWorld = currentWorldIndex >= 0 ? (curriculum[currentWorldIndex + 1] ?? null) : null;
+  const [secondsRemaining, setSecondsRemaining] = useState(5);
+  const autoAdvanceHandledRef = useRef(false);
+  const shouldAutoAdvance = Boolean(nextLesson || nextWorld);
+  const primaryActionLabel = nextLesson
+    ? `Sonraki Oyun: ${nextLesson.name}`
+    : nextWorld
+      ? `Yeni Dünya: ${nextWorld.emoji} ${nextWorld.name}`
+      : 'Ana Sayfaya Dön';
+  const handlePrimaryAction = () => {
+    if (autoAdvanceHandledRef.current) return;
+    autoAdvanceHandledRef.current = true;
+
+    if (nextLesson) {
+      void unlockAudioPlayback();
+      void navigate(`/lesson/${nextLesson.id}`);
+      return;
+    }
+
+    if (nextWorld) {
+      void navigate(`/world/${nextWorld.id}`);
+      return;
+    }
+
+    void navigate('/home');
+  };
+  const primaryActionHint = nextLesson
+    ? 'Hazırsan sıradaki derse geç.'
+    : nextWorld
+      ? 'Bu dünya bitti. Sıradaki dünyaya geçebilirsin.'
+      : 'Tüm dünyalar tamamlandı. Harika iş!';
+
+  useEffect(() => {
+    autoAdvanceHandledRef.current = false;
+    setSecondsRemaining(5);
+  }, [summary.lessonId, nextLesson?.id, nextWorld?.id]);
+
+  useEffect(() => {
+    if (!shouldAutoAdvance) return;
+
+    const intervalId = window.setInterval(() => {
+      setSecondsRemaining((current) => {
+        if (current <= 1) {
+          window.clearInterval(intervalId);
+          handlePrimaryAction();
+          return 0;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [shouldAutoAdvance, summary.lessonId, nextLesson?.id, nextWorld?.id]);
 
   return (
     <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
@@ -376,6 +439,27 @@ export default function LessonResultScreen() {
         </motion.div>
       )}
 
+      {nextWorld && !nextLesson && (
+        <motion.div
+          className="mt-4 w-full max-w-sm rounded-3xl bg-linear-to-r from-amber-400 via-orange-400 to-rose-400 p-px shadow-lg"
+          initial={{ opacity: 0, scale: 0.92, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ delay: 1.65, type: 'spring', stiffness: 180, damping: 14 }}
+        >
+          <div className="rounded-[calc(1.5rem-1px)] bg-white px-5 py-4 text-center">
+            <Text variant="caption" className="font-bold tracking-wide text-orange-500 uppercase">
+              🎊 Yeni Dünya Açıldı
+            </Text>
+            <Text variant="h4" align="center" className="mt-1">
+              {nextWorld.emoji} {nextWorld.name}
+            </Text>
+            <Text variant="bodySmall" className="mt-1 text-gray-600">
+              Yeni macera hazır. Nova seni sıradaki dünyaya götürüyor.
+            </Text>
+          </div>
+        </motion.div>
+      )}
+
       {/* Vocabulary Recap */}
       {vocabulary.length > 0 && (
         <motion.div
@@ -419,10 +503,25 @@ export default function LessonResultScreen() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
       >
+        <div className="rounded-2xl bg-indigo-50 px-4 py-3 text-center">
+          <Text variant="caption" className="font-semibold text-indigo-600">
+            {primaryActionHint}
+          </Text>
+          {shouldAutoAdvance && (
+            <Text variant="caption" className="mt-1 block text-indigo-500">
+              {secondsRemaining} saniye sonra otomatik devam edecek.
+            </Text>
+          )}
+        </div>
+
+        <Button variant="primary" size="xl" fullWidth onClick={handlePrimaryAction}>
+          {primaryActionLabel}
+        </Button>
+
         {/* Conversation Practice CTA — offer after every lesson */}
         <Button
-          variant="primary"
-          size="xl"
+          variant="secondary"
+          size="lg"
           fullWidth
           onClick={() => {
             void unlockAudioPlayback();
@@ -432,7 +531,7 @@ export default function LessonResultScreen() {
           🎭 Konuşma Pratiği Yap
         </Button>
 
-        <Button variant="secondary" size="lg" fullWidth onClick={() => navigate('/home')}>
+        <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
           Ana Sayfaya Dön
         </Button>
 
