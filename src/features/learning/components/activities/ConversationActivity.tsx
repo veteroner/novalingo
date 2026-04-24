@@ -464,6 +464,12 @@ export default function ConversationActivity({
   const [attempts, setAttempts] = useState(0);
   const [freeInputText, setFreeInputText] = useState('');
   const [micError, setMicError] = useState<string | null>(null);
+  const [supportBanner, setSupportBanner] = useState<{
+    tone: 'warning' | 'error' | 'info';
+    title: string;
+    detail: string;
+    example?: string;
+  } | null>(null);
 
   // ── Premium UX state ──
   const [novaMood, setNovaMood] = useState<NovaMood>('idle');
@@ -507,6 +513,7 @@ export default function ConversationActivity({
   // speaker actually said; we then skip the canonical bubble in
   // acceptConversationResponse to avoid stacking two child bubbles per turn.
   const skipNextChildBubbleRef = useRef<boolean>(false);
+  const lastHeardBubbleIdRef = useRef<string | null>(null);
   const nodeRejectionsRef = useRef(0);
   const completedWordsRef = useRef(completedWords);
   const attemptsRef = useRef(attempts);
@@ -890,6 +897,8 @@ export default function ConversationActivity({
       setOptions([]);
       setCurrentRound((r) => r + 1);
       setHintVisible(false);
+      setSupportBanner(null);
+      setMicError(null);
       currentPromptOpenEndedRef.current = null;
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
       if (noResponseTimerRef.current) clearTimeout(noResponseTimerRef.current);
@@ -1001,6 +1010,44 @@ export default function ConversationActivity({
     [currentSpeech, currentAudioUrl],
   );
 
+  const syncLastHeardBubble = useCallback((text: string) => {
+    const bubbleId = lastHeardBubbleIdRef.current;
+    const trimmed = text.trim();
+    if (!bubbleId || trimmed.length === 0) return;
+    setBubbles((prev) =>
+      prev.map((bubble) => (bubble.id === bubbleId ? { ...bubble, text: trimmed } : bubble)),
+    );
+  }, []);
+
+  const showNovaSupport = useCallback(
+    (params: {
+      tone: 'warning' | 'error' | 'info';
+      title: string;
+      detail: string;
+      example?: string;
+    }) => {
+      setSupportBanner(params);
+
+      const bubbleText = [params.title, params.detail].filter(Boolean).join(' ');
+      setBubbles((prev) => [
+        ...prev,
+        {
+          id: `nova-support-${Date.now()}`,
+          speaker: 'nova',
+          text: bubbleText,
+          textTr: '',
+        },
+      ]);
+
+      setNovaMood('thinking');
+      pushTimer(() => {
+        setNovaMood('speaking');
+        void ttsSpeak(bubbleText, { rate: SPEECH_RATES[speechRateRef.current] });
+      }, 200);
+    },
+    [pushTimer],
+  );
+
   // ── Free-form input handler (STT transcript or typed text) ──
   // alternatives: additional STT candidates to try if rawText doesn't match
   const handleFreeInput = useCallback(
@@ -1018,12 +1065,14 @@ export default function ConversationActivity({
       const heardText = rawText.trim();
       let alreadyLoggedRawAnswer = false;
       if (heardText.length > 0) {
+        const heardBubbleId = `child-heard-${Date.now()}`;
         rawChildResponsesRef.current.push(heardText);
         alreadyLoggedRawAnswer = true;
+        lastHeardBubbleIdRef.current = heardBubbleId;
         setBubbles((prev) => [
           ...prev,
           {
-            id: `child-heard-${Date.now()}`,
+            id: heardBubbleId,
             speaker: 'child',
             text: heardText,
             textTr: '',
@@ -1032,6 +1081,8 @@ export default function ConversationActivity({
       }
       skipNextRawAnswerLogRef.current = alreadyLoggedRawAnswer;
       skipNextChildBubbleRef.current = alreadyLoggedRawAnswer;
+      setSupportBanner(null);
+      setMicError(null);
 
       const openEndedConfig = currentPromptOpenEndedRef.current;
       const textsToTry = [rawText, ...alternatives.filter((a) => a !== rawText)];
@@ -1058,6 +1109,9 @@ export default function ConversationActivity({
           lastOpenEndedMatch = openEndedMatch;
 
           if (openEndedMatch.accepted && openEndedMatch.resolution) {
+            if (text.trim() !== heardText) {
+              syncLastHeardBubble(text);
+            }
             rememberConversationSlot(
               openEndedMatch.resolution.slotKey,
               openEndedMatch.resolution.slotValue,
@@ -1111,6 +1165,9 @@ export default function ConversationActivity({
               (option) => (option.responseId ?? option.nextNodeId) === ruleMatch.matched?.id,
             );
             if (matchedOption) {
+              if (text.trim() !== heardText) {
+                syncLastHeardBubble(text);
+              }
               handleOptionSelect(matchedOption);
               return;
             }
@@ -1126,6 +1183,9 @@ export default function ConversationActivity({
           pronunciationScorer: comparePronunciation,
         });
         if (legacyMatch.matchedOption) {
+          if (text.trim() !== heardText) {
+            syncLastHeardBubble(text);
+          }
           handleOptionSelect(legacyMatch.matchedOption);
           return;
         }
@@ -1192,6 +1252,9 @@ export default function ConversationActivity({
           });
 
           if (automaticMatch.accepted && automaticMatch.resolution) {
+            if (rawText.trim() !== heardText) {
+              syncLastHeardBubble(rawText);
+            }
             if (automaticMatch.resolution.slotKey && automaticMatch.resolution.slotValue) {
               rememberConversationSlot(
                 automaticMatch.resolution.slotKey,
@@ -1268,10 +1331,21 @@ export default function ConversationActivity({
       setFeedback('wrong');
       setNovaMood('sad');
       void haptic.error();
+      showNovaSupport({
+        tone: 'warning',
+        title: t('activities.conversationNovaDidNotUnderstand'),
+        detail: t('activities.conversationNovaDidNotUnderstandHint'),
+        example: options[0]?.text,
+      });
       if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
       feedbackTimerRef.current = setTimeout(() => {
         setFeedback('idle');
         setNovaMood('listening');
+        // Restart recognition — no TTS was spoken on this wrong-answer path so
+        // onSpeakingStateChange never fires; we must restart the mic manually.
+        if (SpeechRecognitionAPI && optionsRef.current.length > 0) {
+          startListeningRef.current();
+        }
       }, 1200);
     },
     [
@@ -1282,6 +1356,9 @@ export default function ConversationActivity({
       rememberConversationSlot,
       acceptConversationResponse,
       pushTimer,
+      showNovaSupport,
+      syncLastHeardBubble,
+      t,
     ],
   );
 
@@ -1314,6 +1391,7 @@ export default function ConversationActivity({
       recognition.onstart = () => {
         setIsListening(true);
         setMicError(null);
+        setSupportBanner(null);
       };
       recognition.onend = () => {
         setIsListening(false);
@@ -1322,11 +1400,39 @@ export default function ConversationActivity({
         setIsListening(false);
         const errorType = event.error;
         if (errorType === 'not-allowed') {
-          setMicError(t('activities.conversationMicNotAllowed'));
+          const message = t('activities.conversationMicNotAllowed');
+          setMicError(message);
+          showNovaSupport({
+            tone: 'error',
+            title: t('activities.conversationNovaMicIssue'),
+            detail: message,
+          });
         } else if (errorType === 'no-speech') {
-          setMicError(t('activities.conversationMicNoSpeech'));
+          setFeedback('wrong');
+          setNovaMood('sad');
+          void haptic.error();
+          showNovaSupport({
+            tone: 'warning',
+            title: t('activities.conversationNovaDidNotUnderstand'),
+            detail: t('activities.conversationNovaDidNotUnderstandHint'),
+            example: optionsRef.current[0]?.text,
+          });
+          if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+          feedbackTimerRef.current = setTimeout(() => {
+            setFeedback('idle');
+            setNovaMood('listening');
+            if (SpeechRecognitionAPI && optionsRef.current.length > 0) {
+              startListeningRef.current();
+            }
+          }, 1200);
         } else if (errorType !== 'aborted') {
-          setMicError(t('activities.conversationMicError'));
+          const message = t('activities.conversationMicError');
+          setMicError(message);
+          showNovaSupport({
+            tone: 'error',
+            title: t('activities.conversationNovaMicIssue'),
+            detail: message,
+          });
         }
       };
 
@@ -1349,9 +1455,15 @@ export default function ConversationActivity({
 
       recognition.start();
     } catch {
-      setMicError(t('activities.conversationMicError'));
+      const message = t('activities.conversationMicError');
+      setMicError(message);
+      showNovaSupport({
+        tone: 'error',
+        title: t('activities.conversationNovaMicIssue'),
+        detail: message,
+      });
     }
-  }, [options, t]);
+  }, [options, haptic, showNovaSupport, t]);
 
   // Keep startListeningRef in sync for auto-listen
   startListeningRef.current = startListening;
@@ -1590,6 +1702,51 @@ export default function ConversationActivity({
             )}
           </AnimatePresence>
 
+          <AnimatePresence>
+            {supportBanner && !isListening && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -8, height: 0 }}
+                className={`mb-3 overflow-hidden rounded-2xl border px-4 py-3 text-center shadow-sm ${
+                  supportBanner.tone === 'error'
+                    ? 'border-rose-200 bg-rose-50'
+                    : supportBanner.tone === 'warning'
+                      ? 'border-amber-200 bg-amber-50'
+                      : 'border-sky-200 bg-sky-50'
+                }`}
+              >
+                <p
+                  className={`text-sm font-bold ${
+                    supportBanner.tone === 'error'
+                      ? 'text-rose-700'
+                      : supportBanner.tone === 'warning'
+                        ? 'text-amber-700'
+                        : 'text-sky-700'
+                  }`}
+                >
+                  {supportBanner.title}
+                </p>
+                <p
+                  className={`mt-1 text-xs ${
+                    supportBanner.tone === 'error'
+                      ? 'text-rose-500'
+                      : supportBanner.tone === 'warning'
+                        ? 'text-amber-600'
+                        : 'text-sky-600'
+                  }`}
+                >
+                  {supportBanner.detail}
+                </p>
+                {supportBanner.example && (
+                  <div className="mt-2 inline-flex max-w-full items-center justify-center rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-gray-700">
+                    {supportBanner.example}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Free-form text input */}
           <div className="flex items-center gap-2">
             <input
@@ -1676,17 +1833,21 @@ export default function ConversationActivity({
               {t('activities.conversationTryAgain')}
             </Text>
           )}
-          {micError && !isListening && feedback !== 'wrong' && (
+          {micError && !isListening && feedback !== 'wrong' && !supportBanner && (
             <Text variant="caption" className="mt-2 text-center text-amber-500">
               {micError}
             </Text>
           )}
           {/* Subtle mode-switch hint when idle */}
-          {!isListening && feedback === 'idle' && !micError && SpeechRecognitionAPI && (
-            <Text variant="caption" className="mt-1.5 text-center text-gray-300">
-              {t('activities.conversationModeHint')}
-            </Text>
-          )}
+          {!isListening &&
+            feedback === 'idle' &&
+            !micError &&
+            !supportBanner &&
+            SpeechRecognitionAPI && (
+              <Text variant="caption" className="mt-1.5 text-center text-gray-300">
+                {t('activities.conversationModeHint')}
+              </Text>
+            )}
         </motion.div>
       )}
 

@@ -15,7 +15,13 @@ import { MainLayout } from '@components/templates/MainLayout';
 import { getWorld } from '@features/learning/data/curriculum';
 import { useLessonProgress, useWorldLessons } from '@hooks/queries';
 import { unlockAudioPlayback } from '@services/speech/speechService';
+import {
+  hasReachedFreeLessonLimit,
+  isWorldPremiumLocked,
+} from '@services/subscription/premiumAccess';
+import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
+import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -67,6 +73,8 @@ export default function WorldMapScreen() {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
   const child = useChildStore((s) => s.activeChild);
+  const user = useAuthStore((s) => s.user);
+  const showToast = useUIStore((s) => s.showToast);
 
   const curWorld = useMemo(() => getWorld(worldId ?? 'w1'), [worldId]);
   const fallback = useMemo(() => buildCurriculumLessons(worldId ?? 'w1'), [worldId]);
@@ -83,6 +91,8 @@ export default function WorldMapScreen() {
 
   const emoji = curWorld?.emoji ?? '🌍';
   const worldName = curWorld?.name ?? 'Dünya';
+  const isPremiumLocked = curWorld ? isWorldPremiumLocked(user, curWorld) : false;
+  const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgress);
 
   // Apply status based on per-lesson completion data
   const applyStatus = (list: LessonWithStatus[]): LessonWithStatus[] => {
@@ -229,6 +239,25 @@ export default function WorldMapScreen() {
               index={index}
               onClick={() => {
                 if (lesson.status === 'locked') return;
+                if (isPremiumLocked) {
+                  showToast({
+                    type: 'info',
+                    title: 'Premium Dünya',
+                    message: 'Bu dünyayı açmak için NovaLingo Plus gerekiyor.',
+                  });
+                  navigate('/subscription');
+                  return;
+                }
+                if (hasReachedDailyLimit) {
+                  showToast({
+                    type: 'info',
+                    title: 'Günlük Limit Doldu',
+                    message:
+                      'Bugünkü 3 ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus’a geçin.',
+                  });
+                  navigate('/subscription');
+                  return;
+                }
                 void unlockAudioPlayback();
                 void navigate(`/lesson/${lesson.id}`);
               }}

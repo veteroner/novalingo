@@ -13,6 +13,8 @@
  */
 
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
+import { upsertVerifiedSubscription } from '../services/subscriptions/entitlementService';
+import { verifyGoogleSubscriptionPurchase } from '../services/subscriptions/googlePlay';
 import { callableOpts, db, requireAuth, serverTimestamp } from '../utils/admin';
 
 export const registerAndroidPurchase = onCall(callableOpts, async (request) => {
@@ -37,4 +39,31 @@ export const registerAndroidPurchase = onCall(callableOpts, async (request) => {
     productId,
     registeredAt: serverTimestamp(),
   });
+
+  const verification = await verifyGoogleSubscriptionPurchase({
+    purchaseToken,
+    productId,
+  });
+
+  await upsertVerifiedSubscription({
+    uid: verification.obfuscatedExternalAccountId ?? uid,
+    platform: 'google',
+    externalId: purchaseToken,
+    productId,
+    state: verification.state,
+    isEntitlementActive: verification.isEntitlementActive,
+    expiresAt: verification.expiresAt,
+    autoRenewEnabled: verification.autoRenewEnabled,
+    eventType: 'register_android_purchase',
+    raw: {
+      purchaseToken,
+      productId,
+      publisherState: verification.raw.subscriptionState ?? null,
+    },
+  });
+
+  return {
+    status: verification.isEntitlementActive ? 'active' : verification.state,
+    expiresAt: verification.expiresAt?.toISOString() ?? null,
+  };
 });

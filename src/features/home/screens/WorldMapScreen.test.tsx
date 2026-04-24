@@ -7,6 +7,11 @@ const mockUnlockAudioPlayback = vi.fn();
 const mockUseLessons = vi.fn();
 const mockUseLessonProgress = vi.fn();
 const mockUseWorldLessons = vi.fn();
+const mockShowToast = vi.fn();
+
+const authState = {
+  user: { isPremium: true },
+};
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
@@ -27,11 +32,21 @@ vi.mock('@hooks/queries', () => ({
   useWorldLessons: (...args: unknown[]) => mockUseWorldLessons(...args),
 }));
 
+vi.mock('@stores/authStore', () => ({
+  useAuthStore: (selector: (state: typeof authState) => unknown) => selector(authState),
+}));
+
+vi.mock('@stores/uiStore', () => ({
+  useUIStore: (selector: (state: { showToast: typeof mockShowToast }) => unknown) =>
+    selector({ showToast: mockShowToast }),
+}));
+
 vi.mock('@features/learning/data/curriculum', () => ({
   getWorld: vi.fn(() => ({
     id: 'w1',
     name: 'Dünya 1',
     emoji: '🌍',
+    isPremium: false,
     units: [
       {
         id: 'u1',
@@ -79,6 +94,8 @@ describe('WorldMapScreen', () => {
   beforeEach(() => {
     navigateMock.mockReset();
     mockUnlockAudioPlayback.mockReset();
+    mockShowToast.mockReset();
+    authState.user = { isPremium: true };
     mockUseLessons.mockReturnValue({ data: [] });
     mockUseLessonProgress.mockReturnValue({ data: [] });
     mockUseWorldLessons.mockReturnValue({ data: [] });
@@ -92,5 +109,24 @@ describe('WorldMapScreen', () => {
 
     expect(mockUnlockAudioPlayback).toHaveBeenCalledOnce();
     expect(navigateMock).toHaveBeenCalledWith('/lesson/lesson-1');
+  });
+
+  it('redirects free users to subscription when the daily lesson limit is reached', async () => {
+    authState.user = { isPremium: false };
+    const now = Date.now();
+    mockUseLessonProgress.mockReturnValue({
+      data: [
+        { lessonId: 'a', completedAt: { toMillis: () => now } },
+        { lessonId: 'b', completedAt: { toMillis: () => now } },
+        { lessonId: 'c', completedAt: { toMillis: () => now } },
+      ],
+    });
+
+    render(<WorldMapScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Animals' }));
+
+    expect(mockShowToast).toHaveBeenCalled();
+    expect(navigateMock).toHaveBeenCalledWith('/subscription');
   });
 });

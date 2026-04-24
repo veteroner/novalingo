@@ -9,11 +9,12 @@
  *  2. "7 Gün Ücretsiz Dene" butonuna basar.
  *  3. subscriptionService.purchaseSubscription() çağrılır.
  *  4. Native: App Store / Google Play abonelik sayfası açılır.
- *  5. Sunucu webhook'u aboneliği onaylar ve Firestore'da isPremium = true yapar.
- *  6. Yenileme sırasında: "Geri Yükle" butonu kullanılır.
+ *  5. Backend doğrulaması verified entitlement kaydını günceller.
+ *  6. Firestore projection premium erişimi açar; gecikirse "Geri Yükle" kullanılabilir.
  */
 
 import {
+  ANDROID_MANAGE_SUBSCRIPTIONS_URL,
   IAP_PRODUCTS,
   IOS_MANAGE_SUBSCRIPTIONS_URL,
   PRIVACY_POLICY_URL,
@@ -24,12 +25,18 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { MainLayout } from '@components/templates/MainLayout';
+import {
+  trackSubscriptionPaywallViewed,
+  trackSubscriptionRestoreCompleted,
+  trackSubscriptionRestoreFailed,
+  trackSubscriptionTrialStarted,
+} from '@services/analytics';
 import { purchaseSubscription, restorePurchases } from '@services/subscription/subscriptionService';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PREMIUM_FEATURES = [
@@ -78,10 +85,15 @@ export default function SubscriptionScreen() {
   const platform = Capacitor.getPlatform();
   const isNativePlatform = platform === 'ios' || platform === 'android';
 
+  useEffect(() => {
+    trackSubscriptionPaywallViewed({ source: 'subscription_screen', isPremium });
+  }, [isPremium]);
+
   async function handlePurchase() {
     if (purchasing) return;
     setPurchasing(true);
     try {
+      trackSubscriptionTrialStarted(selectedPlanId, platform);
       const result = await purchaseSubscription(
         selectedPlanId as (typeof IAP_PRODUCTS)[keyof typeof IAP_PRODUCTS],
       );
@@ -96,7 +108,7 @@ export default function SubscriptionScreen() {
           type: 'info',
           title: 'Mağaza Açıldı',
           message: isNativePlatform
-            ? 'Aboneliğinizi mağaza üzerinden tamamlayın. İşlem sonrasında "Geri Yükle" butonuna basın.'
+            ? 'Aboneliğiniz doğrulanıyor. İşlem tamamlandığında premium erişim otomatik olarak açılır; gecikirse "Geri Yükle" butonunu kullanın.'
             : 'Uygulamayı mobil cihazınızdan indirerek abone olabilirsiniz.',
         });
       } else if (result.status === 'cancelled') {
@@ -115,6 +127,7 @@ export default function SubscriptionScreen() {
     try {
       const result = await restorePurchases();
       if (result.status === 'success') {
+        trackSubscriptionRestoreCompleted(platform);
         showToast({
           type: 'success',
           title: 'Abonelik Bulundu!',
@@ -122,6 +135,10 @@ export default function SubscriptionScreen() {
         });
         navigate(-1);
       } else {
+        trackSubscriptionRestoreFailed(
+          platform,
+          result.status === 'error' ? result.message : 'not_found',
+        );
         showToast({
           type: 'error',
           title: 'Abonelik Bulunamadı',
@@ -322,6 +339,15 @@ export default function SubscriptionScreen() {
                     onClick={() => window.open(IOS_MANAGE_SUBSCRIPTIONS_URL, '_system')}
                   >
                     App Store Aboneliklerini Yönet
+                  </Button>
+                )}
+                {platform === 'android' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => window.open(ANDROID_MANAGE_SUBSCRIPTIONS_URL, '_blank')}
+                  >
+                    Google Play Aboneliklerini Yönet
                   </Button>
                 )}
               </div>

@@ -23,6 +23,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.appleNotification = void 0;
 const https_1 = require("firebase-functions/v2/https");
+const appleJws_1 = require("../services/subscriptions/appleJws");
+const entitlementService_1 = require("../services/subscriptions/entitlementService");
 const admin_1 = require("../utils/admin");
 // Apple notification types where the subscription is (or becomes) active
 const ACTIVE_NOTIFICATION_TYPES = new Set([
@@ -38,21 +40,22 @@ const INACTIVE_NOTIFICATION_TYPES = new Set([
     'GRACE_PERIOD_EXPIRED',
     'REFUND',
 ]);
-/**
- * Base64url-decode the payload portion of a JWS token.
- * Does NOT verify the signature (MVP-acceptable; add verification for production).
- */
-function decodeJWSPayload(jws) {
-    try {
-        const parts = jws.split('.');
-        if (parts.length !== 3)
-            return null;
-        // Node Buffer supports 'base64url' since v16
-        return JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
-    }
-    catch {
-        return null;
-    }
+function mapAppleNotificationType(notificationType) {
+    if (ACTIVE_NOTIFICATION_TYPES.has(notificationType))
+        return 'active';
+    if (notificationType === 'OFFER_REDEEMED')
+        return 'trial';
+    if (notificationType === 'GRACE_PERIOD')
+        return 'grace';
+    if (notificationType === 'DID_FAIL_TO_RENEW')
+        return 'billing_issue';
+    if (notificationType === 'REFUND')
+        return 'refunded';
+    if (notificationType === 'REVOKE')
+        return 'revoked';
+    if (INACTIVE_NOTIFICATION_TYPES.has(notificationType))
+        return 'expired';
+    return 'unknown';
 }
 exports.appleNotification = (0, https_1.onRequest)({ region: admin_1.REGION }, async (req, res) => {
     if (req.method !== 'POST') {
@@ -65,12 +68,7 @@ exports.appleNotification = (0, https_1.onRequest)({ region: admin_1.REGION }, a
         res.status(400).send('Missing or invalid signedPayload');
         return;
     }
-    // Decode outer JWS → notification envelope
-    const notification = decodeJWSPayload(signedPayload);
-    if (!notification) {
-        res.status(400).send('Invalid signedPayload');
-        return;
-    }
+    const notification = (0, appleJws_1.verifyAppleSignedJws)(signedPayload);
     const notificationType = notification.notificationType;
     const data = notification.data;
     if (!notificationType || !data) {
@@ -84,8 +82,8 @@ exports.appleNotification = (0, https_1.onRequest)({ region: admin_1.REGION }, a
         res.status(200).send('OK');
         return;
     }
-    const transactionInfo = decodeJWSPayload(signedTransactionInfo);
-    const uid = transactionInfo?.appAccountToken;
+    const transactionInfo = (0, appleJws_1.verifyAppleSignedJws)(signedTransactionInfo);
+    const uid = transactionInfo.appAccountToken;
     // Without a UID we can't determine which user to update
     if (!uid) {
         console.warn('appleNotification: missing appAccountToken in transaction', {
@@ -94,18 +92,36 @@ exports.appleNotification = (0, https_1.onRequest)({ region: admin_1.REGION }, a
         res.status(200).send('OK');
         return;
     }
-    const isPremium = ACTIVE_NOTIFICATION_TYPES.has(notificationType);
-    const isInactive = INACTIVE_NOTIFICATION_TYPES.has(notificationType);
-    if (isPremium) {
-        await admin_1.db.doc(`users/${uid}`).update({ isPremium: true });
-    }
-    else if (isInactive) {
-        await admin_1.db.doc(`users/${uid}`).update({
-            isPremium: false,
-            premiumExpiresAt: new Date(),
+    const productId = transactionInfo.productId;
+    const externalId = transactionInfo.originalTransactionId ?? transactionInfo.transactionId;
+    if (!productId || !externalId) {
+        console.warn('appleNotification: missing product or transaction identifiers', {
+            notificationType,
+            uid,
         });
+        res.status(200).send('OK');
+        return;
     }
-    // Other notification types (e.g. DID_CHANGE_RENEWAL_STATUS) need no Firestore action
+    const expiresAt = transactionInfo.expiresDate ? new Date(transactionInfo.expiresDate) : null;
+    const state = mapAppleNotificationType(notificationType);
+    await (0, entitlementService_1.upsertVerifiedSubscription)({
+        uid,
+        platform: 'apple',
+        externalId,
+        originalTransactionId: transactionInfo.originalTransactionId ?? transactionInfo.transactionId,
+        productId,
+        state,
+        isEntitlementActive: state === 'active' || state === 'trial' || state === 'grace',
+        expiresAt: expiresAt && !Number.isNaN(expiresAt.getTime()) ? expiresAt : null,
+        eventId: notification.notificationUUID ?? null,
+        eventType: notificationType,
+        raw: {
+            notificationType,
+            transactionId: transactionInfo.transactionId,
+            originalTransactionId: transactionInfo.originalTransactionId,
+            offerType: transactionInfo.offerType ?? null,
+        },
+    });
     res.status(200).send('OK');
 });
 //# sourceMappingURL=appleNotification.js.map

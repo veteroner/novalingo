@@ -70,6 +70,25 @@ export interface CurriculumLesson {
   outroLine?: string;
   /** Which parent dashboard outcome this lesson feeds */
   outcomeTag?: string;
+  /**
+   * Presentation style hint for the activity renderer and future content tooling.
+   * Does not change which activities are generated — use activityTypes for that.
+   * - 'standard'       : default vocabulary/grammar lesson
+   * - 'story'          : narrative-led lesson (story-time anchor)
+   * - 'conversation'   : dialogue/role-play driven lesson
+   * - 'drama'          : character scene or performance task
+   * - 'picture-mission': describe-the-image led lesson
+   * - 'challenge'      : boss/review/competitive format
+   */
+  lessonStyle?: 'standard' | 'story' | 'conversation' | 'drama' | 'picture-mission' | 'challenge';
+  /**
+   * Age-adaptive pacing hint.
+   * 'slow' = cubs (4-6): longer pauses, fewer items per activity.
+   * 'normal' = stars (7-9): default pacing.
+   * 'fast' = legends (10-12): tighter loops, richer feedback.
+   * When omitted, the engine falls back to the child's ageGroup.
+   */
+  agePacing?: 'slow' | 'normal' | 'fast';
 }
 
 // ===== WORLD 1: BAŞLANGIÇ BAHÇESİ =====
@@ -155,22 +174,24 @@ const world1: CurriculumWorld = {
           order: 3,
           xpReward: 35,
           starReward: 5,
-          estimatedMinutes: 4,
+          estimatedMinutes: 5,
           vocabulary: ['lion', 'bear', 'elephant', 'monkey', 'tiger'],
           activityTypes: [
             'flash-card',
             'listen-and-tap',
             'match-pairs',
             'fill-blank',
+            'speak-it',
             'word-builder',
             'memory-game',
           ],
           objective: 'Learn 5 wild animal names and describe them with simple adjectives',
           canDo: 'I can name 5 wild animals and say if they are big or small',
           chunks: ['The ___ is big', 'I like the ___'],
-          introLine: "Time for a safari! Let's find wild animals! 🦁",
-          outroLine: 'Roar! You are a wild animal expert! 🌍',
+          introLine: "Safari time! Can you roar like a lion? Let's say the animal names! 🦁",
+          outroLine: 'Roar! You are a wild animal expert — even your voice! 🌍',
           outcomeTag: 'vocabulary:animals',
+          lessonStyle: 'standard',
         },
         {
           id: 'w1_u1_l4',
@@ -181,7 +202,7 @@ const world1: CurriculumWorld = {
           order: 4,
           xpReward: 35,
           starReward: 5,
-          estimatedMinutes: 4,
+          estimatedMinutes: 5,
           vocabulary: ['whale', 'shark', 'dolphin', 'octopus', 'turtle'],
           activityTypes: [
             'flash-card',
@@ -189,14 +210,16 @@ const world1: CurriculumWorld = {
             'memory-game',
             'match-pairs',
             'word-builder',
+            'speak-it',
             'fill-blank',
           ],
           objective: 'Learn 5 sea animal names and practice longer words like octopus and dolphin',
           canDo: 'I can name 5 sea animals and say "I see a ___ in the sea"',
           chunks: ['I see a ___ in the sea', 'The ___ can swim'],
-          introLine: "Dive into the ocean with me! Let's find sea animals! 🌊",
-          outroLine: 'Splash! You know all the sea animals! 🐬',
+          introLine: 'Dive into the ocean! Can you say "dolphin" and "octopus"? Let\'s try! 🌊',
+          outroLine: 'Splash! You named every sea animal — even the tricky ones! 🐬',
           outcomeTag: 'vocabulary:animals',
+          lessonStyle: 'standard',
         },
         {
           id: 'w1_u1_l5',
@@ -1521,31 +1544,33 @@ const world2: CurriculumWorld = {
         },
         {
           id: 'w2_u1_l4',
-          name: 'Hikaye: Ailem',
-          nameEn: 'Story: My Family',
+          name: 'Nova ile Tanış: Ailem',
+          nameEn: 'Meet Nova: My Family',
           type: 'normal',
           difficulty: 'medium',
           order: 4,
           xpReward: 40,
           starReward: 5,
-          estimatedMinutes: 5,
-          objective: 'Follow a short story about a family',
-          canDo: 'I can understand a short family story in English',
+          estimatedMinutes: 6,
+          objective: 'Warm up with speaking, then follow a short story about a family',
+          canDo: 'I can say family words aloud and understand a short family story',
           chunks: ['This is my ___', 'I am ___'],
-          introLine: "Story time! Let's meet a family! 📖",
-          outroLine: 'You read a whole story! Amazing reader! 📚',
+          introLine:
+            "Nova wants to meet your family! Say the words first — then let's read the story! 🎙️📖",
+          outroLine: 'You spoke AND read a whole family story! Double champion! 📚🎤',
           outcomeTag: 'mastery:family+greetings',
           vocabulary: ['mother', 'father', 'hello', 'I am', 'My name is'],
           activityTypes: [
             'flash-card',
+            'speak-it',
             'story-time',
             'story-comprehension',
             'fill-blank',
             'sentence-builder',
             'grammar-transform',
-            'speak-it',
             'memory-game',
           ],
+          lessonStyle: 'story',
         },
         {
           id: 'w2_u1_review',
@@ -2827,31 +2852,34 @@ const world3: CurriculumWorld = {
         },
         {
           id: 'w3_u1_l4',
-          name: 'Hikaye: Okulda Bir Gün',
-          nameEn: 'Story: A Day at School',
+          name: "Bölüm 1: Nova'nın Okul Günü",
+          nameEn: "Chapter 1: Nova's School Day",
           type: 'normal',
           difficulty: 'medium',
           order: 4,
           xpReward: 45,
           starReward: 5,
-          estimatedMinutes: 5,
-          objective: 'Follow a story about a typical school day',
-          canDo: 'I can understand a short story about a school day',
+          estimatedMinutes: 6,
+          objective:
+            "Say today's school words aloud, then follow Nova through her first school day",
+          canDo: 'I can speak school words and understand a story about a school day',
           chunks: ['I ___ every day', 'First ___, then ___'],
-          introLine: 'Story time! A school adventure begins! 📖',
-          outroLine: 'You followed the whole story! Reading champion! 🏅',
+          introLine:
+            "Nova's first school day! Say her name out loud, then we'll read the story! 🎒📚",
+          outroLine: 'You spoke and read! Nova had a great day — and so did you! 🏅',
           outcomeTag: 'mastery:home+school',
           vocabulary: ['school', 'teacher', 'wake up', 'eat breakfast', 'go to school'],
           activityTypes: [
             'flash-card',
+            'speak-it',
             'story-time',
             'story-comprehension',
             'fill-blank',
             'sentence-builder',
             'grammar-transform',
             'quiz-battle',
-            'speak-it',
           ],
+          lessonStyle: 'story',
         },
         {
           id: 'w3_u1_l8',
@@ -3111,31 +3139,33 @@ const world3: CurriculumWorld = {
         },
         {
           id: 'w3_u2_l4',
-          name: 'Hikaye: Orman Macerası',
-          nameEn: 'Story: Forest Adventure',
+          name: 'Bölüm 1: Ormanın Sırrı',
+          nameEn: 'Chapter 1: The Forest Secret',
           type: 'normal',
           difficulty: 'medium',
           order: 4,
           xpReward: 45,
           starReward: 5,
-          estimatedMinutes: 5,
-          objective: 'Follow an adventure story set in a forest',
-          canDo: 'I can understand an English story about a forest adventure',
+          estimatedMinutes: 6,
+          objective: 'Describe the forest in your own words, then uncover the secret in the story',
+          canDo: 'I can speak nature words and follow an English adventure story',
           chunks: ['One day, ___', '___ because ___'],
-          introLine: 'Adventure time! Into the Story Forest! 🌲',
-          outroLine: 'Forest adventure complete! Story hero! 🦁',
+          introLine:
+            'Something is hidden in the forest! Say the clue words first, then find the secret! 🌲🔍',
+          outroLine: 'You found the secret AND told the story! Forest detective! 🦁✨',
           outcomeTag: 'mastery:nature',
           vocabulary: ['tree', 'sunny', 'spring', 'flower', 'bird', 'happy'],
           activityTypes: [
             'flash-card',
+            'speak-it',
             'story-time',
             'story-comprehension',
             'fill-blank',
             'sentence-builder',
             'grammar-transform',
-            'speak-it',
             'memory-game',
           ],
+          lessonStyle: 'story',
         },
         {
           id: 'w3_u2_l8',
@@ -4135,31 +4165,33 @@ const world4: CurriculumWorld = {
         },
         {
           id: 'w4_u1_l4',
-          name: 'Hikaye: Alışverişe Gittim',
-          nameEn: 'Story: I Went Shopping',
+          name: 'Dükkanda: Alışveriş Görevi',
+          nameEn: 'At the Shop: Shopping Mission',
           type: 'normal',
           difficulty: 'medium',
           order: 4,
           xpReward: 50,
           starReward: 5,
-          estimatedMinutes: 5,
-          objective: 'Follow a shopping story using directions and prices',
-          canDo: 'I can understand a story about going shopping in a city',
-          chunks: ['How much is ___?', 'Go ___, then turn ___'],
-          introLine: 'Story time! A shopping adventure in the city! 🏬',
-          outroLine: 'Shopping story complete! City life expert! 🏙️',
+          estimatedMinutes: 6,
+          objective:
+            'Role-play a real shopping scene: ask prices, say directions, and buy something',
+          canDo: 'I can ask "How much?" and understand "Go left, then turn right" in a real shop',
+          chunks: ['How much is ___?', 'Go ___, then turn ___', 'I would like to buy ___'],
+          introLine: "Mission: go to the shop and buy something! Can you do it? Let's try! 🏬🎯",
+          outroLine: 'Shopping mission complete! You spoke like a city pro! 🏙️🎤',
           outcomeTag: 'mastery:city+shopping',
           vocabulary: ['shop', 'buy', 'How much', 'left', 'right', 'thank you'],
           activityTypes: [
             'flash-card',
-            'story-time',
-            'story-comprehension',
+            'speak-it',
+            'conversation',
             'fill-blank',
             'sentence-builder',
             'grammar-transform',
             'quiz-battle',
             'memory-game',
           ],
+          lessonStyle: 'conversation',
         },
         {
           id: 'w4_u1_review',

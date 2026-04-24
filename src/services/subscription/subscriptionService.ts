@@ -8,9 +8,9 @@
  *  2. User taps "Satın Al" → purchaseSubscription() opens the native payment sheet.
  *  3. User completes payment in the OS sheet.
  *  4. cordova-plugin-purchase calls: approved() → finish() → finished().
- *  5. finished() grants isPremium in Firestore immediately for instant UI feedback.
- *  6. Apple/Google server also sends a webhook (→ appleNotification / googleNotification
- *     Firebase Functions) which handles renewals, expirations and cancellations.
+ *  5. finished() registers the transaction with our backend.
+ *  6. Backend verification updates the canonical entitlement record.
+ *  7. Apple/Google server notifications keep renewals, expirations and billing issues in sync.
  *
  * LINKING USERS TO WEBHOOKS:
  *  We pass the Firebase UID as `applicationUsername` when ordering.
@@ -122,13 +122,15 @@ function getPurchaseSdk(): PurchaseSdk | null {
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-/** Write isPremium: true to Firestore after a confirmed purchase. */
+/** Dev-only helper for local premium simulation outside production. */
 async function grantPremiumLocally(): Promise<void> {
   const uid = auth.currentUser?.uid;
   if (!uid) return;
 
   await updateDoc(doc(db, 'users', uid), { isPremium: true });
 }
+
+const ENTITLEMENT_POLL_DELAYS_MS = [750, 1500, 2500, 4000] as const;
 
 /** Read Firestore to check premium state (fallback for restore flow). */
 async function readPremiumFromFirestore(): Promise<PurchaseResult> {
@@ -144,6 +146,15 @@ async function readPremiumFromFirestore(): Promise<PurchaseResult> {
   } catch {
     return { status: 'error', message: 'Bağlantı hatası. Lütfen tekrar deneyin.' };
   }
+}
+
+async function waitForVerifiedEntitlement(): Promise<PurchaseResult> {
+  for (const delayMs of ENTITLEMENT_POLL_DELAYS_MS) {
+    const result = await readPremiumFromFirestore();
+    if (result.status === 'success') return result;
+    await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+  }
+  return readPremiumFromFirestore();
 }
 
 // ---------------------------------------------------------------------------
@@ -182,13 +193,11 @@ export function initializeStore(): void {
     void transaction.finish();
   });
 
-  // After a transaction is fully finished, grant premium immediately.
-  // The backend webhook will also fire and can set premiumExpiresAt.
+  // After a transaction is fully finished, register it with the backend.
+  // Canonical entitlement projection is updated only after server verification.
   store.when().finished((transaction) => {
-    void grantPremiumLocally();
-
     // Android: register the purchaseToken → UID mapping in Firestore so that the
-    // googleNotification webhook can resolve which user to update on renewals/cancellations.
+    // backend can verify immediately and later resolve renewals/cancellations.
     if (Capacitor.getPlatform() === 'android') {
       const productId = transaction.products[0]?.id ?? '';
       const purchaseToken = transaction.parentReceipt?.purchaseToken ?? undefined;
@@ -207,9 +216,8 @@ export function initializeStore(): void {
  * Open the native subscription purchase sheet for the given product.
  *
  * Returns:
- * - `store_redirect` — native sheet is open; purchase completion fires
- *   grantPremiumLocally() via the finished() callback → Firestore listener
- *   updates the UI automatically.
+ * - `store_redirect` — native sheet is open; verified entitlement arrives asynchronously
+ *   via backend projection → Firestore listener updates the UI automatically.
  * - `cancelled` — user tapped Cancel in the payment sheet.
  * - `error` — product not loaded or unrecoverable store error.
  */
@@ -248,7 +256,7 @@ export function purchaseSubscription(productId: IAPProductId): Promise<PurchaseR
 
     void store.order(offer, additionalData).then((error) => {
       if (!error) {
-        // Native sheet presented. Purchase result arrives via finished() → Firestore listener.
+        // Native sheet presented. Verified entitlement arrives asynchronously.
         resolve({ status: 'store_redirect' });
       } else if (error.code === ErrorCode.PAYMENT_CANCELLED) {
         resolve({ status: 'cancelled' });
@@ -279,13 +287,12 @@ export async function restorePurchases(): Promise<PurchaseResult> {
   const error = await store.restorePurchases();
 
   if (error) {
-    // Native restore failed — fall back to Firestore (webhook may have already granted premium)
+    // Native restore failed — fall back to Firestore (backend may have already projected premium)
     return readPremiumFromFirestore();
   }
 
-  // Restored transactions will fire the approved → finished callbacks above,
-  // which update Firestore. Re-read to return a definitive result.
-  return readPremiumFromFirestore();
+  // Restored transactions can take a moment to reach verified entitlement projection.
+  return waitForVerifiedEntitlement();
 }
 
 /** Dev-only: grant premium manually for testing without a real transaction. */

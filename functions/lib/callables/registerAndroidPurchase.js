@@ -15,6 +15,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerAndroidPurchase = void 0;
 const https_1 = require("firebase-functions/v2/https");
+const entitlementService_1 = require("../services/subscriptions/entitlementService");
+const googlePlay_1 = require("../services/subscriptions/googlePlay");
 const admin_1 = require("../utils/admin");
 exports.registerAndroidPurchase = (0, https_1.onCall)(admin_1.callableOpts, async (request) => {
     const uid = (0, admin_1.requireAuth)(request);
@@ -31,5 +33,29 @@ exports.registerAndroidPurchase = (0, https_1.onCall)(admin_1.callableOpts, asyn
         productId,
         registeredAt: (0, admin_1.serverTimestamp)(),
     });
+    const verification = await (0, googlePlay_1.verifyGoogleSubscriptionPurchase)({
+        purchaseToken,
+        productId,
+    });
+    await (0, entitlementService_1.upsertVerifiedSubscription)({
+        uid: verification.obfuscatedExternalAccountId ?? uid,
+        platform: 'google',
+        externalId: purchaseToken,
+        productId,
+        state: verification.state,
+        isEntitlementActive: verification.isEntitlementActive,
+        expiresAt: verification.expiresAt,
+        autoRenewEnabled: verification.autoRenewEnabled,
+        eventType: 'register_android_purchase',
+        raw: {
+            purchaseToken,
+            productId,
+            publisherState: verification.raw.subscriptionState ?? null,
+        },
+    });
+    return {
+        status: verification.isEntitlementActive ? 'active' : verification.state,
+        expiresAt: verification.expiresAt?.toISOString() ?? null,
+    };
 });
 //# sourceMappingURL=registerAndroidPurchase.js.map

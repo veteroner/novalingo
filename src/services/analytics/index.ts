@@ -21,5 +21,13 @@ export {
   trackScreenView,
   trackSignUp,
   trackStreakDays,
+  trackSubscriptionBillingIssue,
+  trackSubscriptionChurn,
+  trackSubscriptionPaywallViewed,
+  trackSubscriptionPurchaseCompleted,
+  trackSubscriptionRestoreCompleted,
+  trackSubscriptionRestoreFailed,
+  trackSubscriptionStatusSynced,
+  trackSubscriptionTrialStarted,
   trackXPGained,
 } from './analyticsService';

@@ -5,7 +5,13 @@
  * AppProviders'ta AuthProvider sonrasında çağrılır.
  */
 
-import { trackRetentionDay } from '@services/analytics/analyticsService';
+import {
+  trackRetentionDay,
+  trackSubscriptionBillingIssue,
+  trackSubscriptionChurn,
+  trackSubscriptionPurchaseCompleted,
+  trackSubscriptionStatusSynced,
+} from '@services/analytics/analyticsService';
 import {
   initializeNotifications,
   setupNotificationListeners,
@@ -19,6 +25,8 @@ import { useEffect, useRef } from 'react';
 export function useAppInit(): void {
   const user = useAuthStore((s) => s.user);
   const initializedRef = useRef(false);
+  const lastSubscriptionStateRef = useRef<string | null>(null);
+  const lastPremiumRef = useRef<boolean | null>(null);
 
   useEffect(() => {
     if (!user || initializedRef.current) return;
@@ -66,5 +74,45 @@ export function useAppInit(): void {
       void stopSyncManager();
       initializedRef.current = false;
     };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const currentState = user.subscriptionState ?? (user.isPremium ? 'active' : 'expired');
+    const previousState = lastSubscriptionStateRef.current;
+    const previousPremium = lastPremiumRef.current;
+
+    if (previousState !== currentState) {
+      trackSubscriptionStatusSynced({
+        state: currentState,
+        platform: user.subscriptionPlatform ?? null,
+      });
+
+      if (currentState === 'billing_issue' || currentState === 'grace') {
+        trackSubscriptionBillingIssue({
+          state: currentState,
+          platform: user.subscriptionPlatform ?? null,
+        });
+      }
+
+      if (currentState === 'canceled' || currentState === 'expired' || currentState === 'revoked') {
+        trackSubscriptionChurn({
+          state: currentState,
+          platform: user.subscriptionPlatform ?? null,
+        });
+      }
+    }
+
+    if (previousPremium === false && user.isPremium) {
+      trackSubscriptionPurchaseCompleted({
+        planId: user.subscriptionProductId ?? 'unknown',
+        platform: user.subscriptionPlatform ?? 'unknown',
+        status: 'success',
+      });
+    }
+
+    lastSubscriptionStateRef.current = currentState;
+    lastPremiumRef.current = user.isPremium;
   }, [user]);
 }

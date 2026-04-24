@@ -29,6 +29,8 @@ import {
 } from '@services/learning/learningEngine';
 import { enqueueAction } from '@services/offline/offlineDB';
 import { unlockAudioPlayback } from '@services/speech/speechService';
+import { hasReachedFreeLessonLimit } from '@services/subscription/premiumAccess';
+import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useLessonStore } from '@stores/lessonStore';
 import { useUIStore } from '@stores/uiStore';
@@ -57,6 +59,7 @@ export default function LessonScreen() {
   const hasStartedRef = useRef(false);
 
   const child = useChildStore((s) => s.activeChild);
+  const user = useAuthStore((s) => s.user);
   const addXP = useChildStore((s) => s.addXP);
   const updateStreak = useChildStore((s) => s.updateStreak);
   const updateCurrency = useChildStore((s) => s.updateCurrency);
@@ -78,6 +81,17 @@ export default function LessonScreen() {
   // Fetch child's vocabulary cards & lesson progress for SRS + adaptive difficulty
   const { data: vocabularyCards } = useVocabularyCards(child?.id);
   const { data: lessonProgressData } = useLessonProgress(child?.id);
+  const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgressData);
+
+  useEffect(() => {
+    if (!lessonId || !child || !hasReachedDailyLimit) return;
+    showToast({
+      type: 'info',
+      title: 'Günlük Limit Doldu',
+      message: 'Bugünkü ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus’a geçin.',
+    });
+    void navigate('/subscription');
+  }, [child, hasReachedDailyLimit, lessonId, navigate, showToast]);
 
   // Compute lesson session ONCE per mount — never recompute mid-lesson
   if (!sessionRef.current && lessonId) {
@@ -151,6 +165,7 @@ export default function LessonScreen() {
 
   useEffect(() => {
     if (lessonId && lessonSession && !hasStartedRef.current) {
+      if (hasReachedDailyLimit) return;
       // Unlock audio playback for mobile — must happen before activities auto-speak
       void unlockAudioPlayback();
       startLesson(lessonId, lessonSession.activities);
@@ -179,7 +194,7 @@ export default function LessonScreen() {
       hasStartedRef.current = false;
       hasNavigatedToResultRef.current = false;
     };
-  }, [lessonId, lessonSession, startLesson]);
+  }, [hasReachedDailyLimit, lessonId, lessonSession, startLesson]);
 
   // Boss timer countdown
   useEffect(() => {

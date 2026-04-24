@@ -6,7 +6,7 @@ const navigateMock = vi.fn();
 
 const authState = {
   firebaseUser: null,
-  user: { settings: { parentPin: null } },
+  user: { settings: { parentPin: null }, isPremium: true },
 };
 
 const childState = {
@@ -196,7 +196,7 @@ describe('ParentDashboard', () => {
   beforeEach(() => {
     navigateMock.mockReset();
     authState.firebaseUser = null;
-    authState.user = { settings: { parentPin: null } };
+    authState.user = { settings: { parentPin: null }, isPremium: true };
     childState.activeChild = {
       id: 'child-1',
       name: 'Ada',
@@ -228,5 +228,18 @@ describe('ParentDashboard', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Bu temayla konuşmayı başlat' }));
 
     expect(navigateMock).toHaveBeenCalledWith('/conversation?theme=clothes');
+  });
+
+  it('shows the premium upgrade card for free users', async () => {
+    authState.user = { settings: { parentPin: null }, isPremium: false };
+
+    render(<ParentDashboard />);
+
+    fireEvent.click(screen.getByRole('button', { name: '1' }));
+    fireEvent.click(screen.getByRole('button', { name: '2' }));
+    fireEvent.click(screen.getByRole('button', { name: '3' }));
+    fireEvent.click(screen.getByRole('button', { name: '4' }));
+
+    expect(await screen.findByText(/Detaylı Raporlar Plus/)).toBeInTheDocument();
   });
 });

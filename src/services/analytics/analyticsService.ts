@@ -285,6 +285,78 @@ export function trackPurchaseEvent(itemId: string, currency: string): void {
   logEvent('purchase_event', { item_id: itemId, currency });
 }
 
+export function trackSubscriptionPaywallViewed(params: {
+  source: string;
+  isPremium: boolean;
+}): void {
+  logEvent('subscription_paywall_viewed', {
+    source: params.source,
+    is_premium: params.isPremium,
+  });
+}
+
+export function trackSubscriptionTrialStarted(planId: string, platform: string): void {
+  logEvent('subscription_trial_started', {
+    plan_id: planId,
+    platform,
+  });
+}
+
+export function trackSubscriptionPurchaseCompleted(params: {
+  planId: string;
+  platform: string;
+  status: 'success' | 'pending';
+}): void {
+  logEvent('subscription_purchase_completed', {
+    plan_id: params.planId,
+    platform: params.platform,
+    status: params.status,
+  });
+}
+
+export function trackSubscriptionRestoreCompleted(platform: string): void {
+  logEvent('subscription_restore_completed', { platform });
+}
+
+export function trackSubscriptionRestoreFailed(platform: string, reason: string): void {
+  logEvent('subscription_restore_failed', {
+    platform,
+    reason: reason.slice(0, 80),
+  });
+}
+
+export function trackSubscriptionStatusSynced(params: {
+  state: string;
+  platform?: string | null;
+}): void {
+  logEvent('subscription_status_synced', {
+    state: params.state,
+    ...(params.platform ? { platform: params.platform } : {}),
+  });
+}
+
+export function trackSubscriptionBillingIssue(params: {
+  state: string;
+  platform?: string | null;
+}): void {
+  logEvent('subscription_billing_issue', {
+    state: params.state,
+    ...(params.platform ? { platform: params.platform } : {}),
+  });
+}
+
+export function trackSubscriptionChurn(params: {
+  state: string;
+  platform?: string | null;
+  reason?: string;
+}): void {
+  logEvent('subscription_churn', {
+    state: params.state,
+    ...(params.platform ? { platform: params.platform } : {}),
+    ...(params.reason ? { reason: params.reason.slice(0, 80) } : {}),
+  });
+}
+
 // ===== ENGAGEMENT EVENTS =====
 
 export function trackDailyWheelSpin(reward: string): void {

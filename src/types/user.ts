@@ -32,6 +32,9 @@ export interface User {
   provider: 'google' | 'apple' | 'anonymous';
   isPremium: boolean;
   premiumExpiresAt: Timestamp | null;
+  subscriptionState?: string | null;
+  subscriptionPlatform?: string | null;
+  subscriptionProductId?: string | null;
   createdAt: Timestamp;
   lastLoginAt: Timestamp;
   settings: UserSettings;

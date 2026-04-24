@@ -27,6 +27,11 @@
  */
 
 import { onRequest } from 'firebase-functions/v2/https';
+import {
+  upsertVerifiedSubscription,
+  type SubscriptionState,
+} from '../services/subscriptions/entitlementService';
+import { verifyGoogleSubscriptionPurchase } from '../services/subscriptions/googlePlay';
 import { db, REGION } from '../utils/admin';
 
 const ACTIVE_TYPES = new Set([1, 2, 4, 6, 7]); // recovered, renewed, purchased, grace, restarted
@@ -53,6 +58,14 @@ interface GoogleNotificationData {
     purchaseToken?: string;
     subscriptionId?: string;
   };
+}
+
+function mapGoogleNotificationType(notificationType: number): SubscriptionState {
+  if (ACTIVE_TYPES.has(notificationType)) return notificationType === 6 ? 'grace' : 'active';
+  if (notificationType === 5) return 'billing_issue';
+  if (notificationType === 10) return 'revoked';
+  if (INACTIVE_TYPES.has(notificationType)) return 'expired';
+  return 'unknown';
 }
 
 export const googleNotification = onRequest({ region: REGION }, async (req, res) => {
@@ -110,14 +123,38 @@ export const googleNotification = onRequest({ region: REGION }, async (req, res)
     return;
   }
 
-  if (ACTIVE_TYPES.has(notificationType)) {
-    await db.doc(`users/${uid}`).update({ isPremium: true });
-  } else if (INACTIVE_TYPES.has(notificationType)) {
-    await db.doc(`users/${uid}`).update({
-      isPremium: false,
-      premiumExpiresAt: new Date(),
-    });
+  const productId = sub.subscriptionId;
+  if (!productId) {
+    res.status(200).send('OK');
+    return;
   }
+
+  const verification = await verifyGoogleSubscriptionPurchase({
+    purchaseToken,
+    productId,
+  });
+
+  await upsertVerifiedSubscription({
+    uid: uid ?? verification.obfuscatedExternalAccountId ?? '',
+    platform: 'google',
+    externalId: purchaseToken,
+    productId,
+    state:
+      verification.state === 'unknown'
+        ? mapGoogleNotificationType(notificationType)
+        : verification.state,
+    isEntitlementActive: verification.isEntitlementActive,
+    expiresAt: verification.expiresAt,
+    autoRenewEnabled: verification.autoRenewEnabled,
+    eventId: message.messageId ?? null,
+    eventType: String(notificationType),
+    raw: {
+      packageName: notificationData.packageName ?? null,
+      purchaseToken,
+      notificationType,
+      publisherState: verification.raw.subscriptionState ?? null,
+    },
+  });
 
   res.status(200).send('OK');
 });

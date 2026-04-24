@@ -38,6 +38,7 @@
     "cap:build:android:staging": "pnpm run build:staging && cap sync android",
     "cap:build:ios:staging": "pnpm run build:staging && cap sync ios",
     "smoke:cap:staging": "pnpm run build:staging && node scripts/verify-capacitor-staging-smoke.mjs",
+    "android:device:staging": "node scripts/android-device-staging.mjs",
     "firebase:emulators": "FUNCTIONS_DISCOVERY_TIMEOUT=60 firebase emulators:start --only auth,firestore,functions,storage,hosting --import=./emulator-data --export-on-exit=./emulator-data",
     "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage",
     "firebase:deploy:functions": "firebase deploy --only functions",

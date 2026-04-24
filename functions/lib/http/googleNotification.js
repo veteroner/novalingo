@@ -29,9 +29,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.googleNotification = void 0;
 const https_1 = require("firebase-functions/v2/https");
+const entitlementService_1 = require("../services/subscriptions/entitlementService");
+const googlePlay_1 = require("../services/subscriptions/googlePlay");
 const admin_1 = require("../utils/admin");
 const ACTIVE_TYPES = new Set([1, 2, 4, 6, 7]); // recovered, renewed, purchased, grace, restarted
 const INACTIVE_TYPES = new Set([3, 5, 10, 20]); // canceled, on-hold, revoked, expired
+function mapGoogleNotificationType(notificationType) {
+    if (ACTIVE_TYPES.has(notificationType))
+        return notificationType === 6 ? 'grace' : 'active';
+    if (notificationType === 5)
+        return 'billing_issue';
+    if (notificationType === 10)
+        return 'revoked';
+    if (INACTIVE_TYPES.has(notificationType))
+        return 'expired';
+    return 'unknown';
+}
 exports.googleNotification = (0, https_1.onRequest)({ region: admin_1.REGION }, async (req, res) => {
     if (req.method !== 'POST') {
         res.status(405).send('Method Not Allowed');
@@ -79,15 +92,35 @@ exports.googleNotification = (0, https_1.onRequest)({ region: admin_1.REGION }, 
         res.status(200).send('OK');
         return;
     }
-    if (ACTIVE_TYPES.has(notificationType)) {
-        await admin_1.db.doc(`users/${uid}`).update({ isPremium: true });
+    const productId = sub.subscriptionId;
+    if (!productId) {
+        res.status(200).send('OK');
+        return;
     }
-    else if (INACTIVE_TYPES.has(notificationType)) {
-        await admin_1.db.doc(`users/${uid}`).update({
-            isPremium: false,
-            premiumExpiresAt: new Date(),
-        });
-    }
+    const verification = await (0, googlePlay_1.verifyGoogleSubscriptionPurchase)({
+        purchaseToken,
+        productId,
+    });
+    await (0, entitlementService_1.upsertVerifiedSubscription)({
+        uid: uid ?? verification.obfuscatedExternalAccountId ?? '',
+        platform: 'google',
+        externalId: purchaseToken,
+        productId,
+        state: verification.state === 'unknown'
+            ? mapGoogleNotificationType(notificationType)
+            : verification.state,
+        isEntitlementActive: verification.isEntitlementActive,
+        expiresAt: verification.expiresAt,
+        autoRenewEnabled: verification.autoRenewEnabled,
+        eventId: message.messageId ?? null,
+        eventType: String(notificationType),
+        raw: {
+            packageName: notificationData.packageName ?? null,
+            purchaseToken,
+            notificationType,
+            publisherState: verification.raw.subscriptionState ?? null,
+        },
+    });
     res.status(200).send('OK');
 });
 //# sourceMappingURL=googleNotification.js.map

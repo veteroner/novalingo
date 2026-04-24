@@ -8,7 +8,12 @@
 
 import { type User } from '@/types/user';
 import { onAuthChanged } from '@services/firebase/auth';
-import { docs, serverTimestamp, setDocument, subscribeToDocument } from '@services/firebase/firestore';
+import {
+  docs,
+  serverTimestamp,
+  setDocument,
+  subscribeToDocument,
+} from '@services/firebase/firestore';
 import { useAuthStore } from '@stores/authStore';
 import { useEffect, useRef } from 'react';
 
@@ -62,6 +67,9 @@ export function useAuth() {
               provider: mapProvider(fbUser.providerData[0]?.providerId),
               isPremium: false,
               premiumExpiresAt: null,
+              subscriptionState: 'expired',
+              subscriptionPlatform: null,
+              subscriptionProductId: null,
               activeChildId: null,
               createdAt: serverTimestamp(),
               lastLoginAt: serverTimestamp(),

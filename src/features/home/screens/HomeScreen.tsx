@@ -4,6 +4,7 @@
  * Ana sayfa — streak, günlük hedef, dünyalar, Nova maskotu, hızlı aksiyonlar.
  */
 
+import { FREE_TIER } from '@/config/constants';
 import type { World } from '@/types/content';
 import { Badge } from '@components/atoms/Badge';
 import { Text } from '@components/atoms/Text';
@@ -14,8 +15,14 @@ import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { SeasonalEventBanner } from '@features/gamification/components/SeasonalEventBanner';
 import { curriculum } from '@features/learning/data/curriculum';
-import { useVocabularyCards, useWorlds } from '@hooks/queries';
+import { useLessonProgress, useVocabularyCards, useWorlds } from '@hooks/queries';
 import { getReviewQueue } from '@services/srs/srsEngine';
+import {
+  getLessonsCompletedToday,
+  isPremiumUser,
+  isWorldPremiumLocked,
+} from '@services/subscription/premiumAccess';
+import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
@@ -40,14 +47,19 @@ const curriculumWorlds: World[] = curriculum.map((w) => ({
 export default function HomeScreen() {
   const child = useChildStore((s) => s.activeChild);
   const children = useChildStore((s) => s.children);
+  const user = useAuthStore((s) => s.user);
   const openModal = useUIStore((s) => s.openModal);
+  const showToast = useUIStore((s) => s.showToast);
   const navigate = useNavigate();
   const { data: firestoreWorlds } = useWorlds();
   const { data: vocabCards } = useVocabularyCards(child?.id);
+  const { data: lessonProgress } = useLessonProgress(child?.id);
   const dueCount = useMemo(
     () => (vocabCards ? getReviewQueue(vocabCards).length : 0),
     [vocabCards],
   );
+  const lessonsToday = getLessonsCompletedToday(lessonProgress);
+  const isPremium = isPremiumUser(user);
 
   // Otomatik streak-lost modal: seri kırılmışsa (currentStreak===0 ve daha önce bir seri vardıysa)
   // her profil için oturum başına yalnızca bir kez göster.
@@ -253,6 +265,7 @@ export default function HomeScreen() {
           <div className="space-y-3">
             {worlds.map((world) => {
               const isWorldLocked = world.order > currentWorldOrder;
+              const isPremiumLocked = isWorldPremiumLocked(user, world);
               const isCurrent = child.currentWorldId === world.id;
               const isCompleted = world.order < currentWorldOrder;
               const curWorld = curriculum.find((w) => w.id === world.id);
@@ -261,11 +274,23 @@ export default function HomeScreen() {
               return (
                 <Card
                   key={world.id}
-                  variant={isWorldLocked ? 'outlined' : 'elevated'}
-                  pressable={!isWorldLocked}
+                  variant={isWorldLocked || isPremiumLocked ? 'outlined' : 'elevated'}
+                  pressable={!isWorldLocked && !isPremiumLocked}
                   padding="md"
-                  onClick={() => !isWorldLocked && navigate(`/world/${world.id}`)}
-                  className={isWorldLocked ? 'opacity-60' : ''}
+                  onClick={() => {
+                    if (isWorldLocked) return;
+                    if (isPremiumLocked) {
+                      showToast({
+                        type: 'info',
+                        title: 'Premium Dünya',
+                        message: 'Bu dünya NovaLingo Plus aboneliği gerektirir.',
+                      });
+                      navigate('/subscription');
+                      return;
+                    }
+                    navigate(`/world/${world.id}`);
+                  }}
+                  className={isWorldLocked || isPremiumLocked ? 'opacity-60' : ''}
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-success/20 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl">
@@ -280,7 +305,7 @@ export default function HomeScreen() {
                         {isCurrent ? ' · Devam ediyor' : ''}
                       </Text>
                     </div>
-                    {isWorldLocked ? (
+                    {isWorldLocked || isPremiumLocked ? (
                       <span className="text-xl">🔒</span>
                     ) : isCurrent ? (
                       <Badge variant="success" size="sm">
@@ -310,7 +335,9 @@ export default function HomeScreen() {
                   Günlük Hedef
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
-                  {child.completedLessons % 3} / 3 ders tamamlandı
+                  {isPremium
+                    ? 'Sınırsız ders erişimi aktif'
+                    : `${lessonsToday} / ${FREE_TIER.DAILY_LESSONS} ders tamamlandı`}
                 </Text>
               </div>
             </div>

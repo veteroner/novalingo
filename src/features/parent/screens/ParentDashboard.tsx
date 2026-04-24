@@ -36,24 +36,33 @@ export default function ParentDashboard() {
   const child = useChildStore((s) => s.activeChild);
   const user = useAuthStore((s) => s.user);
   const hasPinSet = user?.settings.parentPin != null;
+  const hasDetailedReports = Boolean(user?.isPremium);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [pin, setPin] = useState('');
   const [pinError, setPinError] = useState('');
   const [verifying, setVerifying] = useState(false);
   const { data: outcomeMetrics, isLoading: metricsLoading } = useOutcomeMetrics(
-    isUnlocked ? child?.id : undefined,
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
   );
-  const { data: canDoStatements } = useCanDoStatements(isUnlocked ? child?.id : undefined);
+  const { data: canDoStatements } = useCanDoStatements(
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
+  );
   const { data: conversationHighlights } = useConversationHighlights(
-    isUnlocked ? child?.id : undefined,
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
   );
   const { data: conversationThemeProgress } = useConversationThemeProgress(
-    isUnlocked ? child?.id : undefined,
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
   );
   const { data: weeklyStats } = useWeeklyProgress(isUnlocked ? child?.id : undefined);
-  const { data: weakTopics } = useWeakTopics(isUnlocked ? child?.id : undefined);
-  const { data: learningStats } = useLearningStats(isUnlocked ? child?.id : undefined);
-  const { data: efficacy } = useEfficacyIndicators(isUnlocked ? child?.id : undefined);
+  const { data: weakTopics } = useWeakTopics(
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
+  );
+  const { data: learningStats } = useLearningStats(
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
+  );
+  const { data: efficacy } = useEfficacyIndicators(
+    isUnlocked && hasDetailedReports ? child?.id : undefined,
+  );
   const strongestConversationThemes = conversationThemeProgress?.slice(0, 2) ?? [];
   const supportConversationThemes = [...(conversationThemeProgress ?? [])]
     .reverse()
@@ -234,8 +243,24 @@ export default function ParentDashboard() {
           )}
         </Card>
 
+        {!hasDetailedReports && (
+          <Card variant="outlined" padding="md">
+            <div className="space-y-2 text-center">
+              <Text variant="h4">🔒 Detaylı Raporlar Plus&apos;ta</Text>
+              <Text variant="bodySmall" className="text-text-secondary">
+                Haftalık analizler, konuşma öne çıkanları ve zayıf konu önerileri NovaLingo Plus
+                aboneleri için açılır.
+              </Text>
+              <Button variant="primary" size="sm" onClick={() => navigate('/subscription')}>
+                Plus&apos;a Geç
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Concrete skill evidence */}
-        {canDoStatements &&
+        {hasDetailedReports &&
+          canDoStatements &&
           (canDoStatements.lessonStatements.length > 0 ||
             canDoStatements.unitStatements.length > 0 ||
             canDoStatements.conversationStatements.length > 0) && (
