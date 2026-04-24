@@ -7,8 +7,8 @@
  *   - Audio files (TTS cache) → Cache-First with size limit
  */
 
-const CACHE_NAME = 'novalingo-v2';
-const AUDIO_CACHE = 'novalingo-audio-v1';
+const CACHE_NAME = 'novalingo-v3';
+const AUDIO_CACHE = 'novalingo-audio-v2';
 const MAX_AUDIO_ENTRIES = 200; // Limit cached audio files
 
 // Assets to pre-cache on install (app shell)
@@ -53,19 +53,28 @@ self.addEventListener('fetch', (event) => {
 
   // Audio files — cache-first with quota management
   if (url.pathname.startsWith('/audio/') || url.pathname.endsWith('.mp3')) {
+    // Range requests (audio seek) return 206 Partial Content which the
+    // Cache API cannot store. Bypass the cache entirely for those.
+    if (request.headers.get('range')) {
+      return; // let the browser handle it directly
+    }
+
     event.respondWith(
       caches.open(AUDIO_CACHE).then(async (cache) => {
         const cached = await cache.match(request);
         if (cached) return cached;
 
         const response = await fetch(request);
-        if (response.ok) {
+        // Only cache full (200) successful responses. Skip 206/opaque/etc.
+        if (response.status === 200 && response.type !== 'opaque') {
           // Enforce entry limit: evict oldest entries if over MAX
           const keys = await cache.keys();
           if (keys.length >= MAX_AUDIO_ENTRIES) {
             await cache.delete(keys[0]);
           }
-          cache.put(request, response.clone());
+          cache.put(request, response.clone()).catch(() => {
+            // Ignore put failures (quota, partial responses, etc.)
+          });
         }
         return response;
       }),
@@ -83,7 +92,11 @@ self.addEventListener('fetch', (event) => {
         // Kick off a background network fetch to keep the cache fresh
         const networkFetch = fetch(request)
           .then((response) => {
-            if (response.ok) cache.put(request, response.clone());
+            if (response.status === 200 && response.type !== 'opaque') {
+              cache.put(request, response.clone()).catch(() => {
+                // Ignore cache put failures (partial/opaque responses, quota)
+              });
+            }
             return response;
           })
           .catch(() => null); // swallow offline errors for background update

@@ -22,7 +22,7 @@ import {
   connectFirestoreEmulator,
   initializeFirestore,
   persistentLocalCache,
-  persistentSingleTabManager,
+  persistentMultipleTabManager,
   type Firestore,
 } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
@@ -108,7 +108,7 @@ function initializeFirebase() {
   }
 
   db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentSingleTabManager(undefined) }),
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
     // WKWebView/Capacitor can hang with Firestore's default streaming transport.
     // Force the more compatible polling path on native shells.
     experimentalAutoDetectLongPolling: isNative(),
