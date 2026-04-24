@@ -361,10 +361,11 @@ export interface EvaluateOpenEndedConversationReq {
   responseExamples?: string[];
   config?: {
     enabled: boolean;
-    strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+    strategy: 'favorite_thing' | 'choose_thing' | 'because_reason' | 'free_text';
     domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
     slotKey: string;
     nextNodeId: string;
+    capturePrefixes?: string[];
     marksPattern?: string[];
     countCapturedValueAsTargetWord?: boolean;
   };
