@@ -63,6 +63,11 @@
   "conversationResult": {
     "home": "Go Home",
     "newSession": "New Conversation 🎭",
+    "nextScenario": "Next Game ▶️",
+    "nextEpisodeButton": "Next Episode ▶️",
+    "allScenariosComplete": "All games complete! 🏆",
+    "autoNextHint": "Starting next game in {{seconds}}s",
+    "autoNextCancel": "Cancel",
     "moodGreat": "Amazing conversation! Nova is so happy! 🌟",
     "moodGood": "Great practice! Keep it up! 💪",
     "moodEncouraging": "Every conversation makes you better! 🎯",

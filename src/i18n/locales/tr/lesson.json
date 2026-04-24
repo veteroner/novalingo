@@ -63,6 +63,11 @@
   "conversationResult": {
     "home": "Ana Sayfaya Dön",
     "newSession": "Yeni Konuşma Başlat 🎭",
+    "nextScenario": "Sıradaki Oyun ▶️",
+    "nextEpisodeButton": "Sıradaki Bölüm ▶️",
+    "allScenariosComplete": "Tüm oyunlar tamamlandı! 🏆",
+    "autoNextHint": "Sıradaki oyuna geçiliyor... {{seconds}}sn",
+    "autoNextCancel": "İptal",
     "moodGreat": "Harika konuşma! Nova çok mutlu! 🌟",
     "moodGood": "Güzel pratik oldu! Devam et! 💪",
     "moodEncouraging": "Her konuşma seni daha iyi yapar! 🎯",

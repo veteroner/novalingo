@@ -9,12 +9,16 @@ import type { ConversationResult } from '@/features/conversation/types/conversat
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { NovaCompanion } from '@components/organisms/NovaCompanion';
+import {
+  getConversationScenarioById,
+  getNextConversationScenarioId,
+} from '@features/learning/data/conversations';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
 import { recordSessionAndMaybePromptRating } from '@services/ratingService';
 import { useConversationStore } from '@stores/conversationStore';
 import { formatTime } from '@utils/time';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -74,6 +78,47 @@ export default function ConversationResultScreen() {
       void recordSessionAndMaybePromptRating();
     }
   }, [result]);
+
+  // ── Next scenario chaining ──
+  // Compute the id of the next scenario to play (next story episode or next in registry).
+  const nextScenarioId = useMemo(
+    () => (scenario?.id ? getNextConversationScenarioId(scenario.id) : undefined),
+    [scenario?.id],
+  );
+  const nextScenario = useMemo(
+    () => (nextScenarioId ? getConversationScenarioById(nextScenarioId) : undefined),
+    [nextScenarioId],
+  );
+  const isNextSameSeries = !!(
+    nextScenario?.series &&
+    scenario?.series &&
+    nextScenario.series.seriesId === scenario.series.seriesId
+  );
+
+  // Auto-advance countdown: after a successful run (accuracy >= 0.6), give the child
+  // a few seconds to celebrate before jumping to the next scenario. Cancellable.
+  const AUTO_NEXT_SECONDS = 8;
+  const shouldAutoAdvance = !!(result && nextScenarioId && result.accuracy >= 0.6);
+  const [autoNextCancelled, setAutoNextCancelled] = useState(false);
+  const [autoNextRemaining, setAutoNextRemaining] = useState<number>(AUTO_NEXT_SECONDS);
+
+  const goToNextScenario = () => {
+    if (!nextScenarioId) return;
+    void navigate(`/conversation?scenarioId=${encodeURIComponent(nextScenarioId)}`, {
+      replace: true,
+    });
+  };
+
+  useEffect(() => {
+    if (!shouldAutoAdvance || autoNextCancelled) return;
+    if (autoNextRemaining <= 0) {
+      goToNextScenario();
+      return;
+    }
+    const tid = setTimeout(() => setAutoNextRemaining((s) => s - 1), 1000);
+    return () => clearTimeout(tid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldAutoAdvance, autoNextCancelled, autoNextRemaining]);
 
   if (!result || !scenario) {
     return (
@@ -428,18 +473,61 @@ export default function ConversationResultScreen() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1 }}
       >
-        <Button
-          variant="primary"
-          size="xl"
-          fullWidth
-          onClick={() => navigate('/conversation', { replace: true })}
-        >
-          {t('conversationResult.newSession')}
-        </Button>
-
-        <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
-          {t('conversationResult.home')}
-        </Button>
+        {nextScenarioId ? (
+          <>
+            <Button variant="primary" size="xl" fullWidth onClick={goToNextScenario}>
+              {isNextSameSeries
+                ? t('conversationResult.nextEpisodeButton')
+                : t('conversationResult.nextScenario')}
+            </Button>
+            {shouldAutoAdvance && !autoNextCancelled && (
+              <div className="flex items-center justify-center gap-3 text-xs text-gray-500">
+                <span>
+                  {t('conversationResult.autoNextHint', {
+                    seconds: Math.max(0, autoNextRemaining),
+                  })}
+                </span>
+                <button
+                  type="button"
+                  className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 active:bg-gray-200"
+                  onClick={() => setAutoNextCancelled(true)}
+                >
+                  {t('conversationResult.autoNextCancel')}
+                </button>
+              </div>
+            )}
+            <Button
+              variant="secondary"
+              size="lg"
+              fullWidth
+              onClick={() => navigate('/conversation', { replace: true })}
+            >
+              {t('conversationResult.newSession')}
+            </Button>
+            <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
+              {t('conversationResult.home')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <div className="rounded-2xl bg-linear-to-r from-amber-400 to-orange-500 p-4 text-center shadow-sm">
+              <Text variant="bodySmall" className="font-bold text-white">
+                {t('conversationResult.allScenariosComplete')}
+              </Text>
+            </div>
+            <Button
+              variant="primary"
+              size="xl"
+              fullWidth
+              onClick={() => navigate('/conversation', { replace: true })}
+            >
+              {t('conversationResult.newSession')}
+            </Button>
+            <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
+              {t('conversationResult.home')}
+            </Button>
+          </>
+        )}
       </motion.div>
 
       {/* Nova */}

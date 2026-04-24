@@ -282,3 +282,33 @@ export const ALL_CONVERSATION_SCENARIOS: ConversationScenario[] = [
 export function getConversationScenarioById(id: string): ConversationScenario | undefined {
   return ALL_CONVERSATION_SCENARIOS.find((scenario) => scenario.id === id);
 }
+
+/**
+ * Returns the id of the "next" scenario after the given one, or undefined if none.
+ *
+ * Policy:
+ *  - If the current scenario belongs to a story series, prefer the next episode in the
+ *    same series (matched by seriesId + ascending episodeNumber).
+ *  - Otherwise fall back to the next scenario in ALL_CONVERSATION_SCENARIOS order.
+ *  - Returns undefined only when the current id isn't found or we're at the last scenario
+ *    with no series continuation.
+ */
+export function getNextConversationScenarioId(currentId: string): string | undefined {
+  const currentIndex = ALL_CONVERSATION_SCENARIOS.findIndex((s) => s.id === currentId);
+  if (currentIndex < 0) return undefined;
+  const current = ALL_CONVERSATION_SCENARIOS[currentIndex];
+  if (!current) return undefined;
+
+  // Prefer next episode within the same story series
+  if (current.series) {
+    const { seriesId, episodeNumber } = current.series;
+    const nextEpisode = ALL_CONVERSATION_SCENARIOS.find(
+      (s) => s.series?.seriesId === seriesId && s.series.episodeNumber === episodeNumber + 1,
+    );
+    if (nextEpisode) return nextEpisode.id;
+  }
+
+  // Fallback: next in global order
+  const next = ALL_CONVERSATION_SCENARIOS[currentIndex + 1];
+  return next?.id;
+}

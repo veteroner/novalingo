@@ -2,6 +2,7 @@ export { toConversationActivityData } from './mappers/toConversationActivityData
 export {
   ALL_CONVERSATION_SCENARIOS,
   getConversationScenarioById,
+  getNextConversationScenarioId,
   PHASE1_CONVERSATION_SCENARIOS,
   PHASE2_CONVERSATION_SCENARIOS,
   PHASE3_CONVERSATION_SCENARIOS,

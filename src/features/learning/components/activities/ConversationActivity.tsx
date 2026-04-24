@@ -499,6 +499,14 @@ export default function ConversationActivity({
   const hintedTurnsRef = useRef(0);
   const conversationSlotsRef = useRef<Record<string, string>>({});
   const rawChildResponsesRef = useRef<string[]>([]);
+  // When handleFreeInput has already pushed the raw STT transcript, the
+  // subsequent acceptConversationResponse must not push the canonical option
+  // text as a second entry — otherwise the result screen shows duplicates.
+  const skipNextRawAnswerLogRef = useRef<boolean>(false);
+  // Same idea for the on-screen chat bubble: handleFreeInput shows what the
+  // speaker actually said; we then skip the canonical bubble in
+  // acceptConversationResponse to avoid stacking two child bubbles per turn.
+  const skipNextChildBubbleRef = useRef<boolean>(false);
   const nodeRejectionsRef = useRef(0);
   const completedWordsRef = useRef(completedWords);
   const attemptsRef = useRef(attempts);
@@ -910,8 +918,18 @@ export default function ConversationActivity({
       }
 
       if (trimmedChildText.length > 0) {
-        rawChildResponsesRef.current.push(trimmedChildText);
+        if (skipNextRawAnswerLogRef.current) {
+          // handleFreeInput already recorded the raw transcript — don't duplicate.
+          skipNextRawAnswerLogRef.current = false;
+        } else {
+          rawChildResponsesRef.current.push(trimmedChildText);
+        }
       }
+
+      // Track whether handleFreeInput already rendered a child "heard" bubble
+      // so we can avoid showing two stacked child bubbles on this turn.
+      const skipChildBubble = skipNextChildBubbleRef.current;
+      skipNextChildBubbleRef.current = false;
 
       setCompletedWords((prev) => {
         const next = new Set(prev);
@@ -921,15 +939,17 @@ export default function ConversationActivity({
         return next;
       });
 
-      // Add child's bubble
-      const childBubble: ChatBubble = {
-        id: `child-${Date.now()}`,
-        speaker: 'child',
-        text: response.childText,
-        textTr: response.childTextTr,
-        emoji: response.emoji,
-      };
-      setBubbles((prev) => [...prev, childBubble]);
+      // Add child's bubble (unless handleFreeInput already showed a "heard" bubble)
+      if (!skipChildBubble) {
+        const childBubble: ChatBubble = {
+          id: `child-${Date.now()}`,
+          speaker: 'child',
+          text: response.childText,
+          textTr: response.childTextTr,
+          emoji: response.emoji,
+        };
+        setBubbles((prev) => [...prev, childBubble]);
+      }
 
       setNovaMood('celebrating');
       setFeedback('correct');
@@ -987,6 +1007,32 @@ export default function ConversationActivity({
     async (rawText: string, alternatives: string[] = []) => {
       if (!rawText.trim() || options.length === 0) return;
       abortRecognition();
+
+      // ── Immediately show what was heard as a child bubble so the speaker gets
+      // visible confirmation that STT worked (fixes "söylediğim hiçbirşey yazıya
+      // dönüşmedi" — user couldn't tell if the mic captured anything). The raw
+      // transcript is also recorded into rawChildResponsesRef here so that both
+      // accepted AND rejected utterances appear on the result screen's
+      // "Gerçek Cevapların" list. acceptConversationResponse intentionally skips
+      // the push when invoked from this handler (see `alreadyLoggedRawAnswer`).
+      const heardText = rawText.trim();
+      let alreadyLoggedRawAnswer = false;
+      if (heardText.length > 0) {
+        rawChildResponsesRef.current.push(heardText);
+        alreadyLoggedRawAnswer = true;
+        setBubbles((prev) => [
+          ...prev,
+          {
+            id: `child-heard-${Date.now()}`,
+            speaker: 'child',
+            text: heardText,
+            textTr: '',
+          },
+        ]);
+      }
+      skipNextRawAnswerLogRef.current = alreadyLoggedRawAnswer;
+      skipNextChildBubbleRef.current = alreadyLoggedRawAnswer;
+
       const openEndedConfig = currentPromptOpenEndedRef.current;
       const textsToTry = [rawText, ...alternatives.filter((a) => a !== rawText)];
       let lastOpenEndedMatch: Awaited<
