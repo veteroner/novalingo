@@ -62,6 +62,15 @@ export const myFavoriteTeamScenario: ConversationScenario = {
         promptTr: 'Söyle: My favourite team is ___  (bir takım adı kullan!)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'favoriteTeam',
+        nextNodeId: 'n2',
+        capturePrefixes: ['my favourite team is', 'my favorite team is'],
+        marksPattern: ['My favourite team is ___!'],
+      },
       responses: [
         {
           id: 'r1_team',
@@ -85,8 +94,9 @@ export const myFavoriteTeamScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'Awesome! Are they good at scoring? Say: They score a lot of goals!',
-      textTr: 'Harika! Onlar iyi gol atıyor mu? Söyle: They score a lot of goals!',
+      text: 'Awesome! {{favoriteTeamCapitalized}} sounds exciting. Are they good at scoring? Say: They score a lot of goals!',
+      textTr:
+        'Harika! {{favoriteTeamCapitalized}} kulağa heyecanlı geliyor. Onlar iyi gol atıyor mu? Söyle: They score a lot of goals!',
       emoji: '🥅',
       goalType: 'answer',
       targetPattern: 'They scored a goal!',

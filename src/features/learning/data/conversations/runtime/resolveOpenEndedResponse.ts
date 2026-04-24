@@ -113,9 +113,82 @@ const FOOD_WORDS = new Set([
 function normalizeText(value: string): string {
   return value
     .toLowerCase()
-    .replace(/[^a-z\s']/g, ' ')
+    .replace(/[^a-z\u00c0-\u024f\s']/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function sanitizeFreeTextCandidate(value: string): string | null {
+  const candidate = value
+    .trim()
+    .replace(/[.!?]+$/g, '')
+    .replace(/[^\p{L}\p{M}\s'-]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return candidate.length >= 2 ? candidate.toLowerCase() : null;
+}
+
+function extractByCapturePrefixes(
+  rawText: string,
+  capturePrefixes: string[] | undefined,
+): string | null {
+  if (!capturePrefixes || capturePrefixes.length === 0) return null;
+
+  const trimmed = rawText.trim().replace(/[.!?]+$/g, '');
+  const lowered = trimmed.toLowerCase();
+
+  const sortedPrefixes = [...capturePrefixes].sort((left, right) => right.length - left.length);
+
+  for (const prefix of sortedPrefixes) {
+    const normalizedPrefix = prefix.trim().toLowerCase();
+    if (!normalizedPrefix || !lowered.startsWith(normalizedPrefix)) continue;
+    const remainder = trimmed.slice(normalizedPrefix.length);
+    const candidate = sanitizeFreeTextCandidate(remainder);
+    if (candidate) return candidate;
+  }
+
+  return null;
+}
+
+function extractFreeTextSlot(rawText: string, capturePrefixes?: string[]): string | null {
+  const trimmed = rawText.trim().replace(/[.!?]+$/g, '');
+  if (!trimmed) return null;
+
+  const prefixed = extractByCapturePrefixes(rawText, capturePrefixes);
+  if (prefixed) return prefixed;
+
+  const directPatterns = [
+    /my name is\s+(.+)$/i,
+    /my best friend is\s+(.+)$/i,
+    /my (?:favorite|favourite) team is\s+(.+)$/i,
+    /my hero is\s+(.+)$/i,
+    /i want to be like\s+(.+)$/i,
+    /(?:its|it's|it is) name is\s+(.+)$/i,
+    /name is\s+(.+)$/i,
+    /i call (?:him|her|it)\s+(.+)$/i,
+    /it is called\s+(.+)$/i,
+  ];
+
+  for (const pattern of directPatterns) {
+    const match = trimmed.match(pattern);
+    if (!match?.[1]) continue;
+    const candidate = sanitizeFreeTextCandidate(match[1]);
+    if (candidate) return candidate;
+  }
+
+  const singleWord = trimmed
+    .replace(/[^\p{L}\p{M}\s'-]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean);
+
+  if (singleWord.length === 1 && (singleWord[0]?.length ?? 0) >= 2) {
+    return singleWord[0]!.toLowerCase();
+  }
+
+  return null;
 }
 
 function stripLeadingArticle(value: string): string {
@@ -246,7 +319,9 @@ export function resolveOpenEndedResponse(
       ? extractFavoriteThing(normalized, config.domain)
       : config.strategy === 'choose_thing'
         ? extractChosenThing(normalized, config.domain)
-        : extractBecauseReason(normalized, config.domain);
+        : config.strategy === 'free_text'
+          ? extractFreeTextSlot(params.rawText, config.capturePrefixes)
+          : extractBecauseReason(normalized, config.domain);
 
   if (!slotValue) return null;
 

@@ -72,10 +72,11 @@ interface ConversationActivityNode {
 
 interface ConversationActivityOpenEnded {
   enabled: boolean;
-  strategy: 'favorite_thing' | 'choose_thing' | 'because_reason';
+  strategy: 'favorite_thing' | 'choose_thing' | 'because_reason' | 'free_text';
   domain: 'animal' | 'descriptor' | 'free_text' | 'color' | 'food';
   slotKey: string;
   nextNodeId: string;
+  capturePrefixes?: string[];
   marksPattern?: string[];
   countCapturedValueAsTargetWord?: boolean;
 }
@@ -987,6 +988,46 @@ export default function ConversationActivity({
       if (!rawText.trim() || options.length === 0) return;
       abortRecognition();
       const openEndedConfig = currentPromptOpenEndedRef.current;
+      const textsToTry = [rawText, ...alternatives.filter((a) => a !== rawText)];
+      let lastOpenEndedMatch: Awaited<
+        ReturnType<typeof openEndedConversationService.evaluateTurn>
+      > | null = null;
+
+      if (openEndedConfig) {
+        for (const text of textsToTry) {
+          const openEndedMatch = await openEndedConversationService.evaluateTurn({
+            rawText: text,
+            nodeId: currentPromptNodeIdRef.current ?? 'unknown',
+            scenarioId: data.scenarioId,
+            nodeText:
+              (currentPromptNodeIdRef.current
+                ? nodesMap.current.get(currentPromptNodeIdRef.current)?.text
+                : undefined) ?? '',
+            config: openEndedConfig,
+            targetWords: data.targetWords,
+            targetPatterns: data.targetPatterns,
+            slots: conversationSlotsRef.current,
+            responseExamples: options.map((option) => option.text),
+          });
+          lastOpenEndedMatch = openEndedMatch;
+
+          if (openEndedMatch.accepted && openEndedMatch.resolution) {
+            rememberConversationSlot(
+              openEndedMatch.resolution.slotKey,
+              openEndedMatch.resolution.slotValue,
+            );
+            acceptConversationResponse({
+              nextNodeId: openEndedMatch.resolution.nextNodeId,
+              childText: text.trim(),
+              childTextTr: '',
+              markedTargetWords: openEndedMatch.resolution.markedTargetWords,
+              markedPatterns: openEndedMatch.resolution.marksPattern,
+              matchSource: openEndedMatch.source === 'llm' ? 'open_ended_llm' : 'open_ended_local',
+            });
+            return;
+          }
+        }
+      }
 
       const responseRules = options.map((option) => ({
         id: option.responseId ?? option.nextNodeId,
@@ -1010,7 +1051,6 @@ export default function ConversationActivity({
       );
 
       // Try primary text first, then each STT alternative — take first match
-      const textsToTry = [rawText, ...alternatives.filter((a) => a !== rawText)];
       for (const text of textsToTry) {
         if (useResponseRuleMatcher) {
           const ruleMatch = matchConversationResponseRule({
@@ -1046,37 +1086,6 @@ export default function ConversationActivity({
       }
 
       if (openEndedConfig) {
-        const openEndedMatch = await openEndedConversationService.evaluateTurn({
-          rawText,
-          nodeId: currentPromptNodeIdRef.current ?? 'unknown',
-          scenarioId: data.scenarioId,
-          nodeText:
-            (currentPromptNodeIdRef.current
-              ? nodesMap.current.get(currentPromptNodeIdRef.current)?.text
-              : undefined) ?? '',
-          config: openEndedConfig,
-          targetWords: data.targetWords,
-          targetPatterns: data.targetPatterns,
-          slots: conversationSlotsRef.current,
-          responseExamples: options.map((option) => option.text),
-        });
-
-        if (openEndedMatch.accepted && openEndedMatch.resolution) {
-          rememberConversationSlot(
-            openEndedMatch.resolution.slotKey,
-            openEndedMatch.resolution.slotValue,
-          );
-          acceptConversationResponse({
-            nextNodeId: openEndedMatch.resolution.nextNodeId,
-            childText: rawText.trim(),
-            childTextTr: '',
-            markedTargetWords: openEndedMatch.resolution.markedTargetWords,
-            markedPatterns: openEndedMatch.resolution.marksPattern,
-            matchSource: openEndedMatch.source === 'llm' ? 'open_ended_llm' : 'open_ended_local',
-          });
-          return;
-        }
-
         // Rejected — increment per-node rejection counter
         nodeRejectionsRef.current += 1;
 
@@ -1095,9 +1104,9 @@ export default function ConversationActivity({
         }
 
         // If LLM provided coaching text, Nova speaks it
-        if (openEndedMatch.novaResponseText) {
+        if (lastOpenEndedMatch?.novaResponseText) {
           void haptic.error();
-          const coachText = openEndedMatch.novaResponseText;
+          const coachText = lastOpenEndedMatch.novaResponseText;
           setBubbles((prev) => [
             ...prev,
             { id: `nova-coach-${Date.now()}`, speaker: 'nova', text: coachText, textTr: '' },

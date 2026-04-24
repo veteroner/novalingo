@@ -60,6 +60,15 @@ export const meetNovaScenario: ConversationScenario = {
         promptTr: 'Dene: My name is ...',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'childName',
+        nextNodeId: 'n2_bridge',
+        capturePrefixes: ['my name is', 'i am'],
+        marksPattern: ['My name is ___'],
+      },
       responses: [
         {
           id: 'r1_name',
@@ -76,8 +85,8 @@ export const meetNovaScenario: ConversationScenario = {
       id: 'n2_bridge',
       speaker: 'nova',
       role: 'friend',
-      text: 'What a lovely name! Nice to meet you!',
-      textTr: 'Ne guzel bir isim! Tanistigimiza memnun oldum!',
+      text: '{{childNameCapitalized}} is a lovely name! Nice to meet you!',
+      textTr: '{{childNameCapitalized}} çok güzel bir isim! Tanıştığımıza memnun oldum!',
       emoji: '\u{1F91D}',
       next: 'n3',
     },

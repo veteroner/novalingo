@@ -7,6 +7,8 @@ import { useAudioUnlock } from '@hooks/useAudioUnlock';
 import { useAuth } from '@hooks/useAuth';
 import { useCapacitorLifecycle } from '@hooks/useCapacitorLifecycle';
 import { useAuthStore } from '@stores/authStore';
+import { useChildStore } from '@stores/childStore';
+import { Timestamp } from 'firebase/firestore';
 import { type ReactNode, useEffect, useRef } from 'react';
 import { ThemeProvider } from './ThemeProvider';
 
@@ -15,6 +17,106 @@ interface AppProvidersProps {
 }
 
 const AUTH_TIMEOUT_MS = 10_000;
+const E2E_SESSION_STORAGE_KEY = 'nova:e2e-session';
+let hydratedE2ESessionKey: string | null = null;
+
+interface E2ETestSession {
+  uid?: string;
+  child?: {
+    id?: string;
+    name?: string;
+    avatarId?: string;
+    ageGroup?: 'cubs' | 'stars' | 'legends';
+    currentWorldId?: string;
+    currentUnitId?: string;
+  };
+}
+
+function getE2ETestSession(): E2ETestSession | null {
+  if (import.meta.env.MODE !== 'test' || typeof window === 'undefined') return null;
+
+  const raw = window.localStorage.getItem(E2E_SESSION_STORAGE_KEY);
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw) as E2ETestSession;
+    if (!parsed?.uid || !parsed.child?.id) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function hydrateE2ETestSession(session: E2ETestSession): void {
+  const sessionKey = JSON.stringify(session);
+  if (hydratedE2ESessionKey === sessionKey) return;
+
+  const now = Timestamp.now();
+  const child = {
+    id: session.child?.id ?? 'e2e-child',
+    parentUid: session.uid ?? 'e2e-parent',
+    name: session.child?.name ?? 'E2E Kid',
+    avatarId: session.child?.avatarId ?? 'owl',
+    ageGroup: session.child?.ageGroup ?? 'stars',
+    createdAt: now,
+    level: 1,
+    totalXP: 0,
+    currentLevelXP: 0,
+    nextLevelXP: 100,
+    stars: 0,
+    gems: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    lastActivityDate: '',
+    streakFreezes: 0,
+    novaStage: 'egg' as const,
+    novaHappiness: 100,
+    novaOutfitId: null,
+    leagueId: 'bronze_default',
+    leagueTier: 'bronze' as const,
+    weeklyXP: 0,
+    currentWorldId: session.child?.currentWorldId ?? 'w3',
+    currentUnitId: session.child?.currentUnitId ?? 'u1',
+    completedLessons: 0,
+    totalPlayTimeMinutes: 0,
+    wordsLearned: 0,
+  };
+
+  useAuthStore.getState().setFirebaseUser({ uid: session.uid, isAnonymous: true } as never);
+  useAuthStore.getState().setUser({
+    id: session.uid ?? 'e2e-parent',
+    email: '',
+    displayName: 'E2E Parent',
+    photoURL: null,
+    provider: 'anonymous',
+    isPremium: false,
+    premiumExpiresAt: null,
+    createdAt: now,
+    lastLoginAt: now,
+    settings: {
+      language: 'tr',
+      soundEnabled: true,
+      musicEnabled: false,
+      sfxVolume: 0,
+      bgmVolume: 0,
+      hapticEnabled: false,
+      notificationsEnabled: false,
+      dailyGoalMinutes: 10,
+      parentPin: null,
+    },
+  });
+  useChildStore.getState().setChildren([child]);
+  useChildStore.getState().setActiveChild(child);
+  hydratedE2ESessionKey = sessionKey;
+}
+
+function E2ETestSessionProvider({ children }: { children: ReactNode }) {
+  useAppInit();
+  useAudioUnlock();
+  useCapacitorLifecycle();
+
+  return <>{children}</>;
+}
 
 /**
  * Firebase auth state'ini store'a bağlar VE user dokümanını Firestore'dan çeker.
@@ -93,15 +195,26 @@ function ChildDataProvider({ children }: { children: ReactNode }) {
  * Sıralama önemli — bağımlılık sırasına göre yerleştirilmiştir.
  */
 export function AppProviders({ children }: AppProvidersProps) {
+  const e2eSession = getE2ETestSession();
+  if (e2eSession) hydrateE2ETestSession(e2eSession);
+
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <ChildDataProvider>
+      {e2eSession ? (
+        <E2ETestSessionProvider>
           {children}
           <GlobalModalRenderer />
           <ToastRenderer />
-        </ChildDataProvider>
-      </AuthProvider>
+        </E2ETestSessionProvider>
+      ) : (
+        <AuthProvider>
+          <ChildDataProvider>
+            {children}
+            <GlobalModalRenderer />
+            <ToastRenderer />
+          </ChildDataProvider>
+        </AuthProvider>
+      )}
     </ThemeProvider>
   );
 }

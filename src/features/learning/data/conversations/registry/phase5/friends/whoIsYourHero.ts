@@ -63,6 +63,15 @@ export const whoIsYourHeroScenario: ConversationScenario = {
         promptTr: 'Söyle: My hero is ___  (annem, babam, öğretmenim, bir süper kahraman)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'heroName',
+        nextNodeId: 'n2',
+        capturePrefixes: ['my hero is'],
+        marksPattern: ['My hero is ___!'],
+      },
       responses: [
         {
           id: 'r1_mum',
@@ -119,8 +128,9 @@ export const whoIsYourHeroScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'I love that! 💛 Why are they your hero? Are they kind or brave?',
-      textTr: 'Bunu seviyorum! Neden senin kahramanın? Nazik mi yoksa cesur mu?',
+      text: 'I love that! 💛 Why is {{heroNameCapitalized}} your hero? Are they kind or brave?',
+      textTr:
+        'Bunu seviyorum! {{heroNameCapitalized}} neden senin kahramanın? Nazik mi yoksa cesur mu?',
       emoji: '💛',
       goalType: 'describe',
       targetPattern: '___ is brave because ___',
@@ -262,6 +272,15 @@ export const whoIsYourHeroScenario: ConversationScenario = {
         promptTr: 'Söyle: I want to be like ___  (kahramanım, annem, bir doktor)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'heroRoleModel',
+        nextNodeId: 'n7',
+        capturePrefixes: ['i want to be like'],
+        marksPattern: ['I want to be like ___!'],
+      },
       responses: [
         {
           id: 'r6_like',
@@ -280,8 +299,9 @@ export const whoIsYourHeroScenario: ConversationScenario = {
       id: 'n7',
       speaker: 'nova',
       role: 'friend',
-      text: 'You CAN do it! 💪 With a hero like that, you will be amazing too!',
-      textTr: 'Yapabilirsin! Böyle bir kahramanla sen de harika olacaksın!',
+      text: 'You CAN do it! 💪 With a role model like {{heroRoleModelCapitalized}}, you will be amazing too!',
+      textTr:
+        'Yapabilirsin! {{heroRoleModelCapitalized}} gibi bir rol modelle sen de harika olacaksın!',
       emoji: '💪',
       next: 'n8',
     },

@@ -35,7 +35,9 @@ export const myBestFriendScenario: ConversationScenario = {
     preferredIfTagsSeen: ['friends', 'adjectives'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -59,6 +61,15 @@ export const myBestFriendScenario: ConversationScenario = {
         promptTr: 'S\u00f6yle: My best friend is ___ (bir isim)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'bestFriendName',
+        nextNodeId: 'n2',
+        capturePrefixes: ['my best friend is'],
+        marksPattern: ['My best friend is ___'],
+      },
       responses: [
         {
           id: 'r1_any_name',
@@ -77,8 +88,8 @@ export const myBestFriendScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'What is your friend like? Describe them: He is kind and funny!',
-      textTr: 'Arkada\u015f\u0131n nas\u0131l biri? Onu tarif et: He is kind and funny!',
+      text: 'What is {{bestFriendNameCapitalized}} like? Describe them: He is kind and funny!',
+      textTr: '{{bestFriendNameCapitalized}} nasıl biri? Onu tarif et: He is kind and funny!',
       emoji: '😄',
       goalType: 'describe',
       targetPattern: 'She/He is ___ and ___',
@@ -146,7 +157,8 @@ export const myBestFriendScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'How fun! What do you do together? Tell me: We like to play together!',
-      textTr: 'Ne e\u011flenceli! Birlikte ne yapars\u0131n\u0131z? S\u00f6yle: We like to play together!',
+      textTr:
+        'Ne e\u011flenceli! Birlikte ne yapars\u0131n\u0131z? S\u00f6yle: We like to play together!',
       emoji: '🎮',
       goalType: 'answer',
       targetPattern: 'We like to ___ together',
@@ -159,7 +171,8 @@ export const myBestFriendScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: We like to ___ together  (play, read, draw, run)',
-        promptTr: 'S\u00f6yle: We like to ___ together  (oynamak, okumak, \u00e7izmek, ko\u015fmak)',
+        promptTr:
+          'S\u00f6yle: We like to ___ together  (oynamak, okumak, \u00e7izmek, ko\u015fmak)',
         maxRetries: 2,
       },
       responses: [
@@ -167,7 +180,11 @@ export const myBestFriendScenario: ConversationScenario = {
           id: 'r3_play',
           expectedText: 'We like to play together.',
           expectedTextTr: 'Birlikte oynamay\u0131 seviyoruz.',
-          acceptedVariants: ['we like to play together', 'like to play together', 'we play together'],
+          acceptedVariants: [
+            'we like to play together',
+            'like to play together',
+            'we play together',
+          ],
           acceptedWords: ['together'],
           nextNodeId: 'n4',
           emoji: '🎮',
@@ -178,7 +195,11 @@ export const myBestFriendScenario: ConversationScenario = {
           id: 'r3_read',
           expectedText: 'We like to read together.',
           expectedTextTr: 'Birlikte okumay\u0131 seviyoruz.',
-          acceptedVariants: ['we like to read together', 'like to read together', 'we read together'],
+          acceptedVariants: [
+            'we like to read together',
+            'like to read together',
+            'we read together',
+          ],
           acceptedWords: ['together'],
           nextNodeId: 'n4',
           emoji: '📖',
@@ -189,7 +210,11 @@ export const myBestFriendScenario: ConversationScenario = {
           id: 'r3_draw',
           expectedText: 'We like to draw together.',
           expectedTextTr: 'Birlikte \u00e7izmeyi seviyoruz.',
-          acceptedVariants: ['we like to draw together', 'like to draw together', 'we draw together'],
+          acceptedVariants: [
+            'we like to draw together',
+            'like to draw together',
+            'we draw together',
+          ],
           acceptedWords: ['together'],
           nextNodeId: 'n4',
           emoji: '🎨',
@@ -245,7 +270,8 @@ export const myBestFriendScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'That is so sweet! What one word describes your friend best?',
-      textTr: 'Bu \u00e7ok tatl\u0131! Arkada\u015f\u0131n\u0131 en iyi anlatan tek kelime hangisi?',
+      textTr:
+        'Bu \u00e7ok tatl\u0131! Arkada\u015f\u0131n\u0131 en iyi anlatan tek kelime hangisi?',
       emoji: '💬',
       goalType: 'describe',
       hint: {

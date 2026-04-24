@@ -35,7 +35,9 @@ export const iWantToBeScenario: ConversationScenario = {
     preferredIfTagsSeen: ['jobs', 'future'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -43,7 +45,8 @@ export const iWantToBeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'When I grow up, I want to be an astronaut! What about you? Say: I want to be a ___!',
-      textTr: 'Ben b\u00fcy\u00fcy\u00fcnce astronot olmak istiyorum! Peki ya sen? S\u00f6yle: I want to be a ___!',
+      textTr:
+        'Ben b\u00fcy\u00fcy\u00fcnce astronot olmak istiyorum! Peki ya sen? S\u00f6yle: I want to be a ___!',
       emoji: '\u{1F680}',
       goalType: 'answer',
       targetPattern: 'I want to be a ___',
@@ -58,6 +61,15 @@ export const iWantToBeScenario: ConversationScenario = {
         prompt: 'Say: I want to be a ___',
         promptTr: 'S\u00f6yle: I want to be a ___',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'futureJob',
+        nextNodeId: 'n2',
+        capturePrefixes: ['i want to be a', 'i want to be an', 'i want to be'],
+        marksPattern: ['I want to be a ___'],
       },
       responses: [
         {
@@ -121,8 +133,9 @@ export const iWantToBeScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'Wow, amazing dream! What will you DO as a ___? Say: I will ___.',
-      textTr: 'Vay, harika bir hayal! Olunca ne YAPACAKSIN? S\u00f6yle: I will ___.',
+      text: 'Wow, amazing dream! What will you DO as {{futureJobWithArticle}}? Say: I will ___.',
+      textTr:
+        'Vay, harika bir hayal! {{futureJobWithArticleCapitalized}} olunca ne YAPACAKSIN? S\u00f6yle: I will ___.',
       emoji: '\u{1F4AD}',
       goalType: 'describe',
       targetPattern: 'When I grow up I will ___',
@@ -135,7 +148,8 @@ export const iWantToBeScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: I will ___ (fly, cook, help, teach, draw)',
-        promptTr: 'S\u00f6yle: I will ___ (u\u00e7, pi\u015fir, yard\u0131m et, \u00f6\u011fret, \u00e7iz)',
+        promptTr:
+          'S\u00f6yle: I will ___ (u\u00e7, pi\u015fir, yard\u0131m et, \u00f6\u011fret, \u00e7iz)',
         maxRetries: 2,
       },
       responses: [
@@ -183,7 +197,12 @@ export const iWantToBeScenario: ConversationScenario = {
           id: 'r2_science',
           expectedText: 'I will do science experiments.',
           expectedTextTr: 'Bilim deneyleri yapaca\u011f\u0131m.',
-          acceptedVariants: ['i will do science', 'science experiments', 'experiments', 'study science'],
+          acceptedVariants: [
+            'i will do science',
+            'science experiments',
+            'experiments',
+            'study science',
+          ],
           acceptedWords: [],
           nextNodeId: 'n3',
           emoji: '\u{1F9EA}',
@@ -196,7 +215,8 @@ export const iWantToBeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'That sounds fantastic! So your dream job is ___? Say: My dream job is ___.',
-      textTr: 'Bu kula\u011fa harika geliyor! Yani hayal mesle\u011fin ___? S\u00f6yle: My dream job is ___.',
+      textTr:
+        'Bu kula\u011fa harika geliyor! Yani hayal mesle\u011fin ___? S\u00f6yle: My dream job is ___.',
       emoji: '\u2B50',
       goalType: 'answer',
       targetPattern: 'My dream job is ___',
@@ -211,6 +231,15 @@ export const iWantToBeScenario: ConversationScenario = {
         prompt: 'Say: My dream job is ___',
         promptTr: 'S\u00f6yle: My dream job is ___',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'dreamJob',
+        nextNodeId: 'n4',
+        capturePrefixes: ['my dream job is'],
+        marksPattern: ['My dream job is ___'],
       },
       responses: [
         {
@@ -229,8 +258,9 @@ export const iWantToBeScenario: ConversationScenario = {
       id: 'n4',
       speaker: 'nova',
       role: 'friend',
-      text: 'Cool! Why do you want that job? Because you like to ___?',
-      textTr: 'Serin! Neden o mesle\u011fi istiyorsun? \u00c7\u00fcnk\u00fc ___ yapmay\u0131 seviyor musun?',
+      text: 'Cool! Why do you want to be {{dreamJobWithArticle}}? Because you like to ___?',
+      textTr:
+        'S\u00fcper! Neden {{dreamJobWithArticle}} olmak istiyorsun? \u00c7\u00fcnk\u00fc ___ yapmay\u0131 seviyor musun?',
       emoji: '\u{1F914}',
       goalType: 'describe',
       hint: {
@@ -299,7 +329,8 @@ export const iWantToBeScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Where will you work? In the sky? In a kitchen? In space?',
-        promptTr: 'Nerede \u00e7al\u0131\u015facaks\u0131n? G\u00f6kte mi? Mutfakta m\u0131? Uzayda m\u0131?',
+        promptTr:
+          'Nerede \u00e7al\u0131\u015facaks\u0131n? G\u00f6kte mi? Mutfakta m\u0131? Uzayda m\u0131?',
         maxRetries: 2,
       },
       responses: [
@@ -455,7 +486,8 @@ export const iWantToBeScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'What skill do you need? Smart? Brave? Creative?',
-        promptTr: 'Hangi beceriye ihtiyac\u0131n var? Zeki mi? Cesur mu? Yarat\u0131c\u0131 m\u0131?',
+        promptTr:
+          'Hangi beceriye ihtiyac\u0131n var? Zeki mi? Cesur mu? Yarat\u0131c\u0131 m\u0131?',
         maxRetries: 2,
       },
       responses: [
@@ -502,7 +534,8 @@ export const iWantToBeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Do you think your dream will come true one day?',
-      textTr: 'Havalinin bir g\u00fcn ger\u00e7ek olaca\u011f\u0131n\u0131 d\u00fc\u015f\u00fcn\u00fcyor musun?',
+      textTr:
+        'Havalinin bir g\u00fcn ger\u00e7ek olaca\u011f\u0131n\u0131 d\u00fc\u015f\u00fcn\u00fcyor musun?',
       emoji: '\u{1F31F}',
       goalType: 'answer',
       hint: {
@@ -521,7 +554,13 @@ export const iWantToBeScenario: ConversationScenario = {
           id: 'r9_yes',
           expectedText: 'Yes, I believe in my dream!',
           expectedTextTr: 'Evet, hayalime inan\u0131yorum!',
-          acceptedVariants: ['yes i believe', 'i believe in my dream', 'yes my dream', 'yes i can', 'yes'],
+          acceptedVariants: [
+            'yes i believe',
+            'i believe in my dream',
+            'yes my dream',
+            'yes i can',
+            'yes',
+          ],
           acceptedWords: [],
           nextNodeId: 'n10',
           emoji: '\u{1F31F}',

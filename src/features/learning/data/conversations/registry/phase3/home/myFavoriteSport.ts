@@ -173,6 +173,15 @@ export const myFavoriteSportScenario: ConversationScenario = {
         promptTr: 'Şöyle başla: My favourite sport is ___!',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'favoriteSport',
+        nextNodeId: 'n6',
+        capturePrefixes: ['my favourite sport is', 'my favorite sport is'],
+        marksPattern: ['My favourite sport is ___!'],
+      },
       responses: [
         {
           id: 'r5_football',
@@ -246,8 +255,9 @@ export const myFavoriteSportScenario: ConversationScenario = {
       id: 'n6',
       speaker: 'nova',
       role: 'friend',
-      text: 'I LOVE your favourite sport! 🏅 Sport is so important for being healthy and happy!',
-      textTr: 'EN SEVDİĞİM SPORUNU SEVIYORUM! 🏅 Spor sağlıklı ve mutlu olmak için çok önemli!',
+      text: 'I LOVE {{favoriteSport}}! 🏅 Sport is so important for being healthy and happy!',
+      textTr:
+        '{{favoriteSportCapitalized}} harika bir seçim! 🏅 Spor sağlıklı ve mutlu olmak için çok önemli!',
       emoji: '\u{1F3C5}',
       next: 'n7',
     },

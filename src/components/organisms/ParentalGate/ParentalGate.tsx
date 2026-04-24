@@ -128,8 +128,10 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                   <input
                     type="checkbox"
                     checked={consentPrivacy}
-                    onChange={(e) => setConsentPrivacy(e.target.checked)}
-                    className="mt-1 h-5 w-5 flex-shrink-0 rounded accent-blue-500"
+                    onChange={(e) => {
+                      setConsentPrivacy(e.target.checked);
+                    }}
+                    className="mt-1 h-5 w-5 shrink-0 rounded accent-blue-500"
                     aria-label="Gizlilik Politikası ve Kullanım Koşulları onayı"
                   />
                   <span className="text-sm leading-snug text-gray-700">
@@ -148,8 +150,10 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                   <input
                     type="checkbox"
                     checked={consentCoppa}
-                    onChange={(e) => setConsentCoppa(e.target.checked)}
-                    className="mt-1 h-5 w-5 flex-shrink-0 rounded accent-blue-500"
+                    onChange={(e) => {
+                      setConsentCoppa(e.target.checked);
+                    }}
+                    className="mt-1 h-5 w-5 shrink-0 rounded accent-blue-500"
                     aria-label="Ebeveyn COPPA onayı"
                   />
                   <span className="text-sm leading-snug text-gray-700">

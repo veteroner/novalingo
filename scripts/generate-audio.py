@@ -47,9 +47,23 @@ def text_hash(text: str) -> str:
     return hashlib.md5(normalized.encode("utf-8")).hexdigest()[:16]
 
 
+def normalize_speech_text(text: str) -> str:
+    """Mirror the runtime speech normalization used before synthesis and lookup."""
+    ellipsis_token = "__NOVA_BLANK__"
+
+    normalized = re.sub(r"_{3,}", f" {ellipsis_token} ", text)
+    normalized = re.sub(r"\s+([,.;!?])", r"\1", normalized)
+    normalized = re.sub(r"([,;!?]){2,}", r"\1", normalized)
+    normalized = re.sub(r"\.{4,}", "...", normalized)
+    normalized = re.sub(r"\s+", " ", normalized)
+    normalized = normalized.replace(ellipsis_token, "...")
+    normalized = re.sub(r"([^\s])\.\.\.", r"\1 ...", normalized)
+    return normalized.strip()
+
+
 def normalize_key(text: str) -> str:
     """Normalize text for manifest key lookup."""
-    return text.strip().lower()
+    return normalize_speech_text(text).strip().lower()
 
 
 # ===== TEXT EXTRACTION =====
@@ -283,7 +297,7 @@ async def generate_all(texts: dict[str, dict]) -> dict[str, str]:
 
         manifest[norm_text] = filename
 
-        async def gen(t=entry["text"], p=output_path):
+        async def gen(t=normalize_speech_text(entry["text"]), p=output_path):
             nonlocal generated
             success = await generate_single(t, p, semaphore)
             if success:
@@ -322,6 +336,9 @@ def write_manifest(manifest: dict[str, str]):
         " * DO NOT EDIT MANUALLY — regenerate with: python3 scripts/generate-audio.py",
         " */",
         "",
+        "import { resolveTtsAudioUrl } from './audioAssetUrl';",
+        "import { normalizeSpeechText } from './normalizeSpeechText';",
+        "",
         "const AUDIO_MANIFEST: Record<string, string> = {",
     ]
 
@@ -338,9 +355,10 @@ def write_manifest(manifest: dict[str, str]):
         " * Returns the URL path if found, undefined otherwise.",
         " */",
         "export function getPreRecordedUrl(text: string): string | undefined {",
-        "  const key = text.trim().toLowerCase();",
-        "  const filename = AUDIO_MANIFEST[key];",
-        "  return filename ? `/audio/tts/${filename}` : undefined;",
+        "  const rawKey = text.trim().toLowerCase();",
+        "  const normalizedKey = normalizeSpeechText(text).trim().toLowerCase();",
+        "  const filename = AUDIO_MANIFEST[rawKey] ?? AUDIO_MANIFEST[normalizedKey];",
+        "  return filename ? resolveTtsAudioUrl(filename) : undefined;",
         "}",
         "",
     ])

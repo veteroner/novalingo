@@ -68,6 +68,19 @@ export const myDreamJobScenario: ConversationScenario = {
           'Söyle: When I grow up I want to be ___  Dene: doktor, öğretmen, mühendis, sanatçı, pilot',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'dreamCareer',
+        nextNodeId: 'n2',
+        capturePrefixes: [
+          'when i grow up i want to be a',
+          'when i grow up i want to be an',
+          'when i grow up i want to be',
+        ],
+        marksPattern: ['When I grow up I want to be ___!'],
+      },
       responses: [
         {
           id: 'r1_want_to_be',
@@ -91,8 +104,9 @@ export const myDreamJobScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'What an amazing dream! 🌟 That sounds so exciting. Why do you want that job?',
-      textTr: 'Ne harika bir hayal! Çok heyecan verici. Neden o mesleği istiyorsun?',
+      text: 'What an amazing dream! 🌟 Being {{dreamCareerWithArticle}} sounds so exciting. Why do you want that job?',
+      textTr:
+        'Ne harika bir hayal! {{dreamCareerWithArticleCapitalized}} olmak çok heyecan verici görünüyor. Neden o mesleği istiyorsun?',
       emoji: '🌟',
       goalType: 'answer',
       targetPattern: 'Because ___',

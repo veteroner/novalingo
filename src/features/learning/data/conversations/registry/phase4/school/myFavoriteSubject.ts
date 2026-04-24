@@ -63,6 +63,15 @@ export const myFavoriteSubjectScenario: ConversationScenario = {
         promptTr: 'Söyle: My favourite subject is ___  (sanat, matematik, fen, müzik, beden)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'favoriteSubject',
+        nextNodeId: 'n2',
+        capturePrefixes: ['my favourite subject is', 'my favorite subject is'],
+        marksPattern: ['My favourite subject is ___!'],
+      },
       responses: [
         {
           id: 'r1_art',
@@ -130,8 +139,9 @@ export const myFavoriteSubjectScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'Great choice! What do you do in that class? Say: In ___ class we ___!',
-      textTr: 'Harika seçim! O derste ne yapıyorsunuz? Söyle: In ___ class we ___!',
+      text: 'Great choice! What do you do in {{favoriteSubject}} class? Say: In ___ class we ___!',
+      textTr:
+        'Harika seçim! {{favoriteSubjectCapitalized}} dersinde ne yapıyorsunuz? Söyle: In ___ class we ___!',
       emoji: '🎓',
       goalType: 'describe',
       targetPattern: 'In ___ class we ___!',

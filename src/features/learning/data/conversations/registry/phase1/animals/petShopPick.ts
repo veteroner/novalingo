@@ -603,6 +603,14 @@ export const petShopPickScenario: ConversationScenario = {
         promptTr: 'Söyle: Its name is [bir isim]!',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'petName',
+        nextNodeId: 'n14',
+        marksPattern: ['Its name is...'],
+      },
       responses: [
         {
           id: 'r13_max',
@@ -666,8 +674,9 @@ export const petShopPickScenario: ConversationScenario = {
       id: 'n14',
       speaker: 'nova',
       role: 'guide',
-      text: 'Perfect name! One last thing — does your pet make a sound? What sound?',
-      textTr: 'Mükemmel isim! Son bir şey — evcil hayvanın ses çıkarır mı? Nasıl bir ses?',
+      text: '{{petNameCapitalized}} is a perfect name! One last thing — does your pet make a sound? What sound?',
+      textTr:
+        '{{petNameCapitalized}} harika bir isim! Son bir şey — evcil hayvanın ses çıkarır mı? Nasıl bir ses?',
       emoji: '🔊',
       next: 'n15',
     },

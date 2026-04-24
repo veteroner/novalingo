@@ -71,4 +71,99 @@ describe('resolveOpenEndedResponse', () => {
       markedTargetWords: ['salad'],
     });
   });
+
+  it('extracts a free-text pet name', () => {
+    const result = resolveOpenEndedResponse({
+      rawText: 'Its name is Öner!',
+      config: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'petName',
+        nextNodeId: 'next',
+        marksPattern: ['Its name is...'],
+      },
+    });
+
+    expect(result).toEqual({
+      slotKey: 'petName',
+      slotValue: 'öner',
+      nextNodeId: 'next',
+      marksPattern: ['Its name is...'],
+      markedTargetWords: [],
+    });
+  });
+
+  it('extracts a multi-word free-text value using capture prefixes', () => {
+    const result = resolveOpenEndedResponse({
+      rawText: 'My favourite team is Real Madrid!',
+      config: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'favoriteTeam',
+        nextNodeId: 'next',
+        capturePrefixes: ['my favourite team is', 'my favorite team is'],
+        marksPattern: ['My favourite team is ___!'],
+      },
+    });
+
+    expect(result).toEqual({
+      slotKey: 'favoriteTeam',
+      slotValue: 'real madrid',
+      nextNodeId: 'next',
+      marksPattern: ['My favourite team is ___!'],
+      markedTargetWords: [],
+    });
+  });
+
+  it('extracts a dream career with longer capture prefixes', () => {
+    const result = resolveOpenEndedResponse({
+      rawText: 'When I grow up I want to be an engineer!',
+      config: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'dreamCareer',
+        nextNodeId: 'next',
+        capturePrefixes: [
+          'when i grow up i want to be a',
+          'when i grow up i want to be an',
+          'when i grow up i want to be',
+        ],
+        marksPattern: ['When I grow up I want to be ___!'],
+      },
+    });
+
+    expect(result).toEqual({
+      slotKey: 'dreamCareer',
+      slotValue: 'engineer',
+      nextNodeId: 'next',
+      marksPattern: ['When I grow up I want to be ___!'],
+      markedTargetWords: [],
+    });
+  });
+
+  it('extracts a routine phrase with a morning prefix', () => {
+    const result = resolveOpenEndedResponse({
+      rawText: 'Every morning I feed my cat',
+      config: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'morningRoutine',
+        nextNodeId: 'next',
+        capturePrefixes: ['every morning i'],
+        marksPattern: ['Every morning I ___'],
+      },
+    });
+
+    expect(result).toEqual({
+      slotKey: 'morningRoutine',
+      slotValue: 'feed my cat',
+      nextNodeId: 'next',
+      marksPattern: ['Every morning I ___'],
+      markedTargetWords: [],
+    });
+  });
 });

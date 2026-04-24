@@ -26,4 +26,27 @@ describe('localOpenEndedConversationService', () => {
     expect(result.resolution?.slotValue).toBe('blue');
     expect(result.rubric.score).toBeGreaterThan(0);
   });
+
+  it('accepts free-text identity answers with capture prefixes', async () => {
+    const result = await localOpenEndedConversationService.evaluateTurn({
+      rawText: 'My hero is Spider Man!',
+      nodeId: 'n1',
+      scenarioId: 'hero_scenario',
+      config: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'heroName',
+        nextNodeId: 'n2',
+        capturePrefixes: ['my hero is'],
+        marksPattern: ['My hero is ___!'],
+      },
+      targetWords: ['hero'],
+      targetPatterns: ['My hero is ___!'],
+    });
+
+    expect(result.accepted).toBe(true);
+    expect(result.source).toBe('local_rule');
+    expect(result.resolution?.slotValue).toBe('spider man');
+  });
 });

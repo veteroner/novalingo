@@ -36,7 +36,9 @@ export const myRoutineScenario: ConversationScenario = {
     preferredIfTagsSeen: ['home', 'routine'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131ay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131ay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -59,6 +61,15 @@ export const myRoutineScenario: ConversationScenario = {
         prompt: 'Say: Every morning I ___ (eat, sleep, go to school)',
         promptTr: 'S\u00f6yle: Every morning I ___ (eat, sleep, go to school)',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'morningRoutine',
+        nextNodeId: 'n2',
+        capturePrefixes: ['every morning i'],
+        marksPattern: ['Every morning I ___'],
       },
       responses: [
         {
@@ -117,8 +128,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'friend',
-      text: 'I love routines! Tell me two things: First I ___, then I ___',
-      textTr: 'Rutinleri seviyorum! Bana iki \u015fey s\u00f6yle: First I ___, then I ___',
+      text: 'I love routines! {{morningRoutineCapitalized}} sounds like a great start. Now tell me two things: First I ___, then I ___',
+      textTr:
+        'Rutinleri seviyorum! {{morningRoutineCapitalized}} harika bir ba\u015flang\u0131\u00e7 gibi. \u015eimdi bana iki \u015fey s\u00f6yle: First I ___, then I ___',
       emoji: '\u{1F4CB}',
       goalType: 'describe',
       targetPattern: 'First I ___, then I ___',
@@ -133,6 +145,15 @@ export const myRoutineScenario: ConversationScenario = {
         prompt: 'Use first and then: First I ___, then I ___',
         promptTr: 'First ve then kullan: First I ___, then I ___',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'morningSequence',
+        nextNodeId: 'n3',
+        capturePrefixes: ['first i'],
+        marksPattern: ['First I ___, then I ___'],
       },
       responses: [
         {
@@ -150,7 +171,8 @@ export const myRoutineScenario: ConversationScenario = {
           rewardXp: 20,
           feedbackEmoji: '\u2b50',
           feedbackText: 'Perfect sequencing! First and then — very smart!',
-          feedbackTextTr: 'M\u00fckemmel s\u0131ralama! First ve then — \u00e7ok ak\u0131ll\u0131ca!',
+          feedbackTextTr:
+            'M\u00fckemmel s\u0131ralama! First ve then — \u00e7ok ak\u0131ll\u0131ca!',
         },
       ],
     },
@@ -159,7 +181,8 @@ export const myRoutineScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'What else do you do every morning? Maybe brush teeth or get dressed?',
-      textTr: 'Her sabah ba\u015fka ne yapars\u0131n? Belki di\u015f f\u0131r\u00e7alam\u0131\u015f ya da giyinmek?',
+      textTr:
+        'Her sabah ba\u015fka ne yapars\u0131n? Belki di\u015f f\u0131r\u00e7alam\u0131\u015f ya da giyinmek?',
       emoji: '\u{1F9B7}',
       goalType: 'describe',
       targetPattern: 'Every morning I ___',
@@ -172,8 +195,18 @@ export const myRoutineScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: Every morning I ___ (brush teeth, wash face, get dressed)',
-        promptTr: 'S\u00f6yle: Every morning I ___ (di\u015f f\u0131r\u00e7ala, y\u00fcz y\u0131ka, giyien)',
+        promptTr:
+          'S\u00f6yle: Every morning I ___ (di\u015f f\u0131r\u00e7ala, y\u00fcz y\u0131ka, giyien)',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'morningHabit',
+        nextNodeId: 'n4',
+        capturePrefixes: ['every morning i'],
+        marksPattern: ['Every morning I ___'],
       },
       responses: [
         {
@@ -186,7 +219,8 @@ export const myRoutineScenario: ConversationScenario = {
           rewardXp: 15,
           feedbackEmoji: '\u{1F9F9}',
           feedbackText: 'Brushing teeth — healthy habit!',
-          feedbackTextTr: 'Di\u015f f\u0131r\u00e7alamak — sa\u011fl\u0131kl\u0131 al\u0131\u015fkanl\u0131k!',
+          feedbackTextTr:
+            'Di\u015f f\u0131r\u00e7alamak — sa\u011fl\u0131kl\u0131 al\u0131\u015fkanl\u0131k!',
         },
         {
           id: 'r3_dressed',
@@ -218,8 +252,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n4',
       speaker: 'nova',
       role: 'friend',
-      text: 'Tell me two morning things in order: First I ___, then I ___',
-      textTr: 'Bana sabah iki \u015feyi s\u0131rayla s\u00f6yle: First I ___, then I ___',
+      text: 'Nice! {{morningHabitCapitalized}} sounds super helpful. Tell me two morning things in order: First I ___, then I ___',
+      textTr:
+        'G\u00fczel! {{morningHabitCapitalized}} \u00e7ok faydal\u0131 geliyor. Bana sabah iki \u015feyi s\u0131rayla s\u00f6yle: First I ___, then I ___',
       emoji: '\u{1F550}',
       goalType: 'describe',
       targetPattern: 'First I ___, then I ___',
@@ -234,6 +269,15 @@ export const myRoutineScenario: ConversationScenario = {
         prompt: 'Try: First I ___, then I ___',
         promptTr: '\u015e\u00f6yle dene: First I ___, then I ___',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'morningOrder',
+        nextNodeId: 'n5',
+        capturePrefixes: ['first i'],
+        marksPattern: ['First I ___, then I ___'],
       },
       responses: [
         {
@@ -255,7 +299,8 @@ export const myRoutineScenario: ConversationScenario = {
         {
           id: 'r4_brush_eat',
           expectedText: 'First I brush my teeth, then I eat breakfast.',
-          expectedTextTr: '\u00d6nce di\u015flerimi f\u0131r\u00e7alar\u0131m, sonra kahvalt\u0131 yapar\u0131m.',
+          expectedTextTr:
+            '\u00d6nce di\u015flerimi f\u0131r\u00e7alar\u0131m, sonra kahvalt\u0131 yapar\u0131m.',
           acceptedVariants: [
             'first i brush then i eat',
             'brush teeth then breakfast',
@@ -266,7 +311,8 @@ export const myRoutineScenario: ConversationScenario = {
           rewardXp: 20,
           feedbackEmoji: '\u{1F9B7}',
           feedbackText: 'Brush then eat — healthy and smart!',
-          feedbackTextTr: 'F\u0131r\u00e7ala sonra ye — sa\u011fl\u0131kl\u0131 ve ak\u0131ll\u0131ca!',
+          feedbackTextTr:
+            'F\u0131r\u00e7ala sonra ye — sa\u011fl\u0131kl\u0131 ve ak\u0131ll\u0131ca!',
         },
       ],
     },
@@ -291,12 +337,26 @@ export const myRoutineScenario: ConversationScenario = {
         promptTr: 'S\u00f6yle: After school I ___ (oyna, ye, \u00f6dev yap)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'afterSchoolRoutine',
+        nextNodeId: 'n6',
+        capturePrefixes: ['after school i'],
+        marksPattern: ['After school I ___'],
+      },
       responses: [
         {
           id: 'r5_play',
           expectedText: 'After school I play.',
           expectedTextTr: 'Okuldan sonra oynuyorum.',
-          acceptedVariants: ['after school i play', 'i play after school', 'play after school', 'play'],
+          acceptedVariants: [
+            'after school i play',
+            'i play after school',
+            'play after school',
+            'play',
+          ],
           acceptedWords: ['play'],
           nextNodeId: 'n6',
           rewardXp: 15,
@@ -334,8 +394,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n6',
       speaker: 'nova',
       role: 'friend',
-      text: 'Now tell me about your evening. Say: Every evening I ___',
-      textTr: '\u015eimdi ak\u015fam\u0131n hakk\u0131nda anlat. S\u00f6yle: Every evening I ___',
+      text: 'That sounds fun! {{afterSchoolRoutineCapitalized}} after school makes your day busy. Now tell me about your evening. Say: Every evening I ___',
+      textTr:
+        'Kula\u011fa e\u011flenceli geliyor! Okuldan sonra {{afterSchoolRoutine}} yapmak g\u00fcn\u00fcn\u00fc dolu dolu yap\u0131yor. \u015eimdi ak\u015fam\u0131n hakk\u0131nda anlat. S\u00f6yle: Every evening I ___',
       emoji: '\u{1F307}',
       goalType: 'describe',
       targetPattern: 'Every evening I ___',
@@ -351,12 +412,26 @@ export const myRoutineScenario: ConversationScenario = {
         promptTr: 'S\u00f6yle: Every evening I ___ (ak\u015fam yeme\u011fi ye, TV izle, oku)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'eveningRoutine',
+        nextNodeId: 'n7',
+        capturePrefixes: ['every evening i'],
+        marksPattern: ['Every evening I ___'],
+      },
       responses: [
         {
           id: 'r6_dinner',
           expectedText: 'Every evening I eat dinner.',
           expectedTextTr: 'Her ak\u015fam ak\u015fam yeme\u011fi yerim.',
-          acceptedVariants: ['every evening i eat dinner', 'i eat dinner every evening', 'dinner', 'eat dinner'],
+          acceptedVariants: [
+            'every evening i eat dinner',
+            'i eat dinner every evening',
+            'dinner',
+            'eat dinner',
+          ],
           acceptedWords: ['dinner'],
           nextNodeId: 'n7',
           rewardXp: 15,
@@ -380,7 +455,12 @@ export const myRoutineScenario: ConversationScenario = {
           id: 'r6_read',
           expectedText: 'Every evening I read.',
           expectedTextTr: 'Her ak\u015fam okuyorum.',
-          acceptedVariants: ['every evening i read', 'i read every evening', 'read every evening', 'read'],
+          acceptedVariants: [
+            'every evening i read',
+            'i read every evening',
+            'read every evening',
+            'read',
+          ],
           acceptedWords: ['read'],
           nextNodeId: 'n7',
           rewardXp: 15,
@@ -394,8 +474,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n7',
       speaker: 'nova',
       role: 'friend',
-      text: 'Tell me your evening order: First I ___, then I ___',
-      textTr: 'Ak\u015fam s\u0131raman\u0131 s\u00f6yle: First I ___, then I ___',
+      text: 'Lovely! {{eveningRoutineCapitalized}} sounds cozy. Tell me your evening order: First I ___, then I ___',
+      textTr:
+        'Harika! {{eveningRoutineCapitalized}} kula\u011fa \u00e7ok keyifli geliyor. Ak\u015fam s\u0131raman\u0131 s\u00f6yle: First I ___, then I ___',
       emoji: '\u{1F319}',
       goalType: 'describe',
       targetPattern: 'First I ___, then I ___',
@@ -410,6 +491,15 @@ export const myRoutineScenario: ConversationScenario = {
         prompt: 'Try: First I ___, then I ___',
         promptTr: 'Dene: First I ___, then I ___',
         maxRetries: 2,
+      },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'eveningOrder',
+        nextNodeId: 'n8',
+        capturePrefixes: ['first i'],
+        marksPattern: ['First I ___, then I ___'],
       },
       responses: [
         {
@@ -450,8 +540,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n8',
       speaker: 'nova',
       role: 'friend',
-      text: 'Bedtime soon! What do you do every night before sleeping? Say: Every night I ___',
-      textTr: 'Az sonra yatma vakti! Her gece uyumadan \u00f6nce ne yaparsin? S\u00f6yle: Every night I ___',
+      text: 'Great order! {{eveningOrderCapitalized}} is a nice evening plan. Bedtime soon! What do you do every night before sleeping? Say: Every night I ___',
+      textTr:
+        '{{eveningOrderCapitalized}} g\u00fczel bir ak\u015fam plan\u0131 gibi. Az sonra yatma vakti! Her gece uyumadan \u00f6nce ne yaparsin? S\u00f6yle: Every night I ___',
       emoji: '\u{1F634}',
       goalType: 'answer',
       targetPattern: 'Every night I ___',
@@ -467,12 +558,25 @@ export const myRoutineScenario: ConversationScenario = {
         promptTr: 'S\u00f6yle: Every night I ___ (di\u015f f\u0131r\u00e7ala, oku, uyu)',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'nightRoutine',
+        nextNodeId: 'n9',
+        capturePrefixes: ['every night i'],
+        marksPattern: ['Every night I ___'],
+      },
       responses: [
         {
           id: 'r8_brush',
           expectedText: 'Every night I brush my teeth.',
           expectedTextTr: 'Her gece di\u015flerimi f\u0131r\u00e7alar\u0131m.',
-          acceptedVariants: ['every night i brush my teeth', 'brush teeth every night', 'brush teeth'],
+          acceptedVariants: [
+            'every night i brush my teeth',
+            'brush teeth every night',
+            'brush teeth',
+          ],
           acceptedWords: ['brush'],
           nextNodeId: 'n9',
           rewardXp: 15,
@@ -484,7 +588,12 @@ export const myRoutineScenario: ConversationScenario = {
           id: 'r8_read',
           expectedText: 'Every night I read a book.',
           expectedTextTr: 'Her gece kitap okuyorum.',
-          acceptedVariants: ['every night i read a book', 'read a book every night', 'read book', 'read'],
+          acceptedVariants: [
+            'every night i read a book',
+            'read a book every night',
+            'read book',
+            'read',
+          ],
           acceptedWords: ['read'],
           nextNodeId: 'n9',
           rewardXp: 15,
@@ -496,7 +605,12 @@ export const myRoutineScenario: ConversationScenario = {
           id: 'r8_sleep',
           expectedText: 'Every night I sleep.',
           expectedTextTr: 'Her gece uyuyorum.',
-          acceptedVariants: ['every night i sleep', 'i sleep every night', 'sleep every night', 'sleep'],
+          acceptedVariants: [
+            'every night i sleep',
+            'i sleep every night',
+            'sleep every night',
+            'sleep',
+          ],
           acceptedWords: ['sleep'],
           nextNodeId: 'n9',
           rewardXp: 15,
@@ -510,8 +624,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n9',
       speaker: 'nova',
       role: 'friend',
-      text: "Last challenge! Tell me your FULL morning routine. Use: First I ___, then I ___, and then I ___",
-      textTr: "Son g\u00f6rev! Tam sabah rutinini anlat. Kullan: First I ___, then I ___, and then I ___",
+      text: 'Last challenge! Tell me your FULL morning routine. Use: First I ___, then I ___, and then I ___',
+      textTr:
+        'Son g\u00f6rev! Tam sabah rutinini anlat. Kullan: First I ___, then I ___, and then I ___',
       emoji: '\u{1F31F}',
       goalType: 'describe',
       targetPattern: 'First I ___, then I ___',
@@ -527,11 +642,21 @@ export const myRoutineScenario: ConversationScenario = {
         promptTr: '\u00dc\u00e7 \u015fey s\u00f6yle: First, then, and then!',
         maxRetries: 2,
       },
+      openEnded: {
+        enabled: true,
+        strategy: 'free_text',
+        domain: 'free_text',
+        slotKey: 'fullMorningRoutine',
+        nextNodeId: 'n10',
+        capturePrefixes: ['first i'],
+        marksPattern: ['First I ___, then I ___'],
+      },
       responses: [
         {
           id: 'r9_full',
           expectedText: 'First I wake up, then I eat breakfast, and then I go to school.',
-          expectedTextTr: '\u00d6nce uyan\u0131r\u0131m, sonra kahvalt\u0131 yapar\u0131m ve sonra okula giderim.',
+          expectedTextTr:
+            '\u00d6nce uyan\u0131r\u0131m, sonra kahvalt\u0131 yapar\u0131m ve sonra okula giderim.',
           acceptedVariants: [
             'first wake up then breakfast then school',
             'wake up eat breakfast go to school',
@@ -566,8 +691,9 @@ export const myRoutineScenario: ConversationScenario = {
       id: 'n10',
       speaker: 'nova',
       role: 'friend',
-      text: 'You know your daily routine so well! Morning, afternoon and evening — you are a routine champion! \u{1F3C6}',
-      textTr: 'G\u00fcnl\u00fck rutinini \u00e7ok iyi biliyorsun! Sabah, \u00f6\u011fle ve ak\u015fam — sen bir rutin \u015eampiyon usun! \u{1F3C6}',
+      text: 'You know your daily routine so well! {{fullMorningRoutineCapitalized}} and {{nightRoutine}} show your whole day. Morning, afternoon and evening — you are a routine champion! \u{1F3C6}',
+      textTr:
+        'G\u00fcnl\u00fck rutinini \u00e7ok iyi biliyorsun! {{fullMorningRoutineCapitalized}} ve {{nightRoutine}} b\u00fct\u00fcn g\u00fcn\u00fcn\u00fc g\u00f6steriyor. Sabah, \u00f6\u011fle ve ak\u015fam — sen bir rutin \u015eampiyon usun! \u{1F3C6}',
       emoji: '\u{1F3C6}',
     },
   ],

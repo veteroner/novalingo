@@ -6,7 +6,19 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { comparePronunciation } from '../speechService';
+import { comparePronunciation, normalizeSpeechText } from '../speechService';
+
+describe('normalizeSpeechText', () => {
+  it('replaces lesson blanks before speech playback', () => {
+    expect(normalizeSpeechText('Give your pet a name! Say: Its name is ___!')).toBe(
+      'Give your pet a name! Say: Its name is ...!',
+    );
+  });
+
+  it('normalizes favourite/favorite placeholder prompts consistently', () => {
+    expect(normalizeSpeechText('My favourite team is ___!')).toBe('My favourite team is ...!');
+  });
+});
 
 describe('comparePronunciation', () => {
   it('should return 1.0 for exact match', () => {

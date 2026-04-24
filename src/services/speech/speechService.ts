@@ -11,6 +11,9 @@
 
 import { resolveTtsAudioUrl } from './audioAssetUrl';
 import { getPreRecordedUrl } from './audioManifest';
+import { normalizeSpeechText } from './normalizeSpeechText';
+
+export { normalizeSpeechText } from './normalizeSpeechText';
 
 // ===== FEATURE DETECTION =====
 
@@ -216,7 +219,7 @@ function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<voi
 
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(normalizeSpeechText(text));
     utterance.lang = options.lang ?? 'en-US';
     utterance.rate = options.rate ?? 0.85;
     utterance.pitch = options.pitch ?? 1.1;
@@ -260,6 +263,9 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
   };
 
   try {
+    const normalizedSpeechText = normalizeSpeechText(text);
+    const shouldBypassManifest = normalizedSpeechText !== text;
+
     // Priority 1: Explicit pre-recorded audio URL from activity data
     if (options.audioUrl) {
       const resolvedAudioUrl = resolveTtsAudioUrl(options.audioUrl);
@@ -269,13 +275,13 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
     }
 
     // Priority 2: Auto-lookup from pre-generated audio manifest
-    const manifestUrl = getPreRecordedUrl(text);
+    const manifestUrl = shouldBypassManifest ? undefined : getPreRecordedUrl(text);
     if (manifestUrl) {
       return notifyDone(await playAudio(manifestUrl));
     }
 
     // Priority 3: Web Speech API (explicit English voice — last resort)
-    await speakWithWebSpeechAPI(text, options);
+    await speakWithWebSpeechAPI(normalizedSpeechText, options);
     return notifyDone(true);
   } catch {
     return notifyDone(false);
