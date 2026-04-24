@@ -4,6 +4,7 @@ declare const __APP_VERSION__: string;
 
 interface ImportMetaEnv {
   readonly VITE_APP_ENV?: 'development' | 'staging' | 'production';
+  readonly VITE_BUNDLE_TTS_AUDIO?: string;
   readonly VITE_FIREBASE_API_KEY: string;
   readonly VITE_FIREBASE_AUTH_DOMAIN: string;
   readonly VITE_FIREBASE_PROJECT_ID: string;
@@ -15,6 +16,7 @@ interface ImportMetaEnv {
   readonly VITE_RECAPTCHA_SITE_KEY: string;
   readonly VITE_SENTRY_DSN: string;
   readonly VITE_FEATURE_PUSH_ENABLED: string;
+  readonly VITE_TTS_AUDIO_BASE_URL?: string;
 }
 
 interface ImportMeta {

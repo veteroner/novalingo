@@ -85,6 +85,8 @@ VITE_REVENUECAT_API_KEY_ANDROID=goog_xxx
 VITE_APP_ENV=production
 VITE_APP_VERSION=$npm_package_version
 VITE_SENTRY_DSN=https://xxx@sentry.io/yyy
+VITE_BUNDLE_TTS_AUDIO=true
+VITE_TTS_AUDIO_BASE_URL=https://novalingo-app-tts.web.app
 
 # Functions runtime env (dotenv)
 GEMINI_DEFAULT_MODEL=gemini-3.1-flash-lite
@@ -93,6 +95,27 @@ GEMINI_FALLBACK_MODEL=gemini-2.5-flash-lite
 # Functions secret (Secret Manager)
 GEMINI_API_KEY=AIzaSy... # Secret Manager'da tutulur, repo'ya yazılmaz
 ```
+
+### 3.3 Pre-recorded TTS Dağıtımı
+
+- Web/Netlify build'lerinde `VITE_BUNDLE_TTS_AUDIO=true` bırakılabilir; MP3'ler `dist/audio/tts` içine girer.
+- Native Capacitor build'lerinde varsayılan script'ler artık `VITE_BUNDLE_TTS_AUDIO=false` ile çalışır; böylece 1GB+ TTS paketi uygulama binary'sine gömülmez.
+- Native build'de pre-recorded TTS kullanmak için `VITE_TTS_AUDIO_BASE_URL` ile CDN / Firebase Hosting / object storage taban URL'i verilmelidir.
+- `VITE_TTS_AUDIO_BASE_URL` yoksa native shell pre-recorded MP3 yerine Web Speech fallback'e düşer; uygulama sessizce kırılmaz ama kalite düşer.
+
+Firebase Hosting tabanlı kurulum bu repo içinde hazırlandı:
+
+- Production TTS site: `https://novalingo-app-tts.web.app`
+- Staging TTS site: `https://novalingo-b0c92-tts.web.app`
+- Firebase target: `hosting:tts`
+- Asset hazırlama: `pnpm run tts:prepare`
+- Staging deploy: `pnpm run firebase:deploy:tts:staging`
+- Production deploy: `pnpm run firebase:deploy:tts:prod`
+
+Native env önerisi:
+
+- Staging: `VITE_TTS_AUDIO_BASE_URL=https://novalingo-b0c92-tts.web.app`
+- Production: `VITE_TTS_AUDIO_BASE_URL=https://novalingo-app-tts.web.app`
 
 ### 3.1 Gemini Evaluator İçin Functions Env Dosyaları
 

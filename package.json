@@ -28,11 +28,12 @@
     "test:e2e": "playwright test",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "tts:prepare": "node scripts/prepare-tts-hosting.mjs",
     "cap:sync": "cap sync",
     "cap:android": "cap open android",
     "cap:ios": "cap open ios",
-    "cap:build:android": "vite build && cap sync android",
-    "cap:build:ios": "vite build && cap sync ios",
+    "cap:build:android": "VITE_BUNDLE_TTS_AUDIO=false vite build && cap sync android",
+    "cap:build:ios": "VITE_BUNDLE_TTS_AUDIO=false vite build && cap sync ios",
     "firebase:emulators": "FUNCTIONS_DISCOVERY_TIMEOUT=60 firebase emulators:start --only auth,firestore,functions,storage,hosting --import=./emulator-data --export-on-exit=./emulator-data",
     "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage",
     "firebase:deploy:functions": "firebase deploy --only functions",
@@ -41,6 +42,8 @@
     "firebase:deploy:hosting": "firebase deploy --only hosting",
     "firebase:deploy:hosting:staging": "firebase deploy --only hosting --project staging",
     "firebase:deploy:hosting:prod": "firebase deploy --only hosting --project production",
+    "firebase:deploy:tts:staging": "pnpm run tts:prepare && firebase deploy --only hosting:tts --project staging",
+    "firebase:deploy:tts:prod": "pnpm run tts:prepare && firebase deploy --only hosting:tts --project production",
     "prepare": "husky"
   },
   "dependencies": {

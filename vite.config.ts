@@ -1,11 +1,12 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react-swc';
-import { readdirSync, rmSync, statSync } from 'node:fs';
+import { cpSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const bundleTtsAudio = process.env.VITE_BUNDLE_TTS_AUDIO !== 'false';
 
 /**
  * macOS creates AppleDouble `._*` sidecar files on external drives.
@@ -28,6 +29,14 @@ function cleanAppleDoublePlugin(): Plugin {
     enforce: 'pre',
     buildStart() {
       const outDir = resolve(__dirname, 'dist');
+      const publicDir = resolve(__dirname, 'public');
+      try {
+        statSync(publicDir);
+        removeDotUnderscore(publicDir);
+      } catch {
+        // public doesn't exist yet — nothing to clean
+      }
+
       try {
         statSync(outDir);
         // First pass: remove ._* sidecar files
@@ -43,9 +52,74 @@ function cleanAppleDoublePlugin(): Plugin {
   };
 }
 
+function stripBundledTtsPlugin(): Plugin {
+  function removeDotUnderscore(dir: string): void {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        removeDotUnderscore(full);
+      } else if (entry.name.startsWith('._')) {
+        rmSync(full, { force: true });
+      }
+    }
+  }
+
+  return {
+    name: 'strip-bundled-tts',
+    writeBundle() {
+      if (process.env.VITE_BUNDLE_TTS_AUDIO !== 'false') return;
+
+      const bundledTtsDir = resolve(__dirname, 'dist/audio/tts');
+      try {
+        removeDotUnderscore(bundledTtsDir);
+      } catch {
+        // Directory may already be absent.
+      }
+      rmSync(bundledTtsDir, { recursive: true, force: true });
+    },
+  };
+}
+
+function copyFilteredPublicAssetsPlugin(): Plugin {
+  return {
+    name: 'copy-filtered-public-assets',
+    apply: 'build',
+    writeBundle() {
+      if (bundleTtsAudio) return;
+
+      const publicDir = resolve(__dirname, 'public');
+      const outDir = resolve(__dirname, 'dist');
+
+      try {
+        statSync(publicDir);
+      } catch {
+        return;
+      }
+
+      cpSync(publicDir, outDir, {
+        recursive: true,
+        force: true,
+        filter: (src) => {
+          const normalized = src.replaceAll('\\', '/');
+          const name = normalized.split('/').pop() ?? '';
+          if (name.startsWith('._')) return false;
+          if (normalized.includes('/public/audio/tts')) return false;
+          return true;
+        },
+      });
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [cleanAppleDoublePlugin(), react(), tailwindcss()],
+  plugins: [
+    cleanAppleDoublePlugin(),
+    copyFilteredPublicAssetsPlugin(),
+    stripBundledTtsPlugin(),
+    react(),
+    tailwindcss(),
+  ],
 
   resolve: {
     alias: {
@@ -88,6 +162,8 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 600,
   },
+
+  publicDir: bundleTtsAudio ? 'public' : false,
 
   server: {
     port: 3000,

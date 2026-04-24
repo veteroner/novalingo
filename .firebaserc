@@ -9,6 +9,9 @@
       "hosting": {
         "default": [
           "novalingo-app"
+        ],
+        "tts": [
+          "novalingo-app-tts"
         ]
       }
     },
@@ -16,6 +19,9 @@
       "hosting": {
         "default": [
           "novalingo-b0c92"
+        ],
+        "tts": [
+          "novalingo-b0c92-tts"
         ]
       }
     }

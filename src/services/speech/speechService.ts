@@ -9,6 +9,7 @@
  * ile audio context açılır; speak() blocked durumda false döner.
  */
 
+import { resolveTtsAudioUrl } from './audioAssetUrl';
 import { getPreRecordedUrl } from './audioManifest';
 
 // ===== FEATURE DETECTION =====
@@ -261,7 +262,10 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
   try {
     // Priority 1: Explicit pre-recorded audio URL from activity data
     if (options.audioUrl) {
-      return notifyDone(await playAudio(options.audioUrl));
+      const resolvedAudioUrl = resolveTtsAudioUrl(options.audioUrl);
+      if (resolvedAudioUrl) {
+        return notifyDone(await playAudio(resolvedAudioUrl));
+      }
     }
 
     // Priority 2: Auto-lookup from pre-generated audio manifest

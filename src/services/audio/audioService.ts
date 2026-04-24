@@ -5,6 +5,7 @@
  * Provider'dan bağımsız, doğrudan service olarak da kullanılabilir.
  */
 
+import { resolveTtsAudioUrl } from '@/services/speech/audioAssetUrl';
 import { Howl, Howler } from 'howler';
 
 // Ses sprite haritası — tek dosyadan birden fazla ses
@@ -63,8 +64,14 @@ export function playSound(url: string, volume = 0.7): Howl {
  */
 export function playWord(audioUrl: string): Promise<void> {
   return new Promise((resolve) => {
+    const resolvedAudioUrl = resolveTtsAudioUrl(audioUrl);
+    if (!resolvedAudioUrl) {
+      resolve();
+      return;
+    }
+
     const howl = new Howl({
-      src: [audioUrl],
+      src: [resolvedAudioUrl],
       volume: 1.0,
       onend: () => {
         resolve();
