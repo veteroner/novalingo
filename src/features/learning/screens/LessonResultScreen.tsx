@@ -14,11 +14,18 @@ import { getVocab } from '@features/learning/data/activityGenerator';
 import { getLesson } from '@features/learning/data/curriculum';
 import { getNovaQuip } from '@features/learning/data/novaQuipBank';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
+import {
+  trackFirstLessonCompleted,
+  trackLessonCompleted,
+} from '@services/analytics/analyticsService';
 import type { SubmitLessonResultRes } from '@services/firebase/functions';
+import { recordSessionAndMaybePromptRating } from '@services/ratingService';
 import { unlockAudioPlayback } from '@services/speech/speechService';
+import { useChildStore } from '@stores/childStore';
 import { formatTime } from '@utils/time';
 import { calculateStars } from '@utils/xp';
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface LessonSummary {
@@ -48,6 +55,37 @@ export default function LessonResultScreen() {
   const vocabulary = state?.vocabulary ?? [];
   const bossGameOver = state?.bossGameOver ?? false;
   const isBossLesson = state?.lessonType === 'boss';
+
+  // Read BEFORE render so completedLessons reflects state prior to this lesson
+  const activeChild = useChildStore.getState().activeChild;
+  const analyticsTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (!summary || analyticsTrackedRef.current) return;
+    analyticsTrackedRef.current = true;
+
+    const stars = backendResult?.starRating ?? calculateStars(summary.accuracy);
+    // Lesson IDs follow `{worldId}_{unitId}_{lessonId}` (e.g. `w1_u1_l1`).
+    const worldId = summary.lessonId.split('_')[0] ?? 'unknown';
+
+    // Track lesson completion
+    trackLessonCompleted({
+      lessonId: summary.lessonId,
+      worldId,
+      score: summary.score,
+      stars,
+      durationSeconds: summary.durationSeconds,
+      isPerfect: backendResult?.isPerfect ?? summary.accuracy >= 1,
+    });
+
+    // First lesson funnel — completedLessons was 0 before this lesson started
+    if (activeChild && (activeChild.completedLessons === 0 || activeChild.completedLessons === 1)) {
+      trackFirstLessonCompleted(activeChild.id);
+    }
+
+    // Rating prompt — after enough sessions and days
+    void recordSessionAndMaybePromptRating();
+  }, [summary, backendResult, activeChild]);
 
   if (!summary) {
     return (

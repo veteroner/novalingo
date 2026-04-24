@@ -7,6 +7,7 @@
 
 import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectibleCatalog';
 import type { AgeGroup } from '@/types/user';
+import * as Sentry from '@sentry/react';
 import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
 import {
   collection,
@@ -563,7 +564,10 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
           rarity: picked.rarity,
         };
       } catch (err) {
-        console.error('Collectible grant error:', err);
+        if (import.meta.env.DEV) console.error('Collectible grant error:', err);
+        Sentry.captureException(err instanceof Error ? err : new Error(String(err)), {
+          extra: { context: 'Collectible grant error' },
+        });
       }
     }
 

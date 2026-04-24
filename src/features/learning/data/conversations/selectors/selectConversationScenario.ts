@@ -12,6 +12,21 @@ const WORLD_TO_PHASE: Record<string, ConversationScenario['phase']> = {
   w4: 'phase4',
   w5: 'phase5',
   w6: 'phase5', // intentional: W6 reuses phase5 (advanced content)
+  w7: 'phase5',
+  w8: 'phase5',
+  w9: 'phase5',
+  w10: 'phase5',
+  w11: 'phase5',
+  w12: 'phase5',
+};
+
+const WORLD_TO_THEME: Record<string, string> = {
+  w7: 'travel',
+  w8: 'food',
+  w9: 'art',
+  w10: 'health',
+  w11: 'nature',
+  w12: 'time',
 };
 
 export { WORLD_TO_PHASE };
@@ -22,6 +37,51 @@ const THEME_LEXICONS: Record<string, Set<string>> = {
   toys: new Set(['ball', 'doll', 'car', 'robot', 'kite', 'puzzle']),
   emotions: new Set(['happy', 'sad', 'excited', 'sleepy']),
   routine: new Set(['bag', 'book', 'shoes', 'bed', 'hat', 'water']),
+  travel: new Set([
+    'airport',
+    'passport',
+    'ticket',
+    'gate',
+    'luggage',
+    'hotel',
+    'beach',
+    'road',
+    'camping',
+  ]),
+  art: new Set([
+    'paintbrush',
+    'canvas',
+    'palette',
+    'music',
+    'guitar',
+    'piano',
+    'museum',
+    'painting',
+  ]),
+  nature: new Set(['recycle', 'paper', 'plastic', 'tree', 'river', 'forest', 'rainbow', 'cloud']),
+  health: new Set([
+    'doctor',
+    'nurse',
+    'medicine',
+    'body',
+    'health',
+    'helmet',
+    'exercise',
+    'water',
+    'rest',
+  ]),
+  time: new Set([
+    'calendar',
+    'month',
+    'clock',
+    'hour',
+    'minute',
+    'schedule',
+    'today',
+    'tomorrow',
+    'yesterday',
+    'hundred',
+  ]),
 };
 
 function getVocabularyOverlap(words: string[], targetWords: string[]): number {
@@ -96,6 +156,8 @@ function scoreScenario(
     tagPreferenceBonus = matched * 2;
   }
 
+  const worldTagBonus = params.worldId && scenario.tags.includes(params.worldId) ? 8 : 0;
+
   return (
     overlapScore * 10 +
     preferredThemeBonus +
@@ -105,6 +167,7 @@ function scoreScenario(
     noveltyBonus +
     difficultyAdaptBonus +
     patternBonus +
+    worldTagBonus +
     tagPreferenceBonus -
     repetitionPenalty
   );
@@ -131,11 +194,16 @@ export function selectConversationScenario(
 
   // Fall back to full pool if phase yields nothing
   const candidates = phaseCandidates.length > 0 ? phaseCandidates : baseCandidates;
+  const worldTaggedCandidates = params.worldId
+    ? candidates.filter((scenario) => scenario.tags.includes(params.worldId!))
+    : [];
+  const scopedCandidates = worldTaggedCandidates.length > 0 ? worldTaggedCandidates : candidates;
 
   const excludeSet = new Set(params.excludeScenarioIds ?? []);
-  const detectedTheme = params.preferredTheme ?? detectTheme(params.words);
+  const worldTheme = params.worldId ? WORLD_TO_THEME[params.worldId] : undefined;
+  const detectedTheme = params.preferredTheme ?? worldTheme ?? detectTheme(params.words);
 
-  const filtered = candidates.filter((scenario) => {
+  const filtered = scopedCandidates.filter((scenario) => {
     if (excludeSet.has(scenario.id)) return false;
     if (params.ageBand && scenario.ageBand !== params.ageBand) return false;
     // Only hard-filter difficulty when no success-rate-based adaptation is active
@@ -150,7 +218,9 @@ export function selectConversationScenario(
   });
 
   const pool =
-    filtered.length > 0 ? filtered : candidates.filter((scenario) => !excludeSet.has(scenario.id));
+    filtered.length > 0
+      ? filtered
+      : scopedCandidates.filter((scenario) => !excludeSet.has(scenario.id));
   const sorted = [...pool].sort(
     (left, right) => scoreScenario(right, params) - scoreScenario(left, params),
   );

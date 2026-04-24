@@ -315,32 +315,32 @@ Fazlar:
 
 ### P0 — Bunlar Olmadan Launch Yok (Tahmini: 1-2 hafta)
 
-| #   | Task                                                             | Durum | Not                                              |
-| --- | ---------------------------------------------------------------- | ----- | ------------------------------------------------ |
-| 1   | Privacy Policy + Terms of Service ekranı (in-app + web URL)     | ✅    | `LegalScreen.tsx` eklendi, Router'a bağlandı     |
-| 2   | Firebase prod projesine geçiş (`novalingo-app`)                  | ⬜    | `.env.production` güncelle, App Check key değiştir |
-| 3   | App Store metadata: screenshots (6.5", 5.5", iPad), açıklama TR/EN | ⬜ | Figma → Simulator → fastlane deliver           |
-| 4   | Google Play: store listing, content rating formu (ESRB/PEGI)    | ⬜    | Play Console → Age 5-8, everyone content rating |
-| 5   | STT feature flag: production'da `speechRecognition: true`        | ✅    | `featureFlags.ts` güncellendi                    |
-| 6   | Seasonal events Firestore seed                                   | ✅    | `scripts/seedSeasonalEvents.ts` oluşturuldu      |
+| #   | Task                                                               | Durum | Not                                                |
+| --- | ------------------------------------------------------------------ | ----- | -------------------------------------------------- |
+| 1   | Privacy Policy + Terms of Service ekranı (in-app + web URL)        | ✅    | `LegalScreen.tsx` eklendi, Router'a bağlandı       |
+| 2   | Firebase prod projesine geçiş (`novalingo-app`)                    | ⬜    | `.env.production` güncelle, App Check key değiştir |
+| 3   | App Store metadata: screenshots (6.5", 5.5", iPad), açıklama TR/EN | ⬜    | Figma → Simulator → fastlane deliver               |
+| 4   | Google Play: store listing, content rating formu (ESRB/PEGI)       | ⬜    | Play Console → Age 5-8, everyone content rating    |
+| 5   | STT feature flag: production'da `speechRecognition: true`          | ✅    | `featureFlags.ts` güncellendi                      |
+| 6   | Seasonal events Firestore seed                                     | ✅    | `scripts/seedSeasonalEvents.ts` oluşturuldu        |
 
 ### P1 — Launch Haftasında Olmasa Çok Kayıp
 
-| #   | Task                                                         | Durum | Not                                              |
-| --- | ------------------------------------------------------------ | ----- | ------------------------------------------------ |
-| 1   | Push notifications (Capacitor FCM) — streak hatırlatma       | ⬜    | `@capacitor/push-notifications` plugin gerekli   |
-| 2   | Firebase Analytics funnel doğrulama (Reg → FirstLesson → D7) | ⬜    | DebugView'de event'ları kontrol et               |
-| 3   | Gerçek iOS cihazda E2E: Auth → Lesson → IAP                  | ⬜    | TestFlight build gerekli                         |
-| 4   | Gerçek Android cihazda E2E                                   | ⬜    | Internal Testing track                           |
+| #   | Task                                                         | Durum | Not                                            |
+| --- | ------------------------------------------------------------ | ----- | ---------------------------------------------- |
+| 1   | Push notifications (Capacitor FCM) — streak hatırlatma       | ⬜    | `@capacitor/push-notifications` plugin gerekli |
+| 2   | Firebase Analytics funnel doğrulama (Reg → FirstLesson → D7) | ⬜    | DebugView'de event'ları kontrol et             |
+| 3   | Gerçek iOS cihazda E2E: Auth → Lesson → IAP                  | ⬜    | TestFlight build gerekli                       |
+| 4   | Gerçek Android cihazda E2E                                   | ⬜    | Internal Testing track                         |
 
 ### P2 — 30 Gün İçinde
 
-| #   | Task                                               | Durum | Not                                   |
-| --- | -------------------------------------------------- | ----- | ------------------------------------- |
-| 1   | İçerik genişletme: W7-W12 (+150 ders)              | ⬜    | CONTENT_GROWTH_ROADMAP.md Öncelik 6   |
-| 2   | Fiyatlandırma A/B testi                            | ⬜    | Firebase Remote Config ile            |
-| 3   | `console.error` → Sentry `captureException` geçişi | ⬜    | 20 dosyada `console.error` var        |
-| 4   | `selectConversationScenario` chunk split (1.1 MB)  | ⬜    | Dynamic import + Rollup manualChunks  |
+| #   | Task                                               | Durum | Not                                  |
+| --- | -------------------------------------------------- | ----- | ------------------------------------ |
+| 1   | İçerik genişletme: W7-W12 (+150 ders)              | ⬜    | CONTENT_GROWTH_ROADMAP.md Öncelik 6  |
+| 2   | Fiyatlandırma A/B testi                            | ⬜    | Firebase Remote Config ile           |
+| 3   | `console.error` → Sentry `captureException` geçişi | ⬜    | 20 dosyada `console.error` var       |
+| 4   | `selectConversationScenario` chunk split (1.1 MB)  | ⬜    | Dynamic import + Rollup manualChunks |
 
 ---
 

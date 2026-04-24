@@ -126,6 +126,7 @@ exports.weeklyReport = (0, scheduler_1.onSchedule)({
             const sent = await (0, notificationService_1.sendToParent)(parentUid, {
                 title: '📊 Haftalık Rapor',
                 body,
+                category: 'weeklyReport',
                 data: { type: 'weekly_report' },
             });
             if (sent)

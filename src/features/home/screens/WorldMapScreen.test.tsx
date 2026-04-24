@@ -6,6 +6,7 @@ const navigateMock = vi.fn();
 const mockUnlockAudioPlayback = vi.fn();
 const mockUseLessons = vi.fn();
 const mockUseLessonProgress = vi.fn();
+const mockUseWorldLessons = vi.fn();
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
@@ -23,6 +24,7 @@ vi.mock('@services/speech/speechService', () => ({
 vi.mock('@hooks/queries', () => ({
   useLessons: (...args: unknown[]) => mockUseLessons(...args),
   useLessonProgress: (...args: unknown[]) => mockUseLessonProgress(...args),
+  useWorldLessons: (...args: unknown[]) => mockUseWorldLessons(...args),
 }));
 
 vi.mock('@features/learning/data/curriculum', () => ({
@@ -79,6 +81,7 @@ describe('WorldMapScreen', () => {
     mockUnlockAudioPlayback.mockReset();
     mockUseLessons.mockReturnValue({ data: [] });
     mockUseLessonProgress.mockReturnValue({ data: [] });
+    mockUseWorldLessons.mockReturnValue({ data: [] });
     mockUnlockAudioPlayback.mockReturnValue(new Promise(() => {}));
   });
 

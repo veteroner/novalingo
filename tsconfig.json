@@ -19,6 +19,7 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "sourceMap": true,
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],

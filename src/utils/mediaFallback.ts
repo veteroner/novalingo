@@ -164,35 +164,264 @@ const WORD_EMOJI_MAP: Record<string, string> = {
   love: '❤️',
 };
 
-// Theme → Emoji mapping for story illustrations
-const THEME_EMOJI_MAP: Record<string, string> = {
-  animals: '🐾',
-  farm: '🌾',
-  pets: '🐕',
-  zoo: '🦁',
-  colors: '🎨',
-  shapes: '🔷',
-  food: '🍎',
-  drinks: '🥤',
-  family: '👨‍👩‍👧‍👦',
-  home: '🏠',
-  school: '🏫',
-  nature: '🌿',
-  weather: '🌤️',
-  seasons: '🍂',
-  clothes: '👕',
-  transport: '🚗',
-  city: '🏙️',
-  numbers: '🔢',
-  body: '🧍',
-  toys: '🧸',
-  emotions: '😊',
-  routine: '⏰',
-  sports: '⚽',
-  friends: '🤝',
-  jobs: '👷',
-  time: '🕐',
+type ThemePlaceholderStyle = {
+  emoji: string;
+  label: string;
+  bgFrom: string;
+  bgTo: string;
+  accent: string;
+  text: string;
 };
+
+// Theme → placeholder style mapping for story illustrations
+const THEME_PLACEHOLDER_STYLES: Record<string, ThemePlaceholderStyle> = {
+  animals: {
+    emoji: '🐾',
+    label: 'Animal Story',
+    bgFrom: '#fef3c7',
+    bgTo: '#fde68a',
+    accent: '#f59e0b',
+    text: '#78350f',
+  },
+  farm: {
+    emoji: '🌾',
+    label: 'Farm Story',
+    bgFrom: '#ecfccb',
+    bgTo: '#d9f99d',
+    accent: '#65a30d',
+    text: '#365314',
+  },
+  pets: {
+    emoji: '🐕',
+    label: 'Pet Story',
+    bgFrom: '#fee2e2',
+    bgTo: '#fecaca',
+    accent: '#ef4444',
+    text: '#7f1d1d',
+  },
+  zoo: {
+    emoji: '🦁',
+    label: 'Zoo Story',
+    bgFrom: '#ffedd5',
+    bgTo: '#fdba74',
+    accent: '#f97316',
+    text: '#7c2d12',
+  },
+  colors: {
+    emoji: '🎨',
+    label: 'Color Story',
+    bgFrom: '#ede9fe',
+    bgTo: '#ddd6fe',
+    accent: '#8b5cf6',
+    text: '#4c1d95',
+  },
+  shapes: {
+    emoji: '🔷',
+    label: 'Shape Story',
+    bgFrom: '#dbeafe',
+    bgTo: '#bfdbfe',
+    accent: '#3b82f6',
+    text: '#1e3a8a',
+  },
+  food: {
+    emoji: '🍎',
+    label: 'Food Story',
+    bgFrom: '#fee2e2',
+    bgTo: '#fecdd3',
+    accent: '#f43f5e',
+    text: '#881337',
+  },
+  drinks: {
+    emoji: '🥤',
+    label: 'Drink Story',
+    bgFrom: '#cffafe',
+    bgTo: '#a5f3fc',
+    accent: '#06b6d4',
+    text: '#164e63',
+  },
+  family: {
+    emoji: '👨‍👩‍👧‍👦',
+    label: 'Family Story',
+    bgFrom: '#fce7f3',
+    bgTo: '#fbcfe8',
+    accent: '#ec4899',
+    text: '#831843',
+  },
+  home: {
+    emoji: '🏠',
+    label: 'Home Story',
+    bgFrom: '#ede9fe',
+    bgTo: '#ddd6fe',
+    accent: '#7c3aed',
+    text: '#4c1d95',
+  },
+  school: {
+    emoji: '🏫',
+    label: 'School Story',
+    bgFrom: '#dbeafe',
+    bgTo: '#bfdbfe',
+    accent: '#2563eb',
+    text: '#1e3a8a',
+  },
+  nature: {
+    emoji: '🌿',
+    label: 'Nature Story',
+    bgFrom: '#dcfce7',
+    bgTo: '#bbf7d0',
+    accent: '#22c55e',
+    text: '#14532d',
+  },
+  weather: {
+    emoji: '🌤️',
+    label: 'Weather Story',
+    bgFrom: '#e0f2fe',
+    bgTo: '#bae6fd',
+    accent: '#0ea5e9',
+    text: '#0c4a6e',
+  },
+  seasons: {
+    emoji: '🍂',
+    label: 'Season Story',
+    bgFrom: '#ffedd5',
+    bgTo: '#fed7aa',
+    accent: '#f97316',
+    text: '#7c2d12',
+  },
+  clothes: {
+    emoji: '👕',
+    label: 'Clothes Story',
+    bgFrom: '#fae8ff',
+    bgTo: '#f5d0fe',
+    accent: '#d946ef',
+    text: '#701a75',
+  },
+  transport: {
+    emoji: '🚗',
+    label: 'Travel Story',
+    bgFrom: '#e0f2fe',
+    bgTo: '#bae6fd',
+    accent: '#0284c7',
+    text: '#082f49',
+  },
+  travel: {
+    emoji: '✈️',
+    label: 'Travel Story',
+    bgFrom: '#dbeafe',
+    bgTo: '#bfdbfe',
+    accent: '#2563eb',
+    text: '#1e3a8a',
+  },
+  city: {
+    emoji: '🏙️',
+    label: 'City Story',
+    bgFrom: '#e2e8f0',
+    bgTo: '#cbd5e1',
+    accent: '#475569',
+    text: '#0f172a',
+  },
+  numbers: {
+    emoji: '🔢',
+    label: 'Number Story',
+    bgFrom: '#fef3c7',
+    bgTo: '#fde68a',
+    accent: '#eab308',
+    text: '#713f12',
+  },
+  body: {
+    emoji: '🧍',
+    label: 'Body Story',
+    bgFrom: '#fee2e2',
+    bgTo: '#fecaca',
+    accent: '#fb7185',
+    text: '#881337',
+  },
+  health: {
+    emoji: '🩺',
+    label: 'Health Story',
+    bgFrom: '#ccfbf1',
+    bgTo: '#99f6e4',
+    accent: '#14b8a6',
+    text: '#134e4a',
+  },
+  toys: {
+    emoji: '🧸',
+    label: 'Toy Story',
+    bgFrom: '#fae8ff',
+    bgTo: '#f5d0fe',
+    accent: '#c026d3',
+    text: '#701a75',
+  },
+  emotions: {
+    emoji: '😊',
+    label: 'Feeling Story',
+    bgFrom: '#fef9c3',
+    bgTo: '#fde68a',
+    accent: '#f59e0b',
+    text: '#78350f',
+  },
+  routine: {
+    emoji: '⏰',
+    label: 'Routine Story',
+    bgFrom: '#e0e7ff',
+    bgTo: '#c7d2fe',
+    accent: '#6366f1',
+    text: '#312e81',
+  },
+  sports: {
+    emoji: '⚽',
+    label: 'Sport Story',
+    bgFrom: '#dcfce7',
+    bgTo: '#bbf7d0',
+    accent: '#16a34a',
+    text: '#14532d',
+  },
+  friends: {
+    emoji: '🤝',
+    label: 'Friend Story',
+    bgFrom: '#fce7f3',
+    bgTo: '#fbcfe8',
+    accent: '#ec4899',
+    text: '#831843',
+  },
+  jobs: {
+    emoji: '👷',
+    label: 'Job Story',
+    bgFrom: '#ffedd5',
+    bgTo: '#fdba74',
+    accent: '#ea580c',
+    text: '#7c2d12',
+  },
+  time: {
+    emoji: '🕐',
+    label: 'Time Story',
+    bgFrom: '#ede9fe',
+    bgTo: '#ddd6fe',
+    accent: '#7c3aed',
+    text: '#4c1d95',
+  },
+  art: {
+    emoji: '🎭',
+    label: 'Art Story',
+    bgFrom: '#fae8ff',
+    bgTo: '#f5d0fe',
+    accent: '#a21caf',
+    text: '#581c87',
+  },
+};
+
+const DEFAULT_THEME_PLACEHOLDER_STYLE: ThemePlaceholderStyle = {
+  emoji: '📖',
+  label: 'Story Time',
+  bgFrom: '#fef3c7',
+  bgTo: '#fde68a',
+  accent: '#f59e0b',
+  text: '#78350f',
+};
+
+function getThemePlaceholderStyle(theme: string): ThemePlaceholderStyle {
+  const lower = theme.toLowerCase().trim();
+  return THEME_PLACEHOLDER_STYLES[lower] ?? DEFAULT_THEME_PLACEHOLDER_STYLE;
+}
 
 /**
  * Get emoji representation for a vocabulary word.
@@ -206,8 +435,7 @@ export function getWordEmoji(word: string): string {
  * Get emoji for a story theme.
  */
 export function getThemeEmoji(theme: string): string {
-  const lower = theme.toLowerCase().trim();
-  return THEME_EMOJI_MAP[lower] ?? '📖';
+  return getThemePlaceholderStyle(theme).emoji;
 }
 
 /**
@@ -230,14 +458,26 @@ export function generateWordPlaceholderImage(word: string, bgColor = '#f0f9ff'):
 export function generateStoryPlaceholderImage(
   theme: string,
   pageIndex: number,
-  bgColor = '#fef3c7',
+  bgColor?: string,
 ): string {
-  const emoji = getThemeEmoji(theme);
+  const style = getThemePlaceholderStyle(theme);
+  const emoji = style.emoji;
   const pageLabel = `Page ${pageIndex + 1}`;
+  const fillFrom = bgColor ?? style.bgFrom;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
-    <rect width="400" height="240" rx="20" fill="${bgColor}"/>
-    <text x="200" y="100" font-size="64" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
-    <text x="200" y="180" font-size="14" font-family="system-ui,sans-serif" text-anchor="middle" fill="#92400e">${pageLabel}</text>
+    <defs>
+      <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="${fillFrom}"/>
+        <stop offset="100%" stop-color="${style.bgTo}"/>
+      </linearGradient>
+    </defs>
+    <rect width="400" height="240" rx="20" fill="url(#bg)"/>
+    <circle cx="74" cy="58" r="42" fill="${style.accent}" opacity="0.16"/>
+    <circle cx="336" cy="184" r="54" fill="${style.accent}" opacity="0.12"/>
+    <rect x="36" y="168" width="140" height="32" rx="16" fill="#ffffff" opacity="0.8"/>
+    <text x="200" y="98" font-size="64" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
+    <text x="106" y="189" font-size="14" font-family="system-ui,sans-serif" text-anchor="middle" fill="${style.text}" font-weight="700">${escapeXml(style.label)}</text>
+    <text x="290" y="189" font-size="14" font-family="system-ui,sans-serif" text-anchor="middle" fill="${style.text}" font-weight="600">${pageLabel}</text>
   </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }

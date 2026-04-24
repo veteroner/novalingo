@@ -56,6 +56,8 @@ export async function initializeNotifications(uid?: string): Promise<string | nu
 export function setupNotificationListeners(
   onNotification: (data: Record<string, unknown>) => void,
 ): void {
+  if (getPlatform() === 'web') return;
+
   // Uygulama açıkken gelen bildirim
   void PushNotifications.addListener('pushNotificationReceived', (notification) => {
     onNotification(notification.data as Record<string, unknown>);

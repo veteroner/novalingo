@@ -154,24 +154,15 @@ export default function LoginScreen() {
                 className="accent-nova-blue mt-1 h-5 w-5 shrink-0 rounded"
               />
               <Text variant="caption" className="text-text-tertiary">
-                <Link
-                  to="/legal/terms"
-                  className="text-text-secondary font-medium underline"
-                >
+                <Link to="/legal/terms" className="text-text-secondary font-medium underline">
                   Kullanım Koşulları
                 </Link>
                 ,{' '}
-                <Link
-                  to="/legal/privacy"
-                  className="text-text-secondary font-medium underline"
-                >
+                <Link to="/legal/privacy" className="text-text-secondary font-medium underline">
                   Gizlilik Politikası
                 </Link>{' '}
                 ve{' '}
-                <Link
-                  to="/legal/privacy"
-                  className="text-text-secondary font-medium underline"
-                >
+                <Link to="/legal/privacy" className="text-text-secondary font-medium underline">
                   KVKK Aydınlatma Metni
                 </Link>
                 &#39;ni okudum ve kabul ediyorum.

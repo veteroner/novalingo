@@ -1,3 +1,4 @@
+import { generateStoryPlaceholderImage } from '@/utils/mediaFallback';
 import { describe, expect, it } from 'vitest';
 import { getRandomStory, selectStoryForWords, storyBank } from '../storyBank';
 
@@ -27,5 +28,18 @@ describe('storyBank media enrichment', () => {
     expect(story.data.pages.length).toBeGreaterThan(0);
     expect(story.data.pages.every((page) => page.imageUrl.length > 0)).toBe(true);
     expect(story.data.pages.every((page) => page.audioUrl.length > 0)).toBe(true);
+  });
+
+  it('uses theme-specific placeholders for priority 6 story themes without authored images', () => {
+    const travelPlaceholder = decodeURIComponent(generateStoryPlaceholderImage('travel', 0));
+    const artPlaceholder = decodeURIComponent(generateStoryPlaceholderImage('art', 0));
+    const healthPlaceholder = decodeURIComponent(generateStoryPlaceholderImage('health', 0));
+
+    expect(travelPlaceholder).toContain('✈️');
+    expect(travelPlaceholder).toContain('Travel Story');
+    expect(artPlaceholder).toContain('🎭');
+    expect(artPlaceholder).toContain('Art Story');
+    expect(healthPlaceholder).toContain('🩺');
+    expect(healthPlaceholder).toContain('Health Story');
   });
 });

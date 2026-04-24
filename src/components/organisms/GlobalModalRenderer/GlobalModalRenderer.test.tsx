@@ -12,10 +12,52 @@ const mockState = {
   activeModal: null as string | null,
   modalData: null as Record<string, unknown> | null,
   closeModal: vi.fn(),
+  openModal: vi.fn(),
 };
 
 vi.mock('@stores/uiStore', () => ({
   useUIStore: (selector: (s: typeof mockState) => unknown) => selector(mockState),
+}));
+
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => vi.fn(),
+}));
+
+const mockAuthState = {
+  user: {
+    uid: 'test-uid',
+    settings: {
+      soundEnabled: true,
+      musicEnabled: true,
+      hapticEnabled: true,
+      notificationsEnabled: true,
+    },
+  },
+  setUser: vi.fn(),
+  reset: vi.fn(),
+};
+vi.mock('@stores/authStore', () => ({
+  useAuthStore: (selector: (s: typeof mockAuthState) => unknown) =>
+    typeof selector === 'function' ? selector(mockAuthState) : mockAuthState,
+}));
+
+const mockChildState = { child: null, reset: vi.fn() };
+vi.mock('@stores/childStore', () => ({
+  useChildStore: (selector: (s: typeof mockChildState) => unknown) =>
+    typeof selector === 'function' ? selector(mockChildState) : mockChildState,
+}));
+
+vi.mock('@hooks/queries', () => ({
+  useSpinWheel: vi.fn(() => ({ mutate: vi.fn(), isPending: false })),
+  useStreakFreezeAction: vi.fn(() => ({ mutate: vi.fn(), isPending: false })),
+}));
+
+vi.mock('@services/firebase/auth', () => ({
+  signOut: vi.fn(),
+}));
+
+vi.mock('@services/analytics/analyticsService', () => ({
+  trackDailyWheelSpin: vi.fn(),
 }));
 
 describe('GlobalModalRenderer', () => {

@@ -17,6 +17,7 @@ import {
 } from '@/features/learning/data/conversations';
 import { submitConversationResult } from '@/services/firebase/functions';
 import { useChildStore } from '@/stores/childStore';
+import * as Sentry from '@sentry/react';
 import { create } from 'zustand';
 
 // ── localStorage persistence (keyed by childId — works without login) ──
@@ -217,7 +218,11 @@ export const useConversationStore = create<ConversationStoreState>((set, get) =>
           });
         })
         .catch((err: unknown) => {
-          console.error('[conversationStore] submitConversationResult failed:', err);
+          if (import.meta.env.DEV)
+            console.error('[conversationStore] submitConversationResult failed:', err);
+          Sentry.captureException(err instanceof Error ? err : new Error(String(err)), {
+            extra: { context: '[conversationStore] submitConversationResult failed' },
+          });
           // Detect offline vs other errors so the UI can show an appropriate message
           const isOffline =
             !navigator.onLine ||

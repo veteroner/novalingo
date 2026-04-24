@@ -2,6 +2,10 @@
 
 Use this template when writing a new conversation scenario for Nova ile Konuş.
 
+> **Not:** Aşağıdaki checkbox'lar her YENİ senaryo için kullanılan review
+> şablonunu oluşturur. Boş `[ ]` madde işaretleri global proje durumunu
+> göstermez; sadece o senaryonun review çıktısı için doldurulur.
+
 ---
 
 ## 1. Metadata

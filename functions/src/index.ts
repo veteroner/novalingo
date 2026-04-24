@@ -32,7 +32,9 @@ export { onUserCreated } from './triggers/onUserCreated';
 // Scheduled functions
 export { cleanupExpiredCache } from './scheduled/cleanup';
 export { resetDailyQuests } from './scheduled/resetDailyQuests';
+export { srsReviewReminder } from './scheduled/srsReviewReminder';
 export { streakCheckMidnight } from './scheduled/streakCheck';
+export { streakDangerReminder } from './scheduled/streakDangerReminder';
 export { updateLeaderboards } from './scheduled/updateLeaderboards';
 export { weeklyReport } from './scheduled/weeklyReport';
 

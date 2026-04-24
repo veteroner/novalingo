@@ -139,7 +139,11 @@ export default function OnboardingScreen() {
 
       {/* Ebeveyn Kapısı */}
       {showParentalGate && (
-        <ParentalGate onPass={handleParentalGatePass} onCancel={handleParentalGateCancel} />
+        <ParentalGate
+          requireConsent
+          onPass={handleParentalGatePass}
+          onCancel={handleParentalGateCancel}
+        />
       )}
     </div>
   );

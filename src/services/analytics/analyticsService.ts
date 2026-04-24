@@ -47,12 +47,15 @@ function normalizeRawAnswerPreview(rawAnswer: string | undefined): string | unde
 export function setAnalyticsUserProperties(props: {
   ageGroup?: string;
   deviceType?: 'web' | 'ios' | 'android';
+  pilotCohort?: string;
 }): void {
   if (!analytics) return;
   try {
     setUserProperties(analytics, {
       age_group: props.ageGroup ?? 'unknown',
       device_type: props.deviceType ?? 'web',
+      // Pilot segment (Firebase Audience'da filtrelemek için). Pilot katılımcı değilse boş kalır.
+      pilot_cohort: props.pilotCohort ?? '',
     });
   } catch {
     // Silent fail
@@ -234,6 +237,36 @@ export function trackStoryCompleted(params: { storyId: string; worldId: string }
   logEvent('story_completed', { story_id: params.storyId, world_id: params.worldId });
 }
 
+export function trackLessonContentFallbackUsed(params: {
+  lessonId: string;
+  word: string;
+  fallbackKind: 'synthetic_vocab';
+  hasEmoji: boolean;
+}): void {
+  logEvent('lesson_content_fallback_used', {
+    lesson_id: params.lessonId,
+    word: params.word.slice(0, 48),
+    fallback_kind: params.fallbackKind,
+    has_emoji: params.hasEmoji,
+  });
+}
+
+export function trackLessonContentFallbackSummary(params: {
+  lessonId: string;
+  worldId: string;
+  fallbackWordCount: number;
+  fallbackWithEmojiCount: number;
+  totalVocabularyWords: number;
+}): void {
+  logEvent('lesson_content_fallback_summary', {
+    lesson_id: params.lessonId,
+    world_id: params.worldId,
+    fallback_word_count: params.fallbackWordCount,
+    fallback_with_emoji_count: params.fallbackWithEmojiCount,
+    total_vocabulary_words: params.totalVocabularyWords,
+  });
+}
+
 // ===== MONETIZATION EVENTS =====
 
 export function trackPurchase(params: {
@@ -273,4 +306,22 @@ export function trackError(error: string, context: string): void {
     error: error.slice(0, 100), // Truncate for analytics limits
     context,
   });
+}
+
+// ===== RETENTION FUNNEL =====
+
+/**
+ * Fires once when a child completes their very first lesson.
+ * Funnel: Registration → first_lesson_completed → day_7_active
+ */
+export function trackFirstLessonCompleted(childId: string): void {
+  logEvent('first_lesson_completed', { child_hash: hashId(childId) });
+}
+
+/**
+ * Fires when a child is active on a key retention day (1, 3, 7, 14, 30).
+ * De-duplication is handled by the caller via localStorage.
+ */
+export function trackRetentionDay(day: number, childId: string): void {
+  logEvent('retention_day_active', { day, child_hash: hashId(childId) });
 }

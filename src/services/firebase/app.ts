@@ -6,6 +6,7 @@
  */
 
 import { isNative } from '@/utils/platform';
+import * as Sentry from '@sentry/react';
 import { getAnalytics, type Analytics } from 'firebase/analytics';
 import { initializeApp, type FirebaseApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaV3Provider, type AppCheck } from 'firebase/app-check';
@@ -137,7 +138,10 @@ function initializeFirebase() {
 try {
   initializeFirebase();
 } catch (error) {
-  console.error('[Firebase] Initialization failed:', error);
+  if (import.meta.env.DEV) console.error('[Firebase] Initialization failed:', error);
+  Sentry.captureException(error instanceof Error ? error : new Error(String(error)), {
+    extra: { context: '[Firebase] Initialization failed' },
+  });
 }
 
 export { analytics, app, appCheck, auth, db, functions, storage };

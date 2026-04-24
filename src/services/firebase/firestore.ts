@@ -4,6 +4,7 @@
  * Collection referansları ve CRUD helpers.
  */
 
+import * as Sentry from '@sentry/react';
 import {
   collection,
   deleteDoc,
@@ -136,7 +137,11 @@ export function subscribeToDocument<T>(
       callback({ id: snap.id, ...snap.data() } as T);
     },
     (error) => {
-      console.error('[subscribeToDocument] listener error:', ref.path, error);
+      if (import.meta.env.DEV)
+        console.error('[subscribeToDocument] listener error:', ref.path, error);
+      Sentry.captureException(error instanceof Error ? error : new Error(String(error)), {
+        extra: { context: '[subscribeToDocument] listener error', path: ref.path },
+      });
       callback(null);
     },
   );
@@ -159,7 +164,11 @@ export function subscribeToCollection<T>(
       callback(items);
     },
     (error) => {
-      console.error('[subscribeToCollection] listener error:', ref.path, error);
+      if (import.meta.env.DEV)
+        console.error('[subscribeToCollection] listener error:', ref.path, error);
+      Sentry.captureException(error instanceof Error ? error : new Error(String(error)), {
+        extra: { context: '[subscribeToCollection] listener error', path: ref.path },
+      });
       callback([]);
     },
   );

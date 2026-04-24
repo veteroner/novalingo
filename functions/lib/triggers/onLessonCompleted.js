@@ -68,6 +68,8 @@ exports.onLessonCompleted = (0, firestore_1.onDocumentWritten)({
         }, { merge: true });
     }
     await batch.commit();
+    // NOTE: Collectible grants are handled client-side in submitLessonResult
+    // for immediate UI feedback. Do NOT grant here to avoid double-granting.
     console.log(`Lesson completed: child=${childId}, lesson=${event.params.lessonId}`);
 });
 //# sourceMappingURL=onLessonCompleted.js.map

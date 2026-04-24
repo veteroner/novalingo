@@ -35,6 +35,12 @@ export interface User {
   createdAt: Timestamp;
   lastLoginAt: Timestamp;
   settings: UserSettings;
+  /**
+   * Optional pilot cohort tag. Set by ops during pilot onboarding so
+   * analytics/Firestore queries can segment the pilot group from the
+   * general user base. Example values: "pilot-2026-04", "internal-qa".
+   */
+  pilotCohort?: string;
 }
 
 export interface UserSettings {

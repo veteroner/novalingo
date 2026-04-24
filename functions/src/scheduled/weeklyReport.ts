@@ -185,6 +185,7 @@ export const weeklyReport = onSchedule(
         const sent = await sendToParent(parentUid, {
           title: '📊 Haftalık Rapor',
           body,
+          category: 'weeklyReport',
           data: { type: 'weekly_report' },
         });
         if (sent) sentCount++;

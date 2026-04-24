@@ -5,6 +5,7 @@
  */
 
 import type { ChildProfile } from '@/types/user';
+import * as Sentry from '@sentry/react';
 import {
   collections,
   docs,
@@ -133,7 +134,14 @@ export function useChildren() {
 
   useEffect(() => {
     if (query.error) {
-      console.error('[useChildren] Failed to load child profiles', query.error);
+      if (import.meta.env.DEV)
+        console.error('[useChildren] Failed to load child profiles', query.error);
+      Sentry.captureException(
+        query.error instanceof Error ? query.error : new Error(String(query.error)),
+        {
+          extra: { context: '[useChildren] Failed to load child profiles' },
+        },
+      );
     }
   }, [query.error]);
 

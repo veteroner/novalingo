@@ -7,15 +7,53 @@
 
 import { db, messaging } from '../utils/admin';
 
+export type NotificationCategory =
+  | 'dailyReminder'
+  | 'weeklyReport'
+  | 'achievementAlert'
+  | 'inactivityAlert';
+
 export interface NotificationPayload {
   title: string;
   body: string;
   data?: Record<string, string>;
+  /**
+   * Optional preference category. When provided, the send is gated by the
+   * parent's `settings.notifications.{category}` flag (default: true).
+   */
+  category?: NotificationCategory;
+}
+
+interface ParentNotificationPrefs {
+  dailyReminder: boolean;
+  weeklyReport: boolean;
+  achievementAlert: boolean;
+  inactivityAlert: boolean;
+}
+
+const DEFAULT_PREFS: ParentNotificationPrefs = {
+  dailyReminder: true,
+  weeklyReport: true,
+  achievementAlert: true,
+  inactivityAlert: false,
+};
+
+/**
+ * Returns the parent's notification preferences, merged with sane defaults.
+ * Stored at `users/{parentUid}.settings.notifications`.
+ */
+export async function getParentNotificationPrefs(
+  parentUid: string,
+): Promise<ParentNotificationPrefs> {
+  const userDoc = await db.doc(`users/${parentUid}`).get();
+  const raw = (userDoc.data()?.settings?.notifications ?? {}) as Partial<ParentNotificationPrefs>;
+  return { ...DEFAULT_PREFS, ...raw };
 }
 
 /**
  * Send a push notification to a parent by looking up their FCM token.
- * Silently returns false if the token is missing or send fails.
+ * Silently returns false if the token is missing, the parent has disabled
+ * the given category, or send fails.
  */
 export async function sendToParent(
   parentUid: string,
@@ -23,8 +61,18 @@ export async function sendToParent(
 ): Promise<boolean> {
   try {
     const userDoc = await db.doc(`users/${parentUid}`).get();
-    const fcmToken = userDoc.data()?.fcmToken;
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcmToken;
     if (!fcmToken) return false;
+
+    // Honor parent preferences when a category is supplied.
+    if (payload.category) {
+      const prefs: ParentNotificationPrefs = {
+        ...DEFAULT_PREFS,
+        ...(userData?.settings?.notifications ?? {}),
+      };
+      if (!prefs[payload.category]) return false;
+    }
 
     await messaging.send({
       token: fcmToken,

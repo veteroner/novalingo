@@ -6,7 +6,7 @@
  * All callable, trigger, and scheduled functions exported here.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.healthCheck = exports.googleNotification = exports.appleNotification = exports.weeklyReport = exports.updateLeaderboards = exports.streakCheckMidnight = exports.resetDailyQuests = exports.cleanupExpiredCache = exports.onUserCreated = exports.onStreakUpdate = exports.onLessonCompleted = exports.onAchievementUnlocked = exports.verifyParentPin = exports.useStreakFreeze = exports.updateVocabulary = exports.updateChildProfile = exports.syncOfflineProgress = exports.submitLessonResult = exports.spinDailyWheel = exports.setParentPin = exports.registerAndroidPurchase = exports.purchaseShopItem = exports.getLeaderboard = exports.evaluateOpenEndedConversation = exports.deleteChildProfile = exports.deleteAccount = exports.createChildProfile = exports.claimQuestReward = void 0;
+exports.healthCheck = exports.googleNotification = exports.appleNotification = exports.weeklyReport = exports.updateLeaderboards = exports.streakDangerReminder = exports.streakCheckMidnight = exports.srsReviewReminder = exports.resetDailyQuests = exports.cleanupExpiredCache = exports.onUserCreated = exports.onStreakUpdate = exports.onLessonCompleted = exports.onAchievementUnlocked = exports.verifyParentPin = exports.useStreakFreeze = exports.updateVocabulary = exports.updateChildProfile = exports.syncOfflineProgress = exports.submitLessonResult = exports.spinDailyWheel = exports.setParentPin = exports.registerAndroidPurchase = exports.purchaseShopItem = exports.getLeaderboard = exports.evaluateOpenEndedConversation = exports.deleteChildProfile = exports.deleteAccount = exports.createChildProfile = exports.claimQuestReward = void 0;
 // Callable functions (client-invoked)
 var claimQuestReward_1 = require("./callables/claimQuestReward");
 Object.defineProperty(exports, "claimQuestReward", { enumerable: true, get: function () { return claimQuestReward_1.claimQuestReward; } });
@@ -54,8 +54,12 @@ var cleanup_1 = require("./scheduled/cleanup");
 Object.defineProperty(exports, "cleanupExpiredCache", { enumerable: true, get: function () { return cleanup_1.cleanupExpiredCache; } });
 var resetDailyQuests_1 = require("./scheduled/resetDailyQuests");
 Object.defineProperty(exports, "resetDailyQuests", { enumerable: true, get: function () { return resetDailyQuests_1.resetDailyQuests; } });
+var srsReviewReminder_1 = require("./scheduled/srsReviewReminder");
+Object.defineProperty(exports, "srsReviewReminder", { enumerable: true, get: function () { return srsReviewReminder_1.srsReviewReminder; } });
 var streakCheck_1 = require("./scheduled/streakCheck");
 Object.defineProperty(exports, "streakCheckMidnight", { enumerable: true, get: function () { return streakCheck_1.streakCheckMidnight; } });
+var streakDangerReminder_1 = require("./scheduled/streakDangerReminder");
+Object.defineProperty(exports, "streakDangerReminder", { enumerable: true, get: function () { return streakDangerReminder_1.streakDangerReminder; } });
 var updateLeaderboards_1 = require("./scheduled/updateLeaderboards");
 Object.defineProperty(exports, "updateLeaderboards", { enumerable: true, get: function () { return updateLeaderboards_1.updateLeaderboards; } });
 var weeklyReport_1 = require("./scheduled/weeklyReport");

@@ -6,7 +6,8 @@
  */
 
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
-import { db, messaging, REGION, increment, serverTimestamp } from '../utils/admin';
+import { sendToParent } from '../services/notificationService';
+import { db, increment, REGION, serverTimestamp } from '../utils/admin';
 
 export const onAchievementUnlocked = onDocumentCreated(
   {
@@ -42,35 +43,28 @@ export const onAchievementUnlocked = onDocumentCreated(
 
     await batch.commit();
 
-    // Send push notification to parent
+    // Send push notification to parent (gated by achievementAlert preference)
     try {
       const childDoc = await childRef.get();
       const child = childDoc.data();
       if (!child?.parentUid) return;
 
-      const userDoc = await db.doc(`users/${child.parentUid}`).get();
-      const user = userDoc.data();
-
-      if (user?.fcmToken) {
-        await messaging.send({
-          token: user.fcmToken,
-          notification: {
-            title: '🏆 Yeni Başarı!',
-            body: `${child.name} yeni bir başarı kazandı: ${achievement.name}`,
-          },
-          data: {
-            type: 'achievement',
-            childId,
-            achievementId: event.params.achievementId,
-          },
-        });
-      }
+      await sendToParent(child.parentUid, {
+        title: '🏆 Yeni Başarı!',
+        body: `${child.name} yeni bir başarı kazandı: ${achievement.name}`,
+        category: 'achievementAlert',
+        data: {
+          type: 'achievement',
+          childId,
+          achievementId: event.params.achievementId,
+        },
+      });
     } catch (err) {
       console.warn('Failed to send achievement notification:', err);
     }
 
     console.log(
-      `Achievement unlocked: child=${childId}, achievement=${event.params.achievementId}`
+      `Achievement unlocked: child=${childId}, achievement=${event.params.achievementId}`,
     );
-  }
+  },
 );

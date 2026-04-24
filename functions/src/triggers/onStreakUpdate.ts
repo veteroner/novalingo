@@ -74,6 +74,7 @@ export const onStreakUpdate = onDocumentUpdated(
         await notifyParentAboutChild(childId, {
           title: `🔥 ${reward.label}`,
           body: `${after.name} tam ${milestone} günlük seri yaptı!`,
+          category: 'achievementAlert',
           data: { type: 'streak_milestone', childId, milestone: String(milestone) },
         });
 

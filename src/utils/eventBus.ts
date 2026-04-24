@@ -6,6 +6,7 @@
  */
 
 import { type AppEvent, type EventType } from '@/types/common';
+import * as Sentry from '@sentry/react';
 
 type EventHandler<T = unknown> = (event: AppEvent<T>) => void;
 
@@ -46,7 +47,10 @@ class EventBus {
         try {
           (handler as EventHandler<T>)(event);
         } catch (err) {
-          console.error(`Event handler error for ${type}:`, err);
+          if (import.meta.env.DEV) console.error(`Event handler error for ${type}:`, err);
+          Sentry.captureException(err instanceof Error ? err : new Error(String(err)), {
+            extra: { context: `Event handler error for ${type}` },
+          });
         }
       });
     }

@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 import { Button } from '@components/atoms/Button';
@@ -26,7 +27,8 @@ export default class ActivityErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('[ActivityErrorBoundary]', error, info.componentStack);
+    if (import.meta.env.DEV) console.error('[ActivityErrorBoundary]', error, info.componentStack);
+    Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
   }
 
   private handleSkip = () => {

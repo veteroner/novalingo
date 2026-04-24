@@ -112,6 +112,8 @@ import { myDreamJobScenario } from './phase5/jobs/myDreamJob';
 import { theAstronautScenario } from './phase5/jobs/theAstronaut';
 import { theFirefighterMissionScenario } from './phase5/jobs/theFirefighterMission';
 import { theVeterinarianScenario } from './phase5/jobs/theVeterinarian';
+import { PRIORITY6_CONVERSATION_SCENARIOS } from './phase5/priority6Expansion';
+import { PRIORITY7_CONVERSATION_SCENARIOS } from './phase5/priority7Expansion';
 import { homeworkTimeScenario } from './phase5/school/homeworkTime';
 import { lunchAtSchoolScenario } from './phase5/school/lunchAtSchool';
 import { scienceClassScenario } from './phase5/school/scienceClass';
@@ -265,6 +267,8 @@ export const PHASE5_CONVERSATION_SCENARIOS: ConversationScenario[] = [
   atTheGymScenario,
   seasonsOfTheYearScenario,
   yesterdayTodayTomorrowScenario,
+  ...PRIORITY6_CONVERSATION_SCENARIOS,
+  ...PRIORITY7_CONVERSATION_SCENARIOS,
 ];
 
 export const ALL_CONVERSATION_SCENARIOS: ConversationScenario[] = [

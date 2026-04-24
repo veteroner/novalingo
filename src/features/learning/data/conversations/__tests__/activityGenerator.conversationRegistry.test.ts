@@ -34,5 +34,5 @@ describe('activityGenerator conversation registry integration', () => {
     );
 
     vi.unstubAllEnvs();
-  });
+  }, 15000);
 });

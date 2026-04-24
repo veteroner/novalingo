@@ -123,7 +123,7 @@ vi.mock('firebase/auth', () => ({
   signOut: vi.fn(),
   onAuthStateChanged: vi.fn(),
   GoogleAuthProvider: vi.fn(),
-  OAuthProvider: vi.fn(),
+  OAuthProvider: vi.fn().mockImplementation(() => ({ addScope: vi.fn() })),
   connectAuthEmulator: vi.fn(),
 }));
 

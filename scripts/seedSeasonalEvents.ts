@@ -202,7 +202,7 @@ const SEASONAL_EVENTS = [
   // ═══════════════════════════════════════════════════════════
   {
     id: 'valentine',
-    name: "Sevgililer Günü",
+    name: 'Sevgililer Günü',
     nameEn: 'Love & Friendship',
     description: 'Duygular ve arkadaşlık kelimeleri!',
     descriptionEn: 'Learn words about feelings and friendship!',
@@ -533,13 +533,16 @@ async function seedSeasonalEvents() {
     const { lessons, collectibles, ...eventMeta } = event;
 
     // Top-level event document
-    await db.collection('seasonalEvents').doc(event.id).set({
-      ...eventMeta,
-      lessonCount: lessons.length,
-      collectibleCount: collectibles.length,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    await db
+      .collection('seasonalEvents')
+      .doc(event.id)
+      .set({
+        ...eventMeta,
+        lessonCount: lessons.length,
+        collectibleCount: collectibles.length,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
     eventCount++;
     console.log(`  ✅ Event: ${event.id} (${event.name})`);
 

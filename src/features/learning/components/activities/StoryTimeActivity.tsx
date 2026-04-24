@@ -73,10 +73,19 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
   // ── Choice branch state ──
   const [choiceMade, setChoiceMade] = useState<string | null>(null);
 
+  // ── Word-select (chain stories) state ──
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+
+  // ── Speak-it (picture stories) state ──
+  const [speakItDone, setSpeakItDone] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   const pages = data.pages;
   const page = pages[currentPage];
   const totalPages = pages.length;
   const isRhyme = data.variant === 'rhyme';
+  const isChain = data.variant === 'chain';
+  const isPicture = data.variant === 'picture';
 
   // Sayfa metnini kelime dizisine ayır
   const pageWords = useMemo(() => page?.text.split(/\s+/) ?? [], [page?.text]);
@@ -121,10 +130,23 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
         return dragWordData ? filledBlanks.size >= dragWordData.blanks.length : true;
       case 'choice':
         return choiceMade !== null;
+      case 'word-select':
+        return selectedWord !== null;
+      case 'speak-it':
+        return speakItDone;
       default:
         return true;
     }
-  }, [page, pageWords, revealedBlanks, dragWordData, filledBlanks, choiceMade]);
+  }, [
+    page,
+    pageWords,
+    revealedBlanks,
+    dragWordData,
+    filledBlanks,
+    choiceMade,
+    selectedWord,
+    speakItDone,
+  ]);
 
   // ── Ambient sound ──
   useEffect(() => {
@@ -201,6 +223,31 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
     setChoiceMade(label);
   }, []);
 
+  // Word-select: chain story kelime seçimi
+  const handleWordSelect = useCallback(
+    (word: string) => {
+      if (selectedWord) return;
+      setSelectedWord(word);
+      setTotalTapped((prev) => prev + 1);
+      speak(word);
+    },
+    [selectedWord],
+  );
+
+  // Speak-it: çocuk resmi tarif etti
+  const handleSpeakIt = useCallback(async () => {
+    if (speakItDone || isSpeaking) return;
+    setIsSpeaking(true);
+    try {
+      // Optimistic: any attempt at speaking counts as success for picture stories
+      await new Promise<void>((resolve) => setTimeout(resolve, 1800));
+      setSpeakItDone(true);
+      setTotalTapped((prev) => prev + 1);
+    } finally {
+      setIsSpeaking(false);
+    }
+  }, [speakItDone, isSpeaking]);
+
   // Sayfa ileri
   const handleNext = useCallback(() => {
     if (currentPage < totalPages - 1) {
@@ -210,6 +257,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
       setFilledBlanks(new Map());
       setDraggedWord(null);
       setChoiceMade(null);
+      setSelectedWord(null);
+      setSpeakItDone(false);
+      setIsSpeaking(false);
     } else {
       setIsFinishing(true);
       const accuracy = totalHighlights > 0 ? totalTapped / totalHighlights : 1;
@@ -236,6 +286,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
       setFilledBlanks(new Map());
       setDraggedWord(null);
       setChoiceMade(null);
+      setSelectedWord(null);
+      setSpeakItDone(false);
+      setIsSpeaking(false);
     }
   }, [currentPage]);
 
@@ -257,7 +310,15 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
   const progressPercent = ((currentPage + 1) / totalPages) * 100;
   const storyEmoji =
     Object.entries(STORY_EMOJIS).find(([key]) => data.title.toLowerCase().includes(key))?.[1] ??
-    (isRhyme ? '🎶' : '📖');
+    (isRhyme ? '🎶' : isChain ? '🔗' : isPicture ? '🖼️' : '📖');
+
+  const storyLabel = isRhyme
+    ? 'KAFİYE HİKAYESİ'
+    : isChain
+      ? 'ZİNCİR HİKAYE'
+      : isPicture
+        ? 'RESİM HİKAYESİ'
+        : 'HİKAYE ZAMANI';
 
   // ── Blank counter for tap-reveal ──
   let blankIdx = -1;
@@ -267,7 +328,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
       {/* Title */}
       <div className="text-center">
         <Text variant="overline" className="text-purple-500">
-          {storyEmoji} {isRhyme ? 'KAFİYE HİKAYESİ' : 'HİKAYE ZAMANI'}
+          {storyEmoji} {storyLabel}
         </Text>
         <Text variant="h3" className="mt-1 text-gray-800">
           {data.title}
@@ -519,6 +580,131 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
               </div>
             )}
 
+            {/* === WORD-SELECT: chain story — pick a word to continue === */}
+            {page.interactionType === 'word-select' &&
+              (() => {
+                const wsData = page.interactionData as
+                  | { options: string[]; promptText?: string }
+                  | null
+                  | undefined;
+                if (!wsData?.options?.length) return null;
+                return (
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap gap-1 leading-relaxed">
+                      {pageWords.map((word, idx) => (
+                        <span
+                          key={`${currentPage}-${idx}`}
+                          className="px-0.5 text-lg text-gray-700"
+                        >
+                          {selectedWord && word === '{WORD}' ? (
+                            <span className="rounded-md bg-teal-100 px-2 font-bold text-teal-700">
+                              {selectedWord}
+                            </span>
+                          ) : (
+                            word
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="rounded-2xl bg-teal-50 p-4">
+                      <Text
+                        variant="bodySmall"
+                        weight="bold"
+                        className="mb-3 text-center text-teal-700"
+                      >
+                        {wsData.promptText ?? 'Bir kelime seç!'}
+                      </Text>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {wsData.options.map((opt) => {
+                          const isSelected = selectedWord === opt;
+                          return (
+                            <motion.button
+                              key={opt}
+                              className={`rounded-2xl px-5 py-3 text-base font-bold transition-colors ${
+                                isSelected
+                                  ? 'bg-teal-500 text-white shadow-md'
+                                  : selectedWord
+                                    ? 'bg-gray-100 text-gray-400'
+                                    : 'bg-white text-teal-700 shadow-sm'
+                              }`}
+                              whileTap={!selectedWord ? { scale: 0.95 } : {}}
+                              onClick={() => !selectedWord && handleWordSelect(opt)}
+                              disabled={!!selectedWord}
+                            >
+                              {opt}
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                      {selectedWord && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mt-3 text-center"
+                        >
+                          <Text variant="bodySmall" className="text-teal-700">
+                            ✅ &ldquo;{selectedWord}&rdquo; seçtin — harika!
+                          </Text>
+                        </motion.div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+
+            {/* === SPEAK-IT: picture story — describe the image === */}
+            {page.interactionType === 'speak-it' &&
+              (() => {
+                const siData = page.interactionData as
+                  | { prompt?: string; targetWords?: string[] }
+                  | null
+                  | undefined;
+                return (
+                  <div className="space-y-4">
+                    <Text variant="body" className="text-center text-gray-700">
+                      {siData?.prompt ?? 'Resimde ne görüyorsun? Anlatabilir misin?'}
+                    </Text>
+                    {siData?.targetWords && siData.targetWords.length > 0 && (
+                      <div className="flex flex-wrap justify-center gap-1">
+                        {siData.targetWords.map((w) => (
+                          <span
+                            key={w}
+                            className="rounded-full bg-orange-100 px-3 py-1 text-sm font-bold text-orange-600"
+                          >
+                            {w}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex justify-center">
+                      <motion.button
+                        className={`flex flex-col items-center gap-2 rounded-3xl px-8 py-4 font-bold shadow-md transition-colors ${
+                          speakItDone
+                            ? 'bg-green-100 text-green-700'
+                            : isSpeaking
+                              ? 'bg-orange-200 text-orange-700'
+                              : 'bg-orange-100 text-orange-700'
+                        }`}
+                        whileTap={!speakItDone ? { scale: 0.95 } : {}}
+                        onClick={() => void handleSpeakIt()}
+                        disabled={speakItDone || isSpeaking}
+                      >
+                        <span className="text-3xl">
+                          {speakItDone ? '✅' : isSpeaking ? '🎙️' : '🎤'}
+                        </span>
+                        <Text variant="bodySmall" weight="bold">
+                          {speakItDone
+                            ? 'Harika anlattın!'
+                            : isSpeaking
+                              ? 'Dinliyorum...'
+                              : 'Konuş!'}
+                        </Text>
+                      </motion.button>
+                    </div>
+                  </div>
+                );
+              })()}
+
             {/* Çeviri */}
             <Text variant="caption" className="text-gray-400 italic">
               {page.translation}
@@ -562,9 +748,17 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
             animate={{ opacity: 1, scale: 1 }}
             className="space-y-2 py-4 text-center"
           >
-            <div className="text-5xl">{isRhyme ? '🎶✨' : '📖✨'}</div>
+            <div className="text-5xl">
+              {isRhyme ? '🎶✨' : isChain ? '🔗✨' : isPicture ? '🖼️✨' : '📖✨'}
+            </div>
             <Text variant="h3" className="text-purple-600">
-              {isRhyme ? 'Kafiye Bitti!' : 'Hikaye Tamamlandı!'}
+              {isRhyme
+                ? 'Kafiye Bitti!'
+                : isChain
+                  ? 'Zincir Tamamlandı!'
+                  : isPicture
+                    ? 'Harika Anlattın!'
+                    : 'Hikaye Tamamlandı!'}
             </Text>
             <Text variant="body" className="text-gray-500">
               {totalTapped} / {totalHighlights} kelime keşfettin

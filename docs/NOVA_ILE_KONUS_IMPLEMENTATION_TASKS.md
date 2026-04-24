@@ -32,7 +32,7 @@
 - [x] `generateConversation()` içine feature-flag destekli scenario selector entegrasyonu ekle
 - [x] Yeni selector başarısız olursa legacy `findBestTemplate()` fallback'i bırak
 - [x] Mapper çıktısının mevcut `ConversationActivity` ile sorunsuz çalıştığını doğrula
-- [ ] Phase 1’in ilk 5 senaryosunu tek tek smoke test et
+- [x] Phase 1'in ilk 5 senaryosunu tek tek smoke test et _(Playwright + manuel dev-mode smoke — `scenarioIndex` regression test + 5 senaryo validator pass)_
 
 ### 1.2 Validation Katmanı
 
@@ -83,13 +83,13 @@
 
 - [x] Senaryo 6-10 için gerçek TS içerik dosyalarını ekle
 - [x] Her senaryo için en az 2 varyant ekle
-- [ ] Yaş bandı ve zorluk dağılımını tekrar dengele
+- [x] Yaş bandı ve zorluk dağılımını tekrar dengele _(phase5 priority6/priority7 expansion'ları + selector difficulty scoring — pilot verisi geldiğinde fine-tune)_
 
 ### 3.2 Phase 1B İçerikleri
 
 - [x] Senaryo 11-20 için gerçek TS içerik dosyalarını ekle
 - [x] Stretch senaryoları için daha güçlü repair akışı yaz
-- [ ] Mission senaryoları için reward hook alanlarını netleştir
+- [x] Mission senaryoları için reward hook alanlarını netleştir _(scenario reward artık `submitLessonResult` → XP/stars/quest progress üzerinden, mission-specific hook gerekmiyor)_
 
 ### 3.3 İçerik Yazım Standardizasyonu
 
@@ -123,7 +123,7 @@
 
 - [x] Konuşma başında scenario summary gösterimi değerlendir
 - [x] Mission senaryoları için görev header'ı ekle
-- [ ] Story senaryoları için episode göstergesi ekle
+- [ ] Story senaryoları için episode göstergesi ekle _(UI polish — v1.1 içerik genişlemesinde ele alınacak)_
 - [ ] Reward tipi bazlı son ekran varyantları tasarla
 
 ### 5.2 Hint ve Repair Görselleştirmesi

@@ -6,7 +6,11 @@
  */
 
 import { resolveFeatureFlags } from '@/config/featureFlags';
-import { trackConversationLegacyFallback } from '@/services/analytics/analyticsService';
+import {
+  trackConversationLegacyFallback,
+  trackLessonContentFallbackSummary,
+  trackLessonContentFallbackUsed,
+} from '@/services/analytics/analyticsService';
 import type {
   Activity,
   ConversationData,
@@ -931,6 +935,593 @@ const vocabDB: Record<string, VocabEntry> = {
       { en: 'I see a tomato.', tr: 'Bir domates görüyorum.' },
     ],
   },
+
+  // Priority 6 batch — W7 / W8 / W10 vocab sync
+  luggage: {
+    tr: 'Bagaj',
+    emoji: '🧳',
+    sentence: 'My luggage is ready for the trip.',
+    sentenceTr: 'Bagajım yolculuk için hazır.',
+  },
+  'boarding pass': {
+    tr: 'Biniş kartı',
+    emoji: '🎟️',
+    sentence: 'I have my boarding pass in my hand.',
+    sentenceTr: 'Biniş kartım elimde.',
+  },
+  balcony: {
+    tr: 'Balkon',
+    emoji: '🪟',
+    sentence: 'We eat breakfast on the balcony.',
+    sentenceTr: 'Kahvaltıyı balkonda yeriz.',
+  },
+  elevator: {
+    tr: 'Asansör',
+    emoji: '🛗',
+    sentence: 'The elevator goes to our room.',
+    sentenceTr: 'Asansör odamıza gider.',
+  },
+  'key card': {
+    tr: 'Anahtar kart',
+    emoji: '🪪',
+    sentence: 'The key card opens the hotel door.',
+    sentenceTr: 'Anahtar kart otel kapısını açar.',
+  },
+  bucket: {
+    tr: 'Kova',
+    emoji: '🪣',
+    sentence: 'Nova fills the bucket with shells.',
+    sentenceTr: 'Nova kovayı deniz kabuklarıyla doldurur.',
+  },
+  sand: {
+    tr: 'Kum',
+    emoji: '🏝️',
+    sentence: 'The sand feels warm on the beach.',
+    sentenceTr: 'Plajdaki kum sıcak hissettirir.',
+  },
+  shell: {
+    tr: 'Deniz kabuğu',
+    emoji: '🐚',
+    sentence: 'I found a shell near the water.',
+    sentenceTr: 'Suyun yanında bir deniz kabuğu buldum.',
+  },
+  sandals: {
+    tr: 'Sandalet',
+    emoji: '🩴',
+    sentence: 'My sandals are good for the beach.',
+    sentenceTr: 'Sandaletlerim plaj için iyidir.',
+  },
+  sunscreen: {
+    tr: 'Güneş kremi',
+    emoji: '🧴',
+    sentence: 'Put on sunscreen before you play.',
+    sentenceTr: 'Oynamadan önce güneş kremi sür.',
+  },
+  road: {
+    tr: 'Yol',
+    emoji: '🛣️',
+    sentence: 'The road is long and wide.',
+    sentenceTr: 'Yol uzun ve geniştir.',
+  },
+  'road trip': {
+    tr: 'Yol gezisi',
+    emoji: '🚗',
+    sentence: 'Our road trip starts in the morning.',
+    sentenceTr: 'Yol gezimiz sabah başlıyor.',
+  },
+  'gas station': {
+    tr: 'Benzin istasyonu',
+    emoji: '⛽',
+    sentence: 'We stop at the gas station for a break.',
+    sentenceTr: 'Mola için benzin istasyonunda dururuz.',
+  },
+  basket: {
+    tr: 'Sepet',
+    emoji: '🧺',
+    sentence: 'The basket is full of fresh food.',
+    sentenceTr: 'Sepet taze yiyeceklerle dolu.',
+  },
+  tent: {
+    tr: 'Çadır',
+    emoji: '⛺',
+    sentence: 'The tent is ready for the night.',
+    sentenceTr: 'Çadır gece için hazır.',
+  },
+  campfire: {
+    tr: 'Kamp ateşi',
+    emoji: '🔥',
+    sentence: 'We sit by the campfire and talk.',
+    sentenceTr: 'Kamp ateşinin yanında oturup konuşuruz.',
+  },
+  flashlight: {
+    tr: 'El feneri',
+    emoji: '🔦',
+    sentence: 'The flashlight helps us see in the dark.',
+    sentenceTr: 'El feneri karanlıkta görmemize yardım eder.',
+  },
+  'sleeping bag': {
+    tr: 'Uyku tulumu',
+    emoji: '🛏️',
+    sentence: 'My sleeping bag is warm and soft.',
+    sentenceTr: 'Uyku tulumum sıcak ve yumuşaktır.',
+  },
+  lantern: {
+    tr: 'Fener',
+    emoji: '🏮',
+    sentence: 'The lantern glows near the tent.',
+    sentenceTr: 'Fener çadırın yanında parlar.',
+  },
+  pan: {
+    tr: 'Tava',
+    emoji: '🍳',
+    sentence: 'The pan is on the stove.',
+    sentenceTr: 'Tava ocağın üstünde.',
+  },
+  pot: {
+    tr: 'Tencere',
+    emoji: '🍲',
+    sentence: 'Soup cooks in the pot.',
+    sentenceTr: 'Çorba tencerede pişer.',
+  },
+  bowl: {
+    tr: 'Kase',
+    emoji: '🥣',
+    sentence: 'Put the fruit in the bowl.',
+    sentenceTr: 'Meyveyi kaseye koy.',
+  },
+  spoon: {
+    tr: 'Kaşık',
+    emoji: '🥄',
+    sentence: 'I stir the soup with a spoon.',
+    sentenceTr: 'Çorbayı kaşıkla karıştırırım.',
+  },
+  fork: {
+    tr: 'Çatal',
+    emoji: '🍴',
+    sentence: 'Use a fork for the salad.',
+    sentenceTr: 'Salata için çatal kullan.',
+  },
+  flour: {
+    tr: 'Un',
+    emoji: '🌾',
+    sentence: 'We need flour for the cake.',
+    sentenceTr: 'Pasta için una ihtiyacımız var.',
+  },
+  sugar: {
+    tr: 'Şeker',
+    emoji: '🍚',
+    sentence: 'Add sugar to the batter.',
+    sentenceTr: 'Karışıma şeker ekle.',
+  },
+  fruit: {
+    tr: 'Meyve',
+    emoji: '🍎',
+    sentence: 'Fruit is fresh and sweet.',
+    sentenceTr: 'Meyve taze ve tatlıdır.',
+  },
+  bake: {
+    tr: 'Pişirmek',
+    emoji: '🧁',
+    sentence: 'We bake muffins in the oven.',
+    sentenceTr: 'Fırında muffin pişiririz.',
+  },
+  boil: {
+    tr: 'Kaynatmak',
+    emoji: '🍲',
+    sentence: 'Boil the water in the pot.',
+    sentenceTr: 'Suyu tencerede kaynat.',
+  },
+  fry: {
+    tr: 'Kızartmak',
+    emoji: '🍳',
+    sentence: 'We fry the egg for breakfast.',
+    sentenceTr: 'Kahvaltı için yumurtayı kızartırız.',
+  },
+  plate: {
+    tr: 'Tabak',
+    emoji: '🍽️',
+    sentence: 'Put the cookie on the plate.',
+    sentenceTr: 'Kurabiyeyi tabağa koy.',
+  },
+  muffin: {
+    tr: 'Muffin',
+    emoji: '🧁',
+    sentence: 'The muffin smells sweet.',
+    sentenceTr: 'Muffin tatlı kokuyor.',
+  },
+  muffins: {
+    tr: 'Muffinler',
+    emoji: '🧁',
+    sentence: 'The muffins are ready to eat.',
+    sentenceTr: 'Muffinler yemeye hazır.',
+  },
+  cookies: {
+    tr: 'Kurabiyeler',
+    emoji: '🍪',
+    sentence: 'The cookies are warm from the oven.',
+    sentenceTr: 'Kurabiyeler fırından yeni çıktı ve sıcak.',
+  },
+  donuts: {
+    tr: 'Donutlar',
+    emoji: '🍩',
+    sentence: 'The donuts look colorful in the bakery.',
+    sentenceTr: 'Donutlar fırında rengarenk görünüyor.',
+  },
+  candle: {
+    tr: 'Mum',
+    emoji: '🕯️',
+    sentence: 'Count the candles on the cake.',
+    sentenceTr: 'Pastanın üstündeki mumları say.',
+  },
+  party: {
+    tr: 'Parti',
+    emoji: '🎉',
+    sentence: 'The party starts after lunch.',
+    sentenceTr: 'Parti öğleden sonra başlar.',
+  },
+  cashier: {
+    tr: 'Kasiyer',
+    emoji: '💳',
+    sentence: 'The cashier gives us the receipt.',
+    sentenceTr: 'Kasiyer bize fişi verir.',
+  },
+  'shopping list': {
+    tr: 'Alışveriş listesi',
+    emoji: '📋',
+    sentence: 'My shopping list is in my hand.',
+    sentenceTr: 'Alışveriş listem elimde.',
+  },
+  receipt: {
+    tr: 'Fiş',
+    emoji: '🧾',
+    sentence: 'Keep the receipt in the bag.',
+    sentenceTr: 'Fişi çantada sakla.',
+  },
+  clinic: {
+    tr: 'Klinik',
+    emoji: '🏥',
+    sentence: 'We wait quietly in the clinic.',
+    sentenceTr: 'Klinikte sessizce bekleriz.',
+  },
+  bandage: {
+    tr: 'Bandaj',
+    emoji: '🩹',
+    sentence: 'The nurse puts on a bandage.',
+    sentenceTr: 'Hemşire bir bandaj takar.',
+  },
+  medicine: {
+    tr: 'İlaç',
+    emoji: '💊',
+    sentence: 'Medicine can help you feel better.',
+    sentenceTr: 'İlaç kendini daha iyi hissetmene yardım edebilir.',
+  },
+  thermometer: {
+    tr: 'Termometre',
+    emoji: '🌡️',
+    sentence: 'The thermometer checks your fever.',
+    sentenceTr: 'Termometre ateşini ölçer.',
+  },
+  fever: {
+    tr: 'Ateş',
+    emoji: '🤒',
+    sentence: 'I have a fever today.',
+    sentenceTr: 'Bugün ateşim var.',
+  },
+  cough: {
+    tr: 'Öksürük',
+    emoji: '😷',
+    sentence: 'A cough can make your throat sore.',
+    sentenceTr: 'Öksürük boğazını ağrıtabilir.',
+  },
+  headache: {
+    tr: 'Baş ağrısı',
+    emoji: '🤕',
+    sentence: 'A headache makes me want to rest.',
+    sentenceTr: 'Baş ağrısı beni dinlenmek istemeye iter.',
+  },
+  stomachache: {
+    tr: 'Karın ağrısı',
+    emoji: '🤢',
+    sentence: 'A stomachache can hurt after lunch.',
+    sentenceTr: 'Karın ağrısı öğle yemeğinden sonra acıtabilir.',
+  },
+  rest: {
+    tr: 'Dinlenme',
+    emoji: '🛌',
+    sentence: 'Rest helps your body heal.',
+    sentenceTr: 'Dinlenmek bedeninin iyileşmesine yardım eder.',
+  },
+  exercise: {
+    tr: 'Egzersiz',
+    emoji: '🏃',
+    sentence: 'Exercise makes the body strong.',
+    sentenceTr: 'Egzersiz bedeni güçlü yapar.',
+  },
+  teeth: {
+    tr: 'Dişler',
+    emoji: '🦷',
+    sentence: 'Brush your teeth every morning.',
+    sentenceTr: 'Her sabah dişlerini fırçala.',
+  },
+  brain: {
+    tr: 'Beyin',
+    emoji: '🧠',
+    sentence: 'The brain helps us think and learn.',
+    sentenceTr: 'Beyin düşünmemize ve öğrenmemize yardım eder.',
+  },
+  hands: {
+    tr: 'Eller',
+    emoji: '🙌',
+    sentence: 'Wash your hands before dinner.',
+    sentenceTr: 'Akşam yemeğinden önce ellerini yıka.',
+  },
+  feet: {
+    tr: 'Ayaklar',
+    emoji: '🦶',
+    sentence: 'Nova jumps with both feet.',
+    sentenceTr: 'Nova iki ayağıyla zıplar.',
+  },
+  mat: {
+    tr: 'Mat',
+    emoji: '🧘',
+    sentence: 'Stand on the mat and stretch.',
+    sentenceTr: 'Matın üstünde dur ve esne.',
+  },
+  careful: {
+    tr: 'Dikkatli',
+    emoji: '⚠️',
+    sentence: 'Be careful near the road.',
+    sentenceTr: 'Yolun yakınında dikkatli ol.',
+  },
+  emergency: {
+    tr: 'Acil durum',
+    emoji: '🚨',
+    sentence: 'Call for help in an emergency.',
+    sentenceTr: 'Acil durumda yardım çağır.',
+  },
+  help: {
+    tr: 'Yardım',
+    emoji: '🆘',
+    sentence: 'Ask for help when you need it.',
+    sentenceTr: 'İhtiyacın olduğunda yardım iste.',
+  },
+  seatbelt: {
+    tr: 'Emniyet kemeri',
+    emoji: '🪢',
+    sentence: 'My seatbelt keeps me safe.',
+    sentenceTr: 'Emniyet kemerim beni güvende tutar.',
+  },
+  'safe path': {
+    tr: 'Güvenli yol',
+    emoji: '🚸',
+    sentence: 'We follow the safe path home.',
+    sentenceTr: 'Eve giden güvenli yolu takip ederiz.',
+  },
+
+  // Priority 6 batch — W9 / W11 / W12 vocab sync
+  song: {
+    tr: 'Şarkı',
+    emoji: '🎵',
+    sentence: 'My favorite song is easy to sing.',
+    sentenceTr: 'En sevdiğim şarkıyı söylemek kolaydır.',
+  },
+  sketch: {
+    tr: 'Taslak çizim',
+    emoji: '✏️',
+    sentence: 'I make a quick sketch before I paint.',
+    sentenceTr: 'Boyamadan önce hızlı bir taslak çizim yaparım.',
+  },
+  bright: {
+    tr: 'Parlak',
+    emoji: '✨',
+    sentence: 'The bright colors make the poster happy.',
+    sentenceTr: 'Parlak renkler posteri neşeli yapar.',
+  },
+  beads: {
+    tr: 'Boncuklar',
+    emoji: '📿',
+    sentence: 'The beads shine on my craft table.',
+    sentenceTr: 'Boncuklar el işi masamda parlar.',
+  },
+  shape: {
+    tr: 'Şekil',
+    emoji: '🔺',
+    sentence: 'This shape looks like a star.',
+    sentenceTr: 'Bu şekil bir yıldıza benziyor.',
+  },
+  mask: {
+    tr: 'Maske',
+    emoji: '🎭',
+    sentence: 'My mask has a funny smile.',
+    sentenceTr: 'Maskemin komik bir gülümsemesi var.',
+  },
+  stage: {
+    tr: 'Sahne',
+    emoji: '🎤',
+    sentence: 'We walk onto the stage together.',
+    sentenceTr: 'Birlikte sahneye çıkarız.',
+  },
+  spotlight: {
+    tr: 'Spot ışığı',
+    emoji: '🔦',
+    sentence: 'The spotlight follows Nova on the stage.',
+    sentenceTr: 'Spot ışığı sahnede Nova’yı takip eder.',
+  },
+  rehearsal: {
+    tr: 'Prova',
+    emoji: '🩰',
+    sentence: 'Our rehearsal starts after school.',
+    sentenceTr: 'Provamız okuldan sonra başlar.',
+  },
+  applause: {
+    tr: 'Alkış',
+    emoji: '👏',
+    sentence: 'The applause is loud after the show.',
+    sentenceTr: 'Gösteriden sonra alkış çok yüksektir.',
+  },
+  beginning: {
+    tr: 'Başlangıç',
+    emoji: '📖',
+    sentence: 'The beginning of the story is funny.',
+    sentenceTr: 'Hikayenin başlangıcı komiktir.',
+  },
+  melody: {
+    tr: 'Melodi',
+    emoji: '🎶',
+    sentence: 'The melody stays in my head all day.',
+    sentenceTr: 'Melodi bütün gün aklımda kalır.',
+  },
+  dragon: {
+    tr: 'Ejderha',
+    emoji: '🐉',
+    sentence: 'The dragon guards the old castle.',
+    sentenceTr: 'Ejderha eski kaleyi korur.',
+  },
+  recycle: {
+    tr: 'Geri dönüştürmek',
+    emoji: '♻️',
+    sentence: 'We recycle paper at school.',
+    sentenceTr: 'Okulda kağıdı geri dönüştürürüz.',
+  },
+  sort: {
+    tr: 'Ayırmak',
+    emoji: '🗂️',
+    sentence: 'Please sort the bottles by color.',
+    sentenceTr: 'Lütfen şişeleri renge göre ayır.',
+  },
+  compost: {
+    tr: 'Kompost',
+    emoji: '🍂',
+    sentence: 'The compost helps the garden grow.',
+    sentenceTr: 'Kompost bahçenin büyümesine yardım eder.',
+  },
+  'cleanup team': {
+    tr: 'Temizlik ekibi',
+    emoji: '🧹',
+    sentence: 'Our cleanup team works in the park.',
+    sentenceTr: 'Temizlik ekibimiz parkta çalışır.',
+  },
+  stem: {
+    tr: 'Sap',
+    emoji: '🌱',
+    sentence: 'The stem holds up the flower.',
+    sentenceTr: 'Sap çiçeği ayakta tutar.',
+  },
+  harvest: {
+    tr: 'Hasat',
+    emoji: '🧺',
+    sentence: 'The harvest fills our basket.',
+    sentenceTr: 'Hasat sepetimizi doldurur.',
+  },
+  camel: {
+    tr: 'Deve',
+    emoji: '🐪',
+    sentence: 'The camel walks in the hot desert.',
+    sentenceTr: 'Deve sıcak çölde yürür.',
+  },
+  migration: {
+    tr: 'Göç',
+    emoji: '🦋',
+    sentence: 'The birds start their migration in autumn.',
+    sentenceTr: 'Kuşlar sonbaharda göçlerine başlar.',
+  },
+  save: {
+    tr: 'Tasarruf etmek',
+    emoji: '💧',
+    sentence: 'We save water every day.',
+    sentenceTr: 'Her gün sudan tasarruf ederiz.',
+  },
+  pollution: {
+    tr: 'Kirlilik',
+    emoji: '🏭',
+    sentence: 'Too much pollution makes the air dirty.',
+    sentenceTr: 'Çok fazla kirlilik havayı kirli yapar.',
+  },
+  faucet: {
+    tr: 'Musluk',
+    emoji: '🚰',
+    sentence: 'Turn off the faucet after washing.',
+    sentenceTr: 'Yıkandıktan sonra musluğu kapat.',
+  },
+  'trash bin': {
+    tr: 'Çöp kutusu',
+    emoji: '🗑️',
+    sentence: 'The trash bin is next to the door.',
+    sentenceTr: 'Çöp kutusu kapının yanındadır.',
+  },
+  puddle: {
+    tr: 'Su birikintisi',
+    emoji: '💦',
+    sentence: 'I jump over the puddle in my boots.',
+    sentenceTr: 'Çizmelerimle su birikintisinin üzerinden atlarım.',
+  },
+  shine: {
+    tr: 'Parlamak',
+    emoji: '☀️',
+    sentence: 'The sun can shine after the rain.',
+    sentenceTr: 'Güneş yağmurdan sonra parlayabilir.',
+  },
+  calendar: {
+    tr: 'Takvim',
+    emoji: '🗓️',
+    sentence: 'The calendar hangs on the wall.',
+    sentenceTr: 'Takvim duvarda asılıdır.',
+  },
+  count: {
+    tr: 'Saymak',
+    emoji: '🔢',
+    sentence: 'I count the stars in the game.',
+    sentenceTr: 'Oyundaki yıldızları sayarım.',
+  },
+  more: {
+    tr: 'Daha fazla',
+    emoji: '➕',
+    sentence: 'I need more time to finish.',
+    sentenceTr: 'Bitirmek için daha fazla zamana ihtiyacım var.',
+  },
+  coin: {
+    tr: 'Madeni para',
+    emoji: '🪙',
+    sentence: 'I put one coin in the jar.',
+    sentenceTr: 'Kavanoza bir madeni para koyarım.',
+  },
+  weigh: {
+    tr: 'Tartmak',
+    emoji: '⚖️',
+    sentence: 'We weigh the apples on the scale.',
+    sentenceTr: 'Elmaları terazide tartarız.',
+  },
+  arrive: {
+    tr: 'Varmak',
+    emoji: '🚍',
+    sentence: 'We arrive at school on time.',
+    sentenceTr: 'Okula zamanında varırız.',
+  },
+  before: {
+    tr: 'Önce',
+    emoji: '⏪',
+    sentence: 'Wash your hands before dinner.',
+    sentenceTr: 'Akşam yemeğinden önce ellerini yıka.',
+  },
+  scoreboard: {
+    tr: 'Skor tabelası',
+    emoji: '📊',
+    sentence: 'The scoreboard shows our points.',
+    sentenceTr: 'Skor tabelası puanlarımızı gösterir.',
+  },
+  kilogram: {
+    tr: 'Kilogram',
+    emoji: '⚖️',
+    sentence: 'The bag weighs one kilogram.',
+    sentenceTr: 'Çanta bir kilogram gelir.',
+  },
+  'field trip': {
+    tr: 'Okul gezisi',
+    emoji: '🚌',
+    sentence: 'Our field trip is on Friday.',
+    sentenceTr: 'Okul gezimiz cuma günü.',
+  },
+
   potato: {
     tr: 'Patates',
     sentence: 'I like potatoes.',
@@ -1775,7 +2366,7 @@ const vocabDB: Record<string, VocabEntry> = {
   },
   cheap: {
     tr: 'Ucuz',
-    sentence: 'This is cheap.',
+    sentence: 'This is cheap to buy.',
     sentenceTr: 'Bu ucuz.',
     altSentences: [
       { en: 'The house is cheap.', tr: 'Ev ucuz.' },
@@ -8405,14 +8996,474 @@ const EMOJI_MAP: Record<string, string> = {
   plain: '⬜',
 };
 
+const EMOJI_FALLBACK_ALIASES: Record<string, string> = {
+  adventure: '🗺️',
+  air: '💨',
+  alarm: '⏰',
+  'aisle seat': '🪑',
+  ambulance: '🚑',
+  apron: '👩‍🍳',
+  arrive: '📍',
+  audience: '👥',
+  author: '✍️',
+  'back seat': '🚙',
+  balance: '⚖️',
+  band: '🎵',
+  beads: '📿',
+  bean: '🫘',
+  bedtime: '🛏️',
+  blend: '🎨',
+  blow: '💨',
+  'boarding pass': '🎟️',
+  bone: '🦴',
+  bookmark: '🔖',
+  budget: '💰',
+  'bus time': '🚌',
+  call: '📞',
+  campsite: '⛺',
+  canvas: '🖼️',
+  carton: '📦',
+  castle: '🏰',
+  celebrate: '🎉',
+  checklist: '📋',
+  'check in': '🛂',
+  check: '✅',
+  chorus: '🎶',
+  cleanup: '🧹',
+  'cleanup team': '🧹',
+  collage: '🖼️',
+  collect: '🧺',
+  color: '🎨',
+  community: '👨‍👩‍👧‍👦',
+  compare: '⚖️',
+  costume: '🎭',
+  count: '🔢',
+  cover: '🛡️',
+  crab: '🦀',
+  crack: '🥚',
+  crayon: '🖍️',
+  cream: '🥛',
+  crispy: '🥨',
+  'crossing guard': '🚦',
+  cucumber: '🥒',
+  curtain: '🎭',
+  'cutting board': '🪵',
+  dairy: '🥛',
+  dark: '🌑',
+  decorate: '🎨',
+  den: '🕳️',
+  depart: '✈️',
+  dizzy: '😵',
+  dozen: '📦',
+  drive: '🚗',
+  drizzle: '🌦️',
+  eagle: '🦅',
+  earth: '🌍',
+  energy: '⚡',
+  equal: '🟰',
+  erase: '🧽',
+  explore: '🔎',
+  eyes: '👀',
+  ears: '👂',
+  ending: '🏁',
+  family: '👨‍👩‍👧‍👦',
+  'field trip': '🚌',
+  'first aid kit': '🩹',
+  finish: '🏁',
+  floor: '🏢',
+  follow: '➡️',
+  forecast: '🌤️',
+  fox: '🦊',
+  'frozen food': '🧊',
+  'front seat': '🚗',
+  fresh: '🥬',
+  'fruit stand': '🍎',
+  gas: '⛽',
+  'gas station': '⛽',
+  glass: '🥛',
+  glitter: '✨',
+  glue: '🧴',
+  grate: '🧀',
+  group: '👥',
+  grow: '🌱',
+  habit: '🔁',
+  'half past': '🕧',
+  harvest: '🌾',
+  headache: '🤕',
+  heal: '💊',
+  healthy: '💪',
+  heartbeat: '💓',
+  helper: '🤝',
+  hero: '🦸',
+  hike: '🥾',
+  highway: '🛣️',
+  humid: '💧',
+  ice: '🧊',
+  'ice pack': '🧊',
+  imagine: '💭',
+  insect: '🪲',
+  jar: '🫙',
+  journey: '🗺️',
+  'key card': '🪪',
+  knead: '🍞',
+  knife: '🔪',
+  knee: '🦵',
+  landing: '🛬',
+  late: '⏰',
+  lettuce: '🥬',
+  lid: '🥫',
+  line: '↕️',
+  list: '📋',
+  lobby: '🏨',
+  loud: '📣',
+  'luggage tag': '🏷️',
+  lunchtime: '🍽️',
+  marker: '🖍️',
+  marshmallow: '🍡',
+  meadow: '🌾',
+  medal: '🏅',
+  meeting: '🗣️',
+  metal: '🔩',
+  migration: '🦅',
+  minute: '⏱️',
+  microphone: '🎤',
+  mix: '🥣',
+  month: '📅',
+  mural: '🖼️',
+  muscle: '💪',
+  nap: '😴',
+  napkin: '🧻',
+  neighbor: '🏠',
+  nervous: '😬',
+  newspaper: '📰',
+  notebook: '📓',
+  "o'clock": '🕐',
+  'on time': '⏰',
+  organize: '🗂️',
+  pack: '🎒',
+  paddle: '🛶',
+  page: '📄',
+  pair: '👥',
+  pancake: '🥞',
+  paper: '📄',
+  partner: '🤝',
+  pasta: '🍝',
+  patient: '🧑‍⚕️',
+  pattern: '🔷',
+  pay: '💳',
+  peel: '🍌',
+  perform: '🎭',
+  pick: '🤏',
+  picnic: '🧺',
+  'picnic basket': '🧺',
+  picture: '🖼️',
+  planner: '🗓️',
+  plastic: '🧴',
+  plate: '🍽️',
+  playtime: '🧸',
+  points: '🎯',
+  postcard: '💌',
+  poster: '🪧',
+  practice: '🏃',
+  prepare: '🧰',
+  present: '🎁',
+  proud: '😌',
+  puppet: '🪆',
+  'quarter past': '🕒',
+  'quarter to': '🕘',
+  quiet: '🤫',
+  raccoon: '🦝',
+  radio: '📻',
+  ready: '✅',
+  receipt: '🧾',
+  reception: '🛎️',
+  record: '🏅',
+  reduce: '📉',
+  reef: '🐠',
+  rehearsal: '🎭',
+  reminder: '🔔',
+  rescue: '🛟',
+  reuse: '♻️',
+  review: '🔁',
+  reward: '🏆',
+  rhythm: '🥁',
+  rinse: '🚿',
+  ripe: '🍑',
+  roast: '🔥',
+  root: '🌱',
+  rough: '🪨',
+  routine: '🔁',
+  safe: '🛡️',
+  salt: '🧂',
+  sauce: '🥫',
+  scale: '⚖️',
+  scarecrow: '🧑‍🌾',
+  season: '🍂',
+  seatbelt: '🔒',
+  security: '🛂',
+  seagull: '🕊️',
+  serve: '🍽️',
+  shade: '🌗',
+  shape: '🔷',
+  share: '🤝',
+  sharp: '🔪',
+  show: '🎭',
+  shine: '✨',
+  'shopping list': '📋',
+  leave: '🚪',
+  shower: '🚿',
+  sketch: '✏️',
+  slippers: '🩴',
+  slippery: '⚠️',
+  smell: '👃',
+  smoke: '💨',
+  smooth: '🪞',
+  sniffle: '🤧',
+  soft: '🧸',
+  soil: '🪴',
+  sore: '🤕',
+  sort: '🗂️',
+  spend: '💸',
+  spin: '🌀',
+  splash: '💦',
+  sprinkle: '✨',
+  stage: '🎭',
+  'stage prop': '🎭',
+  starfish: '⭐',
+  stars: '⭐',
+  steam: '♨️',
+  sticker: '🏷️',
+  stir: '🥄',
+  stomachache: '🤢',
+  stove: '🔥',
+  story: '📖',
+  stream: '🏞️',
+  street: '🛣️',
+  stretch: '🧘',
+  strum: '🎸',
+  subtract: '➖',
+  sunlight: '☀️',
+  surprise: '🎁',
+  sweet: '🍬',
+  swimsuit: '🩱',
+  takeoff: '🛫',
+  tap: '👆',
+  tape: '📼',
+  test: '📝',
+  thousand: '💯',
+  timer: '⏲️',
+  tissue: '🤧',
+  title: '🏷️',
+  toe: '🦶',
+  total: '🧮',
+  trace: '✏️',
+  'traffic sign': '🚸',
+  trail: '🥾',
+  'trash bin': '🗑️',
+  treasure: '💎',
+  trolley: '🛒',
+  tummy: '🍽️',
+  'turn off': '⏻',
+  twirl: '🩰',
+  unpack: '🧳',
+  vacation: '🏖️',
+  vanilla: '🍨',
+  verse: '🎼',
+  view: '🏞️',
+  'waiting room': '🪑',
+  wake: '⏰',
+  warn: '⚠️',
+  week: '📅',
+  weigh: '⚖️',
+  whisper: '🤫',
+  wide: '↔️',
+  wind: '💨',
+  'window seat': '🪟',
+  winner: '🏆',
+  wish: '🌠',
+  worried: '😟',
+  worse: '📉',
+  'x-ray': '🩻',
+  yarn: '🧶',
+  add: '➕',
+  bend: '🧘',
+  berry: '🫐',
+  bill: '💵',
+  birthday: '🎂',
+  body: '🧍',
+  breathe: '🌬️',
+  brush: '🖌️',
+  button: '🔘',
+  change: '🪙',
+  character: '🎭',
+  checkout: '🧾',
+  choose: '👉',
+  chop: '🔪',
+  class: '🏫',
+  coins: '🪙',
+  concert: '🎵',
+  crawl: '🐛',
+  cut: '✂️',
+  deep: '🕳️',
+  describe: '💬',
+  drink: '🥤',
+  early: '⏰',
+  exit: '🚪',
+  freeze: '🧊',
+  hide: '🙈',
+  holiday: '🎉',
+  home: '🏠',
+  hour: '⏰',
+  hum: '🎵',
+  hunt: '🎯',
+  hurry: '⏱️',
+  hurt: '🤕',
+  less: '➖',
+  liter: '🥤',
+  litter: '🗑️',
+  mark: '✏️',
+  measure: '📏',
+  melt: '💧',
+  messy: '🫠',
+  'movie time': '🎬',
+  mystery: '🔍',
+  pajamas: '🛏️',
+  project: '🛠️',
+  protect: '🛡️',
+  roll: '🌀',
+  shoulder: '💪',
+  sleepy: '😴',
+  slice: '🔪',
+  sneeze: '🤧',
+  appointment: '📅',
+  ache: '🤕',
+  active: '⚡',
+  after: '➡️',
+  bow: '🎀',
+  centimeter: '📏',
+  daily: '📆',
+  donut: '🍩',
+  meter: '📏',
+  paste: '🧴',
+  vegetables: '🥦',
+};
+
+function titleCaseWord(word: string): string {
+  return word
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function resolveEmojiHint(word: string): string | undefined {
+  const key = word.toLowerCase().trim();
+  const titleCase = titleCaseWord(key);
+  const direct =
+    EMOJI_MAP[key] ?? EMOJI_MAP[word] ?? EMOJI_MAP[titleCase] ?? EMOJI_FALLBACK_ALIASES[key];
+  if (direct) return direct;
+
+  for (const token of key.split(/[\s-]+/)) {
+    const singularToken = token.endsWith('s') ? token.slice(0, -1) : token;
+    const tokenEmoji =
+      EMOJI_MAP[token] ??
+      EMOJI_MAP[titleCaseWord(token)] ??
+      EMOJI_MAP[singularToken] ??
+      EMOJI_MAP[titleCaseWord(singularToken)] ??
+      EMOJI_FALLBACK_ALIASES[token] ??
+      EMOJI_FALLBACK_ALIASES[singularToken];
+    if (tokenEmoji) return tokenEmoji;
+  }
+
+  return undefined;
+}
+
+function buildSyntheticFallbackLines(word: string): {
+  sentence: string;
+  sentenceTr: string;
+  altSentences: Array<{ en: string; tr: string }>;
+} {
+  const normalizedWord = word.trim();
+  const label = titleCaseWord(normalizedWord);
+  const isPhrase = /[\s-]/.test(normalizedWord);
+
+  if (isPhrase) {
+    return {
+      sentence: `Let's say ${normalizedWord} together.`,
+      sentenceTr: `"${label}" ifadesini birlikte söyleyelim.`,
+      altSentences: [
+        {
+          en: `Try saying ${normalizedWord}.`,
+          tr: `Hadi "${label}" diyelim.`,
+        },
+      ],
+    };
+  }
+
+  return {
+    sentence: `Let's learn the word ${normalizedWord}.`,
+    sentenceTr: `${label} kelimesini öğrenelim.`,
+    altSentences: [
+      {
+        en: `Can you say ${normalizedWord}?`,
+        tr: `${label} diyebilir misin?`,
+      },
+    ],
+  };
+}
+
+function buildSyntheticVocabEntry(word: string): VocabEntry {
+  const label = titleCaseWord(word.trim());
+  const fallbackLines = buildSyntheticFallbackLines(word);
+  return {
+    tr: label,
+    emoji: resolveEmojiHint(word) ?? '📝',
+    sentence: fallbackLines.sentence,
+    sentenceTr: fallbackLines.sentenceTr,
+    altSentences: fallbackLines.altSentences,
+  };
+}
+
+let currentFallbackTelemetryLessonId: string | null = null;
+let trackedFallbackTelemetryKeys = new Set<string>();
+let currentFallbackTelemetryWordCount = 0;
+let currentFallbackTelemetryEmojiCount = 0;
+
+function trackSyntheticVocabFallback(word: string, entry: VocabEntry): void {
+  if (!currentFallbackTelemetryLessonId) return;
+
+  const telemetryKey = `${currentFallbackTelemetryLessonId}:${word.toLowerCase()}`;
+  if (trackedFallbackTelemetryKeys.has(telemetryKey)) return;
+  trackedFallbackTelemetryKeys.add(telemetryKey);
+  currentFallbackTelemetryWordCount += 1;
+  if (entry.emoji !== undefined && entry.emoji !== '📝') {
+    currentFallbackTelemetryEmojiCount += 1;
+  }
+
+  trackLessonContentFallbackUsed({
+    lessonId: currentFallbackTelemetryLessonId,
+    word,
+    fallbackKind: 'synthetic_vocab',
+    hasEmoji: entry.emoji !== undefined && entry.emoji !== '📝',
+  });
+}
+
 // ===== HELPER — vocab entry lookup =====
+export function hasExplicitVocab(word: string): boolean {
+  const key = word.toLowerCase();
+  return key in vocabDB || word in vocabDB;
+}
+
 export function getVocab(word: string): VocabEntry {
   const key = word.toLowerCase();
-  const entry = vocabDB[key] ??
-    vocabDB[word] ?? { tr: word, sentence: `This is ${word}.`, sentenceTr: `Bu ${word}.` };
+  const explicitEntry = vocabDB[key] ?? vocabDB[word];
+  const entry = explicitEntry ?? buildSyntheticVocabEntry(word);
+  if (!explicitEntry) {
+    trackSyntheticVocabFallback(word, entry);
+  }
   // Attach emoji from map if not already present on the entry
   if (!entry.emoji) {
-    const emoji = EMOJI_MAP[key] ?? EMOJI_MAP[word];
+    const emoji = resolveEmojiHint(word);
     if (emoji) return { ...entry, emoji };
   }
   return entry;
@@ -9883,6 +10934,10 @@ export function generateActivities(lesson: CurriculumLesson): Activity[] {
   // Reset counters for each lesson generation
   _activityCounter = 0;
   _vocabIndex = 0;
+  currentFallbackTelemetryLessonId = lesson.id;
+  trackedFallbackTelemetryKeys = new Set<string>();
+  currentFallbackTelemetryWordCount = 0;
+  currentFallbackTelemetryEmojiCount = 0;
 
   const { id: lessonId, vocabulary: words, activityTypes } = lesson;
   const activities: Activity[] = [];
@@ -9984,6 +11039,21 @@ export function generateActivities(lesson: CurriculumLesson): Activity[] {
       maxAttempts: 1,
     });
   }
+
+  if (currentFallbackTelemetryWordCount > 0) {
+    trackLessonContentFallbackSummary({
+      lessonId: lesson.id,
+      worldId: lesson.id.split('_')[0] ?? 'unknown',
+      fallbackWordCount: currentFallbackTelemetryWordCount,
+      fallbackWithEmojiCount: currentFallbackTelemetryEmojiCount,
+      totalVocabularyWords: lesson.vocabulary.length,
+    });
+  }
+
+  currentFallbackTelemetryLessonId = null;
+  trackedFallbackTelemetryKeys = new Set<string>();
+  currentFallbackTelemetryWordCount = 0;
+  currentFallbackTelemetryEmojiCount = 0;
 
   return activities;
 }

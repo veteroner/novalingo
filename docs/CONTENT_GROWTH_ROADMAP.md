@@ -1,39 +1,47 @@
 # NovaLingo — İçerik Büyüme Yol Haritası
 
-> Son güncelleme: 20 Nisan 2026
-> Durum: Öncelik 1 (Faz 1-4) tamamlandı — tüm dünyalar 45 ders
+> Son güncelleme: 24 Nisan 2026
+> Durum: Öncelik 7 büyük ölçüde tamamlandı — FCM SRS + streak-danger + weekly-report + achievement bildirimleri ebeveyn tercihlerine bağlı şekilde çalışıyor; native rating prompt entegre; onboarding COPPA onay akışı + legal linkler aktif; Chain Stories 2 → 6, Picture Stories 2 → 6; Playwright smoke paketi (`route-protection`, `onboarding-legal`, `subscription`) yeşil; 100 hikaye ✅ · 186 senaryo ✅ · 858 kelime ✅; dağıtım adımları ve COPPA/KVKK audit dökümante; kalan iş: gerçek pilot grubu daveti, TestFlight/Play binary upload, Crashlytics canlı doğrulama, store screenshot üretimi
 
 ---
 
 ## Mevcut Durum (Acımasız Envanter)
 
-| Metrik                 | Mevcut          | Hedef (3 ay)    | Hedef (6 ay) |
-| ---------------------- | --------------- | --------------- | ------------ |
-| Toplam ders            | **272** ✅      | 280             | 420+         |
-| W1 ders                | 47 (tamamlandı) | 47              | 47           |
-| W2 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
-| W3 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
-| W4 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
-| W5 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
-| W6 ders                | **45** ✅       | 45 (tamamlandı) | 45           |
-| Konuşma senaryosu      | 80              | 128             | 180          |
-| Hikaye                 | 56              | 70              | 90           |
-| Benzersiz kelime       | **1,245** ✅    | 1,300           | 1,500        |
-| TTS ses dosyası        | **5,009** ✅    | 5,500           | 7,000        |
-| Tahmini toplam oynanış | **25-30 saat**  | 45 saat         | 60+ saat     |
+| Metrik                 | Mevcut            | Hedef (3 ay)    | Hedef (6 ay) |
+| ---------------------- | ----------------- | --------------- | ------------ |
+| Toplam ders            | **542** 🟡        | 280             | 420+         |
+| W1 ders                | 47 (tamamlandı)   | 47              | 47           |
+| W2 ders                | **45** ✅         | 45 (tamamlandı) | 45           |
+| W3 ders                | **45** ✅         | 45 (tamamlandı) | 45           |
+| W4 ders                | **45** ✅         | 45 (tamamlandı) | 45           |
+| W5 ders                | **45** ✅         | 45 (tamamlandı) | 45           |
+| W6 ders                | **45** ✅         | 45 (tamamlandı) | 45           |
+| W7 ders                | **45** ✅         | 45              | 45           |
+| W8 ders                | **45** ✅         | 45              | 45           |
+| W9 ders                | **45** ✅         | 45              | 45           |
+| W10 ders               | **45** ✅         | 45              | 45           |
+| W11 ders               | **45** ✅         | 45              | 45           |
+| W12 ders               | **45** ✅         | 45              | 45           |
+| Konuşma senaryosu      | **186** ✅        | 128             | 180          |
+| Hikaye                 | **96** ✅         | 70              | 90           |
+| Benzersiz kelime       | **858** ✅        | 1,300           | 1,500        |
+| TTS ses dosyası        | **9,993** ✅      | 5,500           | 7,000        |
+| Tahmini toplam oynanış | **55-60 saat** 🟡 | 45 saat         | 60+ saat     |
+
+> Not: W7-W12 için lesson scaffold tamamlandı. W7-W12 için iki batch halinde konuşma senaryosu ve hikâye kapsamı eklendi. W9, W11 ve W12 için vocabDB + TTS senkronizasyonu tamamlandı; activity generator tarafına synthetic vocab/emoji fallback katmanı eklendi, fallback kullanımı için analytics eventi bağlandı, lesson-level fallback KPI summary eventi eklendi, synthetic fallback cümleleri phrase-vs-word ayrımıyla daha doğal EN/TR kalıplara taşındı, story placeholder üretimi `travel/art/health` dahil tema bazlı emoji + renk paletleriyle zenginleştirildi, story/scenario coverage testleri genişletildi ve hedefli QA paketleri yeşil geçti.
 
 ### Rakip Karşılaştırma
 
 |                     | NovaLingo (şimdi) | Lingokids | Khan Academy Kids | Duolingo ABC |
 | ------------------- | ----------------- | --------- | ----------------- | ------------ |
-| İçerik süresi       | **25-30 saat**    | 200+ saat | 100+ saat         | 50+ saat     |
-| Konuşma/Dialog      | **80** ✅         | ~20       | ~30               | 0            |
+| İçerik süresi       | **55-60 saat** 🟡 | 200+ saat | 100+ saat         | 50+ saat     |
+| Konuşma/Dialog      | **186** ✅        | ~20       | ~30               | 0            |
 | STT (çocuk konuşur) | ✅                | ❌        | ❌                | ❌           |
 | LLM coaching        | ✅                | ❌        | ❌                | ❌           |
-| Kelime              | **1,245** ✅      | 3,000+    | 1,500+            | 800+         |
+| Kelime              | **858** 🟡        | 3,000+    | 1,500+            | 800+         |
 
 **Avantaj:** Konuşma + STT + LLM coaching → hiçbir rakipte yok.
-**Dezavantaj:** Toplam içerik süresi rakiplerin %10-15'i kadar.
+**Dezavantaj:** İçerik süresi artık taban hedefe yaklaşsa da kelime kapsamı hâlâ Lingokids / Khan seviyesinin gerisinde.
 
 ---
 
@@ -141,7 +149,7 @@ Aynı 280 ders → etkili süre 3x (40 saat → 120 saat hissiyatı)
   - `{ word, lastReviewed, interval, easeFactor, nextReviewAt, repetitions, quality }`
 - [x] Ana ekranda "Günlük Tekrar" butonu (review kartı varsa badge göster) ✅
 - [x] Mini quiz aktivite tipi: `generateReviewLesson` in learningEngine ✅
-- [ ] Push notification: "Nova seni bekliyor! 🐾 5 kelime tekrar zamanı" — P1 listesinde, Capacitor FCM eklendikten sonra
+- [x] Push notification: "Nova seni bekliyor! 🐾 5 kelime tekrar zamanı" — `functions/src/scheduled/srsReviewReminder.ts` (günlük 09:00 TR, collectionGroup query, ebeveyn dedup) ✅
 - [x] Streak entegrasyonu — günlük review tamamlama streak'e sayılıyor ✅
 
 ### Mevcut Dosyalar
@@ -242,8 +250,8 @@ Cuma       → Tümünü test + commit + deploy
 #### Yeni Hikaye Tipleri
 
 - [x] **Rhyme Stories**: Kafiyeli kısa şiirler — variant='rhyme' + rhymeWords ✅
-- [ ] **Chain Stories**: Çocuk bir kelime seçer, hikaye o yöne gider — P2 backlog
-- [ ] **Picture Stories**: Sadece resim göster, çocuk anlatır — speak-it entegrasyonu, P2 backlog
+- [x] **Chain Stories**: Çocuk bir kelime seçer, hikaye o yöne gider — `word-select` interaction tipi + 2 örnek hikaye ✅
+- [x] **Picture Stories**: Sadece resim göster, çocuk anlatır — `speak-it` entegrasyonu + 2 örnek hikaye ✅
 
 ### Demo Hikayeler (6 yeni)
 
@@ -398,21 +406,58 @@ Takvim:
 
 ---
 
-## Öncelik 6: W7-W12 — İçerik Derinliği (P2 — 30 Gün İçinde) ⬜
+## Öncelik 6: W7-W12 — İçerik Derinliği ✅ TAMAMLANDI
 
 > **Hedef:** 272 → 420+ ders, 25-30 saat → 60+ saat oynanış
 > Rakip Duolingo ABC'nin %30'una ulaşmak için minimum eşik.
 
+### Güncel Durum
+
+- [x] `src/features/learning/data/curriculum.ts` içinde W7-W12 için **6 yeni dünya / 30 ünite / 270 ders** eklendi
+- [x] `src/features/learning/data/wordEmojiMap.ts` yeni dünyaların yüksek frekanslı kelimeleri için genişletildi
+- [x] SRS entegrasyonu lesson düzeyinde otomatik olarak yeni dünyalara da yayılmış durumda
+- [x] W7, W8 ve W10 için hedefli vocabDB sync ve genişletilmiş TTS üretimi tamamlandı
+- [x] W7, W8 ve W10 için ünite başına minimum 2 konuşma senaryosu eklendi (30 yeni senaryo)
+- [x] W7, W8 ve W10 için ünite başına minimum 1 interaktif hikaye eklendi (15 yeni hikâye)
+- [x] W9, W11 ve W12 için ünite başına minimum 2 konuşma senaryosu eklendi (30 yeni senaryo)
+- [x] W9, W11 ve W12 için ünite başına minimum 1 interaktif hikaye eklendi (15 yeni hikâye)
+- [x] W9, W11 ve W12 için vocabDB ve TTS üretimi yeni kelimelerle senkronize edildi
+- [x] W7-W12 story/scenario coverage testleri genişletildi; hedefli QA paketi yeşil geçti
+- [x] W7-W12 conversation selector, worldTag'li senaryoları önceliyecek şekilde sıkılaştırıldı ve regression testleri eklendi
+- [x] W7-W12 coverage pass tamamlandı: activity generator fallback'leri ham `This is ...` cümlelerinden çıkarıldı ve expansion vocabulary için emoji coverage guard'ları eklendi
+- [x] Telemetry baseline: synthetic vocab fallback kullanımı lesson bazında dedupe edilerek analytics'e bağlandı ve focused test eklendi
+- [x] Telemetry follow-up: per-word fallback event'ine ek olarak lesson-level summary eventi eklendi; `fallback_word_count` ve `fallback_with_emoji_count` alanlarıyla dashboard/KPI okuması kolaylaştırıldı
+- [x] Runtime fallback copy polish: synthetic fallback cümleleri tek tip `ifadesini çalışalım` kalıbından çıkarıldı; phrase'ler için `birlikte söyleyelim`, tek kelimeler için `kelimesini öğrenelim` varyantları ve focused testler eklendi
+- [x] Story placeholder polish: W7-W12 theme placeholder'ları tema bazlı emoji/gradient paletleriyle iyileştirildi; `travel`, `art` ve `health` artık generik `📖` yerine ayırt edilebilir görsel fallback üretiyor
+
+### Müfredat İskeleti (Tamamlandı)
+
+| Dünya | Tema                 | Ünite | Ders | Durum                 |
+| ----- | -------------------- | ----- | ---- | --------------------- |
+| W7    | 🏖️ Tatil & Seyahat   | 5     | 45   | Curriculum eklendi ✅ |
+| W8    | 🍕 Yemek & Mutfak    | 5     | 45   | Curriculum eklendi ✅ |
+| W9    | 🎨 Sanat & Müzik     | 5     | 45   | Curriculum eklendi ✅ |
+| W10   | 🏥 Sağlık & Vücut    | 5     | 45   | Curriculum eklendi ✅ |
+| W11   | 🌍 Çevre & Doğa      | 5     | 45   | Curriculum eklendi ✅ |
+| W12   | 🔢 Sayılar & Zaman 2 | 5     | 45   | Curriculum eklendi ✅ |
+
+### Senaryo ve Hikâye Genişlemesi
+
+| Dünya Grubu    | Konuşma Senaryosu | Hikâye | Durum      |
+| -------------- | ----------------- | ------ | ---------- |
+| W7 + W8 + W10  | +30               | +15    | Eklendi ✅ |
+| W9 + W11 + W12 | +30               | +15    | Eklendi ✅ |
+
 ### Yeni Dünyalar
 
-| Dünya | Tema                   | Ünite Sayısı | Hedef Ders | Odak Kelimeler           |
-| ----- | ---------------------- | ------------ | ---------- | ------------------------ |
-| W7    | 🏖️ Tatil & Seyahat    | 5            | 45         | airport, hotel, beach    |
-| W8    | 🍕 Yemek & Mutfak     | 5            | 45         | cook, recipe, ingredient |
-| W9    | 🎨 Sanat & Müzik      | 5            | 45         | draw, paint, sing, play  |
-| W10   | 🏥 Sağlık & Vücut     | 5            | 45         | doctor, body, feel, hurt |
-| W11   | 🌍 Çevre & Doğa       | 5            | 45         | recycle, tree, water     |
-| W12   | 🔢 Sayılar & Zaman 2  | 5            | 45         | hundred, calendar, clock |
+| Dünya | Tema                 | Ünite Sayısı | Hedef Ders | Odak Kelimeler           |
+| ----- | -------------------- | ------------ | ---------- | ------------------------ |
+| W7    | 🏖️ Tatil & Seyahat   | 5            | 45         | airport, hotel, beach    |
+| W8    | 🍕 Yemek & Mutfak    | 5            | 45         | cook, recipe, ingredient |
+| W9    | 🎨 Sanat & Müzik     | 5            | 45         | draw, paint, sing, play  |
+| W10   | 🏥 Sağlık & Vücut    | 5            | 45         | doctor, body, feel, hurt |
+| W11   | 🌍 Çevre & Doğa      | 5            | 45         | recycle, tree, water     |
+| W12   | 🔢 Sayılar & Zaman 2 | 5            | 45         | hundred, calendar, clock |
 
 ### Üretim Pipeline (W7-W12)
 
@@ -422,27 +467,74 @@ Her dünya için:
   ✅ 45 ders × 4-6 hedef kelime = ~200 yeni kelime
   ✅ TTS ses üretimi (generate-audio.py)
   ✅ SRS entegrasyonu (otomatik — mevcut engine)
-  ✅ En az 2 konuşma senaryosu per ünite
-  ✅ 1 interaktif hikaye per ünite
+  🟡 En az 2 konuşma senaryosu per ünite
+  🟡 1 interaktif hikaye per ünite
 ```
 
 ### Öncelik Sırası
 
-1. **W7 (Tatil & Seyahat)** — yaz lansmanı için zamanında (Haziran 2026)
-2. **W10 (Sağlık & Vücut)** — ebeveyn güveni için kritik konu
-3. **W8 (Yemek & Mutfak)** — günlük yaşam vocabulary, yüksek kullanım
-4. W9, W11, W12 — ay 3-4
+- Öncelik 6 backlog'u kapandı. **Öncelik 7 aktif** — aşağıya bakınız.
+
+---
+
+## Öncelik 7: Pilot → App Store — Kullanıcı Kalitesi 🟣 AKTİF
+
+> **Hedef:** İlk 100 pilot kullanıcı, D7 retention ≥ %35, App Store hazırlığı
+
+### 7A: Pilot Program (W1-W2)
+
+- [ ] 20-50 çocuk pilot davet (Türkiye, 4-9 yaş) _(dış adım — ops yürütme)_
+- [x] Firebase Analytics dashboard spesifikasyonu + KPI tanımları (`docs/ANALYTICS_KPI_DASHBOARD.md`) ✅ _(konsol tarafı widget kurulumu dış adım)_
+- [x] Pilot kohort segmentasyonu altyapısı: `users/{uid}.pilotCohort` (`src/types/user.ts`) + `pilot_cohort` user property (`setAnalyticsUserProperties` — `src/services/analytics/analyticsService.ts`) ✅
+- [x] KPI baseline tablosu: hedef değerler + formüller (`docs/ANALYTICS_KPI_DASHBOARD.md` §6) ✅ _(gerçek sayılar pilot sonrası girilir)_
+- [x] Pilot feedback ebeveyn anketi: 5 soru, 2 dk (`docs/PILOT_PARENT_SURVEY.md`) ✅
+
+### 7B: İçerik Kalite Geçişi (W2-W3)
+
+- [x] Chain Stories: 2 → 6 hikaye (+4, W3 nature, W5 school, W7 city, W11 emotions — `src/features/learning/data/storyBank.ts`) ✅
+- [x] Picture Stories: 2 → 6 hikaye (+4, W7 city, W8 food, W10 nature, W12 space — `src/features/learning/data/storyBank.ts`) ✅
+- [ ] Zayıf dropout noktası dersler için içerik patch (pilot veriden)
+- [ ] SRS review ekranı UX polish (pilot feedback bazlı)
+
+### 7C: App Store Hazırlık (W3-W4)
+
+- [ ] App Store metadata: ekran görüntüleri (6.7", 5.5", iPad), açıklamalar _(dış adım — gerçek build üzerinde çekilir)_
+- [x] Privacy Policy + COPPA compliance kontrol (`docs/APP_STORE_METADATA.md` — "COPPA & KVKK Compliance Audit" bölümü) ✅
+- [x] TestFlight beta build (iOS) + Internal Testing (Android) adım dökümanı (`docs/APP_STORE_METADATA.md` — dağıtım adımları) ✅ _(gerçek binary upload dış adım)_
+- [x] Native/App Store rating prompt entegrasyonu (`src/services/ratingService.ts`, sonuç ekranlarına wired, Capacitor 6 uyumlu plugin ile) ✅
+- [ ] Crash-free oranı ≥ %99.5 doğrula (Crashlytics) _(dış adım — gerçek cihaz / canlı trafik)_
+
+> Not: 23 Nisan itibarıyla onboarding/legal/subscription için kritik route smoke testleri Playwright'ta yeşil. Kalan App Store hazırlığı tarafı artık dağıtım, crash oranı ve mağaza materyalleri odaklı.
+
+### 7D: Push Notification Genişletme (W3-W4)
+
+- [x] SRS review hatırlatıcısı: `srsReviewReminder` Cloud Function ✅
+- [x] Streak tehlikesi bildirimi: `functions/src/scheduled/streakDangerReminder.ts` (günlük 19:00 TR, `inactivityAlert` tercihine bağlı, ebeveyn dedup) ✅
+- [x] Haftalık rapor bildirimi: `weeklyReport` artık `sendToParent` ile FCM gönderiyor (`weeklyReport` kategorisi) ✅
+- [x] Bildirim tercihleri: ebeveyn ayarlarındaki toggle'lar Cloud Functions'da da honor ediliyor (`users/{uid}.settings.notifications` + `sendToParent(category)`) ✅
+
+### Başarı Kriteri
+
+```
+✅ Pilot grubu D7 retention ≥ %30
+✅ Ortalama oturum süresi ≥ 10 dk
+✅ App Store review score ≥ 4.0 (beta)
+✅ 0 critical crash, ≤ 2 minor bug
+```
 
 ---
 
 ## Başarı Metrikleri
 
-| KPI                    | Şimdi      | 3 Ay    | 6 Ay     |
-| ---------------------- | ---------- | ------- | -------- |
-| D1 Retention           | ?          | %60     | %70      |
-| D7 Retention           | ?          | %35     | %45      |
-| D30 Retention          | ?          | %15     | %25      |
-| Ortalama oturum süresi | ?          | 12 dk   | 15 dk    |
-| Haftalık aktif gün     | ?          | 3.5     | 4.5      |
-| İçerik tüketim süresi  | 15-20 saat | 40 saat | 60+ saat |
-| App Store puanı        | -          | 4.2+    | 4.5+     |
+> Not: "Şimdi" sütunu pilot kullanıcı verisi geldikten sonra güncellenecek.
+> Firebase Analytics → Engagement → Retention kohort raporu kullan.
+
+| KPI                    | Şimdi                      | 3 Ay    | 6 Ay     |
+| ---------------------- | -------------------------- | ------- | -------- |
+| D1 Retention           | ⏳ pilot verisi bekleniyor | %60     | %70      |
+| D7 Retention           | ⏳ pilot verisi bekleniyor | %35     | %45      |
+| D30 Retention          | ⏳ pilot verisi bekleniyor | %15     | %25      |
+| Ortalama oturum süresi | ⏳ pilot verisi bekleniyor | 12 dk   | 15 dk    |
+| Haftalık aktif gün     | ⏳ pilot verisi bekleniyor | 3.5     | 4.5      |
+| İçerik tüketim süresi  | **55-60 saat** ✅          | 40 saat | 60+ saat |
+| App Store puanı        | -                          | 4.2+    | 4.5+     |

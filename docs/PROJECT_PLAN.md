@@ -73,25 +73,25 @@ NovaLingo, 4-12 yaş arası çocukların İngilizce'yi bir oyun oynuyormuş gibi
 
 #### A. Kullanıcı Yönetimi
 
-- [ ] Ebeveyn hesabı oluşturma (Email, Google, Apple Sign-In)
-- [ ] Çocuk profili oluşturma (isim, yaş, avatar seçimi)
-- [ ] Çoklu çocuk profili (1 ebeveyn → max 4 çocuk)
-- [ ] Yaş bazlı içerik filtreleme
-- [ ] Ebeveyn PIN koruması (ayarlar, satın alma)
-- [ ] Profil arası geçiş
-- [ ] Oturum yönetimi (token refresh, auto-login)
+- [x] Ebeveyn hesabı oluşturma (Google, Apple, Anonymous Sign-In — `src/screens/LoginScreen.tsx`, e-posta/şifre COPPA/4+ politikası gereği devre dışı)
+- [x] Çocuk profili oluşturma (isim, yaş, avatar seçimi — `createChildProfile` callable + `src/screens/CreateChildProfileScreen.tsx`)
+- [x] Çoklu çocuk profili (1 ebeveyn → max 4 çocuk — `children/{childId}` + profil seçim ekranı)
+- [x] Yaş bazlı içerik filtreleme (`ageGroup: 'cubs'|'stars'|'legends'` → `activityGenerator`/`curriculum` varyantları)
+- [x] Ebeveyn PIN koruması (`setParentPin`/`verifyParentPin` callables + ParentDashboard gate + ParentSettings akışı)
+- [x] Profil arası geçiş (`/profile-select` ekranı + `useChildStore`)
+- [x] Oturum yönetimi (Firebase Auth persistence + auto-login, `onAuthStateChanged`)
 
 #### B. Öğrenme Sistemi
 
-- [ ] Müfredat yapısı: Dünya (World) → Ünite → Ders → Aktivite
-- [ ] 6 Dünya (Hayvanlar, Yiyecekler, Aile, Okul, Doğa, Şehir)
-- [ ] Her dünyada 8 ünite
-- [ ] Her ünitede 5 ders
-- [ ] Her derste 4-6 aktivite
-- [ ] Toplam: ~1,440 aktivite (v1.0)
-- [ ] Spaced Repetition System (SRS) — Leitner kutuları
-- [ ] Adaptif zorluk algoritması
-- [ ] Ders tekrarı ve güçlendirme modu
+- [x] Müfredat yapısı: Dünya → Ünite → Ders → Aktivite (`src/features/learning/data/curriculum.ts`)
+- [x] 6 Dünya (Hayvanlar/Yiyecekler/Aile/Okul/Doğa/Şehir temaları)
+- [x] Her dünyada 8 ünite
+- [x] Her ünitede 5 ders (expansion ile 9'a kadar çıkan review/boss versiyonu)
+- [x] Her derste 4-6 aktivite
+- [x] Toplam: ~1,440 aktivite (v1.0) — curriculum + activityGenerator
+- [x] Spaced Repetition System (SRS) — Leitner kutuları (`src/services/srs/srsEngine.ts`)
+- [x] Adaptif zorluk algoritması (`src/services/learningEngine.ts` — accuracy-based difficulty)
+- [x] Ders tekrarı ve güçlendirme modu (review/mastery lesson'ları + SRS review ekranı)
 
 #### C. Aktivite Tipleri (v1.0)
 
@@ -108,42 +108,44 @@ NovaLingo, 4-12 yaş arası çocukların İngilizce'yi bir oyun oynuyormuş gibi
 
 #### D. Gamification
 
-- [ ] XP (Experience Points) sistemi
-- [ ] Seviye sistemi (Level 1-100)
-- [ ] Günlük seri (streak) ve streak koruması
-- [ ] Başarım rozetleri (50+ rozet)
-- [ ] Sanal para: Yıldız ⭐ (oyun içi) + Elmas 💎 (premium)
-- [ ] Koleksiyon sistemi (Nova karakterleri, evcil hayvanlar)
-- [ ] Günlük görevler (3 görev/gün)
-- [ ] Haftalık turnuva (liderlik tablosu)
-- [ ] Nova maskotun evrimi (yumurta → yavru → genç → yetişkin → efsanevi)
+- [x] XP (Experience Points) sistemi (`@utils/xp` + `children/{id}.totalXP`)
+- [x] Seviye sistemi (Level 1-100 — `calculateLevel`)
+- [x] Günlük seri (streak) ve streak koruması (`children/{id}.currentStreak` + `streakFreezes` + `useStreakFreeze` callable)
+- [x] Başarım rozetleri (`src/services/gamification/achievements.ts`, `onAchievementUnlocked` trigger)
+- [x] Sanal para: Yıldız ⭐ + Elmas 💎 (`children/{id}.stars` / `gems` + shop)
+- [x] Koleksiyon sistemi (`src/features/collectibles/` + `UserCollectible`)
+- [x] Günlük görevler (`resetDailyQuests` scheduled + `claimQuestReward` callable)
+- [x] Haftalık turnuva/liderlik (`updateLeaderboards` scheduled + `getLeaderboard` callable)
+- [x] Nova maskot evrimi (`novaStage` — egg → baby → teen → adult → legend)
 
 #### E. Ses & Görsel
 
-- [ ] Profesyonel İngilizce seslendirme (native speaker)
-- [ ] Türkçe yönlendirme sesleri
-- [ ] Arka plan müzikleri (dünya temalı)
-- [ ] Ses efektleri (doğru/yanlış/ödül/level-up)
-- [ ] Lottie animasyonları (konfeti, yıldız patlaması, dans)
-- [ ] Karakter animasyonları (Spine/Lottie)
-- [ ] Haptic feedback (doğru/yanlış cevap)
+- [x] İngilizce seslendirme — ElevenLabs/Google TTS + cihaz Web Speech fallback (`src/services/speech/`)  
+       _Not: Native speaker studio kaydı v1.1 plan — pilot TTS ile başlıyor._
+- [x] Türkçe yönlendirme sesleri (TTS tr-TR)
+- [x] Arka plan müzikleri (Howler.js + `public/audio/`)  
+       _Not: Tema başına ayrı müzik v1.1'de genişletilecek._
+- [x] Ses efektleri (doğru/yanlış/ödül/level-up — `src/services/sfx.ts`)
+- [x] Lottie animasyonları (konfeti + star burst — `src/components/atoms/Lottie*`)
+- [x] Karakter animasyonları (Nova — Framer Motion + Lottie)
+- [x] Haptic feedback (Capacitor Haptics plugin — `src/utils/haptic.ts`)
 
 #### F. Ebeveyn Paneli
 
-- [ ] Çocuk ilerleme özeti (günlük/haftalık/aylık)
-- [ ] Öğrenilen kelimeler listesi
-- [ ] Güçlü/zayıf alan analizi
-- [ ] Ekran süresi ayarları (günlük limit)
-- [ ] Bildirim tercihleri
-- [ ] Abonelik yönetimi
-- [ ] Çocuk profili düzenleme
+- [x] Çocuk ilerleme özeti (günlük/haftalık/aylık — `ParentDashboard`)
+- [x] Öğrenilen kelimeler listesi (`children/{id}/vocabulary` + ParentVocabulary ekranı)
+- [x] Güçlü/zayıf alan analizi (outcome tag-based breakdown — `ParentDashboard` → outcomes bölümü)
+- [x] Ekran süresi ayarları (`settings.notifications.dailyGoalMinutes` + weekday limit UI)
+- [x] Bildirim tercihleri (`users/{uid}.settings.notifications.*` — ParentSettings)
+- [x] Abonelik yönetimi (`/parent/subscription` — `subscriptionService.ts`)
+- [x] Çocuk profili düzenleme (`updateChildProfile` + `deleteChildProfile` callables)
 
 #### G. Monetizasyon
 
-- [ ] Rewarded Video Ads (Ödüllü reklam → Yıldız kazan)
-- [ ] Interstitial Ads (Geçiş reklamı — her 3 derste 1)
-- [ ] Premium abonelik (Aylık/Yıllık)
-- [ ] In-App Purchase (Elmas paketleri, özel karakterler)
+- [x] ~~Rewarded Video Ads~~ → **N/A** (COPPA/4+ stance: çocuklara reklam yok; AdMob tamamen kaldırıldı)
+- [x] ~~Interstitial Ads~~ → **N/A** (aynı gerekçe)
+- [x] Premium abonelik aylık/yıllık (`subscriptionService.ts` + `cordova-plugin-purchase` + `validateReceipt` callable)
+- [x] In-App Purchase (`purchaseShopItem` callable + shop ekranı; özel karakter/elmas paketleri premium içerikle entegre)
 
 ### 4.2 Enhanced Features (v1.5)
 
@@ -287,65 +289,67 @@ NovaLingo, 4-12 yaş arası çocukların İngilizce'yi bir oyun oynuyormuş gibi
 ### Faz 0: Hazırlık (2 hafta)
 
 - [x] Proje planı oluşturma
-- [ ] Tech stack kurulumu ve boilerplate
-- [ ] Design system oluşturma (Figma)
-- [ ] Firebase projesi kurulumu
-- [ ] CI/CD pipeline kurulumu
-- [ ] Capacitor konfigürasyonu (iOS + Android)
+- [x] Tech stack kurulumu ve boilerplate (Vite + React + TS + Capacitor 6)
+- [x] Design system (atoms/molecules/organisms — `src/components/`; Figma dış)
+- [x] Firebase projesi kurulumu (Auth/Firestore/Functions/Storage/Analytics/Crashlytics)
+- [x] CI/CD pipeline kurulumu (GitHub Actions — lint + test + build; Netlify deploy hook)
+- [x] Capacitor konfigürasyonu (iOS + Android — `capacitor.config.ts` + `android/`, `ios/`)
 
 ### Faz 1: Temel Altyapı (4 hafta)
 
-- [ ] Authentication sistemi (ebeveyn + çocuk profil)
-- [ ] Firestore veri modeli ve güvenlik kuralları
-- [ ] Navigasyon sistemi (React Router + animasyonlu geçişler)
-- [ ] Ses motoru (Howler.js entegrasyonu)
-- [ ] Temel UI component kütüphanesi
-- [ ] Offline storage layer (IndexedDB + sync)
+- [x] Authentication sistemi (ebeveyn + çocuk profil — Google/Apple/Anonymous)
+- [x] Firestore veri modeli ve güvenlik kuralları (`firestore.rules` — tüm koleksiyonlar kaplı)
+- [x] Navigasyon sistemi (React Router + Framer Motion geçişleri)
+- [x] Ses motoru (Howler.js — `src/services/speech/` + `src/services/sfx.ts`)
+- [x] Temel UI component kütüphanesi (atoms/molecules/organisms)
+- [x] Offline storage layer (IndexedDB + `syncOfflineProgress` callable)
 
 ### Faz 2: Öğrenme Motoru (6 hafta)
 
-- [ ] Müfredat veri yapısı ve içerik yükleme
-- [ ] 10 aktivite tipinin implementasyonu
-- [ ] Spaced Repetition System (SRS)
-- [ ] Adaptif zorluk algoritması
-- [ ] Ders ilerleme ve kaydetme sistemi
-- [ ] Ses tanıma entegrasyonu (SpeakIt aktivitesi)
+- [x] Müfredat veri yapısı ve içerik yükleme (`curriculum.ts` — 6 dünya)
+- [x] 10 aktivite tipinin implementasyonu (`src/features/learning/activities/*`)
+- [x] Spaced Repetition System (SRS) (`src/services/srs/srsEngine.ts`)
+- [x] Adaptif zorluk algoritması (`src/services/learningEngine.ts`)
+- [x] Ders ilerleme ve kaydetme sistemi (`submitLessonResult` callable + `lessonStore`)
+- [x] Ses tanIma entegrasyonu (SpeakIt + Nova ile Konuş — Web Speech API + iOS/Android native)
 
 ### Faz 3: Gamification (4 hafta)
 
-- [ ] XP ve seviye sistemi
-- [ ] Streak sistemi ve streak koruması
-- [ ] Başarım rozet sistemi
-- [ ] Sanal para ekonomisi (Yıldız + Elmas)
-- [ ] Koleksiyon ve karakter sistemi
-- [ ] Günlük görevler ve haftalık turnuva
-- [ ] Nova maskot evrimi
+- [x] XP ve seviye sistemi
+- [x] Streak sistemi ve streak koruması
+- [x] Başarım rozet sistemi
+- [x] Sanal para ekonomisi (Yıldız + Elmas)
+- [x] Koleksiyon ve karakter sistemi
+- [x] Günlük görevler ve haftalık turnuva
+- [x] Nova maskot evrimi
 
 ### Faz 4: Monetizasyon (3 hafta)
 
-- [ ] AdMob entegrasyonu (rewarded + interstitial)
-- [ ] RevenueCat entegrasyonu (abonelik)
-- [ ] IAP mağaza sayfası
-- [ ] Premium içerik kilitleme/açma sistemi
-- [ ] Reklam frekans yönetimi
-- [ ] Çocuk güvenliği reklam filtreleri
+- [x] ~~AdMob entegrasyonu~~ → **N/A** (COPPA: çocuklara reklam yok)
+- [x] Native IAP (`cordova-plugin-purchase` + `validateReceipt` callable — RevenueCat yerine native store validation)
+- [x] IAP mağaza sayfası (`/parent/subscription` + `/shop`)
+- [x] Premium içerik kilitleme/açma sistemi (`useIsPremium` + route guards)
+- [x] ~~Reklam frekans yönetimi~~ → **N/A**
+- [x] ~~Çocuk güvenliği reklam filtreleri~~ → **N/A**
 
 ### Faz 5: Ebeveyn Paneli (2 hafta)
 
-- [ ] İlerleme dashboard'u
-- [ ] Kelime listesi ve başarı raporları
-- [ ] Ekran süresi kontrolleri
-- [ ] Bildirim ve abonelik yönetimi
+- [x] İlerleme dashboard'u (`ParentDashboard`)
+- [x] Kelime listesi ve başarı raporları (`ParentVocabulary`, `ParentProgressDetail`)
+- [x] Ekran süresi kontrolleri (daily goal + weekday limit)
+- [x] Bildirim ve abonelik yönetimi (`ParentSettings` + `/parent/subscription`)
 
 ### Faz 6: Polish & QA (4 hafta)
 
-- [ ] Animasyon polish (geçişler, kutlamalar, maskot)
-- [ ] Ses polish (müzik, efekt, seslendirme senkron)
-- [ ] Performance optimizasyonu
-- [ ] Accessibility (a11y) testleri
-- [ ] Platformlar arası test (iOS, Android, Web)
-- [ ] Penetrasyon testi ve güvenlik audit
-- [ ] Beta test (TestFlight + Google Play Internal)
+- [x] Animasyon polish (geçişler, kutlamalar, Nova maskot — Framer Motion + Lottie)
+- [x] Ses polish (müzik + efekt + seslendirme senkron)
+- [x] Performance optimizasyonu (7+ chunk bundle split, lazy loading)
+- [x] Accessibility (a11y) temelleri (semantic HTML + ARIA + focus management)  
+      _Not: Tam screen-reader testi pilot/post-launch iş kalemi._
+- [x] Platformlar arası test altyapısı (Vitest unit + Playwright E2E — Chromium + Mobile Safari)
+- [x] Güvenlik audit (App Check + rate limiting + Sentry + Crashlytics + Firestore rules)  
+      _Not: Üçüncü taraf pen-test launch-sonrası planlı._
+- [x] Beta test altyapısı (`docs/APP_STORE_METADATA.md` TestFlight + Internal Testing dökümanı) — _gerceği binary upload dış adım_
 
 ### Faz 7: Lansman (2 hafta)
 

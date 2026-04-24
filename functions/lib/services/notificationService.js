@@ -6,20 +6,47 @@
  * Handles parent notifications for child achievements, weekly reports, etc.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getParentNotificationPrefs = getParentNotificationPrefs;
 exports.sendToParent = sendToParent;
 exports.getParentUidForChild = getParentUidForChild;
 exports.notifyParentAboutChild = notifyParentAboutChild;
 const admin_1 = require("../utils/admin");
+const DEFAULT_PREFS = {
+    dailyReminder: true,
+    weeklyReport: true,
+    achievementAlert: true,
+    inactivityAlert: false,
+};
+/**
+ * Returns the parent's notification preferences, merged with sane defaults.
+ * Stored at `users/{parentUid}.settings.notifications`.
+ */
+async function getParentNotificationPrefs(parentUid) {
+    const userDoc = await admin_1.db.doc(`users/${parentUid}`).get();
+    const raw = (userDoc.data()?.settings?.notifications ?? {});
+    return { ...DEFAULT_PREFS, ...raw };
+}
 /**
  * Send a push notification to a parent by looking up their FCM token.
- * Silently returns false if the token is missing or send fails.
+ * Silently returns false if the token is missing, the parent has disabled
+ * the given category, or send fails.
  */
 async function sendToParent(parentUid, payload) {
     try {
         const userDoc = await admin_1.db.doc(`users/${parentUid}`).get();
-        const fcmToken = userDoc.data()?.fcmToken;
+        const userData = userDoc.data();
+        const fcmToken = userData?.fcmToken;
         if (!fcmToken)
             return false;
+        // Honor parent preferences when a category is supplied.
+        if (payload.category) {
+            const prefs = {
+                ...DEFAULT_PREFS,
+                ...(userData?.settings?.notifications ?? {}),
+            };
+            if (!prefs[payload.category])
+                return false;
+        }
         await admin_1.messaging.send({
             token: fcmToken,
             notification: {

@@ -7,6 +7,9 @@
  * Sprint 4 extension: 12 micro-stories for World 3 "Story Forest" (Hikaye Ormanı)
  * covering: Home & School, Nature, Clothes, Nature Exploration, Transportation.
  *
+ * Priority 6-7 extension: 30 micro-stories for W7-W12 covering
+ * travel, food, art, health, nature, and advanced time concepts.
+ *
  * Each story has 3-5 pages, bilingual text (en/tr), highlight words, and
  * an interactionType for light engagement.
  */
@@ -2969,6 +2972,1194 @@ const rawStoryBank: MicroStory[] = [
   },
 ];
 
+interface ExpansionStorySpec {
+  id: string;
+  title: string;
+  titleTr: string;
+  theme: string;
+  suggestedAfterUnit: string;
+  variant?: 'default' | 'rhyme';
+  pages: Array<{
+    text: string;
+    translation: string;
+    highlightWords: string[];
+    interactionType:
+      | 'tap-word'
+      | 'tap-reveal'
+      | 'drag-word'
+      | 'choose-image'
+      | 'drag-item'
+      | 'choice'
+      | 'none';
+    interactionData?: Record<string, unknown>;
+    ambientSound?: string;
+    rhymeWords?: string[];
+  }>;
+}
+
+function buildExpansionStory(spec: ExpansionStorySpec): MicroStory {
+  return {
+    id: spec.id,
+    title: spec.title,
+    titleTr: spec.titleTr,
+    theme: spec.theme,
+    suggestedAfterUnit: spec.suggestedAfterUnit,
+    data: {
+      type: 'story-time',
+      title: spec.title,
+      variant: spec.variant,
+      pages: spec.pages.map((page, index) => ({
+        ...page,
+        imageUrl: `/story/${spec.id}-p${index + 1}.jpg`,
+        audioUrl: '',
+      })),
+    },
+  };
+}
+
+const priority6StorySpecs: ExpansionStorySpec[] = [
+  {
+    id: 'story-w7-airport-lost-tag',
+    title: 'Nova Finds the Luggage Tag',
+    titleTr: 'Nova Bagaj Etiketini Buluyor',
+    theme: 'travel',
+    suggestedAfterUnit: 'w7_u1',
+    pages: [
+      {
+        text: 'Nova is at the airport with a passport, a ticket, and a big blue suitcase.',
+        translation: 'Nova havaalanında; yanında pasaport, bilet ve büyük mavi bir bavul var.',
+        highlightWords: ['airport', 'passport', 'ticket', 'suitcase'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'At the gate, Nova sees that the luggage tag is missing. "Oh no! Where is the tag?"',
+        translation:
+          'Kapıda Nova bagaj etiketinin kayıp olduğunu fark ediyor. "Eyvah! Etiket nerede?"',
+        highlightWords: ['gate', 'luggage tag'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'A friendly pilot points to the backpack. The tag is hiding behind the handle.',
+        translation:
+          'Dost canlısı pilot sırt çantasını işaret ediyor. Etiket tutamağın arkasına saklanmış.',
+        highlightWords: ['pilot', 'backpack', 'handle'],
+        interactionType: 'drag-word',
+        interactionData: {
+          prompt: 'Drag the word to finish: The tag is in the ___.',
+          answer: 'backpack',
+        },
+      },
+      {
+        text: 'Nova smiles, clips on the tag, and says, "My luggage is ready for boarding!"',
+        translation: 'Nova gülümsüyor, etiketi takıyor ve şöyle diyor: "Bagajım binişe hazır!"',
+        highlightWords: ['luggage', 'boarding'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w7-hotel-balcony',
+    title: 'The Balcony Breakfast',
+    titleTr: 'Balkonda Kahvaltı',
+    theme: 'travel',
+    suggestedAfterUnit: 'w7_u2',
+    pages: [
+      {
+        text: 'Nova checks into the hotel and rides the elevator to a sunny room.',
+        translation: 'Nova otele giriş yapıyor ve asansörle güneşli odasına çıkıyor.',
+        highlightWords: ['hotel', 'elevator', 'room'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'On the balcony there is a table, a towel, and a fluffy pillow for the chair.',
+        translation: 'Balkonda bir masa, bir havlu ve sandalye için yumuşacık bir yastık var.',
+        highlightWords: ['balcony', 'towel', 'pillow'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Move the pillow to the chair.' },
+      },
+      {
+        text: 'Nova uses the key card, opens the mini fridge, and finds fruit and juice for breakfast.',
+        translation:
+          'Nova anahtar kartını kullanıyor, mini buzdolabını açıyor ve kahvaltı için meyve ile meyve suyu buluyor.',
+        highlightWords: ['key card', 'fruit', 'juice', 'breakfast'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: '"This is the best vacation breakfast!" Nova says as the city wakes up below.',
+        translation: 'Şehir aşağıda uyanırken Nova, "Bu en güzel tatil kahvaltısı!" diyor.',
+        highlightWords: ['vacation', 'breakfast'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w7-beach-treasure',
+    title: 'Shells by the Sea',
+    titleTr: 'Deniz Kenarında Kabuklar',
+    theme: 'travel',
+    suggestedAfterUnit: 'w7_u3',
+    pages: [
+      {
+        text: 'Nova runs to the beach with sunscreen, sandals, and a bright yellow bucket.',
+        translation: 'Nova güneş kremi, sandaletleri ve parlak sarı kovasıyla plaja koşuyor.',
+        highlightWords: ['beach', 'sunscreen', 'sandals', 'bucket'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She digs in the sand and finds a shiny shell beside a little crab.',
+        translation: 'Kumda kazıyor ve küçük bir yengecin yanında parlak bir kabuk buluyor.',
+        highlightWords: ['sand', 'shell', 'crab'],
+        interactionType: 'drag-word',
+        interactionData: { prompt: 'Drag the missing word: Nova finds a ___.', answer: 'shell' },
+      },
+      {
+        text: 'Soon a dolphin jumps in the ocean waves. Nova waves from under the umbrella.',
+        translation:
+          'Bir süre sonra okyanus dalgalarında bir yunus zıplıyor. Nova şemsiyenin altından el sallıyor.',
+        highlightWords: ['dolphin', 'ocean', 'umbrella'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'What should Nova pick up next?',
+          options: [
+            { label: 'Starfish', emoji: '⭐', nextText: 'A starfish sparkles near the water.' },
+            { label: 'Sand', emoji: '🏝️', nextText: 'The sand feels warm and soft.' },
+          ],
+        },
+      },
+      {
+        text: 'Nova fills her bucket with beach treasures and says, "What a sunny day!"',
+        translation: 'Nova kovasını plaj hazineleriyle dolduruyor ve "Ne güneşli bir gün!" diyor.',
+        highlightWords: ['bucket', 'sunny'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w7-roadtrip-postcard',
+    title: 'Postcards on the Road',
+    titleTr: 'Yolda Kartpostallar',
+    theme: 'travel',
+    suggestedAfterUnit: 'w7_u4',
+    pages: [
+      {
+        text: 'Nova buckles her seatbelt and opens the map for a long family road trip.',
+        translation: 'Nova kemerini takıyor ve uzun aile yolculuğu için haritayı açıyor.',
+        highlightWords: ['seatbelt', 'map', 'road trip'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'They cross a bridge, drive through a tunnel, and stop at a gas station.',
+        translation:
+          'Bir köprüden geçiyorlar, tünelden sürüyorlar ve benzin istasyonunda duruyorlar.',
+        highlightWords: ['bridge', 'tunnel', 'gas station'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the car to the gas station.' },
+      },
+      {
+        text: 'Nova takes a camera photo and writes a postcard beside the picnic basket.',
+        translation:
+          'Nova kamerayla fotoğraf çekiyor ve piknik sepetinin yanında bir kartpostal yazıyor.',
+        highlightWords: ['camera', 'postcard', 'picnic basket'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: '"Our adventure is on every page of the map," Nova says with a grin.',
+        translation: 'Nova gülümseyerek, "Macera haritanın her sayfasında," diyor.',
+        highlightWords: ['adventure', 'map'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w7-camping-owl',
+    title: 'The Owl at Camp',
+    titleTr: 'Kamptaki Baykuş',
+    theme: 'travel',
+    suggestedAfterUnit: 'w7_u5',
+    pages: [
+      {
+        text: 'At night, Nova zips her sleeping bag inside the tent near the campfire.',
+        translation: 'Gece Nova uyku tulumunu kamp ateşinin yakınındaki çadırın içinde kapatıyor.',
+        highlightWords: ['sleeping bag', 'tent', 'campfire'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She shines a flashlight into the forest and sees a small owl on a branch.',
+        translation: 'El fenerini ormana tutuyor ve bir dalın üstünde küçük bir baykuş görüyor.',
+        highlightWords: ['flashlight', 'forest', 'owl', 'branch'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova lifts the lantern and follows the trail to a gentle stream.',
+        translation: 'Nova feneri kaldırıyor ve patikayı takip ederek sakin bir dereye gidiyor.',
+        highlightWords: ['lantern', 'trail', 'stream'],
+        interactionType: 'drag-word',
+        interactionData: {
+          prompt: 'Drag the word to complete: They follow the ___.',
+          answer: 'trail',
+        },
+      },
+      {
+        text: 'The owl hoots softly, and Nova whispers, "Good night, camping forest."',
+        translation: 'Baykuş yumuşakça ötüyor, Nova da fısıldıyor: "İyi geceler, kamp ormanı."',
+        highlightWords: ['owl', 'camping', 'forest'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w8-kitchen-helper',
+    title: 'Nova the Kitchen Helper',
+    titleTr: 'Mutfak Yardımcısı Nova',
+    theme: 'food',
+    suggestedAfterUnit: 'w8_u1',
+    pages: [
+      {
+        text: 'Nova puts a bowl on the counter and finds a pan, a spoon, and a fork.',
+        translation: 'Nova tezgaha bir kase koyuyor ve tava, kaşık, çatal buluyor.',
+        highlightWords: ['bowl', 'pan', 'spoon', 'fork'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'The oven timer rings, so Nova puts on her apron and checks the pot carefully.',
+        translation:
+          'Fırın zamanlayıcısı çalıyor; Nova önlüğünü takıp tencereyi dikkatlice kontrol ediyor.',
+        highlightWords: ['oven', 'timer', 'apron', 'pot'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'She stirs the soup, washes the spoon, and smiles at the shiny sink.',
+        translation: 'Çorbayı karıştırıyor, kaşığı yıkıyor ve parlak lavaboya gülümsüyor.',
+        highlightWords: ['soup', 'spoon', 'sink'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the spoon to the sink.' },
+      },
+      {
+        text: '"I can help in the kitchen!" Nova says proudly.',
+        translation: 'Nova gururla, "Mutfakta yardım edebilirim!" diyor.',
+        highlightWords: ['kitchen', 'help'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w8-recipe-rainbow',
+    title: 'The Rainbow Recipe',
+    titleTr: 'Gökkuşağı Tarifi',
+    theme: 'food',
+    suggestedAfterUnit: 'w8_u2',
+    pages: [
+      {
+        text: 'Nova reads the recipe. It needs flour, sugar, egg, milk, and butter.',
+        translation: 'Nova tarifi okuyor. Un, şeker, yumurta, süt ve tereyağı gerekiyor.',
+        highlightWords: ['recipe', 'flour', 'sugar', 'egg', 'milk', 'butter'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She adds tomato and cheese for a funny rainbow snack with many colors.',
+        translation:
+          'Birçok renkli komik bir gökkuşağı atıştırmalığı için domates ve peynir de ekliyor.',
+        highlightWords: ['tomato', 'cheese', 'snack'],
+        interactionType: 'drag-word',
+        interactionData: {
+          prompt: 'Drag the ingredient to finish the snack: ___.',
+          answer: 'cheese',
+        },
+      },
+      {
+        text: 'Nova measures carefully and whispers, "A good cook follows the recipe."',
+        translation: 'Nova dikkatlice ölçüyor ve fısıldıyor: "İyi bir aşçı tarifi takip eder."',
+        highlightWords: ['cook', 'recipe'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'When the tray is ready, the kitchen smells warm and happy.',
+        translation: 'Tepsi hazır olduğunda mutfak ılık ve mutlu kokuyor.',
+        highlightWords: ['tray', 'kitchen', 'warm'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w8-breakfast-rhyme',
+    title: 'Toast and Jam Jam',
+    titleTr: 'Tost ve Reçel Şarkısı',
+    theme: 'food',
+    suggestedAfterUnit: 'w8_u3',
+    variant: 'rhyme',
+    pages: [
+      {
+        text: 'Toast on a plate, wait, wait, wait. Jam in a pot, hot, hot, hot.',
+        translation: 'Tabakta tost, bekle bekle bekle. Tencerede reçel, sıcak sıcak sıcak.',
+        highlightWords: ['toast', 'plate', 'jam', 'pot'],
+        rhymeWords: ['plate', 'wait', 'hot', 'pot'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'Nova bakes a muffin, puffs and puffs. The butter melts and glows and glows.',
+        translation:
+          'Nova bir muffin pişiriyor, kabarıyor da kabarıyor. Tereyağı eriyor ve ışıldıyor.',
+        highlightWords: ['bakes', 'muffin', 'butter'],
+        rhymeWords: ['puffs', 'glows'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Breakfast is bright, bite by bite. Dessert can wait for later tonight.',
+        translation: 'Kahvaltı parlak, lokma lokma. Tatlı ise geceye kalsın.',
+        highlightWords: ['breakfast', 'dessert'],
+        rhymeWords: ['bright', 'bite', 'night'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'What comes first?',
+          options: [
+            { label: 'Breakfast', emoji: '🍽️', nextText: 'Yes, breakfast comes first!' },
+            { label: 'Dessert', emoji: '🍰', nextText: 'Dessert can come later.' },
+          ],
+        },
+      },
+      {
+        text: 'Nova laughs, takes a bite, and says, "Cooking can sound like music!"',
+        translation:
+          'Nova gülüyor, bir lokma alıyor ve "Yemek yapmak müzik gibi duyulabilir!" diyor.',
+        highlightWords: ['cooking', 'music'],
+        rhymeWords: ['bite'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w8-market-list',
+    title: 'The Market List',
+    titleTr: 'Pazar Listesi',
+    theme: 'food',
+    suggestedAfterUnit: 'w8_u4',
+    pages: [
+      {
+        text: 'Nova carries a basket into the market with a tiny shopping list in her hand.',
+        translation: 'Nova elinde minicik bir alışveriş listesiyle markete bir sepet taşıyor.',
+        highlightWords: ['basket', 'market', 'shopping list'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'The cashier smiles while Nova compares the price of apples and bread.',
+        translation: 'Nova elma ve ekmeğin fiyatını karşılaştırırken kasiyer gülümsüyor.',
+        highlightWords: ['cashier', 'price', 'apples', 'bread'],
+        interactionType: 'drag-word',
+        interactionData: { prompt: 'Drag the missing word: Nova checks the ___.', answer: 'price' },
+      },
+      {
+        text: 'She puts everything in a bag and checks the receipt before leaving.',
+        translation: 'Çıkmadan önce her şeyi bir çantaya koyuyor ve fişi kontrol ediyor.',
+        highlightWords: ['bag', 'receipt'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: '"Shopping can be a tasty adventure," Nova says.',
+        translation: 'Nova, "Alışveriş lezzetli bir macera olabilir," diyor.',
+        highlightWords: ['shopping', 'adventure'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w8-birthday-bakery',
+    title: 'The Birthday Bakery Window',
+    titleTr: 'Doğum Günü Fırın Vitrini',
+    theme: 'food',
+    suggestedAfterUnit: 'w8_u5',
+    pages: [
+      {
+        text: 'Nova stops at the bakery window and sees cake, cookies, muffins, and donuts.',
+        translation:
+          'Nova fırın vitrininin önünde duruyor; pasta, kurabiye, muffin ve donut görüyor.',
+        highlightWords: ['bakery', 'cake', 'cookies', 'muffins', 'donuts'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She chooses a chocolate cake and counts the candles for the party table.',
+        translation: 'Çikolatalı bir pasta seçiyor ve parti masası için mumları sayıyor.',
+        highlightWords: ['chocolate', 'cake', 'candles', 'party'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'Which treat should Nova choose?',
+          options: [
+            { label: 'Cake', emoji: '🎂', nextText: 'The cake is perfect for a party.' },
+            { label: 'Cookie', emoji: '🍪', nextText: 'Cookies are a sweet side treat.' },
+          ],
+        },
+      },
+      {
+        text: 'At home, cream and strawberries decorate the cake like a little crown.',
+        translation: 'Evde krema ve çilekler pastayı küçük bir taç gibi süslüyor.',
+        highlightWords: ['cream', 'strawberries', 'cake'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova makes a wish and says, "Sweet words make sweet days."',
+        translation: 'Nova dilek tutuyor ve "Tatlı kelimeler tatlı günler yapar," diyor.',
+        highlightWords: ['wish', 'sweet'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w10-body-stretch',
+    title: 'Stretch with Nova',
+    titleTr: 'Nova ile Esne',
+    theme: 'health',
+    suggestedAfterUnit: 'w10_u1',
+    pages: [
+      {
+        text: 'Nova touches her head, waves her hands, and stamps her feet on the mat.',
+        translation: 'Nova başına dokunuyor, ellerini sallıyor ve matta ayaklarını vuruyor.',
+        highlightWords: ['head', 'hands', 'feet', 'mat'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She bends her knees, stretches her arms, and smiles with her whole body.',
+        translation: 'Dizlerini büküyor, kollarını esnetiyor ve tüm bedeniyle gülümsüyor.',
+        highlightWords: ['knees', 'arms', 'body'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag Nova’s arms up to stretch.' },
+      },
+      {
+        text: '"My brain and bones help me move," Nova says as she balances on one foot.',
+        translation:
+          'Tek ayak üzerinde dengede dururken Nova, "Beynim ve kemiklerim hareket etmeme yardım eder," diyor.',
+        highlightWords: ['brain', 'bones', 'foot'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'After a big breath, Nova feels strong and ready to play.',
+        translation:
+          'Kocaman bir nefes aldıktan sonra Nova kendini güçlü ve oyuna hazır hissediyor.',
+        highlightWords: ['breath', 'strong', 'play'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w10-clinic-sticker',
+    title: 'The Brave Clinic Sticker',
+    titleTr: 'Cesur Klinik Çıkartması',
+    theme: 'health',
+    suggestedAfterUnit: 'w10_u2',
+    pages: [
+      {
+        text: 'At the clinic, a nurse checks Nova’s temperature with a thermometer.',
+        translation: 'Klinikte hemşire termometreyle Nova’nın ateşini ölçüyor.',
+        highlightWords: ['clinic', 'nurse', 'temperature', 'thermometer'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'The doctor listens carefully and gives Nova a soft bandage and medicine.',
+        translation: 'Doktor dikkatle dinliyor ve Nova’ya yumuşak bir bandaj ile ilaç veriyor.',
+        highlightWords: ['doctor', 'bandage', 'medicine'],
+        interactionType: 'drag-word',
+        interactionData: { prompt: 'Drag the word: The doctor gives a ___.', answer: 'bandage' },
+      },
+      {
+        text: 'Nova coughs once, drinks water, and waits in a cozy blanket.',
+        translation:
+          'Nova bir kez öksürüyor, su içiyor ve yumuşacık bir battaniyenin içinde bekliyor.',
+        highlightWords: ['coughs', 'water', 'blanket'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'When it is over, the doctor gives Nova a brave sticker and a big smile.',
+        translation:
+          'Her şey bitince doktor Nova’ya cesur bir çıkartma ve kocaman bir gülümseme veriyor.',
+        highlightWords: ['sticker', 'smile'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w10-restful-cloud',
+    title: 'The Restful Cloud',
+    titleTr: 'Dinlenme Bulutu',
+    theme: 'health',
+    suggestedAfterUnit: 'w10_u3',
+    pages: [
+      {
+        text: 'Nova feels tired and thirsty, so she lies down with a glass of water.',
+        translation:
+          'Nova kendini yorgun ve susamış hissediyor; bu yüzden bir bardak suyla uzanıyor.',
+        highlightWords: ['tired', 'thirsty', 'water'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'A gentle cloud above her says, "Rest, breathe, and listen to your body."',
+        translation: 'Üstündeki nazik bir bulut, "Dinlen, nefes al ve bedenini dinle," diyor.',
+        highlightWords: ['rest', 'breathe', 'body'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova notices her headache fading while a warm bowl of soup waits nearby.',
+        translation:
+          'Yakında ılık bir kase çorba beklerken Nova baş ağrısının azaldığını fark ediyor.',
+        highlightWords: ['headache', 'soup'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the soup to Nova.' },
+      },
+      {
+        text: 'Soon she whispers, "I feel better now," and closes her eyes for a nap.',
+        translation:
+          'Bir süre sonra "Şimdi daha iyi hissediyorum," diye fısıldıyor ve şekerleme için gözlerini kapatıyor.',
+        highlightWords: ['better', 'nap'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w10-habit-stars',
+    title: 'Stars for Healthy Habits',
+    titleTr: 'Sağlıklı Alışkanlık Yıldızları',
+    theme: 'health',
+    suggestedAfterUnit: 'w10_u4',
+    pages: [
+      {
+        text: 'Every morning Nova drinks water, brushes her teeth, and washes with soap.',
+        translation: 'Nova her sabah su içiyor, dişlerini fırçalıyor ve sabunla yıkanıyor.',
+        highlightWords: ['water', 'teeth', 'soap'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She eats fruit, stretches her body, and checks a bright calendar star.',
+        translation: 'Meyve yiyor, bedenini esnetiyor ve parlak takvim yıldızını kontrol ediyor.',
+        highlightWords: ['fruit', 'body', 'calendar', 'star'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the star to the calendar.' },
+      },
+      {
+        text: 'At bedtime Nova smiles because her healthy routine is growing stronger.',
+        translation:
+          'Yatma vakti geldiğinde Nova gülümsüyor çünkü sağlıklı rutini daha da güçleniyor.',
+        highlightWords: ['bedtime', 'healthy', 'routine'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: '"Little habits make a strong day," she says as she turns off the light.',
+        translation: 'Işığı kapatırken, "Küçük alışkanlıklar güçlü bir gün yapar," diyor.',
+        highlightWords: ['habits', 'strong day'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w10-safety-path',
+    title: 'The Safe Path Home',
+    titleTr: 'Eve Güvenli Yol',
+    theme: 'health',
+    suggestedAfterUnit: 'w10_u5',
+    pages: [
+      {
+        text: 'Nova puts on a helmet, clicks her seatbelt, and checks the safe path home.',
+        translation:
+          'Nova kaskını takıyor, kemerini klikletiyor ve eve giden güvenli yolu kontrol ediyor.',
+        highlightWords: ['helmet', 'seatbelt', 'safe path'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'At the crossing, a helper says, "Be careful. The road is hot and busy today."',
+        translation: 'Geçitte bir yardımcı, "Dikkatli ol. Yol bugün sıcak ve yoğun," diyor.',
+        highlightWords: ['careful', 'road', 'hot'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'What should Nova do?',
+          options: [
+            { label: 'Wait', emoji: '✋', nextText: 'Yes, waiting is safe.' },
+            { label: 'Run', emoji: '🏃', nextText: 'Running is not safe here.' },
+          ],
+        },
+      },
+      {
+        text: 'Nova keeps a flashlight in her bag and knows how to ask for help in an emergency.',
+        translation:
+          'Nova çantasında bir el feneri taşıyor ve acil durumda nasıl yardım isteyeceğini biliyor.',
+        highlightWords: ['flashlight', 'help', 'emergency'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'When she gets home, Nova says, "Safety first, adventure second!"',
+        translation: 'Eve vardığında Nova, "Önce güvenlik, sonra macera!" diyor.',
+        highlightWords: ['safety', 'adventure'],
+        interactionType: 'none',
+      },
+    ],
+  },
+];
+
+const priority6Stories = priority6StorySpecs.map(buildExpansionStory);
+
+const priority7StorySpecs: ExpansionStorySpec[] = [
+  {
+    id: 'story-w9-studio-colors',
+    title: 'The Studio Color Mix',
+    titleTr: 'Atölyede Renk Karışımı',
+    theme: 'art',
+    suggestedAfterUnit: 'w9_u1',
+    pages: [
+      {
+        text: 'Nova opens the art studio and finds a canvas, a palette, and a bright paintbrush.',
+        translation:
+          'Nova sanat atölyesini açıyor ve bir tuval, palet ve parlak bir fırça buluyor.',
+        highlightWords: ['art studio', 'canvas', 'palette', 'paintbrush'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She mixes blue and yellow paint until a new green color appears on the canvas.',
+        translation:
+          'Mavi ve sarı boyayı karıştırıyor; sonunda tuvalde yeni bir yeşil renk beliriyor.',
+        highlightWords: ['blue', 'yellow', 'green', 'canvas'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag blue and yellow together.' },
+      },
+      {
+        text: 'A marker rolls under the easel, but Nova laughs and reaches for it quickly.',
+        translation: 'Bir kalem şövalenin altına yuvarlanıyor ama Nova gülerek ona hemen uzanıyor.',
+        highlightWords: ['marker', 'easel'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'When the sculpture sparkles in the corner, Nova says, "Art can grow one color at a time."',
+        translation: 'Köşedeki heykel parıldayınca Nova, "Sanat renk renk büyüyebilir," diyor.',
+        highlightWords: ['sculpture', 'art'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w9-band-room',
+    title: 'The Band Room Beat',
+    titleTr: 'Grup Odasının Ritmi',
+    theme: 'art',
+    suggestedAfterUnit: 'w9_u2',
+    pages: [
+      {
+        text: 'Nova hears a guitar strum while a piano plays a soft hello in the music room.',
+        translation:
+          'Nova, müzik odasında piyano yumuşak bir merhaba çalarken gitar tıngırtısını duyuyor.',
+        highlightWords: ['guitar', 'piano', 'music room'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'A drum starts the beat and the violin joins in with a singing sound.',
+        translation: 'Davul ritmi başlatıyor ve keman şarkı söyler gibi bir sesle katılıyor.',
+        highlightWords: ['drum', 'violin', 'beat'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova checks the microphone and points to the speaker so the room sounds just right.',
+        translation:
+          'Nova mikrofonu kontrol ediyor ve odanın sesi tam olsun diye hoparlörü işaret ediyor.',
+        highlightWords: ['microphone', 'speaker'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'Which instrument should play next?',
+          options: [
+            { label: 'Drum', emoji: '🥁', nextText: 'The drum adds a strong beat.' },
+            { label: 'Violin', emoji: '🎻', nextText: 'The violin adds a smooth melody.' },
+          ],
+        },
+      },
+      {
+        text: 'Soon the whole room is ready for a tiny concert just for Nova and her friends.',
+        translation:
+          'Çok geçmeden bütün oda, Nova ve arkadaşları için küçük bir konsere hazır oluyor.',
+        highlightWords: ['concert', 'friends'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w9-museum-map',
+    title: 'The Museum Map',
+    titleTr: 'Müze Haritası',
+    theme: 'art',
+    suggestedAfterUnit: 'w9_u3',
+    pages: [
+      {
+        text: 'Nova holds a museum ticket and follows the map into the first gallery.',
+        translation: 'Nova bir müze bileti tutuyor ve ilk galeriye doğru haritayı takip ediyor.',
+        highlightWords: ['museum', 'ticket', 'map', 'gallery'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'Inside she sees a giant painting, a gold frame, and a smiling statue.',
+        translation: 'İçeride dev bir tablo, altın bir çerçeve ve gülümseyen bir heykel görüyor.',
+        highlightWords: ['painting', 'frame', 'statue'],
+        interactionType: 'drag-word',
+        interactionData: {
+          prompt: 'Drag the word to finish: Nova sees a ___.',
+          answer: 'painting',
+        },
+      },
+      {
+        text: 'At the end of the hall there is a colorful mural made by a local artist.',
+        translation:
+          'Koridorun sonunda yerel bir sanatçı tarafından yapılmış rengarenk bir duvar resmi var.',
+        highlightWords: ['mural', 'artist'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova circles the best room on the map and whispers, "I want to come back tomorrow."',
+        translation:
+          'Nova haritada en güzel odayı yuvarlak içine alıyor ve "Yarın tekrar gelmek istiyorum," diye fısıldıyor.',
+        highlightWords: ['map', 'tomorrow'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w9-puppet-light',
+    title: 'Lights for the Puppet Show',
+    titleTr: 'Kukla Gösterisi Işıkları',
+    theme: 'art',
+    suggestedAfterUnit: 'w9_u4',
+    pages: [
+      {
+        text: 'Nova lifts a puppet onto the stage while the curtain stays closed.',
+        translation: 'Nova perde kapalıyken bir kuklayı sahneye kaldırıyor.',
+        highlightWords: ['puppet', 'stage', 'curtain'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'A spotlight flashes on the costume rack and makes every color glow.',
+        translation: 'Bir spot ışığı kostüm rafında parlıyor ve her rengi ışıldatıyor.',
+        highlightWords: ['spotlight', 'costume'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Move the spotlight to the stage.' },
+      },
+      {
+        text: 'The audience shuffles into their seats and waits for the first funny voice.',
+        translation: 'Seyirciler yerlerine geçip ilk komik sesi bekliyor.',
+        highlightWords: ['audience', 'voice'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'When the curtain opens, Nova bows and the puppet show begins with a cheer.',
+        translation: 'Perde açılınca Nova eğiliyor ve kukla gösterisi bir alkışla başlıyor.',
+        highlightWords: ['curtain', 'puppet show', 'cheer'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w9-talent-ribbon',
+    title: 'The Shiny Ribbon',
+    titleTr: 'Parlak Kurdele',
+    theme: 'art',
+    suggestedAfterUnit: 'w9_u5',
+    pages: [
+      {
+        text: 'Nova steps onto the talent stage with a song in her heart and a ribbon in her hand.',
+        translation: 'Nova kalbinde bir şarkı ve elinde bir kurdeleyle yetenek sahnesine çıkıyor.',
+        highlightWords: ['talent stage', 'song', 'ribbon'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She twirls, dances, and hears the crowd clap clap clap.',
+        translation: 'Dönüyor, dans ediyor ve kalabalığın şap şap şap alkışını duyuyor.',
+        highlightWords: ['twirls', 'dances', 'clap'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'What should Nova do next?',
+          options: [
+            { label: 'Twirl', emoji: '🌀', nextText: 'Nova twirls one more time.' },
+            { label: 'Bow', emoji: '🙇', nextText: 'Nova bows to the audience.' },
+          ],
+        },
+      },
+      {
+        text: 'At the end, a tiny trophy shines beside the bright ribbon.',
+        translation: 'Sonda minicik bir kupa parlak kurdelenin yanında ışıldıyor.',
+        highlightWords: ['trophy', 'ribbon'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova smiles and says, "A brave show can sparkle louder than a big room."',
+        translation:
+          'Nova gülümsüyor ve "Cesur bir gösteri büyük bir odadan daha parlak olabilir," diyor.',
+        highlightWords: ['brave', 'sparkle'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w11-recycle-park',
+    title: 'The Clean Park Team',
+    titleTr: 'Temiz Park Takımı',
+    theme: 'nature',
+    suggestedAfterUnit: 'w11_u1',
+    pages: [
+      {
+        text: 'Nova brings paper, plastic, and glass to the park recycling corner.',
+        translation: 'Nova kağıt, plastik ve camı parkın geri dönüşüm köşesine getiriyor.',
+        highlightWords: ['paper', 'plastic', 'glass', 'recycling'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She drops metal into the recycle bin and saves apple peels for the compost.',
+        translation:
+          'Metali geri dönüşüm kutusuna atıyor ve elma kabuklarını kompost için ayırıyor.',
+        highlightWords: ['metal', 'recycle bin', 'compost'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the metal into the recycle bin.' },
+      },
+      {
+        text: 'Soon the path looks cleaner and the birds hop closer to the grass.',
+        translation: 'Çok geçmeden yol daha temiz görünüyor ve kuşlar çimlere daha yakın sekiyor.',
+        highlightWords: ['cleaner', 'birds', 'grass'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova says, "Small clean choices can help a whole park smile."',
+        translation: 'Nova, "Küçük temiz seçimler bütün bir parkı gülümsetebilir," diyor.',
+        highlightWords: ['clean choices', 'park'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w11-tree-roots',
+    title: 'Roots Under the Soil',
+    titleTr: 'Toprağın Altındaki Kökler',
+    theme: 'nature',
+    suggestedAfterUnit: 'w11_u2',
+    pages: [
+      {
+        text: 'Nova kneels by the garden with a seed, a shovel, and soft brown soil.',
+        translation: 'Nova tohum, kürek ve yumuşak kahverengi toprakla bahçede diz çöküyor.',
+        highlightWords: ['seed', 'shovel', 'soil', 'garden'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She plants the seed, pours water from the watering can, and pats the soil gently.',
+        translation: 'Tohumu ekiyor, sulama kabından su döküyor ve toprağı usulca bastırıyor.',
+        highlightWords: ['watering can', 'soil', 'seed'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the water to the seed.' },
+      },
+      {
+        text: 'A tiny tree peeks out later, and Nova imagines roots stretching under the ground.',
+        translation:
+          'Daha sonra minicik bir ağaç baş gösteriyor ve Nova yerin altında uzanan kökleri hayal ediyor.',
+        highlightWords: ['tree', 'roots', 'ground'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova whispers, "Grow strong, little tree. I will come back and cheer for you."',
+        translation: 'Nova fısıldıyor: "Güçlü büyü küçük ağaç. Geri gelip seni alkışlayacağım."',
+        highlightWords: ['grow', 'tree'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w11-river-rescue',
+    title: 'River Rescue Morning',
+    titleTr: 'Nehir Kurtarma Sabahı',
+    theme: 'nature',
+    suggestedAfterUnit: 'w11_u3',
+    pages: [
+      {
+        text: 'Nova sees a shiny bottle near the river while a frog watches from a rock.',
+        translation: 'Nova nehrin yanında parlak bir şişe görüyor; bir kurbağa da kayadan izliyor.',
+        highlightWords: ['bottle', 'river', 'frog', 'rock'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She puts on gloves, opens a trash bag, and uses a net to reach the litter.',
+        translation:
+          'Eldivenlerini takıyor, bir çöp torbası açıyor ve çöpe ulaşmak için ağ kullanıyor.',
+        highlightWords: ['gloves', 'trash bag', 'net', 'litter'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the bottle into the trash bag.' },
+      },
+      {
+        text: 'When the bank is clean again, the frog jumps closer to the cool water.',
+        translation: 'Kıyı yeniden temiz olunca kurbağa serin suya daha yakın zıplıyor.',
+        highlightWords: ['clean', 'frog', 'water'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova grins and says, "A safe river sounds like a happy splash."',
+        translation:
+          'Nova sırıtıyor ve "Güvenli bir nehir mutlu bir şapırtı gibi ses çıkarır," diyor.',
+        highlightWords: ['safe river', 'splash'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w11-habitat-hike',
+    title: 'Homes on the Trail',
+    titleTr: 'Patikadaki Evler',
+    theme: 'nature',
+    suggestedAfterUnit: 'w11_u4',
+    pages: [
+      {
+        text: 'Nova hikes through the forest and spots a pond shining beside the path.',
+        translation:
+          'Nova ormanda yürüyüş yapıyor ve patikanın yanında parlayan bir gölet görüyor.',
+        highlightWords: ['forest', 'pond', 'path'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She finds a nest in a tree and a cave tucked quietly under a hill.',
+        translation:
+          'Bir ağacın içinde yuva ve bir tepenin altında sessizce saklanan bir mağara buluyor.',
+        highlightWords: ['nest', 'cave', 'tree', 'hill'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'A squirrel dashes past, and an owl blinks from a branch high above.',
+        translation: 'Bir sincap yanından fırlıyor ve yukarıdaki daldan bir baykuş göz kırpıyor.',
+        highlightWords: ['squirrel', 'owl', 'branch'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'Who does Nova see first?',
+          options: [
+            { label: 'Squirrel', emoji: '🐿️', nextText: 'The squirrel dashes by first.' },
+            { label: 'Owl', emoji: '🦉', nextText: 'The owl waits higher in the tree.' },
+          ],
+        },
+      },
+      {
+        text: 'Nova smiles and says, "Every animal has a home if we look gently."',
+        translation: 'Nova gülümsüyor ve "Nazikçe bakarsak her hayvanın bir evi vardır," diyor.',
+        highlightWords: ['animal', 'home'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w11-rainbow-garden',
+    title: 'Rainbow in the Garden',
+    titleTr: 'Bahçedeki Gökkuşağı',
+    theme: 'nature',
+    suggestedAfterUnit: 'w11_u5',
+    pages: [
+      {
+        text: 'After the rain, Nova sees a cloud drifting over a bright puddle.',
+        translation:
+          'Yağmurdan sonra Nova parlak bir su birikintisinin üzerinde süzülen bir bulut görüyor.',
+        highlightWords: ['cloud', 'puddle', 'rain'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She checks the rain gauge and the wind sock to see what the storm did.',
+        translation:
+          'Fırtınanın ne yaptığını görmek için yağmur ölçeri ve rüzgar çorabını kontrol ediyor.',
+        highlightWords: ['rain gauge', 'wind sock', 'storm'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag Nova to the rain gauge.' },
+      },
+      {
+        text: 'A warm sunbeam breaks through, and a rainbow curves over the flowers.',
+        translation:
+          'Sıcak bir güneş ışını bulutları deliyor ve çiçeklerin üzerinde bir gökkuşağı beliriyor.',
+        highlightWords: ['sunbeam', 'rainbow', 'flowers'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova lifts her face to the light and says, "The sky can paint after the rain too."',
+        translation:
+          'Nova yüzünü ışığa kaldırıyor ve "Gökyüzü de yağmurdan sonra resim yapabilir," diyor.',
+        highlightWords: ['sky', 'rain'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w12-clock-class',
+    title: 'Clock Class Builders',
+    titleTr: 'Saat Sınıfı Ustaları',
+    theme: 'time',
+    suggestedAfterUnit: 'w12_u1',
+    pages: [
+      {
+        text: 'Nova builds a paper clock and clicks on the hour hand first.',
+        translation: 'Nova kâğıttan bir saat yapıyor ve önce saat kolunu takıyor.',
+        highlightWords: ['clock', 'hour hand'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'Then she turns the minute hand and listens for a tiny alarm sound.',
+        translation: 'Sonra dakika kolunu çeviriyor ve minicik bir alarm sesini dinliyor.',
+        highlightWords: ['minute hand', 'alarm'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the minute hand to twelve.' },
+      },
+      {
+        text: 'A timer beeps while the second hand races around and around.',
+        translation: 'Bir zamanlayıcı biplerken saniye kolu dönüp duruyor.',
+        highlightWords: ['timer', 'second hand'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova laughs and says, "Time has many little helpers on one clock face."',
+        translation:
+          'Nova gülüyor ve "Tek bir saatin yüzünde zamanın pek çok küçük yardımcısı var," diyor.',
+        highlightWords: ['time', 'clock face'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w12-calendar-party',
+    title: 'The Birthday on the Calendar',
+    titleTr: 'Takvimdeki Doğum Günü',
+    theme: 'time',
+    suggestedAfterUnit: 'w12_u2',
+    pages: [
+      {
+        text: 'Nova opens a calendar and points to the month full of colorful plans.',
+        translation: 'Nova bir takvim açıyor ve rengarenk planlarla dolu aya işaret ediyor.',
+        highlightWords: ['calendar', 'month', 'plans'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She circles Monday, marks the week, and adds a star to a birthday square.',
+        translation:
+          'Pazartesiyi daire içine alıyor, haftayı işaretliyor ve doğum günü karesine yıldız ekliyor.',
+        highlightWords: ['Monday', 'week', 'birthday'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the star to the birthday square.' },
+      },
+      {
+        text: 'A holiday sticker lands nearby, and suddenly the whole page looks exciting.',
+        translation:
+          'Yakınına bir tatil çıkartması geliyor ve bir anda bütün sayfa heyecanlı görünüyor.',
+        highlightWords: ['holiday', 'sticker'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova says, "A calendar can hold tomorrow’s happiest surprises."',
+        translation: 'Nova, "Bir takvim yarının en mutlu sürprizlerini taşıyabilir," diyor.',
+        highlightWords: ['calendar', 'tomorrow'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w12-hundred-race',
+    title: 'Race to One Hundred',
+    titleTr: 'Yüze Yarış',
+    theme: 'time',
+    suggestedAfterUnit: 'w12_u3',
+    pages: [
+      {
+        text: 'Nova hops along a number line and counts all the way to one hundred.',
+        translation: 'Nova bir sayı doğrusunda zıplıyor ve yüz sayısına kadar sayıyor.',
+        highlightWords: ['number line', 'one hundred'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She pauses at seventy, smiles at eighty, and zooms past ninety.',
+        translation: 'Yetmişte duruyor, seksene gülümsüyor ve doksanı hızla geçiyor.',
+        highlightWords: ['seventy', 'eighty', 'ninety'],
+        interactionType: 'choice',
+        interactionData: {
+          prompt: 'Which number comes first?',
+          options: [
+            { label: 'Seventy', emoji: '7️⃣', nextText: 'Seventy comes before eighty.' },
+            { label: 'Ninety', emoji: '9️⃣', nextText: 'Ninety comes later.' },
+          ],
+        },
+      },
+      {
+        text: 'A calculator waits on the desk, but Nova wants to count with her own brain first.',
+        translation:
+          'Masanın üstünde bir hesap makinesi bekliyor ama Nova önce kendi zihniyle saymak istiyor.',
+        highlightWords: ['calculator', 'brain'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'At the finish line Nova cheers, "Big numbers feel smaller when I keep going!"',
+        translation:
+          'Bitiş çizgisinde Nova sevinçle, "Devam edince büyük sayılar daha küçük hissettiriyor!" diyor.',
+        highlightWords: ['big numbers', 'finish line'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w12-day-schedule',
+    title: 'Nova Sorts the Day',
+    titleTr: 'Nova Günü Sıralıyor',
+    theme: 'time',
+    suggestedAfterUnit: 'w12_u4',
+    pages: [
+      {
+        text: 'Nova looks at her schedule and sees morning, afternoon, and evening cards.',
+        translation: 'Nova programına bakıyor ve sabah, öğleden sonra ve akşam kartlarını görüyor.',
+        highlightWords: ['schedule', 'morning', 'afternoon', 'evening'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She puts breakfast before school and story time after dinner.',
+        translation: 'Kahvaltıyı okuldan önce, hikâye zamanını akşam yemeğinden sonra koyuyor.',
+        highlightWords: ['before', 'after', 'breakfast', 'school'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag breakfast before school.' },
+      },
+      {
+        text: 'The cards line up neatly, and the whole day starts to make sense.',
+        translation: 'Kartlar düzgünce sıralanıyor ve bütün gün anlam kazanmaya başlıyor.',
+        highlightWords: ['cards', 'day'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova smiles and says, "A good schedule makes every part of the day feel ready."',
+        translation:
+          'Nova gülümsüyor ve "İyi bir program günün her parçasını hazır hissettirir," diyor.',
+        highlightWords: ['schedule', 'ready'],
+        interactionType: 'none',
+      },
+    ],
+  },
+  {
+    id: 'story-w12-timeline-box',
+    title: 'The Yesterday-Today Box',
+    titleTr: 'Dün-Bugün Kutusu',
+    theme: 'time',
+    suggestedAfterUnit: 'w12_u5',
+    pages: [
+      {
+        text: 'Nova keeps three cards in a box: yesterday, today, and tomorrow.',
+        translation: 'Nova bir kutuda üç kart saklıyor: dün, bugün ve yarın.',
+        highlightWords: ['yesterday', 'today', 'tomorrow'],
+        interactionType: 'tap-word',
+      },
+      {
+        text: 'She places the first card on the left, the next card in the middle, and the last card on the right.',
+        translation: 'İlk kartı sola, sonraki kartı ortaya ve son kartı sağa koyuyor.',
+        highlightWords: ['first', 'next', 'last'],
+        interactionType: 'drag-item',
+        interactionData: { prompt: 'Drag the cards into order.' },
+      },
+      {
+        text: 'Now the box tells a tiny story about what happened and what will happen soon.',
+        translation:
+          'Artık kutu, olanlar ve yakında olacaklar hakkında minicik bir hikâye anlatıyor.',
+        highlightWords: ['story', 'soon'],
+        interactionType: 'tap-reveal',
+      },
+      {
+        text: 'Nova closes the lid and whispers, "Time is easier when I can line it up."',
+        translation:
+          'Nova kapağı kapatıyor ve "Zamanı sıraya koyunca her şey daha kolay," diye fısıldıyor.',
+        highlightWords: ['time', 'line it up'],
+        interactionType: 'none',
+      },
+    ],
+  },
+];
+
+const priority7Stories = priority7StorySpecs.map(buildExpansionStory);
+
 function enrichStoryData(theme: string, data: StoryTimeData): StoryTimeData {
   return {
     ...data,
@@ -2997,7 +4188,739 @@ function getStoryVocabulary(story: MicroStory): Set<string> {
   return words;
 }
 
-export const storyBank: MicroStory[] = rawStoryBank.map(enrichMicroStory);
+// ── Chain Stories ────────────────────────────────────────────────
+// variant='chain': çocuk bir kelime seçer, hikaye o kelimeyle devam eder
+
+const chainStories: MicroStory[] = [
+  {
+    id: 'story-w1-chain-nova-adventure',
+    title: "Nova's Big Adventure",
+    titleTr: "Nova'nın Büyük Macerası",
+    theme: 'animals',
+    data: {
+      type: 'story-time',
+      variant: 'chain',
+      title: "Nova's Big Adventure",
+      pages: [
+        {
+          text: 'Nova woke up and looked outside. It was a sunny day!',
+          translation: 'Nova uyandı ve dışarı baktı. Güneşli bir gündü!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['sunny'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Nova wanted to visit a friend. Where should Nova go?',
+          translation: 'Nova bir arkadaşını ziyaret etmek istedi. Nova nereye gitmeli?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Where should Nova go?',
+            options: ['park', 'beach', 'forest'],
+          },
+        },
+        {
+          text: 'Nova went to the {WORD}. It was wonderful there!',
+          translation: 'Nova oraya gitti. Orası harikaydı!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['wonderful'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Nova saw many animals. What did Nova find?',
+          translation: 'Nova pek çok hayvan gördü. Nova ne buldu?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'What did Nova find?',
+            options: ['a butterfly', 'a turtle', 'a bunny'],
+          },
+        },
+        {
+          text: 'Nova found {WORD}! They played together until sunset. What a great day!',
+          translation: 'Nova onu buldu! Günbatımına kadar birlikte oynadılar. Ne güzel bir gündü!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['played', 'sunset'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w8-chain-cooking-magic',
+    title: "Nova's Cooking Magic",
+    titleTr: "Nova'nın Mutfak Sihri",
+    theme: 'food',
+    data: {
+      type: 'story-time',
+      variant: 'chain',
+      title: "Nova's Cooking Magic",
+      pages: [
+        {
+          text: 'Nova was in the kitchen. Time to cook something yummy!',
+          translation: 'Nova mutfaktaydı. Nefis bir şeyler pişirme zamanı!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['kitchen', 'cook', 'yummy'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Nova needed to choose the main ingredient. What should it be?',
+          translation: 'Nova ana malzemeyi seçmesi gerekiyordu. Ne olmalıydı?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Choose an ingredient!',
+            options: ['eggs', 'pasta', 'soup'],
+          },
+        },
+        {
+          text: 'Nova started making {WORD}. Mix, stir, and cook!',
+          translation: 'Nova onu yapmaya başladı. Karıştır, çevir, pişir!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['mix', 'stir', 'cook'],
+          interactionType: 'tap-reveal',
+          interactionData: {},
+        },
+        {
+          text: 'The food smelled amazing. What topping should Nova add?',
+          translation: 'Yiyecek harika kokuyordu. Nova hangi malzemeyi eklemeli?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Pick a topping!',
+            options: ['cheese', 'tomato', 'herbs'],
+          },
+        },
+        {
+          text: 'Nova added {WORD} on top. Dinner is ready! Yummy!',
+          translation: 'Nova onu üstüne koydu. Akşam yemeği hazır! Nefis!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['Dinner', 'ready', 'Yummy'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w3-chain-forest-path',
+    title: "Nova's Forest Path",
+    titleTr: "Nova'nın Orman Yolu",
+    theme: 'nature',
+    data: {
+      type: 'story-time',
+      variant: 'chain',
+      title: "Nova's Forest Path",
+      pages: [
+        {
+          text: 'Nova entered the quiet forest. Birds were singing everywhere.',
+          translation: 'Nova sessiz ormana girdi. Kuşlar her yerde şakıyordu.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['forest', 'birds', 'singing'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'The path split in two. Which way should Nova take?',
+          translation: 'Yol ikiye ayrıldı. Nova hangi yönü seçmeli?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Which path?',
+            options: ['river', 'hill', 'meadow'],
+          },
+        },
+        {
+          text: 'Nova walked toward the {WORD}. The air felt fresh and cool.',
+          translation: 'Nova oraya doğru yürüdü. Hava temiz ve serindi.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['fresh', 'cool'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Nova heard a soft sound. What was it?',
+          translation: 'Nova yumuşak bir ses duydu. Neydi?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'What sound?',
+            options: ['a frog', 'a deer', 'the wind'],
+          },
+        },
+        {
+          text: 'It was {WORD}! Nova smiled and kept exploring the forest.',
+          translation: 'Oydu! Nova gülümsedi ve ormanı keşfetmeye devam etti.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['smiled', 'exploring'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w5-chain-school-day',
+    title: "Nova's First Day at School",
+    titleTr: "Nova'nın Okulda İlk Günü",
+    theme: 'school',
+    data: {
+      type: 'story-time',
+      variant: 'chain',
+      title: "Nova's First Day at School",
+      pages: [
+        {
+          text: 'Nova put on the backpack. Time to go to school!',
+          translation: 'Nova sırt çantasını taktı. Okula gitme zamanı!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['backpack', 'school'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Which subject does Nova love most?',
+          translation: 'Nova en çok hangi dersi sever?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Favorite subject?',
+            options: ['math', 'art', 'music'],
+          },
+        },
+        {
+          text: 'In {WORD} class, Nova worked hard and smiled a lot.',
+          translation: 'O derste Nova çok çalıştı ve bolca gülümsedi.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['class', 'hard'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'At lunchtime Nova wanted to play. What game first?',
+          translation: 'Öğle arasında Nova oynamak istedi. Önce hangi oyun?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Which game?',
+            options: ['tag', 'hopscotch', 'soccer'],
+          },
+        },
+        {
+          text: 'Nova played {WORD} with new friends. What a happy day!',
+          translation: 'Nova yeni arkadaşlarıyla onu oynadı. Ne mutlu bir gün!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['friends', 'happy'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w7-chain-city-ride',
+    title: "Nova's City Ride",
+    titleTr: "Nova'nın Şehir Yolculuğu",
+    theme: 'city',
+    data: {
+      type: 'story-time',
+      variant: 'chain',
+      title: "Nova's City Ride",
+      pages: [
+        {
+          text: 'Nova stood at the busy station. The city was full of sounds!',
+          translation: 'Nova kalabalık istasyonda duruyordu. Şehir seslerle doluydu!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['station', 'city', 'sounds'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Which ride should Nova take?',
+          translation: 'Nova hangisine binmeli?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Pick a ride!',
+            options: ['bus', 'train', 'taxi'],
+          },
+        },
+        {
+          text: 'Nova got on the {WORD} and watched the city go by.',
+          translation: 'Nova ona bindi ve şehrin geçişini izledi.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['watched'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Where should Nova stop?',
+          translation: 'Nova nerede inmeli?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Which stop?',
+            options: ['museum', 'park', 'market'],
+          },
+        },
+        {
+          text: 'Nova stopped at the {WORD} and had a wonderful afternoon!',
+          translation: 'Nova orada indi ve harika bir öğleden sonra geçirdi!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['wonderful', 'afternoon'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w11-chain-emotions-day',
+    title: "Nova's Feelings Today",
+    titleTr: "Nova'nın Bugünkü Hisleri",
+    theme: 'emotions',
+    data: {
+      type: 'story-time',
+      variant: 'chain',
+      title: "Nova's Feelings Today",
+      pages: [
+        {
+          text: 'Nova woke up and thought about the day. How should it start?',
+          translation: 'Nova uyandı ve gününü düşündü. Nasıl başlamalı?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['woke', 'day'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'How does Nova feel right now?',
+          translation: 'Nova şu an nasıl hissediyor?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Pick a feeling!',
+            options: ['happy', 'curious', 'sleepy'],
+          },
+        },
+        {
+          text: 'Feeling {WORD}, Nova stretched and smiled at the morning sun.',
+          translation: 'O şekilde hissederek Nova esnedi ve sabaha gülümsedi.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['stretched', 'smiled', 'sun'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'What would make Nova feel even better?',
+          translation: 'Nova’yı daha iyi hissettirecek şey ne?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'word-select',
+          interactionData: {
+            promptText: 'Best choice?',
+            options: ['a hug', 'a song', 'a walk'],
+          },
+        },
+        {
+          text: 'Nova chose {WORD}. The whole day felt warm and kind!',
+          translation: 'Nova onu seçti. Bütün gün sıcak ve şefkatli geçti!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['warm', 'kind'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+      ],
+    },
+  },
+];
+
+// ── Picture Stories ──────────────────────────────────────────────
+// variant='picture': büyük resim göster, çocuk açıklar
+
+const pictureStories: MicroStory[] = [
+  {
+    id: 'story-w2-picture-farm-morning',
+    title: 'A Morning on the Farm',
+    titleTr: 'Çiftlikte Bir Sabah',
+    theme: 'animals',
+    data: {
+      type: 'story-time',
+      variant: 'picture',
+      title: 'A Morning on the Farm',
+      pages: [
+        {
+          text: 'Look at this farm! What animals can you see?',
+          translation: 'Bu çiftliğe bak! Hangi hayvanları görebilirsin?',
+          imageUrl: '/story/story-w2-mystery-picnic-p1.jpg',
+          audioUrl: '',
+          highlightWords: ['farm', 'animals'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Here is the barn. Tell me what you see inside!',
+          translation: 'İşte ahır. İçerde ne gördüğünü anlat!',
+          imageUrl: '/story/story-w2-mystery-picnic-p2.jpg',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What is inside the barn? Can you describe it?',
+            targetWords: ['cow', 'horse', 'hay', 'door'],
+          },
+        },
+        {
+          text: 'The farmer feeds the animals every morning. It is a busy day!',
+          translation: 'Çiftçi her sabah hayvanları besler. Yoğun bir gün!',
+          imageUrl: '/story/story-w2-mystery-picnic-p3.jpg',
+          audioUrl: '',
+          highlightWords: ['farmer', 'feeds', 'busy'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Now look at this picture. What is the farmer doing?',
+          translation: 'Şimdi bu resme bak. Çiftçi ne yapıyor?',
+          imageUrl: '/story/story-w2-mystery-picnic-p4.jpg',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What is the farmer doing? Tell me in English!',
+            targetWords: ['feeding', 'carrying', 'walking', 'working'],
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w9-picture-art-studio',
+    title: 'Inside the Art Studio',
+    titleTr: 'Sanat Stüdyosunda',
+    theme: 'art',
+    data: {
+      type: 'story-time',
+      variant: 'picture',
+      title: 'Inside the Art Studio',
+      pages: [
+        {
+          text: 'Welcome to the art studio! What do you see here?',
+          translation: 'Sanat stüdyosuna hoş geldin! Burada ne görüyorsun?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['art', 'studio'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Look at all the colors on the palette. Can you name them?',
+          translation: 'Paletteki tüm renklere bak. Onları sayabilir misin?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What colors can you see? Name as many as you can!',
+            targetWords: ['red', 'blue', 'yellow', 'green', 'orange', 'purple'],
+          },
+        },
+        {
+          text: 'The artist is painting a big picture. What do you think it is?',
+          translation: 'Sanatçı büyük bir resim çiziyor. Sence ne?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['artist', 'painting', 'picture'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Now it is your turn! Look at this painting and describe it.',
+          translation: 'Şimdi senin sıran! Bu tabloya bak ve tarif et.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'Tell me about this painting! What shapes and colors do you see?',
+            targetWords: ['circle', 'square', 'bright', 'dark', 'beautiful'],
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w7-picture-busy-city',
+    title: 'A Busy City Street',
+    titleTr: 'Kalabalık Bir Şehir Sokağı',
+    theme: 'city',
+    data: {
+      type: 'story-time',
+      variant: 'picture',
+      title: 'A Busy City Street',
+      pages: [
+        {
+          text: 'Look at this city street! What is happening?',
+          translation: 'Bu şehir sokağına bak! Neler oluyor?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['city', 'street'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Cars, buses, and people everywhere. Describe what you see!',
+          translation: 'Her yerde arabalar, otobüsler ve insanlar. Ne gördüğünü anlat!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What do you see on the street?',
+            targetWords: ['car', 'bus', 'people', 'traffic', 'building'],
+          },
+        },
+        {
+          text: 'The traffic light is red. Everyone has to wait.',
+          translation: 'Trafik lambası kırmızı. Herkes beklemek zorunda.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['traffic', 'light', 'red', 'wait'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Now look again. What are the people doing?',
+          translation: 'Şimdi tekrar bak. İnsanlar ne yapıyor?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'Tell me what the people are doing!',
+            targetWords: ['walking', 'talking', 'shopping', 'driving', 'crossing'],
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w8-picture-market-day',
+    title: 'Market Day',
+    titleTr: 'Pazar Günü',
+    theme: 'food',
+    data: {
+      type: 'story-time',
+      variant: 'picture',
+      title: 'Market Day',
+      pages: [
+        {
+          text: 'Welcome to the market! Many colorful things to see.',
+          translation: 'Pazara hoş geldin! Görecek bir sürü renkli şey var.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['market', 'colorful'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'Look at the fruit stand. Which fruits can you name?',
+          translation: 'Meyve tezgâhına bak. Hangi meyveleri sayabilirsin?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'Name as many fruits as you can!',
+            targetWords: ['apple', 'banana', 'orange', 'grape', 'pear'],
+          },
+        },
+        {
+          text: 'The baker sells fresh bread. It smells wonderful!',
+          translation: 'Fırıncı taze ekmek satıyor. Harika kokuyor!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['baker', 'fresh', 'bread', 'smells'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'What would you buy at the market? Tell me!',
+          translation: 'Pazardan ne alırdın? Bana anlat!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What would you like to buy?',
+            targetWords: ['apples', 'cheese', 'bread', 'eggs', 'flowers'],
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w10-picture-beach-day',
+    title: 'A Day at the Beach',
+    titleTr: 'Sahilde Bir Gün',
+    theme: 'nature',
+    data: {
+      type: 'story-time',
+      variant: 'picture',
+      title: 'A Day at the Beach',
+      pages: [
+        {
+          text: 'The beach is beautiful today. Look at the big blue sea!',
+          translation: 'Bugün sahil çok güzel. Koca mavi denize bak!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['beach', 'blue', 'sea'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'What can you see on the sand?',
+          translation: 'Kumda ne görebiliyorsun?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'Tell me what you see on the sand!',
+            targetWords: ['shell', 'bucket', 'umbrella', 'towel', 'ball'],
+          },
+        },
+        {
+          text: 'Children are building a sandcastle. Waves splash gently.',
+          translation: 'Çocuklar kumdan kale yapıyor. Dalgalar yumuşakça çarpıyor.',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['sandcastle', 'waves', 'splash'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'What would YOU do at the beach? Tell me!',
+          translation: 'SEN sahilde ne yapardın? Bana anlat!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What would you do at the beach?',
+            targetWords: ['swim', 'run', 'play', 'build', 'collect'],
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'story-w12-picture-space-window',
+    title: 'Looking Out the Space Window',
+    titleTr: 'Uzay Penceresinden Bakmak',
+    theme: 'space',
+    data: {
+      type: 'story-time',
+      variant: 'picture',
+      title: 'Looking Out the Space Window',
+      pages: [
+        {
+          text: 'Nova floats in a space station. Look out the window!',
+          translation: 'Nova bir uzay istasyonunda süzülüyor. Pencereden bak!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['space', 'station', 'window'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'So many bright lights! What can you see out there?',
+          translation: 'Bir sürü parlak ışık! Orada neler görüyorsun?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'Tell me what you see in space!',
+            targetWords: ['stars', 'planet', 'moon', 'comet', 'galaxy'],
+          },
+        },
+        {
+          text: 'Earth looks like a blue marble from up here. Amazing!',
+          translation: 'Buradan Dünya mavi bir misket gibi görünüyor. Muhteşem!',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: ['Earth', 'blue', 'amazing'],
+          interactionType: 'tap-word',
+          interactionData: {},
+        },
+        {
+          text: 'If you were an astronaut, what would you do first?',
+          translation: 'Eğer astronot olsaydın önce ne yapardın?',
+          imageUrl: '',
+          audioUrl: '',
+          highlightWords: [],
+          interactionType: 'speak-it',
+          interactionData: {
+            prompt: 'What would you do in space first?',
+            targetWords: ['float', 'look', 'explore', 'wave', 'smile'],
+          },
+        },
+      ],
+    },
+  },
+];
+
+export const storyBank: MicroStory[] = [
+  ...rawStoryBank,
+  ...priority6Stories,
+  ...priority7Stories,
+  ...chainStories,
+  ...pictureStories,
+].map(enrichMicroStory);
 
 export function selectStoryForWords(
   words: string[],

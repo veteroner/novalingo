@@ -178,7 +178,7 @@ export interface StoryTimeData {
   type: 'story-time';
   title: string;
   /** Optional story variant for specialized rendering */
-  variant?: 'default' | 'rhyme';
+  variant?: 'default' | 'rhyme' | 'chain' | 'picture';
   pages: Array<{
     text: string;
     translation: string;
@@ -192,6 +192,8 @@ export interface StoryTimeData {
       | 'choose-image'
       | 'drag-item'
       | 'choice'
+      | 'word-select'
+      | 'speak-it'
       | 'none';
     interactionData?: Record<string, unknown>;
     /** Optional ambient sound URL for the page */

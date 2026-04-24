@@ -35,7 +35,10 @@ VOLUME = "+0%"
 OUTPUT_DIR = Path(__file__).parent.parent / "public" / "audio" / "tts"
 MANIFEST_PATH = Path(__file__).parent.parent / "src" / "services" / "speech" / "audioManifest.ts"
 DATA_DIR = Path(__file__).parent.parent / "src" / "features" / "learning" / "data"
+STORYBANK_PATH = DATA_DIR / "storyBank.ts"
+CONVERSATION_REGISTRY_DIR = DATA_DIR / "conversations" / "registry"
 CONCURRENCY = 8  # Parallel generation limit
+MAX_RETRIES = 3
 
 
 def text_hash(text: str) -> str:
@@ -162,6 +165,44 @@ def extract_grammar_sentences(filepath: Path) -> list[dict]:
     return entries
 
 
+def extract_storybank_pages(filepath: Path) -> list[dict]:
+    """Extract story page text values from storyBank.ts."""
+    entries = []
+    content = filepath.read_text(encoding="utf-8")
+
+    text_pattern = re.compile(
+        r"text:\s*'((?:[^'\\]|\\.)*)'|text:\s*\"((?:[^\"\\]|\\.)*)\"",
+        re.MULTILINE,
+    )
+
+    for m in text_pattern.finditer(content):
+        text = m.group(1) or m.group(2)
+        if text:
+            entries.append({"type": "storybank_page", "text": text})
+
+    return entries
+
+
+def extract_conversation_registry_texts(registry_dir: Path) -> list[dict]:
+    """Extract spoken prompt text from conversation registry scenario files."""
+    entries = []
+    text_pattern = re.compile(
+        r"(?<![A-Za-z])text:\s*'((?:[^'\\]|\\.)*)'|(?<![A-Za-z])text:\s*\"((?:[^\"\\]|\\.)*)\"",
+        re.MULTILINE,
+    )
+
+    for filepath in registry_dir.rglob("*.ts"):
+        if any(part.startswith("._") or part.startswith(".") for part in filepath.parts):
+            continue
+        content = filepath.read_text(encoding="utf-8")
+        for m in text_pattern.finditer(content):
+            text = m.group(1) or m.group(2)
+            if text:
+                entries.append({"type": "conversation_prompt", "text": text})
+
+    return entries
+
+
 def extract_all_texts() -> dict[str, dict]:
     """Extract and deduplicate all English texts needing TTS."""
     ag_path = DATA_DIR / "activityGenerator.ts"
@@ -175,6 +216,8 @@ def extract_all_texts() -> dict[str, dict]:
     all_entries.extend(extract_story_templates(ag_content))
     all_entries.extend(extract_comprehension_passages(comp_path))
     all_entries.extend(extract_grammar_sentences(gram_path))
+    all_entries.extend(extract_storybank_pages(STORYBANK_PATH))
+    all_entries.extend(extract_conversation_registry_texts(CONVERSATION_REGISTRY_DIR))
 
     # Unescape TypeScript string escapes (e.g. \' → ')
     for entry in all_entries:
@@ -195,13 +238,25 @@ def extract_all_texts() -> dict[str, dict]:
 async def generate_single(text: str, output_path: Path, semaphore: asyncio.Semaphore) -> bool:
     """Generate a single MP3 file using edge-tts."""
     async with semaphore:
-        try:
-            communicate = edge_tts.Communicate(text, VOICE, rate=RATE, volume=VOLUME)
-            await communicate.save(str(output_path))
-            return True
-        except Exception as e:
-            print(f"  ERROR generating '{text[:50]}...': {e}")
-            return False
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                communicate = edge_tts.Communicate(text, VOICE, rate=RATE, volume=VOLUME)
+                await communicate.save(str(output_path))
+                return True
+            except Exception as e:
+                if output_path.exists() and output_path.stat().st_size <= 100:
+                    output_path.unlink(missing_ok=True)
+
+                if attempt < MAX_RETRIES:
+                    wait_seconds = attempt * 1.5
+                    print(
+                        f"  RETRY {attempt}/{MAX_RETRIES - 1} for '{text[:50]}...' after error: {e}"
+                    )
+                    await asyncio.sleep(wait_seconds)
+                    continue
+
+                print(f"  ERROR generating '{text[:50]}...': {e}")
+                return False
 
 
 async def generate_all(texts: dict[str, dict]) -> dict[str, str]:

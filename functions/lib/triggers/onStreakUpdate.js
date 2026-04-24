@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onStreakUpdate = void 0;
 const firestore_1 = require("firebase-functions/v2/firestore");
+const collectibleService_1 = require("../services/collectibleService");
 const notificationService_1 = require("../services/notificationService");
 const admin_1 = require("../utils/admin");
 const STREAK_MILESTONES = {
@@ -50,10 +51,23 @@ exports.onStreakUpdate = (0, firestore_1.onDocumentUpdated)({ document: 'childre
                 unlockedAt: (0, admin_1.serverTimestamp)(),
             });
             await batch.commit();
+            // Grant collectible at key milestones
+            try {
+                if (milestone === 100 || milestone === 365) {
+                    await (0, collectibleService_1.grantRareCollectible)(childId, 'achievement');
+                }
+                else if (milestone === 7 || milestone === 30) {
+                    await (0, collectibleService_1.grantRandomCollectible)(childId, 'achievement');
+                }
+            }
+            catch (err) {
+                console.error(`Streak collectible error: child=${childId}, milestone=${milestone}`, err);
+            }
             // Notify parent
             await (0, notificationService_1.notifyParentAboutChild)(childId, {
                 title: `🔥 ${reward.label}`,
                 body: `${after.name} tam ${milestone} günlük seri yaptı!`,
+                category: 'achievementAlert',
                 data: { type: 'streak_milestone', childId, milestone: String(milestone) },
             });
             console.log(`Streak milestone ${milestone} for child=${childId}`);

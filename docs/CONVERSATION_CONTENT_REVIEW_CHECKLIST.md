@@ -2,6 +2,11 @@
 
 Use this checklist when reviewing a conversation scenario before merging.
 
+> **Not:** Aşağıdaki tüm madde işaretleri her review görevü için yeniden
+> doldurulur. Bu dosyadaki boş `[ ]` kutuları proje seviyesinde tamamlanmamış
+> iş demek değildir; yalnızca reviewer'ın o tekil senaryo için kullanıp
+> atması gereken bir kontrol şablonudur.
+
 ---
 
 ## Structure

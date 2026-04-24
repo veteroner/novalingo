@@ -10,6 +10,7 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { NovaCompanion } from '@components/organisms/NovaCompanion';
 import { getWordEmoji } from '@features/learning/data/wordEmojiMap';
+import { recordSessionAndMaybePromptRating } from '@services/ratingService';
 import { useConversationStore } from '@stores/conversationStore';
 import { formatTime } from '@utils/time';
 import { motion } from 'framer-motion';
@@ -66,6 +67,13 @@ export default function ConversationResultScreen() {
       clearInterval(timer);
     };
   }, [xpResult]);
+
+  // Rating prompt — after a good conversation result
+  useEffect(() => {
+    if (result && result.accuracy >= 0.8) {
+      void recordSessionAndMaybePromptRating();
+    }
+  }, [result]);
 
   if (!result || !scenario) {
     return (
