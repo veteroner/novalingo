@@ -1,2 +1,2 @@
-declare const _default: Record<string, any>;
+declare const _default: import("vitest/config").UserConfigExport;
 export default _default;

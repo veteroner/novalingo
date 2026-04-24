@@ -3,10 +3,9 @@ import react from '@vitejs/plugin-react-swc';
 import { cpSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const bundleTtsAudio = process.env.VITE_BUNDLE_TTS_AUDIO !== 'false';
 
 /**
  * macOS creates AppleDouble `._*` sidecar files on external drives.
@@ -52,7 +51,7 @@ function cleanAppleDoublePlugin(): Plugin {
   };
 }
 
-function stripBundledTtsPlugin(): Plugin {
+function stripBundledTtsPlugin(bundleTtsAudio: boolean): Plugin {
   function removeDotUnderscore(dir: string): void {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const full = join(dir, entry.name);
@@ -67,7 +66,7 @@ function stripBundledTtsPlugin(): Plugin {
   return {
     name: 'strip-bundled-tts',
     writeBundle() {
-      if (process.env.VITE_BUNDLE_TTS_AUDIO !== 'false') return;
+      if (bundleTtsAudio) return;
 
       const bundledTtsDir = resolve(__dirname, 'dist/audio/tts');
       try {
@@ -80,7 +79,7 @@ function stripBundledTtsPlugin(): Plugin {
   };
 }
 
-function copyFilteredPublicAssetsPlugin(): Plugin {
+function copyFilteredPublicAssetsPlugin(bundleTtsAudio: boolean): Plugin {
   return {
     name: 'copy-filtered-public-assets',
     apply: 'build',
@@ -112,66 +111,71 @@ function copyFilteredPublicAssetsPlugin(): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    cleanAppleDoublePlugin(),
-    copyFilteredPublicAssetsPlugin(),
-    stripBundledTtsPlugin(),
-    react(),
-    tailwindcss(),
-  ],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const bundleTtsAudio = env.VITE_BUNDLE_TTS_AUDIO !== 'false';
 
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-      '@components': resolve(__dirname, './src/components'),
-      '@features': resolve(__dirname, './src/features'),
-      '@services': resolve(__dirname, './src/services'),
-      '@stores': resolve(__dirname, './src/stores'),
-      '@hooks': resolve(__dirname, './src/hooks'),
-      '@utils': resolve(__dirname, './src/utils'),
-      '@types': resolve(__dirname, './src/types'),
-      '@assets': resolve(__dirname, './src/assets'),
-      '@config': resolve(__dirname, './src/config'),
-      '@i18n': resolve(__dirname, './src/i18n'),
-    },
-  },
+  return {
+    plugins: [
+      cleanAppleDoublePlugin(),
+      copyFilteredPublicAssetsPlugin(bundleTtsAudio),
+      stripBundledTtsPlugin(bundleTtsAudio),
+      react(),
+      tailwindcss(),
+    ],
 
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? '1.0.0'),
-  },
-
-  build: {
-    target: 'es2022',
-    outDir: 'dist',
-    emptyOutDir: false, // Handled by cleanAppleDoublePlugin (macOS external drive ._* workaround)
-    sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-firebase-core': ['firebase/app', 'firebase/auth'],
-          'vendor-firebase-db': ['firebase/firestore'],
-          'vendor-firebase-extras': ['firebase/storage', 'firebase/analytics'],
-          'vendor-animation': ['framer-motion', 'lottie-react'],
-          'vendor-audio': ['howler'],
-          'vendor-state': ['zustand', '@tanstack/react-query'],
-          'vendor-i18n': ['i18next', 'react-i18next'],
-        },
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, './src'),
+        '@components': resolve(__dirname, './src/components'),
+        '@features': resolve(__dirname, './src/features'),
+        '@services': resolve(__dirname, './src/services'),
+        '@stores': resolve(__dirname, './src/stores'),
+        '@hooks': resolve(__dirname, './src/hooks'),
+        '@utils': resolve(__dirname, './src/utils'),
+        '@types': resolve(__dirname, './src/types'),
+        '@assets': resolve(__dirname, './src/assets'),
+        '@config': resolve(__dirname, './src/config'),
+        '@i18n': resolve(__dirname, './src/i18n'),
       },
     },
-    chunkSizeWarningLimit: 600,
-  },
 
-  publicDir: bundleTtsAudio ? 'public' : false,
+    define: {
+      __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? '1.0.0'),
+    },
 
-  server: {
-    port: 3000,
-    host: true,
-    open: true,
-  },
+    build: {
+      target: 'es2022',
+      outDir: 'dist',
+      emptyOutDir: false, // Handled by cleanAppleDoublePlugin (macOS external drive ._* workaround)
+      sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-firebase-core': ['firebase/app', 'firebase/auth'],
+            'vendor-firebase-db': ['firebase/firestore'],
+            'vendor-firebase-extras': ['firebase/storage', 'firebase/analytics'],
+            'vendor-animation': ['framer-motion', 'lottie-react'],
+            'vendor-audio': ['howler'],
+            'vendor-state': ['zustand', '@tanstack/react-query'],
+            'vendor-i18n': ['i18next', 'react-i18next'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 600,
+    },
 
-  preview: {
-    port: 4173,
-  },
+    publicDir: bundleTtsAudio ? 'public' : false,
+
+    server: {
+      port: 3000,
+      host: true,
+      open: true,
+    },
+
+    preview: {
+      port: 4173,
+    },
+  };
 });

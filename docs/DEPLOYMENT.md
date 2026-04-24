@@ -117,6 +117,56 @@ Native env önerisi:
 - Staging: `VITE_TTS_AUDIO_BASE_URL=https://novalingo-b0c92-tts.web.app`
 - Production: `VITE_TTS_AUDIO_BASE_URL=https://novalingo-app-tts.web.app`
 
+Staging build'ini bu origin'e zorlamak için local çalışma kopyasında `.env.staging` şu override'ları içermelidir:
+
+```bash
+VITE_APP_ENV=staging
+VITE_BUNDLE_TTS_AUDIO=false
+VITE_TTS_AUDIO_BASE_URL=https://novalingo-b0c92-tts.web.app
+```
+
+Repo script'leri:
+
+- `pnpm run build:staging`
+- `pnpm run cap:build:android:staging`
+- `pnpm run cap:build:ios:staging`
+- `pnpm run smoke:cap:staging`
+
+Gerçek cihaz / Capacitor smoke test komutları:
+
+```bash
+# 1) Staging native web bundle doğrulaması
+pnpm run smoke:cap:staging
+
+# 2) Android için staging web bundle + native sync
+pnpm run cap:build:android:staging
+
+# 3) Android debug APK üret
+cd android && ./gradlew assembleDebug
+
+# 4) Bağlı cihaza yükle
+adb devices
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# 5) Uygulamayı aç ve logları izle
+adb shell am start -n com.novalingo.app/.MainActivity
+adb logcat | grep -i "capacitor\|chromium\|audio\|howler\|tts"
+
+# 6) iOS için staging web bundle + native sync
+pnpm run cap:build:ios:staging
+
+# 7) Bağlı iOS cihazını listele ve Xcode projesini aç
+xcrun xctrace list devices
+pnpm run cap:ios
+```
+
+Manuel kontrol checklist'i:
+
+- açılışta uygulama crash etmemeli
+- bir kelime/lesson ekranında pre-recorded TTS çalmalı
+- `dist/audio/tts` native bundle içine geri dönmemeli
+- staging origin dışına (`novalingo-app-tts.web.app`) istek gitmemeli
+
 ### 3.1 Gemini Evaluator İçin Functions Env Dosyaları
 
 Repo içinde şu dosyalar oluşturulmuştur:
