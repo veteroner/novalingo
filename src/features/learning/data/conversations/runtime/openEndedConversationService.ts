@@ -101,6 +101,8 @@ function buildLocalRubric(
 }
 
 export const localOpenEndedConversationService: OpenEndedConversationService = {
+  // Synchronous rule-based evaluator that satisfies the async service interface.
+  // eslint-disable-next-line @typescript-eslint/require-await
   async evaluateTurn(request) {
     if (!request.config) {
       return buildRejectedEvaluation('Local evaluator requires explicit open-ended config.');

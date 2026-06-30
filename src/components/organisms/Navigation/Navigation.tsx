@@ -11,20 +11,21 @@ import { useUIStore } from '@stores/uiStore';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface NavItem {
   id: TabType;
-  label: string;
   emoji: string;
   path: string;
 }
 
+// Etiketler i18n'den gelir (common.nav, id'ye göre).
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Ana Sayfa', emoji: '🏠', path: '/home' },
-  { id: 'learn', label: 'Öğren', emoji: '📚', path: '/world/w1' },
-  { id: 'quests', label: 'Görevler', emoji: '⚔️', path: '/quests' },
-  { id: 'profile', label: 'Profil', emoji: '👤', path: '/profile' },
+  { id: 'home', emoji: '🏠', path: '/home' },
+  { id: 'learn', emoji: '📚', path: '/world/w1' },
+  { id: 'quests', emoji: '⚔️', path: '/quests' },
+  { id: 'profile', emoji: '👤', path: '/profile' },
 ];
 
 /** Map pathname back to tab id so the indicator stays in sync */
@@ -37,6 +38,7 @@ function pathnameToTab(pathname: string): TabType | null {
 }
 
 export function Navigation() {
+  const { t } = useTranslation('common');
   const activeTab = useUIStore((s) => s.activeTab);
   const setActiveTab = useUIStore((s) => s.setActiveTab);
   const child = useChildStore((s) => s.activeChild);
@@ -94,7 +96,7 @@ export function Navigation() {
               >
                 {item.emoji}
               </motion.span>
-              <span className="text-[0.625rem] font-bold">{item.label}</span>
+              <span className="text-[0.625rem] font-bold">{t(`nav.${item.id}`)}</span>
               {isActive && (
                 <motion.div
                   layoutId="nav-indicator"

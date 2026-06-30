@@ -11,6 +11,7 @@ import type { MemoryGameData } from '@/types/content';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface MemoryGameActivityProps extends ActivityCallbacks {
@@ -39,6 +40,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function MemoryGameActivity({ data, onComplete }: MemoryGameActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const wrongAttempts = useRef(0);
   const [cards, setCards] = useState<CardState[]>(() =>
@@ -148,7 +150,7 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
           🧩 HAFIZA OYUNU
         </Text>
         <Text variant="body" className="text-text-secondary">
-          Eşleşen kartları bul!
+          {t('activityUI.memory.subtitle')}
         </Text>
       </div>
 
@@ -227,10 +229,10 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
         >
           <div className="mb-2 text-5xl">🎉</div>
           <Text variant="h3" className="text-green-600">
-            Harika!
+            {t('activityUI.memory.great')}
           </Text>
           <Text variant="bodySmall" className="text-gray-400">
-            Tüm kartları eşleştirdin!
+            {t('activityUI.memory.complete')}
           </Text>
         </motion.div>
       )}

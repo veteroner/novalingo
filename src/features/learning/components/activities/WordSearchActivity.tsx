@@ -10,6 +10,7 @@ import type { WordSearchData } from '@/types/content';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface WordSearchActivityProps extends ActivityCallbacks {
@@ -22,6 +23,7 @@ interface FoundWord {
 }
 
 export default function WordSearchActivity({ data, onComplete }: WordSearchActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const completionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [foundWords, setFoundWords] = useState<FoundWord[]>([]);
@@ -167,10 +169,10 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
       {/* Header */}
       <div className="text-center">
         <Text variant="overline" className="mb-1 text-emerald-600">
-          🔍 KELİME BULMACA
+          {t('activityUI.wordSearch.title')}
         </Text>
         <Text variant="bodySmall" className="text-text-secondary">
-          Gizli kelimeleri bul! Harfleri sırayla tıkla.
+          {t('activityUI.wordSearch.subtitle')}
         </Text>
       </div>
 
@@ -247,7 +249,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
               setIsSelecting(false);
             }}
           >
-            İptal
+            {t('activityUI.wordSearch.cancel')}
           </button>
           <button
             className="rounded-full bg-blue-500 px-6 py-2 font-bold text-white transition-transform active:scale-95"
@@ -268,7 +270,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
           >
             <div className="text-5xl">🎉</div>
             <Text variant="h3" className="text-green-600">
-              Tüm kelimeleri buldun!
+              {t('activityUI.wordSearch.complete')}
             </Text>
           </motion.div>
         )}

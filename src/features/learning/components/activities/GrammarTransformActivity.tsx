@@ -11,6 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface GrammarTransformActivityProps extends ActivityCallbacks {
@@ -21,6 +22,7 @@ export default function GrammarTransformActivity({
   data,
   onComplete,
 }: GrammarTransformActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const [selected, setSelected] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<'idle' | 'correct' | 'wrong'>('idle');
@@ -74,7 +76,7 @@ export default function GrammarTransformActivity({
       {/* Header */}
       <div className="text-center">
         <Text variant="overline" className="text-orange-500">
-          🔄 GRAMER DÖNÜŞÜMü
+          {t('activityUI.grammar.title')}
         </Text>
       </div>
 
@@ -116,7 +118,9 @@ export default function GrammarTransformActivity({
           className="rounded-xl bg-yellow-50 p-3 text-center"
         >
           <Text variant="caption" className="text-yellow-700">
-            💡 Doğru cevap "{data.correctAnswer.split(' ').slice(0, 3).join(' ')}..." ile başlıyor
+            {t('activityUI.grammar.hintStart', {
+              prefix: data.correctAnswer.split(' ').slice(0, 3).join(' '),
+            })}
           </Text>
         </motion.div>
       )}
@@ -170,7 +174,7 @@ export default function GrammarTransformActivity({
           whileTap={{ scale: 0.95 }}
           onClick={handleHint}
         >
-          💡 İpucu göster
+          {t('activityUI.grammar.showHint')}
         </motion.button>
       )}
 

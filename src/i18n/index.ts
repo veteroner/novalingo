@@ -12,15 +12,19 @@ import { initReactI18next } from 'react-i18next';
 // Import translations directly for bundling (small app, avoids network requests)
 import trAuth from './locales/tr/auth.json';
 import trCommon from './locales/tr/common.json';
+import trGamification from './locales/tr/gamification.json';
 import trHome from './locales/tr/home.json';
 import trLesson from './locales/tr/lesson.json';
+import trParent from './locales/tr/parent.json';
 import trProfile from './locales/tr/profile.json';
 import trShop from './locales/tr/shop.json';
 
 import enAuth from './locales/en/auth.json';
 import enCommon from './locales/en/common.json';
+import enGamification from './locales/en/gamification.json';
 import enHome from './locales/en/home.json';
 import enLesson from './locales/en/lesson.json';
+import enParent from './locales/en/parent.json';
 import enProfile from './locales/en/profile.json';
 import enShop from './locales/en/shop.json';
 
@@ -33,7 +37,7 @@ void i18n
   .use(initReactI18next)
   .init({
     defaultNS,
-    ns: ['common', 'auth', 'home', 'lesson', 'shop', 'profile'],
+    ns: ['common', 'auth', 'home', 'lesson', 'shop', 'profile', 'gamification', 'parent'],
     fallbackLng: 'tr',
     supportedLngs: [...supportedLanguages],
     interpolation: {
@@ -52,6 +56,8 @@ void i18n
         lesson: trLesson,
         shop: trShop,
         profile: trProfile,
+        gamification: trGamification,
+        parent: trParent,
       },
       en: {
         common: enCommon,
@@ -60,6 +66,8 @@ void i18n
         lesson: enLesson,
         shop: enShop,
         profile: enProfile,
+        gamification: enGamification,
+        parent: enParent,
       },
     },
   });

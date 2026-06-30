@@ -13,11 +13,13 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { trackStoryCompleted } from '@services/analytics/analyticsService';
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function StoryViewerScreen() {
   const { storyId } = useParams<{ storyId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation('lesson');
 
   const story = storyId ? getStory(storyId) : undefined;
   const worldId = storyId ? (/^story-(w\d)/.exec(storyId)?.[1] ?? 'w1') : 'w1';
@@ -38,10 +40,10 @@ export default function StoryViewerScreen() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6">
         <Text variant="h3" align="center">
-          Hikaye bulunamadı 😕
+          {t('storyViewer.notFound')}
         </Text>
         <Button variant="primary" onClick={() => navigate('/stories')}>
-          Kütüphaneye Dön
+          {t('storyViewer.backToLibrary')}
         </Button>
       </div>
     );

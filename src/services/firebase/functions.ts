@@ -452,7 +452,7 @@ export async function evaluateOpenEndedConversation(
     throw new Error(`Remote evaluator failed: ${response.status} ${errorText.slice(0, 200)}`);
   }
 
-  return response.json();
+  return (await response.json()) as EvaluateOpenEndedConversationRes;
 }
 
 export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitLessonResultRes> {

@@ -184,8 +184,9 @@ function extractFreeTextSlot(rawText: string, capturePrefixes?: string[]): strin
     .split(' ')
     .filter(Boolean);
 
-  if (singleWord.length === 1 && (singleWord[0]?.length ?? 0) >= 2) {
-    return singleWord[0]!.toLowerCase();
+  const onlyWord = singleWord[0];
+  if (singleWord.length === 1 && onlyWord && onlyWord.length >= 2) {
+    return onlyWord.toLowerCase();
   }
 
   return null;
@@ -210,8 +211,7 @@ function domainContains(domain: ConversationOpenEndedConfig['domain'], candidate
   if (domain === 'animal') return ANIMAL_WORDS.has(candidate);
   if (domain === 'descriptor') return DESCRIPTOR_WORDS.has(candidate);
   if (domain === 'color') return COLOR_WORDS.has(candidate);
-  if (domain === 'food') return FOOD_WORDS.has(candidate);
-  return false;
+  return FOOD_WORDS.has(candidate);
 }
 
 function extractFavoriteThing(

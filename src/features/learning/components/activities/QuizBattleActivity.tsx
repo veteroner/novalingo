@@ -9,6 +9,7 @@ import type { QuizBattleData } from '@/types/content';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface QuizBattleActivityProps extends ActivityCallbacks {
@@ -23,6 +24,7 @@ const OPTION_COLORS = [
 ];
 
 export default function QuizBattleActivity({ data, onComplete }: QuizBattleActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -261,7 +263,7 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
                   : '💪'}
             </div>
             <Text variant="h3" className="text-gray-800">
-              {correctCount} / {totalQuestions} Doğru
+              {t('activityUI.quizBattle.score', { correct: correctCount, total: totalQuestions })}
             </Text>
             <Text variant="body" className="font-bold text-orange-500">
               {totalScore} puan!

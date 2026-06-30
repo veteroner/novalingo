@@ -34,51 +34,53 @@ describe('LoginScreen', () => {
     expect(screen.getByText('NovaLingo')).toBeInTheDocument();
   });
 
+  // NOTE: react-i18next is mocked in src/test/setup.ts so t(key) returns the key.
+  // Assertions therefore match the i18n keys rather than the Turkish copy.
   it('renders subtitle', () => {
     renderLogin();
-    expect(screen.getByText('İngilizce öğrenmenin en eğlenceli yolu!')).toBeInTheDocument();
+    expect(screen.getByText('login.tagline')).toBeInTheDocument();
   });
 
   it('renders Google login button', () => {
     renderLogin();
-    expect(screen.getByText('Google ile Giriş Yap')).toBeInTheDocument();
+    expect(screen.getByText('login.withGoogle')).toBeInTheDocument();
   });
 
   it('renders Apple login button', () => {
     renderLogin();
-    expect(screen.getByText('Apple ile Giriş Yap')).toBeInTheDocument();
+    expect(screen.getByText('login.withApple')).toBeInTheDocument();
   });
 
   it('renders anonymous login button', () => {
     renderLogin();
-    expect(screen.getByText('Hemen Başla (Kayıtsız)')).toBeInTheDocument();
+    expect(screen.getByText('login.asGuest')).toBeInTheDocument();
   });
 
   it('calls signInWithGoogle when Google button clicked', async () => {
     renderLogin();
     await userEvent.click(screen.getByRole('checkbox'));
-    await userEvent.click(screen.getByText('Google ile Giriş Yap'));
+    await userEvent.click(screen.getByText('login.withGoogle'));
     expect(signInWithGoogle).toHaveBeenCalledOnce();
   });
 
   it('calls signInWithApple when Apple button clicked', async () => {
     renderLogin();
     await userEvent.click(screen.getByRole('checkbox'));
-    await userEvent.click(screen.getByText('Apple ile Giriş Yap'));
+    await userEvent.click(screen.getByText('login.withApple'));
     expect(signInWithApple).toHaveBeenCalledOnce();
   });
 
   it('calls signInAnonymousUser when anonymous button clicked', async () => {
     renderLogin();
     await userEvent.click(screen.getByRole('checkbox'));
-    await userEvent.click(screen.getByText('Hemen Başla (Kayıtsız)'));
+    await userEvent.click(screen.getByText('login.asGuest'));
     expect(signInAnonymousUser).toHaveBeenCalledOnce();
   });
 
   it('disables login buttons when KVKK not accepted', () => {
     renderLogin();
-    expect(screen.getByText('Google ile Giriş Yap').closest('button')).toBeDisabled();
-    expect(screen.getByText('Apple ile Giriş Yap').closest('button')).toBeDisabled();
-    expect(screen.getByText('Hemen Başla (Kayıtsız)').closest('button')).toBeDisabled();
+    expect(screen.getByText('login.withGoogle').closest('button')).toBeDisabled();
+    expect(screen.getByText('login.withApple').closest('button')).toBeDisabled();
+    expect(screen.getByText('login.asGuest').closest('button')).toBeDisabled();
   });
 });

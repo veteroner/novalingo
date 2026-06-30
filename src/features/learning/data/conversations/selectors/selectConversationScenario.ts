@@ -194,8 +194,9 @@ export function selectConversationScenario(
 
   // Fall back to full pool if phase yields nothing
   const candidates = phaseCandidates.length > 0 ? phaseCandidates : baseCandidates;
-  const worldTaggedCandidates = params.worldId
-    ? candidates.filter((scenario) => scenario.tags.includes(params.worldId!))
+  const worldId = params.worldId;
+  const worldTaggedCandidates = worldId
+    ? candidates.filter((scenario) => scenario.tags.includes(worldId))
     : [];
   const scopedCandidates = worldTaggedCandidates.length > 0 ? worldTaggedCandidates : candidates;
 

@@ -82,5 +82,152 @@
     "streakWarning": "Serin bitmek üzere! Hemen bir ders yap! 🔥",
     "achievementUnlocked": "Yeni başarı kazandın: {{name}} 🏆",
     "weeklyReport": "Haftalık raporun hazır! 📊"
+  },
+
+  "reward": {
+    "xp": "XP",
+    "stars": "yıldız",
+    "gems": "elmas",
+    "streakFreeze": "seri koruma",
+    "generic": "ödül"
+  },
+
+  "modals": {
+    "confirmTitle": "Onay Gerekli",
+    "confirmOk": "Onayla",
+    "confirmDefault": "Bu işlemi yapmak istediğine emin misin?",
+    "cancel": "Vazgeç",
+    "settingsTitle": "⚙️ Hızlı Ayarlar",
+    "settingsDesc": "Ses, titreşim ve ebeveyn ayarlarına hızlı erişim.",
+    "language": "🌍 Dil",
+    "toggleSound": "🔊 Ses efektleri",
+    "toggleMusic": "🎵 Arka plan müziği",
+    "toggleHaptic": "📳 Titreşim",
+    "toggleNotifications": "🔔 Bildirimler",
+    "on": "Açık",
+    "off": "Kapalı",
+    "advancedParent": "👨‍👩‍👧 Gelişmiş ebeveyn ayarları",
+    "signOutButton": "🚪 Oturumu kapat",
+    "signOutTitle": "Oturumu kapat",
+    "signOutMessage": "Bu cihazdaki oturumu kapatıp giriş ekranına dönmek istiyor musun?",
+    "signOutConfirm": "Çıkış yap",
+    "signOutStay": "Kal",
+    "streakTitle": "Seriyi Koru",
+    "streakActive": "{{count}} günlük seri aktif",
+    "streakAtRisk": "Serin risk altında",
+    "activeStreakLabel": "Aktif seri",
+    "freezeLabel": "Seri koruma",
+    "streakDesc": "Elindeki seri korumaları kullanarak serini kaybetmeden devam edebilirsin.",
+    "useFreeze": "🧊 1 seri koruma kullan",
+    "useFreezeTitle": "Seri koruma kullan",
+    "useFreezeMessage": "1 adet seri koruma harcanacak. Devam etmek istiyor musun?",
+    "useFreezeConfirm": "Kullan",
+    "streakSavedTitle": "Seri korundu",
+    "streakSavedMessage": "Bugünkü serin güvende.",
+    "streakNoFreeze": "Koruman yoksa bugün bir ders tamamlayıp serini devam ettir.",
+    "novaNote": "Nova notu",
+    "collectibleName": "Koleksiyon Öğesi",
+    "collectibleDesc": "Bu öğeyi dersler ve görevler üzerinden kazanabilirsin.",
+    "collectibleFact": "Nova her koleksiyon parçasını saklamayı çok sever.",
+    "wheelTitle": "🎰 Günlük Çark",
+    "wheelRewardTitle": "Günlük ödül kazanıldı",
+    "wheelErrorTitle": "Çark çevrilemedi",
+    "wheelErrorMessage": "Lütfen biraz sonra tekrar dene.",
+    "wheelNoProfile": "Çarkı çevirmek için önce bir profil seç.",
+    "wheelAlreadySpun": "Bugünkü ödülünü aldın. Yarın tekrar gel.",
+    "wheelPrompt": "Her gün bir kez çevir ve sürpriz ödül kazan."
+  },
+
+  "parentalGate": {
+    "title": "🔒 Ebeveyn Doğrulaması",
+    "prompt": "Devam etmek için aşağıdaki soruyu cevaplayın.",
+    "answerPlaceholder": "Cevabı yazın",
+    "wrong": "Yanlış cevap, tekrar deneyin.",
+    "verify": "Doğrula",
+    "cancel": "İptal",
+    "consentTitle": "📋 Onay Gerekli",
+    "confirm": "Devam Et",
+    "consentPrompt": "Hesap oluşturmak için aşağıdaki koşulları onaylayın.",
+    "consentAria": "Gizlilik Politikası ve Kullanım Koşulları onayı",
+    "consentText": "<privacy>Gizlilik Politikası</privacy> ve <terms>Kullanım Koşulları</terms>'nı okudum ve kabul ediyorum.",
+    "coppaAria": "Ebeveyn COPPA onayı",
+    "coppaText": "Bu uygulamayı 13 yaş altı bir çocuk için ebeveyn/vasi sıfatıyla kullandığımı ve çocuğun kişisel verilerinin <privacy>Gizlilik Politikası</privacy> kapsamında işleneceğini onaylıyorum."
+  },
+
+  "novaEvolution": {
+    "title": "🌟 Nova Evrimleşiyor!",
+    "evolve": "Evrimleştir! ✨",
+    "dismiss": "Harika! 🎉",
+    "stage": {
+      "egg": "Yumurta",
+      "baby": "Bebek Nova",
+      "child": "Çocuk Nova",
+      "teen": "Genç Nova",
+      "adult": "Yetişkin Nova",
+      "legendary": "Efsanevi Nova"
+    },
+    "message": {
+      "egg": "Nova henüz yumurtadan çıkmadı!",
+      "baby": "Nova yumurtadan çıktı! İlk adımlarını atıyor. 🐣",
+      "child": "Nova büyüyor! Artık kendi başına keşfedebilir. 🌟",
+      "teen": "Nova güçleniyor! Müzik ve stil sahibi oldu. 🎧",
+      "adult": "Nova artık bir bilge! Mezuniyet şapkasını taktı. 🎓",
+      "legendary": "Nova efsanevi güce ulaştı! Taç sahibi! 👑"
+    }
+  },
+
+  "nav": {
+    "home": "Ana Sayfa",
+    "learn": "Öğren",
+    "quests": "Görevler",
+    "profile": "Profil"
+  },
+
+  "dailyWheelButton": {
+    "spin": "🎰 Çevir!",
+    "comeBack": "Yarın Tekrar Gel!"
+  },
+
+  "achievement": {
+    "title": "🎉 Başarım Açıldı!",
+    "rarity": {
+      "common": "Yaygın",
+      "rare": "Nadir",
+      "epic": "Epik",
+      "legendary": "Efsanevi"
+    }
+  },
+
+  "levelUpModal": {
+    "title": "Seviye Atladın!"
+  },
+
+  "conversationTopics": {
+    "title": "Nova ile Konuş 🎭",
+    "subtitle": "Bir konu seç ve konuşmaya başla!"
+  },
+
+  "legal": {
+    "back": "Geri",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Koşulları"
+  },
+
+  "leaderboard": {
+    "title": "📊 Liderlik Tablosu",
+    "leagueName": "{{tier}} Ligi",
+    "tiers": {
+      "bronze": "Bronz",
+      "silver": "Gümüş",
+      "gold": "Altın",
+      "platinum": "Platin",
+      "diamond": "Elmas",
+      "legend": "Efsane"
+    },
+    "thisWeekRank": "Bu Hafta — Sıran: #{{rank}}",
+    "daysLeft": "⏰ {{count}} gün kaldı",
+    "topPromote": "İlk 3 bir üst lige yükselir!",
+    "empty": "Henüz kimse yok",
+    "emptyDesc": "Bu haftanın liderlik tablosu yakında dolacak!"
   }
 }

@@ -82,5 +82,152 @@
     "streakWarning": "Your streak is about to end! Do a lesson now! 🔥",
     "achievementUnlocked": "New achievement unlocked: {{name}} 🏆",
     "weeklyReport": "Your weekly report is ready! 📊"
+  },
+
+  "reward": {
+    "xp": "XP",
+    "stars": "stars",
+    "gems": "gems",
+    "streakFreeze": "streak freeze",
+    "generic": "reward"
+  },
+
+  "modals": {
+    "confirmTitle": "Confirmation Needed",
+    "confirmOk": "Confirm",
+    "confirmDefault": "Are you sure you want to do this?",
+    "cancel": "Cancel",
+    "settingsTitle": "⚙️ Quick Settings",
+    "settingsDesc": "Quick access to sound, vibration, and parent settings.",
+    "language": "🌍 Language",
+    "toggleSound": "🔊 Sound effects",
+    "toggleMusic": "🎵 Background music",
+    "toggleHaptic": "📳 Vibration",
+    "toggleNotifications": "🔔 Notifications",
+    "on": "On",
+    "off": "Off",
+    "advancedParent": "👨‍👩‍👧 Advanced parent settings",
+    "signOutButton": "🚪 Sign out",
+    "signOutTitle": "Sign out",
+    "signOutMessage": "Do you want to sign out on this device and return to the login screen?",
+    "signOutConfirm": "Sign out",
+    "signOutStay": "Stay",
+    "streakTitle": "Protect Your Streak",
+    "streakActive": "{{count}}-day streak active",
+    "streakAtRisk": "Your streak is at risk",
+    "activeStreakLabel": "Active streak",
+    "freezeLabel": "Streak freeze",
+    "streakDesc": "Use your streak freezes to keep going without losing your streak.",
+    "useFreeze": "🧊 Use 1 streak freeze",
+    "useFreezeTitle": "Use streak freeze",
+    "useFreezeMessage": "1 streak freeze will be spent. Do you want to continue?",
+    "useFreezeConfirm": "Use",
+    "streakSavedTitle": "Streak protected",
+    "streakSavedMessage": "Today's streak is safe.",
+    "streakNoFreeze": "If you have no freeze, complete a lesson today to keep your streak.",
+    "novaNote": "Nova's note",
+    "collectibleName": "Collectible",
+    "collectibleDesc": "You can earn this item through lessons and quests.",
+    "collectibleFact": "Nova loves keeping every collectible piece.",
+    "wheelTitle": "🎰 Daily Wheel",
+    "wheelRewardTitle": "Daily reward earned",
+    "wheelErrorTitle": "Couldn't spin the wheel",
+    "wheelErrorMessage": "Please try again shortly.",
+    "wheelNoProfile": "Select a profile first to spin the wheel.",
+    "wheelAlreadySpun": "You got today's reward. Come back tomorrow.",
+    "wheelPrompt": "Spin once a day and win a surprise reward."
+  },
+
+  "parentalGate": {
+    "title": "🔒 Parent Verification",
+    "prompt": "Answer the question below to continue.",
+    "answerPlaceholder": "Type the answer",
+    "wrong": "Wrong answer, please try again.",
+    "verify": "Verify",
+    "cancel": "Cancel",
+    "consentTitle": "📋 Consent Required",
+    "confirm": "Continue",
+    "consentPrompt": "Approve the terms below to create an account.",
+    "consentAria": "Privacy Policy and Terms of Service consent",
+    "consentText": "I have read and accept the <privacy>Privacy Policy</privacy> and <terms>Terms of Service</terms>.",
+    "coppaAria": "Parent COPPA consent",
+    "coppaText": "I confirm that I am using this app as a parent/guardian for a child under 13 and that the child's personal data will be processed under the <privacy>Privacy Policy</privacy>."
+  },
+
+  "novaEvolution": {
+    "title": "🌟 Nova is Evolving!",
+    "evolve": "Evolve! ✨",
+    "dismiss": "Awesome! 🎉",
+    "stage": {
+      "egg": "Egg",
+      "baby": "Baby Nova",
+      "child": "Child Nova",
+      "teen": "Teen Nova",
+      "adult": "Adult Nova",
+      "legendary": "Legendary Nova"
+    },
+    "message": {
+      "egg": "Nova hasn't hatched yet!",
+      "baby": "Nova has hatched! Taking its first steps. 🐣",
+      "child": "Nova is growing! It can now explore on its own. 🌟",
+      "teen": "Nova is getting stronger! It got music and style. 🎧",
+      "adult": "Nova is now a sage! It put on the graduation cap. 🎓",
+      "legendary": "Nova reached legendary power! Crowned! 👑"
+    }
+  },
+
+  "nav": {
+    "home": "Home",
+    "learn": "Learn",
+    "quests": "Quests",
+    "profile": "Profile"
+  },
+
+  "dailyWheelButton": {
+    "spin": "🎰 Spin!",
+    "comeBack": "Come Back Tomorrow!"
+  },
+
+  "achievement": {
+    "title": "🎉 Achievement Unlocked!",
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    }
+  },
+
+  "levelUpModal": {
+    "title": "Level Up!"
+  },
+
+  "conversationTopics": {
+    "title": "Talk with Nova 🎭",
+    "subtitle": "Pick a topic and start talking!"
+  },
+
+  "legal": {
+    "back": "Back",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+
+  "leaderboard": {
+    "title": "📊 Leaderboard",
+    "leagueName": "{{tier}} League",
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum",
+      "diamond": "Diamond",
+      "legend": "Legend"
+    },
+    "thisWeekRank": "This Week — Your Rank: #{{rank}}",
+    "daysLeft": "⏰ {{count}} days left",
+    "topPromote": "Top 3 are promoted to a higher league!",
+    "empty": "No one here yet",
+    "emptyDesc": "This week's leaderboard will fill up soon!"
   }
 }

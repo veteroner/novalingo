@@ -29,10 +29,12 @@ import { verifyParentPin } from '@services/firebase/functions';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 export default function ParentDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation('parent');
   const child = useChildStore((s) => s.activeChild);
   const user = useAuthStore((s) => s.user);
   const hasPinSet = user?.settings.parentPin != null;
@@ -77,10 +79,10 @@ export default function ParentDashboard() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
         <Text variant="h3" align="center" className="mb-2">
-          🔒 Ebeveyn Paneli
+          {t('dashboard.gateTitle')}
         </Text>
         <Text variant="bodySmall" align="center" className="text-text-secondary mb-6">
-          Devam etmek için PIN kodunuzu girin
+          {t('dashboard.gatePrompt')}
         </Text>
 
         <div className="mb-6 flex gap-3">
@@ -120,7 +122,7 @@ export default function ParentDashboard() {
                         setIsUnlocked(true);
                       })
                       .catch(() => {
-                        setPinError('Yanlış PIN kodu');
+                        setPinError(t('dashboard.wrongPin'));
                         setPin('');
                       })
                       .finally(() => {
@@ -143,7 +145,7 @@ export default function ParentDashboard() {
 
         {verifying && (
           <Text variant="bodySmall" align="center" className="text-text-secondary mt-4">
-            Doğrulanıyor...
+            {t('dashboard.verifying')}
           </Text>
         )}
       </div>
@@ -158,23 +160,23 @@ export default function ParentDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <Text variant="h3">👨‍👩‍👧 Ebeveyn Paneli</Text>
+            <Text variant="h3">{t('dashboard.title')}</Text>
             <Text variant="bodySmall" className="text-text-secondary">
-              {child.name}&apos;in ilerleme raporu
+              {t('dashboard.subtitle', { name: child.name })}
             </Text>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-            Kapat
+            {t('dashboard.close')}
           </Button>
         </div>
 
         {/* Weekly Stats */}
         <Card variant="elevated" padding="md">
           <div className="mb-3 flex items-center justify-between">
-            <Text variant="h4">Bu Hafta</Text>
+            <Text variant="h4">{t('dashboard.thisWeek')}</Text>
             {weeklyStats && weeklyStats.streakDays > 0 && (
               <Text variant="caption" className="text-nova-orange font-semibold">
-                🔥 {weeklyStats.streakDays} gün aktif
+                {t('dashboard.daysActive', { count: weeklyStats.streakDays })}
               </Text>
             )}
           </div>
@@ -184,7 +186,7 @@ export default function ParentDashboard() {
                 {weeklyStats?.lessonsThisWeek ?? child.completedLessons}
               </Text>
               <Text variant="caption" className="text-text-secondary">
-                Ders
+                {t('dashboard.lessons')}
               </Text>
               {weeklyStats && weeklyStats.lessonsLastWeek > 0 && (
                 <Text
@@ -195,8 +197,8 @@ export default function ParentDashboard() {
                       : 'text-error'
                   }
                 >
-                  {weeklyStats.lessonsThisWeek >= weeklyStats.lessonsLastWeek ? '▲' : '▼'} geçen
-                  hafta {weeklyStats.lessonsLastWeek}
+                  {weeklyStats.lessonsThisWeek >= weeklyStats.lessonsLastWeek ? '▲' : '▼'}{' '}
+                  {t('dashboard.weekTrend', { count: weeklyStats.lessonsLastWeek })}
                 </Text>
               )}
             </div>
@@ -207,7 +209,7 @@ export default function ParentDashboard() {
                   : `${child.totalPlayTimeMinutes}dk`}
               </Text>
               <Text variant="caption" className="text-text-secondary">
-                Süre
+                {t('dashboard.time')}
               </Text>
             </div>
             <div>
@@ -224,18 +226,18 @@ export default function ParentDashboard() {
           {weeklyStats && weeklyStats.avgAccuracyThisWeek > 0 && (
             <div className="bg-surface-50 mt-3 rounded-xl px-4 py-2 text-center">
               <Text variant="bodySmall" className="text-text-secondary">
-                Ortalama doğruluk:{' '}
+                {t('dashboard.avgAccuracy')}{' '}
                 <span className="text-nova-blue font-semibold">
                   %{Math.round(weeklyStats.avgAccuracyThisWeek * 100)}
                 </span>
                 {weeklyStats.perfectLessonsThisWeek > 0 && (
                   <span className="text-nova-orange ml-2">
-                    ⭐ {weeklyStats.perfectLessonsThisWeek} mükemmel ders
+                    {t('dashboard.perfectLessons', { count: weeklyStats.perfectLessonsThisWeek })}
                   </span>
                 )}
                 {weeklyStats.speakingLessonsThisWeek > 0 && (
                   <span className="text-nova-blue ml-2">
-                    🎤 {weeklyStats.speakingLessonsThisWeek} konuşma dersi
+                    {t('dashboard.speakingLessons', { count: weeklyStats.speakingLessonsThisWeek })}
                   </span>
                 )}
               </Text>
@@ -246,13 +248,12 @@ export default function ParentDashboard() {
         {!hasDetailedReports && (
           <Card variant="outlined" padding="md">
             <div className="space-y-2 text-center">
-              <Text variant="h4">🔒 Detaylı Raporlar Plus&apos;ta</Text>
+              <Text variant="h4">{t('dashboard.lockedTitle')}</Text>
               <Text variant="bodySmall" className="text-text-secondary">
-                Haftalık analizler, konuşma öne çıkanları ve zayıf konu önerileri NovaLingo Plus
-                aboneleri için açılır.
+                {t('dashboard.lockedDesc')}
               </Text>
               <Button variant="primary" size="sm" onClick={() => navigate('/subscription')}>
-                Plus&apos;a Geç
+                {t('dashboard.goPlus')}
               </Button>
             </div>
           </Card>
@@ -267,21 +268,20 @@ export default function ParentDashboard() {
             <Card variant="elevated" padding="md">
               <div className="mb-3 flex items-center justify-between">
                 <div>
-                  <Text variant="h4">🗣️ Şu An Yapabiliyor</Text>
+                  <Text variant="h4">{t('dashboard.canDoTitle')}</Text>
                   <Text variant="caption" className="text-text-secondary mt-1 block">
-                    Yüksek doğrulukla tamamlanan derslerden, biten ünitelerden ve konuşma
-                    kanıtlarından türetildi.
+                    {t('dashboard.canDoDesc')}
                   </Text>
                 </div>
                 <Text variant="caption" className="text-nova-green font-semibold">
-                  {canDoStatements.evidenceCount} kanıtlı ders
+                  {t('dashboard.evidenceCount', { count: canDoStatements.evidenceCount })}
                 </Text>
               </div>
 
               {canDoStatements.lessonStatements.length > 0 && (
                 <div className="mb-4">
                   <Text variant="label" className="text-text-secondary mb-2">
-                    Son gösterdiği beceriler
+                    {t('dashboard.recentSkills')}
                   </Text>
                   <div className="space-y-2">
                     {canDoStatements.lessonStatements.map((statement) => (
@@ -299,7 +299,7 @@ export default function ParentDashboard() {
               {canDoStatements.unitStatements.length > 0 && (
                 <div>
                   <Text variant="label" className="text-text-secondary mb-2">
-                    Tamamlanan ünite becerileri
+                    {t('dashboard.unitSkills')}
                   </Text>
                   <div className="space-y-2">
                     {canDoStatements.unitStatements.slice(0, 3).map((statement) => (
@@ -317,7 +317,7 @@ export default function ParentDashboard() {
               {canDoStatements.conversationStatements.length > 0 && (
                 <div className="mt-4">
                   <Text variant="label" className="text-text-secondary mb-2">
-                    Son konuşma kanıtları
+                    {t('dashboard.conversationEvidence')}
                   </Text>
                   <div className="space-y-2">
                     {canDoStatements.conversationStatements.map((statement) => (
@@ -337,22 +337,22 @@ export default function ParentDashboard() {
         {/* Outcome Metrics */}
         <Card variant="elevated" padding="md">
           <Text variant="h4" className="mb-3">
-            📊 Öğrenme Çıktıları
+            {t('dashboard.outcomesTitle')}
           </Text>
           {metricsLoading ? (
             <Text variant="bodySmall" className="text-text-secondary">
-              Yükleniyor...
+              {t('dashboard.loading')}
             </Text>
           ) : !outcomeMetrics || outcomeMetrics.totalLessonsCompleted === 0 ? (
             <Text variant="bodySmall" className="text-text-secondary">
-              Henüz tamamlanan ders yok.
+              {t('dashboard.noLessons')}
             </Text>
           ) : (
             <div className="space-y-4">
               {outcomeMetrics.vocabularyTopics.length > 0 && (
                 <OutcomeSection
                   emoji="📚"
-                  label="Kelime Konuları"
+                  label={t('dashboard.vocabTopics')}
                   tags={outcomeMetrics.vocabularyTopics.map((v) =>
                     getOutcomeLabel(`vocabulary:${v}`),
                   )}
@@ -361,7 +361,7 @@ export default function ParentDashboard() {
               {outcomeMetrics.patternAcquisitions.length > 0 && (
                 <OutcomeSection
                   emoji="🧩"
-                  label="Öğrenilen Kalıplar"
+                  label={t('dashboard.learnedPatternsLabel')}
                   tags={outcomeMetrics.patternAcquisitions.map((p) =>
                     getOutcomeLabel(`pattern:${p}`),
                   )}
@@ -370,14 +370,14 @@ export default function ParentDashboard() {
               {outcomeMetrics.masteryTopics.length > 0 && (
                 <OutcomeSection
                   emoji="🏆"
-                  label="Ustalaşılan Konular"
+                  label={t('dashboard.masteryTopics')}
                   tags={outcomeMetrics.masteryTopics.map((m) => getOutcomeLabel(`mastery:${m}`))}
                 />
               )}
               {outcomeMetrics.retentionTopics.length > 0 && (
                 <OutcomeSection
                   emoji="🔁"
-                  label="Tekrar Edilen Konular"
+                  label={t('dashboard.retentionTopics')}
                   tags={outcomeMetrics.retentionTopics.map((r) =>
                     getOutcomeLabel(`retention:${r}`),
                   )}
@@ -391,14 +391,13 @@ export default function ParentDashboard() {
           <Card variant="elevated" padding="md">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
-                <Text variant="h4">🎙️ Son Konuşma Oturumları</Text>
+                <Text variant="h4">{t('dashboard.sessionsTitle')}</Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  Son diyaloglarda kaç tur sürdüğü, ne kadar yardımla tamamlandığı ve hangi
-                  kelime-kalıpların kullanıldığı.
+                  {t('dashboard.sessionsDesc')}
                 </Text>
               </div>
               <Text variant="caption" className="font-semibold text-sky-700">
-                {conversationHighlights.length} oturum
+                {t('dashboard.sessionsCount', { count: conversationHighlights.length })}
               </Text>
             </div>
 
@@ -414,9 +413,9 @@ export default function ParentDashboard() {
           <Card variant="elevated" padding="md">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
-                <Text variant="h4">🧭 Konuşma Temaları</Text>
+                <Text variant="h4">{t('dashboard.themesTitle')}</Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  Hangi temalarda daha rahat ilerlediği ve hangi temalarda daha çok destek aldığı.
+                  {t('dashboard.themesDesc')}
                 </Text>
               </div>
             </div>
@@ -426,7 +425,9 @@ export default function ParentDashboard() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <Text variant="bodySmall" weight="bold" className="text-amber-900">
-                      Tekrar için önerilen tema: {recommendedConversationTheme.theme}
+                      {t('dashboard.recommendedTheme', {
+                        theme: recommendedConversationTheme.theme,
+                      })}
                     </Text>
                     <Text variant="caption" className="mt-1 block text-amber-800">
                       {recommendedConversationTheme.reason}
@@ -459,7 +460,7 @@ export default function ParentDashboard() {
                       )
                     }
                   >
-                    Bu temayla konuşmayı başlat
+                    {t('dashboard.startThemeConversation')}
                   </Button>
                 </div>
               </div>
@@ -469,7 +470,7 @@ export default function ParentDashboard() {
               {strongestConversationThemes.length > 0 && (
                 <div>
                   <Text variant="label" className="text-text-secondary mb-2">
-                    Güçlü giden temalar
+                    {t('dashboard.strongThemes')}
                   </Text>
                   <div className="space-y-3">
                     {strongestConversationThemes.map((item) => (
@@ -486,7 +487,7 @@ export default function ParentDashboard() {
               {supportConversationThemes.length > 0 && (
                 <div>
                   <Text variant="label" className="text-text-secondary mb-2">
-                    Biraz daha destek isteyen temalar
+                    {t('dashboard.supportThemes')}
                   </Text>
                   <div className="space-y-3">
                     {supportConversationThemes.map((item) => (
@@ -505,7 +506,7 @@ export default function ParentDashboard() {
               ) && (
                 <div>
                   <Text variant="label" className="text-text-secondary mb-2">
-                    Tema bazlı gerçek cümle örnekleri
+                    {t('dashboard.themeExamples')}
                   </Text>
                   <div className="grid gap-3 md:grid-cols-2">
                     {conversationThemeProgress
@@ -542,11 +543,10 @@ export default function ParentDashboard() {
         {weakTopics && weakTopics.length > 0 && (
           <Card variant="outlined" padding="md">
             <Text variant="h4" className="mb-4">
-              🎯 Zorlanılan Konular
+              {t('dashboard.weakTitle')}
             </Text>
             <Text variant="caption" className="text-text-secondary mb-3 block">
-              Doğruluk oranı %65'in altında olan alanlar. Bu konulara biraz daha odaklanmak yardımcı
-              olabilir.
+              {t('dashboard.weakDesc')}
             </Text>
             <div className="flex flex-col gap-3">
               {weakTopics.map((topic: WeakTopic) => (
@@ -575,7 +575,7 @@ export default function ParentDashboard() {
         {learningStats && learningStats.totalWordsSeen > 0 && (
           <Card variant="elevated" padding="md">
             <Text variant="h4" className="mb-4">
-              📊 Öğrenme İstatistikleri
+              {t('dashboard.statsTitle')}
             </Text>
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-surface-50 rounded-xl p-3 text-center">
@@ -583,7 +583,7 @@ export default function ParentDashboard() {
                   {learningStats.activeWordsLearned}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  aktif kelime
+                  {t('dashboard.activeWords')}
                 </Text>
               </div>
               <div className="bg-surface-50 rounded-xl p-3 text-center">
@@ -591,7 +591,7 @@ export default function ParentDashboard() {
                   {learningStats.patternsUsed}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  öğrenilen kalıp
+                  {t('dashboard.learnedPatternsStat')}
                 </Text>
               </div>
               <div className="bg-surface-50 rounded-xl p-3 text-center">
@@ -599,7 +599,7 @@ export default function ParentDashboard() {
                   {learningStats.wordsDueForReview}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  tekrar bekliyor
+                  {t('dashboard.dueReview')}
                 </Text>
               </div>
               <div className="bg-surface-50 rounded-xl p-3 text-center">
@@ -607,7 +607,7 @@ export default function ParentDashboard() {
                   {learningStats.totalWordsSeen}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  görülen toplam kelime
+                  {t('dashboard.totalWordsSeen')}
                 </Text>
               </div>
               <div className="bg-surface-50 rounded-xl p-3 text-center">
@@ -615,7 +615,7 @@ export default function ParentDashboard() {
                   {learningStats.conversationWordsSpoken}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  konuşmada kullanılan kelime
+                  {t('dashboard.conversationWords')}
                 </Text>
               </div>
               <div className="bg-surface-50 rounded-xl p-3 text-center">
@@ -623,7 +623,7 @@ export default function ParentDashboard() {
                   {learningStats.conversationThemesExplored}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
-                  konuşulan tema
+                  {t('dashboard.themesExplored')}
                 </Text>
               </div>
             </div>
@@ -637,7 +637,7 @@ export default function ParentDashboard() {
             efficacy.productiveLanguageScore > 0) && (
             <Card variant="elevated" padding="md">
               <Text variant="h4" className="mb-4">
-                📈 Etkinlik Göstergeleri
+                {t('dashboard.efficacyTitle')}
               </Text>
               <div className="space-y-4">
                 {/* Retention Trend */}
@@ -646,10 +646,10 @@ export default function ParentDashboard() {
                     <span>🔁</span>
                     <div>
                       <Text variant="bodySmall" weight="bold">
-                        Kalıcılık Trendi
+                        {t('dashboard.retentionTrend')}
                       </Text>
                       <Text variant="caption" className="text-text-secondary">
-                        İlk dersler vs son dersler
+                        {t('dashboard.retentionTrendDesc')}
                       </Text>
                     </div>
                   </div>
@@ -671,10 +671,10 @@ export default function ParentDashboard() {
                     <span>💬</span>
                     <div>
                       <Text variant="bodySmall" weight="bold">
-                        Üretken Dil Puanı
+                        {t('dashboard.productiveScore')}
                       </Text>
                       <Text variant="caption" className="text-text-secondary">
-                        Cümle kurma, yazma, konuşma başarısı
+                        {t('dashboard.productiveScoreDesc')}
                       </Text>
                     </div>
                   </div>
@@ -689,10 +689,10 @@ export default function ParentDashboard() {
                     <span>🎤</span>
                     <div>
                       <Text variant="bodySmall" weight="bold">
-                        Konuşma İlerlemesi
+                        {t('dashboard.speakingProgress')}
                       </Text>
                       <Text variant="caption" className="text-text-secondary">
-                        Başarılı oturum / toplam oturum
+                        {t('dashboard.speakingProgressDesc')}
                       </Text>
                     </div>
                   </div>
@@ -707,10 +707,10 @@ export default function ParentDashboard() {
                       <span>🧠</span>
                       <div>
                         <Text variant="bodySmall" weight="bold">
-                          Konuşma Başarı Oranı
+                          {t('dashboard.conversationSuccess')}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
-                          Kanıtlanan başarılı konuşma oturumları
+                          {t('dashboard.conversationSuccessDesc')}
                         </Text>
                       </div>
                     </div>
@@ -726,15 +726,15 @@ export default function ParentDashboard() {
                       <span>↔️</span>
                       <div>
                         <Text variant="bodySmall" weight="bold">
-                          Ortalama Diyalog Derinliği
+                          {t('dashboard.dialogDepth')}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
-                          Oturum başına kabul edilen tur sayısı
+                          {t('dashboard.dialogDepthDesc')}
                         </Text>
                       </div>
                     </div>
                     <Text variant="body" weight="bold" className="text-nova-blue">
-                      {efficacy.averageAcceptedTurns.toFixed(1)} tur
+                      {t('dashboard.turns', { value: efficacy.averageAcceptedTurns.toFixed(1) })}
                     </Text>
                   </div>
                 )}
@@ -745,10 +745,10 @@ export default function ParentDashboard() {
                     <span>📚</span>
                     <div>
                       <Text variant="bodySmall" weight="bold">
-                        Aktif Kelime Oranı
+                        {t('dashboard.activeVocabRatio')}
                       </Text>
                       <Text variant="caption" className="text-text-secondary">
-                        Doğru hatırlanan / toplam görülen
+                        {t('dashboard.activeVocabRatioDesc')}
                       </Text>
                     </div>
                   </div>
@@ -763,10 +763,10 @@ export default function ParentDashboard() {
                     <span>📊</span>
                     <div>
                       <Text variant="bodySmall" weight="bold">
-                        Son 5 Ders Trendi
+                        {t('dashboard.recentTrend')}
                       </Text>
                       <Text variant="caption" className="text-text-secondary">
-                        Önceki 5 derse kıyasla
+                        {t('dashboard.recentTrendDesc')}
                       </Text>
                     </div>
                   </div>
@@ -786,7 +786,7 @@ export default function ParentDashboard() {
                     <div className="flex items-center gap-2">
                       <span>🎯</span>
                       <Text variant="bodySmall" weight="bold">
-                        Tutarlılık (son 28 gün)
+                        {t('dashboard.consistency')}
                       </Text>
                     </div>
                     <Text variant="caption" className="text-text-secondary font-semibold">
@@ -808,10 +808,10 @@ export default function ParentDashboard() {
                       <span>🎭</span>
                       <div>
                         <Text variant="bodySmall" weight="bold">
-                          Konuşma Pratiği
+                          {t('dashboard.conversationPractice')}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
-                          Kayıt altına alınan diyalog oturumu
+                          {t('dashboard.conversationPracticeDesc')}
                         </Text>
                       </div>
                     </div>
@@ -827,10 +827,10 @@ export default function ParentDashboard() {
                       <span>🧩</span>
                       <div>
                         <Text variant="bodySmall" weight="bold">
-                          Konuşmada Ustalaşan Kalıp
+                          {t('dashboard.masteredPatterns')}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
-                          Başarılı diyaloglarda tekrar kullanılan kalıplar
+                          {t('dashboard.masteredPatternsDesc')}
                         </Text>
                       </div>
                     </div>
@@ -847,10 +847,10 @@ export default function ParentDashboard() {
                       <span>⚡</span>
                       <div>
                         <Text variant="bodySmall" weight="bold">
-                          Başlangıç → Şimdi
+                          {t('dashboard.startToNow')}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
-                          İlk 5 ders vs son 5 ders
+                          {t('dashboard.startToNowDesc')}
                         </Text>
                       </div>
                     </div>
@@ -874,16 +874,32 @@ export default function ParentDashboard() {
                     <div className="mb-2 flex items-center gap-2">
                       <span>🧩</span>
                       <Text variant="bodySmall" weight="bold">
-                        Beceri Dağılımı
+                        {t('dashboard.skillBreakdown')}
                       </Text>
                     </div>
                     <div className="space-y-2">
                       {(
                         [
-                          { key: 'listening' as const, label: 'Dinleme', emoji: '👂' },
-                          { key: 'speaking' as const, label: 'Konuşma', emoji: '🗣️' },
-                          { key: 'reading' as const, label: 'Okuma', emoji: '📖' },
-                          { key: 'writing' as const, label: 'Yazma', emoji: '✏️' },
+                          {
+                            key: 'listening' as const,
+                            label: t('dashboard.skillListening'),
+                            emoji: '👂',
+                          },
+                          {
+                            key: 'speaking' as const,
+                            label: t('dashboard.skillSpeaking'),
+                            emoji: '🗣️',
+                          },
+                          {
+                            key: 'reading' as const,
+                            label: t('dashboard.skillReading'),
+                            emoji: '📖',
+                          },
+                          {
+                            key: 'writing' as const,
+                            label: t('dashboard.skillWriting'),
+                            emoji: '✏️',
+                          },
                         ] as const
                       ).map(({ key, label, emoji }) => {
                         const val = Math.round(efficacy.skillBreakdown[key] * 100);
@@ -917,31 +933,31 @@ export default function ParentDashboard() {
         <Card variant="outlined" padding="none">
           <ListItem
             leading={<span>⏰</span>}
-            title="Günlük Süre Limiti"
-            subtitle="30 dakika"
+            title={t('dashboard.settingsTimeLimit')}
+            subtitle={t('dashboard.timeLimit30')}
             trailing={<span className="text-gray-400">→</span>}
             onClick={() => navigate('/parent/settings')}
             divider
           />
           <ListItem
             leading={<span>🔔</span>}
-            title="Bildirimler"
-            subtitle="Açık"
+            title={t('dashboard.settingsNotifications')}
+            subtitle={t('dashboard.notificationsOn')}
             trailing={<span className="text-gray-400">→</span>}
             onClick={() => navigate('/parent/settings')}
             divider
           />
           <ListItem
             leading={<span>💳</span>}
-            title="Abonelik"
-            subtitle="Ücretsiz Plan"
+            title={t('dashboard.settingsSubscription')}
+            subtitle={t('dashboard.freePlan')}
             trailing={<span className="text-gray-400">→</span>}
             onClick={() => navigate('/subscription')}
             divider
           />
           <ListItem
             leading={<span>👤</span>}
-            title="Hesap Ayarları"
+            title={t('dashboard.settingsAccount')}
             trailing={<span className="text-gray-400">→</span>}
             onClick={() => navigate('/parent/settings')}
           />
@@ -959,17 +975,20 @@ interface OutcomeSectionProps {
   tags: string[];
 }
 
-function formatRelativeConversationDate(timestampMs: number) {
+function formatRelativeConversationDate(
+  timestampMs: number,
+  t: (key: string, options?: { count?: number }) => string,
+) {
   const diffMs = Date.now() - timestampMs;
   const minutes = Math.max(1, Math.round(diffMs / 60000));
 
-  if (minutes < 60) return `${minutes} dk önce`;
+  if (minutes < 60) return t('dashboard.relMinutes', { count: minutes });
 
   const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours} sa önce`;
+  if (hours < 24) return t('dashboard.relHours', { count: hours });
 
   const days = Math.round(hours / 24);
-  if (days < 7) return `${days} gün önce`;
+  if (days < 7) return t('dashboard.relDays', { count: days });
 
   return new Date(timestampMs).toLocaleDateString('tr-TR', {
     day: 'numeric',
@@ -978,7 +997,8 @@ function formatRelativeConversationDate(timestampMs: number) {
 }
 
 function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
-  const theme = item.scenarioTheme?.trim() || 'Serbest konuşma';
+  const { t } = useTranslation('parent');
+  const theme = item.scenarioTheme?.trim() || t('dashboard.freeTalk');
   const scoreTone = item.passed ? 'text-emerald-700' : 'text-amber-700';
   const scoreBadgeTone = item.passed
     ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
@@ -992,7 +1012,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
             {theme}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            {formatRelativeConversationDate(item.completedAtMs)}
+            {formatRelativeConversationDate(item.completedAtMs, t)}
           </Text>
         </div>
         <div className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${scoreBadgeTone}`}>
@@ -1003,7 +1023,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
       <div className="mb-3 grid grid-cols-3 gap-2 text-center">
         <div className="rounded-xl bg-slate-50 px-2 py-2">
           <Text variant="caption" className="text-text-secondary block">
-            Kabul edilen tur
+            {t('dashboard.acceptedTurns')}
           </Text>
           <Text variant="bodySmall" weight="bold" className="text-slate-800">
             {item.acceptedTurns}
@@ -1011,7 +1031,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
         </div>
         <div className="rounded-xl bg-slate-50 px-2 py-2">
           <Text variant="caption" className="text-text-secondary block">
-            İpucu
+            {t('dashboard.hints')}
           </Text>
           <Text variant="bodySmall" weight="bold" className="text-slate-800">
             {item.hintedTurns}
@@ -1019,10 +1039,10 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
         </div>
         <div className="rounded-xl bg-slate-50 px-2 py-2">
           <Text variant="caption" className="text-text-secondary block">
-            Durum
+            {t('dashboard.status')}
           </Text>
           <Text variant="bodySmall" weight="bold" className={scoreTone}>
-            {item.passed ? 'Başardı' : 'Destekli'}
+            {item.passed ? t('dashboard.passed') : t('dashboard.supported')}
           </Text>
         </div>
       </div>
@@ -1030,7 +1050,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
       {item.targetWordsHit.length > 0 && (
         <div className="mb-2">
           <Text variant="caption" className="text-text-secondary mb-1 block">
-            Kullanılan kelimeler
+            {t('dashboard.usedWords')}
           </Text>
           <div className="flex flex-wrap gap-2">
             {item.targetWordsHit.slice(0, 4).map((word) => (
@@ -1048,7 +1068,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
       {item.patternsHit.length > 0 && (
         <div>
           <Text variant="caption" className="text-text-secondary mb-1 block">
-            Oturumda kurduğu kalıplar
+            {t('dashboard.builtPatterns')}
           </Text>
           <div className="flex flex-wrap gap-2">
             {item.patternsHit.slice(0, 3).map((pattern) => (
@@ -1066,7 +1086,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
       {item.rawAnswerPreview && (
         <div className="mt-2 rounded-xl bg-violet-50 px-3 py-2">
           <Text variant="caption" className="text-text-secondary mb-1 block">
-            Çocuğun söylediği
+            {t('dashboard.childSaid')}
           </Text>
           <Text variant="caption" className="text-violet-900">
             {item.rawAnswerPreview}
@@ -1084,6 +1104,7 @@ function ConversationThemeProgressCard({
   item: ConversationThemeProgress;
   variant: 'strong' | 'support';
 }) {
+  const { t } = useTranslation('parent');
   const score = Math.round(item.averageScore);
   const successRate = Math.round(item.successRate * 100);
   const progressTone =
@@ -1111,8 +1132,11 @@ function ConversationThemeProgressCard({
             {item.theme}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            {item.attempts} oturum • ort. {item.averageAcceptedTurns.toFixed(1)} tur • ort.{' '}
-            {item.averageHints.toFixed(1)} ipucu
+            {t('dashboard.themeStats', {
+              attempts: item.attempts,
+              turns: item.averageAcceptedTurns.toFixed(1),
+              hints: item.averageHints.toFixed(1),
+            })}
           </Text>
         </div>
         <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${badgeTone}`}>
@@ -1126,7 +1150,7 @@ function ConversationThemeProgressCard({
 
       <div className="mb-2 flex items-center justify-between">
         <Text variant="caption" className="text-text-secondary">
-          Başarı oranı
+          {t('dashboard.successRate')}
         </Text>
         <Text variant="caption" weight="bold" className="text-slate-700">
           %{successRate}

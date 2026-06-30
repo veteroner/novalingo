@@ -148,7 +148,7 @@ export function useSubmitLesson() {
         void queryClient.invalidateQueries({ queryKey: childKeys.list(uid) });
       }
       // Check if current world is fully completed → advance to next world
-      if (child?.id && child?.currentWorldId) {
+      if (child?.id && child.currentWorldId) {
         const childId = child.id;
         const currentWorldId = child.currentWorldId;
         try {
@@ -163,14 +163,14 @@ export function useSubmitLesson() {
                 ),
             });
             const completedWithStars = new Set(
-              freshProgress.filter((p) => (p.starsEarned ?? 0) >= 1).map((p) => p.lessonId),
+              freshProgress.filter((p) => p.starsEarned >= 1).map((p) => p.lessonId),
             );
             const allComplete = worldLessons.every((l) => completedWithStars.has(l.id));
             if (allComplete) {
               const worldIds = curriculum.map((w) => w.id);
               const currentIdx = worldIds.indexOf(currentWorldId);
-              if (currentIdx >= 0 && currentIdx < worldIds.length - 1) {
-                const nextWorldId = worldIds[currentIdx + 1]!;
+              const nextWorldId = currentIdx >= 0 ? worldIds[currentIdx + 1] : undefined;
+              if (nextWorldId) {
                 await advanceToNextWorld({ childId, nextWorldId });
                 updateActiveChild({ currentWorldId: nextWorldId });
                 if (uid) {

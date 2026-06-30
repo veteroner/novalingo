@@ -9,6 +9,7 @@ export default tseslint.config(
     ignores: [
       'dist',
       'functions',
+      'netlify',
       'android',
       'ios',
       'storybook-static',
@@ -17,6 +18,7 @@ export default tseslint.config(
       'capacitor.config.ts',
       'scripts',
       '**/*.d.ts',
+      'vitest.config.ts',
       'vitest.unit.config.ts',
       '.storybook',
       'e2e',
@@ -61,6 +63,21 @@ export default tseslint.config(
         { allowNumber: true, allowBoolean: true },
       ],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
+  },
+  {
+    // Tests legitimately use loosely-typed mocks and sync helpers wrapped as async.
+    files: ['**/*.test.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}', 'src/test/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/require-await': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 );

@@ -1,5 +1,11 @@
-import { CalendarDots, CaretRight, Gift, Sparkle } from '@phosphor-icons/react';
+import {
+  CalendarDotsIcon as CalendarDots,
+  CaretRightIcon as CaretRight,
+  GiftIcon as Gift,
+  SparkleIcon as Sparkle,
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { useSeasonalEvent } from '@/hooks/useSeasonalEvent';
@@ -12,6 +18,7 @@ import { useSeasonalEvent } from '@/hooks/useSeasonalEvent';
  */
 export function SeasonalEventBanner() {
   const navigate = useNavigate();
+  const { t } = useTranslation('gamification');
   const { activeEvent, nextEvent, daysRemaining, lessonsCompleted, totalLessons, isEventComplete } =
     useSeasonalEvent();
 
@@ -64,12 +71,12 @@ export function SeasonalEventBanner() {
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-1 text-xs text-white/70">
             <CalendarDots className="h-3.5 w-3.5" />
-            <span>{daysRemaining} gün kaldı</span>
+            <span>{t('event.daysLeft', { count: daysRemaining })}</span>
           </div>
           {isEventComplete ? (
             <div className="flex items-center gap-1 rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white">
               <Gift className="h-3 w-3" />
-              Tamamlandı!
+              {t('event.completed')}
             </div>
           ) : (
             <div className="flex items-center gap-1 text-xs text-white/70">
@@ -94,7 +101,7 @@ export function SeasonalEventBanner() {
         <span className="text-xl">{nextEvent.emoji}</span>
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Yakında: {nextEvent.name}
+            {t('event.upcoming', { name: nextEvent.name })}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">{nextEvent.descriptionEn}</p>
         </div>

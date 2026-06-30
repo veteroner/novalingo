@@ -27,6 +27,7 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 // Build fallback worlds from in-memory curriculum
@@ -51,6 +52,7 @@ export default function HomeScreen() {
   const openModal = useUIStore((s) => s.openModal);
   const showToast = useUIStore((s) => s.showToast);
   const navigate = useNavigate();
+  const { t } = useTranslation('home');
   const { data: firestoreWorlds } = useWorlds();
   const { data: vocabCards } = useVocabularyCards(child?.id);
   const { data: lessonProgress } = useLessonProgress(child?.id);
@@ -72,10 +74,12 @@ export default function HomeScreen() {
         const timer = setTimeout(() => {
           openModal('streakLost');
         }, 1500);
-        return () => clearTimeout(timer);
+        return () => {
+          clearTimeout(timer);
+        };
       }
     }
-  }, [child?.id, child?.currentStreak, child?.longestStreak, openModal]);
+  }, [child, openModal]);
   const worlds = useMemo(
     () => (firestoreWorlds && firestoreWorlds.length > 0 ? firestoreWorlds : curriculumWorlds),
     [firestoreWorlds],
@@ -102,9 +106,9 @@ export default function HomeScreen() {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <Text variant="h3">Merhaba, {child.name}! 👋</Text>
+            <Text variant="h3">{t('greeting', { name: child.name })}</Text>
             <Text variant="bodySmall" className="text-text-secondary">
-              Bugün ne öğrenmek istersin?
+              {t('subtitle')}
             </Text>
           </div>
           <CurrencyDisplay stars={child.stars} gems={child.gems} compact />
@@ -120,7 +124,7 @@ export default function HomeScreen() {
                   {child.currentStreak}
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
-                  Gün Seri
+                  {t('streakLabel')}
                 </Text>
               </div>
             </div>
@@ -152,10 +156,10 @@ export default function HomeScreen() {
               </div>
               <div className="flex-1">
                 <Text variant="body" weight="bold">
-                  Nova ile Konuş
+                  {t('conversation.title')}
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
-                  Birebir konuşma pratiği yap — her gün yeni senaryolar!
+                  {t('conversation.subtitle')}
                 </Text>
               </div>
               <span className="text-nova-blue text-xl">→</span>
@@ -183,10 +187,10 @@ export default function HomeScreen() {
                 </div>
                 <div className="flex-1">
                   <Text variant="body" weight="bold">
-                    Günlük Tekrar
+                    {t('review.title')}
                   </Text>
                   <Text variant="caption" className="text-text-secondary">
-                    {dueCount} kelime tekrar bekliyor
+                    {t('review.subtitle', { count: dueCount })}
                   </Text>
                 </div>
                 <Badge variant="warning" size="lg">
@@ -201,44 +205,52 @@ export default function HomeScreen() {
         <div className="grid grid-cols-2 gap-3">
           {[
             {
+              id: 'continue',
               emoji: '📚',
-              label: 'Devam Et',
-              description: 'Bulunduğun dünyaya dön',
+              label: t('quickActions.continue'),
+              description: t('quickActions.continueDesc'),
               onClick: () => navigate(`/world/${child.currentWorldId}`),
             },
             {
+              id: 'dailyWheel',
               emoji: '🎰',
-              label: 'Günlük Çark',
-              description: 'Günlük ödülünü çevir',
-              onClick: () => openModal('dailyWheel'),
+              label: t('quickActions.dailyWheel'),
+              description: t('quickActions.dailyWheelDesc'),
+              onClick: () => {
+                openModal('dailyWheel');
+              },
             },
             {
+              id: 'achievements',
               emoji: '🏆',
-              label: 'Başarımlar',
-              description: 'Açtığın rozetleri gör',
+              label: t('quickActions.achievements'),
+              description: t('quickActions.achievementsDesc'),
               onClick: () => navigate('/achievements'),
             },
             {
+              id: 'quests',
               emoji: '⚔️',
-              label: 'Görevler',
-              description: 'Günlük görevleri tamamla',
+              label: t('quickActions.quests'),
+              description: t('quickActions.questsDesc'),
               onClick: () => navigate('/quests'),
             },
             {
+              id: 'shop',
               emoji: '🛒',
-              label: 'Mağaza',
-              description: 'Nova için yeni eşyalar',
+              label: t('quickActions.shop'),
+              description: t('quickActions.shopDesc'),
               onClick: () => navigate('/shop'),
             },
             {
+              id: 'stories',
               emoji: '📖',
-              label: 'Hikayeler',
-              description: 'İngilizce hikaye oku',
+              label: t('quickActions.stories'),
+              description: t('quickActions.storiesDesc'),
               onClick: () => navigate('/stories'),
             },
           ].map((action) => (
             <Card
-              key={action.label}
+              key={action.id}
               variant="elevated"
               pressable
               padding="md"
@@ -260,7 +272,7 @@ export default function HomeScreen() {
         {/* Worlds Preview */}
         <div>
           <Text variant="h4" className="mb-3">
-            Dünyalar 🌍
+            {t('worldsTitle')}
           </Text>
           <div className="space-y-3">
             {worlds.map((world) => {
@@ -282,13 +294,13 @@ export default function HomeScreen() {
                     if (isPremiumLocked) {
                       showToast({
                         type: 'info',
-                        title: 'Premium Dünya',
-                        message: 'Bu dünya NovaLingo Plus aboneliği gerektirir.',
+                        title: t('premium.title'),
+                        message: t('premium.message'),
                       });
-                      navigate('/subscription');
+                      void navigate('/subscription');
                       return;
                     }
-                    navigate(`/world/${world.id}`);
+                    void navigate(`/world/${world.id}`);
                   }}
                   className={isWorldLocked || isPremiumLocked ? 'opacity-60' : ''}
                 >
@@ -302,14 +314,14 @@ export default function HomeScreen() {
                       </Text>
                       <Text variant="caption" className="text-text-secondary">
                         {world.description}
-                        {isCurrent ? ' · Devam ediyor' : ''}
+                        {isCurrent ? t('worldCard.current') : ''}
                       </Text>
                     </div>
                     {isWorldLocked || isPremiumLocked ? (
                       <span className="text-xl">🔒</span>
                     ) : isCurrent ? (
                       <Badge variant="success" size="sm">
-                        Aktif
+                        {t('worldCard.active')}
                       </Badge>
                     ) : isCompleted ? (
                       <span className="text-xl">✅</span>
@@ -332,12 +344,15 @@ export default function HomeScreen() {
               <span className="text-3xl">🎯</span>
               <div className="flex-1">
                 <Text variant="bodySmall" weight="bold">
-                  Günlük Hedef
+                  {t('dailyGoal')}
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
                   {isPremium
-                    ? 'Sınırsız ders erişimi aktif'
-                    : `${lessonsToday} / ${FREE_TIER.DAILY_LESSONS} ders tamamlandı`}
+                    ? t('dailyGoalUnlimited')
+                    : t('dailyGoalProgress', {
+                        current: lessonsToday,
+                        target: FREE_TIER.DAILY_LESSONS,
+                      })}
                 </Text>
               </div>
             </div>
@@ -368,9 +383,7 @@ export default function HomeScreen() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 1.2, type: 'spring', stiffness: 400, damping: 20 }}
           >
-            <p className="text-text-primary text-xs font-semibold">
-              Bugün harika bir gün olacak! 🌟
-            </p>
+            <p className="text-text-primary text-xs font-semibold">{t('novaGreeting')}</p>
           </motion.div>
         </motion.button>
       </motion.div>

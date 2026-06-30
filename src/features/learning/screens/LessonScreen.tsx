@@ -36,6 +36,7 @@ import { useLessonStore } from '@stores/lessonStore';
 import { useUIStore } from '@stores/uiStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const SUBMIT_TIMEOUT_MS = 4500;
@@ -43,6 +44,7 @@ const SUBMIT_TIMEOUT_MS = 4500;
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation('lesson');
 
   const {
     currentActivityIndex,
@@ -87,11 +89,11 @@ export default function LessonScreen() {
     if (!lessonId || !child || !hasReachedDailyLimit) return;
     showToast({
       type: 'info',
-      title: 'Günlük Limit Doldu',
-      message: 'Bugünkü ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus’a geçin.',
+      title: t('lessonScreen.limitTitle'),
+      message: t('lessonScreen.limitMessage'),
     });
     void navigate('/subscription');
-  }, [child, hasReachedDailyLimit, lessonId, navigate, showToast]);
+  }, [child, hasReachedDailyLimit, lessonId, navigate, showToast, t]);
 
   // Compute lesson session ONCE per mount — never recompute mid-lesson
   if (!sessionRef.current && lessonId) {
@@ -232,7 +234,7 @@ export default function LessonScreen() {
 
       void navigate(`/lesson/${lessonId}/result`, { state });
     },
-    [endLesson, lessonId, navigate],
+    [lessonId, navigate],
   );
 
   // Boss: game over when lives hit 0
@@ -335,8 +337,8 @@ export default function LessonScreen() {
             submitFallbackTimerRef.current = setTimeout(() => {
               showToast({
                 type: 'info',
-                title: 'Ders kaydediliyor',
-                message: 'Sonuç ekranı açıldı. Kayıt arka planda tamamlanacak.',
+                title: t('lessonScreen.savingTitle'),
+                message: t('lessonScreen.resultOpened'),
               });
               navigateToResult({
                 summary,
@@ -406,8 +408,6 @@ export default function LessonScreen() {
       submitResult,
       nextActivity,
       endLesson,
-      navigate,
-      lessonId,
       addXP,
       child,
       navigateToResult,
@@ -417,6 +417,7 @@ export default function LessonScreen() {
       showToast,
       updateCurrency,
       updateStreak,
+      t,
     ],
   );
 
@@ -437,7 +438,7 @@ export default function LessonScreen() {
             📚
           </motion.div>
           <Text variant="h3" align="center">
-            Ders yükleniyor...
+            {t('lessonScreen.loading')}
           </Text>
         </div>
       </LessonLayout>
@@ -511,12 +512,12 @@ export default function LessonScreen() {
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
             >
-              <Text variant="h3">⏸️ Duraklat</Text>
+              <Text variant="h3">{t('lessonScreen.pauseTitle')}</Text>
               <Button variant="primary" size="lg" fullWidth onClick={resumeLesson}>
-                Devam Et
+                {t('lessonScreen.resume')}
               </Button>
               <Button variant="ghost" size="md" fullWidth onClick={() => navigate('/home')}>
-                Dersi Bırak
+                {t('lessonScreen.quit')}
               </Button>
             </motion.div>
           </motion.div>

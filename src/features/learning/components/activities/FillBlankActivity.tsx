@@ -11,6 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface FillBlankActivityProps extends ActivityCallbacks {
@@ -18,6 +19,7 @@ interface FillBlankActivityProps extends ActivityCallbacks {
 }
 
 export default function FillBlankActivity({ data, onComplete }: FillBlankActivityProps) {
+  const { t } = useTranslation('lesson');
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [attempts, setAttempts] = useState(0);
@@ -104,7 +106,7 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6">
       {/* Title */}
       <Text variant="h3" align="center">
-        📝 Boşluğu Doldur
+        {t('activityUI.fillBlank.title')}
       </Text>
 
       {/* Translation hint */}
@@ -158,7 +160,7 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
               className="mt-4 border-t border-gray-100 pt-3 text-center"
             >
               <Text variant="bodySmall" className="text-text-secondary">
-                Doğru cevap:
+                {t('activityUI.fillBlank.correctAnswer')}
               </Text>
               <Text variant="body" weight="bold" className="text-green-600">
                 {beforeBlank}
@@ -177,7 +179,7 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
           const full = data.sentence.replace('___', data.correctAnswer);
           speak(full);
         }}
-        aria-label="Cümleyi dinle"
+        aria-label={t('activityUI.fillBlank.listenAria')}
       >
         🔊
       </button>
@@ -234,7 +236,7 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
             }`}
           >
             <Text variant="body" weight="bold">
-              {isCorrect ? '🎉 Harika! Doğru cevap!' : '😢 Yanlış, ama sorun değil!'}
+              {isCorrect ? t('activityUI.fillBlank.correct') : t('activityUI.fillBlank.wrong')}
             </Text>
           </motion.div>
         )}

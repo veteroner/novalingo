@@ -22,6 +22,7 @@ import { initConversationProgress, useConversationStore } from '@stores/conversa
 import { calculateStars } from '@utils/xp';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 // ─── Phase → scenario list ────────────────────────────────────────────────────
@@ -38,6 +39,7 @@ const PHASE_SCENARIOS: Record<string, ConversationScenario[]> = {
 
 export default function ConversationTopicsScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('common');
   const child = useChildStore((s) => s.activeChild);
   const progress = useConversationStore((s) => s.progress);
 
@@ -64,9 +66,9 @@ export default function ConversationTopicsScreen() {
           <span className="text-lg">←</span>
         </button>
         <div>
-          <Text variant="h3">Nova ile Konuş 🎭</Text>
+          <Text variant="h3">{t('conversationTopics.title')}</Text>
           <Text variant="caption" className="text-text-secondary">
-            Bir konu seç ve konuşmaya başla!
+            {t('conversationTopics.subtitle')}
           </Text>
         </div>
       </div>

@@ -83,8 +83,7 @@ export function scoreConversation(params: ConversationScoreParams): Conversation
     !criteria.requiredPatterns || criteria.requiredPatterns.length === 0
       ? true
       : criteria.requiredPatterns.every((p) => patternsHit.includes(p));
-  const passedHintPolicy =
-    criteria.allowCompletionOnHintedAnswer !== false || hintedTurns < acceptedTurns; // at least one non-hinted accepted turn
+  const passedHintPolicy = criteria.allowCompletionOnHintedAnswer || hintedTurns < acceptedTurns; // at least one non-hinted accepted turn
   const passed = passedTurns && passedWords && passedPatterns && passedHintPolicy;
 
   return {

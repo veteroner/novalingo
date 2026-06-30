@@ -22,6 +22,7 @@ import { useChildStore } from '@stores/childStore';
 import { verifyBeforeUpdateEmail } from 'firebase/auth';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 // Toggle switch component
@@ -48,6 +49,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
 
 export default function ParentSettings() {
   const navigate = useNavigate();
+  const { t } = useTranslation('parent');
   const child = useChildStore((s) => s.activeChild);
 
   const { data: settingsData } = useParentSettings();
@@ -73,6 +75,7 @@ export default function ParentSettings() {
   const [newPinInput, setNewPinInput] = useState('');
   const [confirmPinInput, setConfirmPinInput] = useState('');
   const [pinMessage, setPinMessage] = useState('');
+  const [pinSuccess, setPinSuccess] = useState(false);
   const [pinSaving, setPinSaving] = useState(false);
   const [deletePinInput, setDeletePinInput] = useState('');
   const [deleteError, setDeleteError] = useState('');
@@ -82,6 +85,7 @@ export default function ParentSettings() {
   const [showEmailChange, setShowEmailChange] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
+  const [emailSuccess, setEmailSuccess] = useState(false);
   const [emailSaving, setEmailSaving] = useState(false);
 
   // Data export state
@@ -102,13 +106,15 @@ export default function ParentSettings() {
   const handleEmailChange = async () => {
     const trimmed = newEmail.trim();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setEmailMessage('Geçerli bir e-posta adresi girin.');
+      setEmailSuccess(false);
+      setEmailMessage(t('settings.emailInvalid'));
       return;
     }
 
     const firebaseUser = getCurrentUser();
     if (!firebaseUser) {
-      setEmailMessage('Oturum bulunamadı. Tekrar giriş yapın.');
+      setEmailSuccess(false);
+      setEmailMessage(t('settings.emailNoSession'));
       return;
     }
 
@@ -116,16 +122,18 @@ export default function ParentSettings() {
     setEmailMessage('');
     try {
       await verifyBeforeUpdateEmail(firebaseUser, trimmed);
-      setEmailMessage('Doğrulama e-postası gönderildi! Yeni adresinizi onaylayın.');
+      setEmailSuccess(true);
+      setEmailMessage(t('settings.emailSent'));
       setNewEmail('');
     } catch (err) {
       const code = (err as { code?: string }).code;
+      setEmailSuccess(false);
       if (code === 'auth/requires-recent-login') {
-        setEmailMessage('Güvenlik nedeniyle tekrar giriş yapmanız gerekiyor.');
+        setEmailMessage(t('settings.emailRecentLogin'));
       } else if (code === 'auth/email-already-in-use') {
-        setEmailMessage('Bu e-posta adresi zaten kullanımda.');
+        setEmailMessage(t('settings.emailInUse'));
       } else {
-        setEmailMessage('E-posta değiştirilemedi. Tekrar deneyin.');
+        setEmailMessage(t('settings.emailFailed'));
       }
     } finally {
       setEmailSaving(false);
@@ -216,9 +224,9 @@ export default function ParentSettings() {
             ←
           </Button>
           <div>
-            <Text variant="h3">⚙️ Ayarlar</Text>
+            <Text variant="h3">{t('settings.title')}</Text>
             <Text variant="bodySmall" className="text-text-secondary">
-              {child?.name} için ayarlar
+              {t('settings.titleFor', { name: child?.name ?? '' })}
             </Text>
           </div>
         </div>
@@ -226,10 +234,10 @@ export default function ParentSettings() {
         {/* Time Limit */}
         <Card variant="elevated" padding="md">
           <Text variant="h4" className="mb-3">
-            ⏰ Günlük Süre Limiti
+            {t('settings.timeLimitTitle')}
           </Text>
           <Text variant="bodySmall" className="text-text-secondary mb-4">
-            Çocuğunuzun günlük uygulama kullanım süresi
+            {t('settings.timeLimitDesc')}
           </Text>
           <div className="grid grid-cols-3 gap-2">
             {timeLimits.map((limit) => (
@@ -244,7 +252,7 @@ export default function ParentSettings() {
                   setDailyLimit(limit);
                 }}
               >
-                {limit} dk
+                {t('settings.minutes', { count: limit })}
               </button>
             ))}
           </div>
@@ -253,12 +261,12 @@ export default function ParentSettings() {
         {/* Notifications */}
         <Card variant="elevated" padding="md">
           <Text variant="h4" className="mb-3">
-            🔔 Bildirimler
+            {t('settings.notificationsTitle')}
           </Text>
           <div className="space-y-1">
             <ListItem
-              title="Günlük Hatırlatma"
-              subtitle="Her gün öğrenme zamanı bildirimi"
+              title={t('settings.dailyReminder')}
+              subtitle={t('settings.dailyReminderDesc')}
               trailing={
                 <Toggle
                   value={notifications.dailyReminder}
@@ -270,8 +278,8 @@ export default function ParentSettings() {
               divider
             />
             <ListItem
-              title="Haftalık Rapor"
-              subtitle="İlerleme raporunu e-posta ile al"
+              title={t('settings.weeklyReport')}
+              subtitle={t('settings.weeklyReportDesc')}
               trailing={
                 <Toggle
                   value={notifications.weeklyReport}
@@ -283,8 +291,8 @@ export default function ParentSettings() {
               divider
             />
             <ListItem
-              title="Başarı Bildirimleri"
-              subtitle="Yeni başarı kazanıldığında bilgilendir"
+              title={t('settings.achievementAlert')}
+              subtitle={t('settings.achievementAlertDesc')}
               trailing={
                 <Toggle
                   value={notifications.achievementAlert}
@@ -296,8 +304,8 @@ export default function ParentSettings() {
               divider
             />
             <ListItem
-              title="Hareketsizlik Uyarısı"
-              subtitle="3 gün giriş yapılmazsa bilgilendir"
+              title={t('settings.inactivityAlert')}
+              subtitle={t('settings.inactivityAlertDesc')}
               trailing={
                 <Toggle
                   value={notifications.inactivityAlert}
@@ -313,12 +321,12 @@ export default function ParentSettings() {
         {/* Content Filters */}
         <Card variant="elevated" padding="md">
           <Text variant="h4" className="mb-3">
-            🛡️ İçerik Kontrolü
+            {t('settings.contentTitle')}
           </Text>
           <div className="space-y-1">
             <ListItem
-              title="Sosyal Özellikler"
-              subtitle="Liderlik tablosu ve sıralama"
+              title={t('settings.socialFeatures')}
+              subtitle={t('settings.socialFeaturesDesc')}
               trailing={
                 <Toggle
                   value={contentFilter.socialFeatures}
@@ -330,8 +338,8 @@ export default function ParentSettings() {
               divider
             />
             <ListItem
-              title="Sıralama Tablosu"
-              subtitle="Diğer öğrencilerle karşılaştırma"
+              title={t('settings.leaderboardItem')}
+              subtitle={t('settings.leaderboardItemDesc')}
               trailing={
                 <Toggle
                   value={contentFilter.leaderboard}
@@ -343,8 +351,8 @@ export default function ParentSettings() {
               divider
             />
             <ListItem
-              title="Sohbet"
-              subtitle="Ders içi sohbet (devre dışı)"
+              title={t('settings.chat')}
+              subtitle={t('settings.chatDesc')}
               trailing={
                 <Toggle
                   value={contentFilter.chatEnabled}
@@ -360,7 +368,7 @@ export default function ParentSettings() {
         {/* Account */}
         <Card variant="outlined" padding="md">
           <Text variant="h4" className="mb-3">
-            👤 Hesap
+            {t('settings.accountTitle')}
           </Text>
           <div className="space-y-2">
             <Button
@@ -376,7 +384,7 @@ export default function ParentSettings() {
                 setPinMessage('');
               }}
             >
-              {hasPinSet ? 'PIN Kodunu Değiştir' : 'PIN Kodu Belirle'}
+              {hasPinSet ? t('settings.changePin') : t('settings.setPin')}
             </Button>
             <Button
               variant="secondary"
@@ -388,7 +396,7 @@ export default function ParentSettings() {
                 setEmailMessage('');
               }}
             >
-              E-posta Değiştir
+              {t('settings.changeEmail')}
             </Button>
             <Button
               variant="secondary"
@@ -399,10 +407,10 @@ export default function ParentSettings() {
                 handleDataExport();
               }}
             >
-              {exporting ? 'Dışa Aktarılıyor...' : 'Verileri Dışa Aktar'}
+              {exporting ? t('settings.exporting') : t('settings.exportData')}
             </Button>
             <Button variant="danger" size="md" fullWidth onClick={() => void handleSignOut()}>
-              Çıkış Yap
+              {t('settings.signOut')}
             </Button>
             <Button
               variant="ghost"
@@ -415,7 +423,7 @@ export default function ParentSettings() {
               }}
               className="text-error!"
             >
-              Hesabı Sil
+              {t('settings.deleteAccount')}
             </Button>
           </div>
         </Card>
@@ -442,12 +450,12 @@ export default function ParentSettings() {
                 }}
               >
                 <Text variant="h4" align="center" className="mb-2">
-                  🔑 {hasPinSet ? 'PIN Değiştir' : 'PIN Belirle'}
+                  {hasPinSet ? t('settings.pinModalChange') : t('settings.pinModalSet')}
                 </Text>
                 <Text variant="bodySmall" align="center" className="text-text-secondary mb-4">
-                  {pinStep === 'current' && 'Mevcut PIN kodunuzu girin'}
-                  {pinStep === 'new' && 'Yeni 4 haneli PIN kodunuzu girin'}
-                  {pinStep === 'confirm' && 'Yeni PIN kodunuzu tekrar girin'}
+                  {pinStep === 'current' && t('settings.pinStepCurrent')}
+                  {pinStep === 'new' && t('settings.pinStepNew')}
+                  {pinStep === 'confirm' && t('settings.pinStepConfirm')}
                 </Text>
 
                 {/* PIN dots */}
@@ -514,7 +522,8 @@ export default function ParentSettings() {
                               setPinStep('confirm');
                             } else {
                               if (newVal !== newPinInput) {
-                                setPinMessage('PIN kodları eşleşmiyor');
+                                setPinSuccess(false);
+                                setPinMessage(t('settings.pinMismatch'));
                                 setConfirmPinInput('');
                               } else {
                                 void (async () => {
@@ -525,12 +534,14 @@ export default function ParentSettings() {
                                       pin: newPinInput,
                                       ...(hasPinSet ? { currentPin: currentPinInput } : {}),
                                     });
-                                    setPinMessage('PIN başarıyla kaydedildi!');
+                                    setPinSuccess(true);
+                                    setPinMessage(t('settings.pinSaved'));
                                     setTimeout(() => {
                                       setShowPinChange(false);
                                     }, 1000);
                                   } catch {
-                                    setPinMessage('PIN kaydedilemedi. Tekrar deneyin.');
+                                    setPinSuccess(false);
+                                    setPinMessage(t('settings.pinSaveFailed'));
                                     setCurrentPinInput('');
                                     setNewPinInput('');
                                     setConfirmPinInput('');
@@ -554,7 +565,7 @@ export default function ParentSettings() {
                   <Text
                     variant="bodySmall"
                     align="center"
-                    className={`mb-3 ${pinMessage.includes('başarı') ? 'text-success' : 'text-error'}`}
+                    className={`mb-3 ${pinSuccess ? 'text-success' : 'text-error'}`}
                   >
                     {pinMessage}
                   </Text>
@@ -567,7 +578,7 @@ export default function ParentSettings() {
                     setShowPinChange(false);
                   }}
                 >
-                  Vazgeç
+                  {t('settings.cancel')}
                 </Button>
               </motion.div>
             </motion.div>
@@ -596,13 +607,15 @@ export default function ParentSettings() {
                 }}
               >
                 <Text variant="h4" align="center" className="mb-2">
-                  ✉️ E-posta Değiştir
+                  {t('settings.emailModalTitle')}
                 </Text>
                 <Text variant="bodySmall" align="center" className="text-text-secondary mb-2">
-                  Mevcut: {user?.email ?? 'Belirtilmemiş'}
+                  {t('settings.emailCurrent', {
+                    email: user?.email ?? t('settings.emailNotSet'),
+                  })}
                 </Text>
                 <Text variant="bodySmall" align="center" className="text-text-secondary mb-4">
-                  Yeni e-posta adresinize doğrulama bağlantısı gönderilecektir.
+                  {t('settings.emailModalDesc')}
                 </Text>
 
                 <input
@@ -612,7 +625,7 @@ export default function ParentSettings() {
                     setNewEmail(e.target.value);
                     setEmailMessage('');
                   }}
-                  placeholder="Yeni e-posta adresi"
+                  placeholder={t('settings.emailPlaceholder')}
                   className="focus:border-nova-blue mb-4 w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm outline-none"
                   disabled={emailSaving}
                 />
@@ -621,7 +634,7 @@ export default function ParentSettings() {
                   <Text
                     variant="bodySmall"
                     align="center"
-                    className={`mb-3 ${emailMessage.includes('gönderildi') ? 'text-success' : 'text-error'}`}
+                    className={`mb-3 ${emailSuccess ? 'text-success' : 'text-error'}`}
                   >
                     {emailMessage}
                   </Text>
@@ -633,7 +646,7 @@ export default function ParentSettings() {
                     disabled={emailSaving || !newEmail.trim()}
                     onClick={() => void handleEmailChange()}
                   >
-                    {emailSaving ? 'Gönderiliyor...' : 'Doğrulama E-postası Gönder'}
+                    {emailSaving ? t('settings.emailSending') : t('settings.emailSendCta')}
                   </Button>
                   <Button
                     variant="ghost"
@@ -642,7 +655,7 @@ export default function ParentSettings() {
                       setShowEmailChange(false);
                     }}
                   >
-                    Vazgeç
+                    {t('settings.cancel')}
                   </Button>
                 </div>
               </motion.div>
@@ -672,16 +685,16 @@ export default function ParentSettings() {
                 }}
               >
                 <Text variant="h4" align="center" className="mb-2">
-                  ⚠️ Hesabı Sil
+                  {t('settings.deleteModalTitle')}
                 </Text>
                 <Text variant="bodySmall" align="center" className="text-text-secondary mb-4">
-                  Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinecektir.
+                  {t('settings.deleteModalDesc')}
                 </Text>
 
                 {hasPinSet && (
                   <>
                     <Text variant="bodySmall" align="center" className="text-text-secondary mb-3">
-                      Onaylamak için PIN kodunuzu girin
+                      {t('settings.deletePinPrompt')}
                     </Text>
                     <div className="mb-4 flex justify-center gap-3">
                       {[0, 1, 2, 3].map((i) => (
@@ -747,7 +760,7 @@ export default function ParentSettings() {
                           useChildStore.getState().reset();
                           void navigate('/onboarding');
                         } catch {
-                          setDeleteError('Hesap silinemedi. PIN kodunu kontrol edin.');
+                          setDeleteError(t('settings.deleteFailed'));
                           setDeletePinInput('');
                         } finally {
                           setDeleting(false);
@@ -755,7 +768,7 @@ export default function ParentSettings() {
                       })();
                     }}
                   >
-                    {deleting ? 'Siliniyor...' : 'Evet, Hesabı Sil'}
+                    {deleting ? t('settings.deleting') : t('settings.deleteConfirm')}
                   </Button>
                   <Button
                     variant="ghost"
@@ -764,7 +777,7 @@ export default function ParentSettings() {
                       setShowDeleteConfirm(false);
                     }}
                   >
-                    Vazgeç
+                    {t('settings.cancel')}
                   </Button>
                 </div>
               </motion.div>
@@ -781,7 +794,7 @@ export default function ParentSettings() {
             }}
             disabled={saveMutation.isPending}
           >
-            {saveMutation.isPending ? 'Kaydediliyor...' : 'Kaydet'}
+            {saveMutation.isPending ? t('settings.saving') : t('settings.save')}
           </Button>
 
           {/* Legal Links */}
@@ -792,7 +805,7 @@ export default function ParentSettings() {
                 void navigate('/legal/privacy');
               }}
             >
-              Gizlilik Politikası
+              {t('settings.privacy')}
             </button>
             <span className="text-xs text-gray-300">·</span>
             <button
@@ -801,7 +814,7 @@ export default function ParentSettings() {
                 void navigate('/legal/terms');
               }}
             >
-              Kullanım Koşulları
+              {t('settings.terms')}
             </button>
           </div>
         </div>

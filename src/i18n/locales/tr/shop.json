@@ -29,5 +29,62 @@
     "hintBoostDesc": "5 ekstra ipucu hakkı",
     "timeBoost": "Süre Uzat",
     "timeBoostDesc": "Ders süresi +30 saniye"
+  },
+
+  "screen": {
+    "title": "🛒 Mağaza",
+    "emptyTitle": "Bu kategoride henüz ürün yok",
+    "emptyDesc": "Ders tamamla ve yıldız kazan — yeni ürünler açılacak!",
+    "buy": "Satın Al",
+    "insufficient": "Yetersiz",
+    "buying": "...",
+    "purchaseSuccessTitle": "Satın alındı! 🎉",
+    "purchaseSuccessMessage": "{{name}} koleksiyonuna eklendi.",
+    "insufficientTitle": "Yetersiz bakiye",
+    "purchaseFailTitle": "Satın alma başarısız",
+    "purchaseFailMessage": "Bir hata oluştu, lütfen tekrar dene.",
+    "insufficientFunds": "{{name}} için yeterli {{currency}} yok.",
+    "gems": "elmas",
+    "stars": "yıldız"
+  },
+
+  "screenCategories": {
+    "avatars": "Avatar",
+    "themes": "Tema",
+    "boosters": "Güçlendirici",
+    "frames": "Çerçeve",
+    "effects": "Efekt",
+    "nova": "Nova"
+  },
+
+  "items": {
+    "avatar_fox": "Tilki",
+    "avatar_panda": "Panda",
+    "avatar_unicorn": "Unicorn",
+    "avatar_dragon": "Ejderha",
+    "avatar_astronaut": "Astronot",
+    "avatar_robot": "Robot",
+    "theme_ocean": "Okyanus",
+    "theme_space": "Uzay",
+    "theme_forest": "Orman",
+    "theme_candy": "Şekerleme",
+    "boost_2x_xp": "2x XP (1 saat)",
+    "boost_streak_freeze": "Seri Koruyucu",
+    "boost_hint_pack": "İpucu Paketi (10x)",
+    "boost_star_doubler": "Yıldız 2x (1 gün)",
+    "frame_gold": "Altın Çerçeve",
+    "frame_rainbow": "Gökkuşağı",
+    "frame_star": "Yıldız Çerçeve",
+    "frame_crown": "Taç Çerçeve",
+    "effect_sparkle": "Işıltı",
+    "effect_confetti": "Konfeti",
+    "effect_fireworks": "Havai Fişek",
+    "effect_hearts": "Kalpler",
+    "nova_hat_wizard": "Büyücü Şapkası",
+    "nova_hat_crown": "Kral Tacı",
+    "nova_cape_red": "Kırmızı Pelerin",
+    "nova_glasses": "Güneş Gözlüğü",
+    "nova_wings": "Melek Kanatları",
+    "nova_scarf": "Atkı"
   }
 }

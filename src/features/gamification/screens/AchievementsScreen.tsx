@@ -13,16 +13,18 @@ import { useAchievementCatalog, useAchievements } from '@hooks/queries';
 import { useChildStore } from '@stores/childStore';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AchCategory = 'all' | 'learning' | 'streak' | 'collection' | 'social' | 'special';
 
-const categories: { id: AchCategory; label: string }[] = [
-  { id: 'all', label: 'Tümü' },
-  { id: 'learning', label: '📚 Öğrenme' },
-  { id: 'streak', label: '🔥 Seri' },
-  { id: 'collection', label: '📦 Toplama' },
-  { id: 'social', label: '🤝 Sosyal' },
-  { id: 'special', label: '⭐ Özel' },
+// Etiketler i18n'den gelir (gamification.achievements.filter, id'ye göre).
+const categories: { id: AchCategory }[] = [
+  { id: 'all' },
+  { id: 'learning' },
+  { id: 'streak' },
+  { id: 'collection' },
+  { id: 'social' },
+  { id: 'special' },
 ];
 
 interface AchievementItem {
@@ -45,6 +47,7 @@ const rarityStyles: Record<string, string> = {
 };
 
 export default function AchievementsScreen() {
+  const { t } = useTranslation('gamification');
   const [activeCategory, setActiveCategory] = useState<AchCategory>('all');
   const childId = useChildStore((s) => s.activeChild?.id);
   const { data: catalog } = useAchievementCatalog();
@@ -77,9 +80,12 @@ export default function AchievementsScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Header */}
         <div>
-          <Text variant="h3">🏆 Başarımlar</Text>
+          <Text variant="h3">{t('achievements.title')}</Text>
           <Text variant="bodySmall" className="text-text-secondary">
-            {unlockedCount}/{achievements.length} başarım açıldı
+            {t('achievements.unlockedCount', {
+              unlocked: unlockedCount,
+              total: achievements.length,
+            })}
           </Text>
         </div>
 
@@ -97,7 +103,7 @@ export default function AchievementsScreen() {
                 setActiveCategory(cat.id);
               }}
             >
-              {cat.label}
+              {t(`achievements.filter.${cat.id}`)}
             </button>
           ))}
         </div>
@@ -109,10 +115,10 @@ export default function AchievementsScreen() {
               <div className="space-y-2 text-center">
                 <span className="text-4xl">🏆</span>
                 <Text variant="body" weight="bold">
-                  Henüz başarım yok
+                  {t('achievements.empty')}
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
-                  Dersleri tamamlayarak başarımlar kazanabilirsin!
+                  {t('achievements.emptyDesc')}
                 </Text>
               </div>
             </Card>

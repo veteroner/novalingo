@@ -11,6 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface ListenAndTapActivityProps extends ActivityCallbacks {
@@ -18,6 +19,7 @@ interface ListenAndTapActivityProps extends ActivityCallbacks {
 }
 
 export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapActivityProps) {
+  const { t } = useTranslation('lesson');
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [listenCount, setListenCount] = useState(0);
@@ -109,7 +111,7 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6">
       {/* Title */}
       <Text variant="h3" align="center">
-        👂 Dinle ve Seç
+        {t('activityUI.listenAndTap.title')}
       </Text>
 
       {/* Audio control */}
@@ -139,7 +141,9 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
       </div>
 
       <Text variant="caption" className="text-text-secondary -mt-3">
-        {listenCount >= 3 ? 'Dinleme hakkın bitti' : `${3 - listenCount} kez daha dinleyebilirsin`}
+        {listenCount >= 3
+          ? t('activityUI.listenAndTap.noListensLeft')
+          : t('activityUI.listenAndTap.listensLeft', { count: 3 - listenCount })}
       </Text>
 
       {/* Options grid 2x2 */}
@@ -199,7 +203,9 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
             }`}
           >
             <Text variant="body" weight="bold">
-              {isCorrect ? '🎉 Doğru! Harika!' : `❌ Doğru cevap: ${data.correctAnswer}`}
+              {isCorrect
+                ? t('activityUI.listenAndTap.correct')
+                : t('activityUI.listenAndTap.wrong', { answer: data.correctAnswer })}
             </Text>
           </motion.div>
         )}

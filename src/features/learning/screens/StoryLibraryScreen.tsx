@@ -12,15 +12,17 @@ import { MainLayout } from '@components/templates/MainLayout';
 import { trackStoryLibraryOpened, trackStoryOpened } from '@services/analytics/analyticsService';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-const WORLD_LABELS: Record<string, { label: string; emoji: string }> = {
-  w1: { label: 'Başlangıç Bahçesi', emoji: '🌱' },
-  w2: { label: 'Gramer Kalesi', emoji: '🏰' },
-  w3: { label: 'Hikaye Ormanı', emoji: '🌲' },
-  w4: { label: 'Şehir Meydanı', emoji: '🏙️' },
-  w5: { label: 'Bilim Adası', emoji: '🔬' },
-  w6: { label: 'Macera Galaksisi', emoji: '🚀' },
+// Etiketler i18n'den gelir (lesson.storyLibrary.worlds, id'ye göre); burada yalnızca emoji.
+const WORLD_EMOJIS: Record<string, string> = {
+  w1: '🌱',
+  w2: '🏰',
+  w3: '🌲',
+  w4: '🏙️',
+  w5: '🔬',
+  w6: '🚀',
 };
 
 function getWorldFromStoryId(storyId: string): string {
@@ -32,6 +34,7 @@ const ALL_WORLDS = ['all', 'w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
 
 export default function StoryLibraryScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('lesson');
   const [filterWorld, setFilterWorld] = useState<string>('all');
 
   useEffect(() => {
@@ -55,21 +58,22 @@ export default function StoryLibraryScreen() {
           onClick={() => navigate('/home')}
           className="mb-2 text-sm font-semibold text-white/80"
         >
-          ← Ana Sayfa
+          {t('storyLibrary.backHome')}
         </button>
         <Text variant="h3" className="text-white">
-          📖 Hikaye Kütüphanesi
+          {t('storyLibrary.title')}
         </Text>
         <Text variant="bodySmall" className="text-white/80">
-          {storyBank.length} hikaye — okumaya başla!
+          {t('storyLibrary.subtitle', { count: storyBank.length })}
         </Text>
       </motion.div>
 
       {/* World Filter Chips */}
       <div className="scrollbar-hide flex gap-2 overflow-x-auto px-4 py-3">
         {ALL_WORLDS.map((wid) => {
-          const info = wid === 'all' ? { label: 'Tümü', emoji: '✨' } : WORLD_LABELS[wid];
-          if (!info) return null;
+          const emoji = wid === 'all' ? '✨' : WORLD_EMOJIS[wid];
+          if (!emoji) return null;
+          const label = wid === 'all' ? t('storyLibrary.all') : t(`storyLibrary.worlds.${wid}`);
           return (
             <button
               key={wid}
@@ -82,8 +86,8 @@ export default function StoryLibraryScreen() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              <span>{info.emoji}</span>
-              <span>{info.label}</span>
+              <span>{emoji}</span>
+              <span>{label}</span>
             </button>
           );
         })}
@@ -95,7 +99,7 @@ export default function StoryLibraryScreen() {
           <div className="col-span-2 py-10 text-center text-gray-400">
             <span className="text-4xl">📭</span>
             <Text variant="bodySmall" className="mt-2 text-gray-400">
-              Bu dünya için henüz hikaye yok.
+              {t('storyLibrary.emptyWorld')}
             </Text>
           </div>
         )}
@@ -124,8 +128,9 @@ function StoryCard({
   index: number;
   onOpen: () => void;
 }) {
+  const { t } = useTranslation('lesson');
   const worldId = getWorldFromStoryId(story.id);
-  const worldInfo = WORLD_LABELS[worldId];
+  const worldEmoji = WORLD_EMOJIS[worldId];
   const pageCount = story.data.pages.length;
 
   return (
@@ -138,7 +143,7 @@ function StoryCard({
     >
       {/* Theme Emoji area */}
       <div className="mb-2 flex h-12 w-full items-center justify-center rounded-xl bg-indigo-50 text-3xl">
-        {worldInfo?.emoji ?? '📖'}
+        {worldEmoji ?? '📖'}
       </div>
 
       {/* Title */}
@@ -151,7 +156,9 @@ function StoryCard({
         <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-600">
           {story.theme}
         </span>
-        <span className="text-[10px] text-gray-400">{pageCount} sayfa</span>
+        <span className="text-[10px] text-gray-400">
+          {t('storyLibrary.pageCount', { count: pageCount })}
+        </span>
       </div>
     </motion.button>
   );

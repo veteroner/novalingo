@@ -8,6 +8,7 @@
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface LevelUpModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ interface LevelUpModalProps {
 }
 
 export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalProps) {
+  const { t } = useTranslation('common');
   return (
     <AnimatePresence>
       {isOpen && (
@@ -66,7 +68,7 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
               transition={{ delay: 0.2 }}
             >
               <Text variant="overline" className="text-nova-blue mb-1">
-                Seviye Atladın!
+                {t('levelUpModal.title')}
               </Text>
             </motion.div>
 

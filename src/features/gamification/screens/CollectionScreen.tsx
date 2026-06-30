@@ -12,6 +12,7 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type CollectionCategory =
   | 'animals'
@@ -22,14 +23,15 @@ type CollectionCategory =
   | 'foods'
   | 'vehicles';
 
-const categories: { id: CollectionCategory; label: string; emoji: string }[] = [
-  { id: 'animals', label: 'Hayvanlar', emoji: '🐾' },
-  { id: 'flags', label: 'Bayraklar', emoji: '🏳️' },
-  { id: 'stickers', label: 'Çıkartmalar', emoji: '⭐' },
-  { id: 'characters', label: 'Karakterler', emoji: '🧙' },
-  { id: 'landmarks', label: 'Yapılar', emoji: '🏛️' },
-  { id: 'foods', label: 'Yiyecekler', emoji: '🍕' },
-  { id: 'vehicles', label: 'Araçlar', emoji: '🚀' },
+// Etiketler i18n'den gelir (gamification.collection.categories, id'ye göre); burada yalnızca emoji.
+const categories: { id: CollectionCategory; emoji: string }[] = [
+  { id: 'animals', emoji: '🐾' },
+  { id: 'flags', emoji: '🏳️' },
+  { id: 'stickers', emoji: '⭐' },
+  { id: 'characters', emoji: '🧙' },
+  { id: 'landmarks', emoji: '🏛️' },
+  { id: 'foods', emoji: '🍕' },
+  { id: 'vehicles', emoji: '🚀' },
 ];
 
 interface Collectible {
@@ -49,6 +51,7 @@ const rarityGlow: Record<string, string> = {
 };
 
 export default function CollectionScreen() {
+  const { t } = useTranslation('gamification');
   const [activeCategory, setActiveCategory] = useState<CollectionCategory>('animals');
   const childId = useChildStore((s) => s.activeChild?.id);
   const openModal = useUIStore((s) => s.openModal);
@@ -65,7 +68,7 @@ export default function CollectionScreen() {
       category: c.category as CollectionCategory,
       collected: ownedIds.has(c.id),
     }));
-  }, [catalog, inventory, activeCategory]);
+  }, [catalog, inventory]);
 
   const collectedCount = items.filter((i) => i.collected).length;
   const totalCount = items.length;
@@ -75,9 +78,9 @@ export default function CollectionScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Header */}
         <div>
-          <Text variant="h3">📦 Koleksiyon</Text>
+          <Text variant="h3">{t('collection.title')}</Text>
           <Text variant="bodySmall" className="text-text-secondary">
-            {collectedCount}/{totalCount} öğe toplandı
+            {t('collection.collected', { collected: collectedCount, total: totalCount })}
           </Text>
         </div>
 
@@ -96,7 +99,7 @@ export default function CollectionScreen() {
               }}
             >
               <span>{cat.emoji}</span>
-              {cat.label}
+              {t(`collection.categories.${cat.id}`)}
             </button>
           ))}
         </div>
@@ -107,10 +110,10 @@ export default function CollectionScreen() {
             <div className="space-y-2 text-center">
               <span className="text-4xl">📦</span>
               <Text variant="body" weight="bold">
-                Henüz koleksiyon yok
+                {t('collection.empty')}
               </Text>
               <Text variant="caption" className="text-text-secondary">
-                Dersleri tamamlayarak koleksiyon parçaları kazanabilirsin!
+                {t('collection.emptyDesc')}
               </Text>
             </div>
           </Card>
@@ -134,8 +137,12 @@ export default function CollectionScreen() {
                       name: item.name,
                       emoji: item.emoji,
                       rarity: item.rarity,
-                      description: `${item.name} koleksiyonuna eklendi. Dersleri ve görevleri tamamlayarak daha fazla öğe açabilirsin.`,
-                      fact: `${categories.find((category) => category.id === item.category)?.label ?? 'Koleksiyon'} kategorisinden özel bir parça.`,
+                      description: t('collection.itemDescription', { name: item.name }),
+                      fact: t('collection.itemFact', {
+                        category: categories.some((category) => category.id === item.category)
+                          ? t(`collection.categories.${item.category}`)
+                          : t('collection.fallbackCategory'),
+                      }),
                     });
                   }}
                   className={`flex aspect-square items-center justify-center ${

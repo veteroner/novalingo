@@ -17,6 +17,7 @@ import {
 } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks, FeedbackState } from './types';
 
 interface SpeakItActivityProps extends ActivityCallbacks {
@@ -33,6 +34,7 @@ const SpeechRecognitionAPI =
     : undefined;
 
 export default function SpeakItActivity({ data, onComplete }: SpeakItActivityProps) {
+  const { t } = useTranslation('lesson');
   const [feedback, setFeedback] = useState<FeedbackState>('idle');
   const [isListening, setIsListening] = useState(false);
   const [spokenText, setSpokenText] = useState('');
@@ -174,10 +176,10 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
       {/* Header */}
       <div className="text-center">
         <Text variant="overline" className="mb-1 text-purple-500">
-          🎤 SÖYLE
+          {t('activityUI.speakIt.title')}
         </Text>
         <Text variant="body" className="text-text-secondary">
-          Bu kelimeyi söyle:
+          {t('activityUI.speakIt.prompt')}
         </Text>
       </div>
 
@@ -235,7 +237,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                 {isListening ? '⏺' : '🎤'}
               </motion.button>
               <Text variant="bodySmall" className="mt-2 text-gray-400">
-                {isListening ? 'Dinleniyor...' : 'Mikrofona dokun ve söyle'}
+                {isListening ? t('activityUI.speakIt.listening') : t('activityUI.speakIt.tapMic')}
               </Text>
             </motion.div>
           )}
@@ -284,7 +286,8 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                   className="mt-2 rounded-xl bg-blue-50 px-4 py-2"
                 >
                   <Text variant="bodySmall" className="text-blue-600">
-                    💡 Okunuşu: <span className="font-bold">{data.phonemeHint}</span>
+                    {t('activityUI.speakIt.pronunciation')}{' '}
+                    <span className="font-bold">{data.phonemeHint}</span>
                   </Text>
                 </motion.div>
               )}
@@ -300,7 +303,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
             className="mt-4 space-y-3"
           >
             <Text variant="bodySmall" className="text-gray-400">
-              Mikrofon kullanılamıyor — kendini değerlendir:
+              {t('activityUI.speakIt.micUnavailable')}
             </Text>
             <div className="flex justify-center gap-3">
               <Button
@@ -310,7 +313,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                   evaluateResult('__wrong__');
                 }}
               >
-                Söyleyemedim 😕
+                {t('activityUI.speakIt.couldNotSay')}
               </Button>
               <Button
                 variant="success"
@@ -319,7 +322,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                   evaluateResult(data.word);
                 }}
               >
-                Söyledim! ✓
+                {t('activityUI.speakIt.said')}
               </Button>
             </div>
           </motion.div>

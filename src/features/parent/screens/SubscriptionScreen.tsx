@@ -37,42 +37,45 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+// Metinler i18n'den gelir (parent.subscription.*); burada emoji/fiyat/anahtar.
 const PREMIUM_FEATURES = [
-  { emoji: '🌍', text: 'Tüm dünyalara erişim (6+ dünya)' },
-  { emoji: '♾️', text: 'Sınırsız ders' },
-  { emoji: '🚫', text: 'Reklam yok' },
-  { emoji: '📶', text: 'Offline öğrenme' },
-  { emoji: '📊', text: 'Detaylı ebeveyn raporu' },
-  { emoji: '🦉', text: "Nova'nın tüm evrimleri" },
-  { emoji: '👨‍👩‍👧‍👦', text: '5 çocuk profili' },
-  { emoji: '⚡', text: 'Günde 1 saat 2x XP' },
+  { emoji: '🌍', key: 'allWorlds' },
+  { emoji: '♾️', key: 'unlimited' },
+  { emoji: '🚫', key: 'noAds' },
+  { emoji: '📶', key: 'offline' },
+  { emoji: '📊', key: 'report' },
+  { emoji: '🦉', key: 'evolutions' },
+  { emoji: '👨‍👩‍👧‍👦', key: 'profiles' },
+  { emoji: '⚡', key: 'boost' },
 ] as const;
 
 const PLANS = [
   {
     id: IAP_PRODUCTS.MONTHLY,
     key: 'monthly',
-    label: 'Aylık',
+    labelKey: 'planMonthly',
     priceTRY: '₺149.99',
-    period: '/ay',
+    periodKey: 'perMonth',
     highlighted: false,
   },
   {
     id: IAP_PRODUCTS.YEARLY,
     key: 'yearly',
-    label: 'Yıllık',
+    labelKey: 'planYearly',
     priceTRY: '₺899.99',
-    period: '/yıl',
+    periodKey: 'perYear',
     highlighted: true,
-    badge: '%50 Tasarruf',
+    badgeKey: 'saveBadge',
     monthlyEquiv: '₺74.99/ay',
   },
 ] as const;
 
 export default function SubscriptionScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('parent');
   const user = useAuthStore((s) => s.user);
   const child = useChildStore((s) => s.activeChild);
   const showToast = useUIStore((s) => s.showToast);
@@ -100,21 +103,21 @@ export default function SubscriptionScreen() {
       if (result.status === 'success') {
         showToast({
           type: 'success',
-          title: 'Abonelik Aktif!',
-          message: 'NovaLingo Plus başladı.',
+          title: t('subscription.successTitle'),
+          message: t('subscription.successMessage'),
         });
       } else if (result.status === 'store_redirect') {
         showToast({
           type: 'info',
-          title: 'Mağaza Açıldı',
+          title: t('subscription.storeOpenedTitle'),
           message: isNativePlatform
-            ? 'Aboneliğiniz doğrulanıyor. İşlem tamamlandığında premium erişim otomatik olarak açılır; gecikirse "Geri Yükle" butonunu kullanın.'
-            : 'Uygulamayı mobil cihazınızdan indirerek abone olabilirsiniz.',
+            ? t('subscription.storeOpenedNative')
+            : t('subscription.storeOpenedWeb'),
         });
       } else if (result.status === 'cancelled') {
         // User cancelled — no toast needed
       } else {
-        showToast({ type: 'error', title: 'Hata', message: result.message });
+        showToast({ type: 'error', title: t('subscription.errorTitle'), message: result.message });
       }
     } finally {
       setPurchasing(false);
@@ -130,10 +133,10 @@ export default function SubscriptionScreen() {
         trackSubscriptionRestoreCompleted(platform);
         showToast({
           type: 'success',
-          title: 'Abonelik Bulundu!',
-          message: 'Premium erişiminiz yeniden etkinleştirildi.',
+          title: t('subscription.restoreSuccessTitle'),
+          message: t('subscription.restoreSuccessMessage'),
         });
-        navigate(-1);
+        void navigate(-1);
       } else {
         trackSubscriptionRestoreFailed(
           platform,
@@ -141,8 +144,8 @@ export default function SubscriptionScreen() {
         );
         showToast({
           type: 'error',
-          title: 'Abonelik Bulunamadı',
-          message: result.status === 'error' ? result.message : 'Aktif abonelik bulunamadı.',
+          title: t('subscription.noSubTitle'),
+          message: result.status === 'error' ? result.message : t('subscription.noSubMessage'),
         });
       }
     } finally {
@@ -156,13 +159,13 @@ export default function SubscriptionScreen() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <Text variant="h3">💳 Abonelik</Text>
+            <Text variant="h3">{t('subscription.title')}</Text>
             <Text variant="bodySmall" className="text-text-secondary">
-              {isPremium ? 'Premium üye' : 'Ücretsiz Plan'}
+              {isPremium ? t('subscription.premiumMember') : t('subscription.freePlan')}
             </Text>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-            Geri
+            {t('subscription.back')}
           </Button>
         </div>
 
@@ -172,17 +175,15 @@ export default function SubscriptionScreen() {
             <span className="text-3xl">{isPremium ? '⭐' : '🆓'}</span>
             <div className="flex-1">
               <Text variant="body" weight="bold">
-                {isPremium ? 'NovaLingo Plus' : 'Ücretsiz Plan'}
+                {isPremium ? t('subscription.plusName') : t('subscription.freePlan')}
               </Text>
               <Text variant="caption" className="text-text-secondary">
-                {isPremium
-                  ? 'Tüm özelliklere erişiminiz var'
-                  : 'İlk 2 dünya, günde 5 ders, reklamlı'}
+                {isPremium ? t('subscription.premiumDesc') : t('subscription.freeDesc')}
               </Text>
             </div>
             {isPremium && (
               <span className="bg-success/20 text-success rounded-full px-3 py-1 text-xs font-bold">
-                Aktif
+                {t('subscription.active')}
               </span>
             )}
           </div>
@@ -196,16 +197,16 @@ export default function SubscriptionScreen() {
             className="space-y-4"
           >
             <Text variant="h4" align="center">
-              ⭐ NovaLingo Plus
+              {t('subscription.upsellTitle')}
             </Text>
 
             {/* Feature list */}
             <Card variant="glass" padding="md">
               <div className="space-y-3">
                 {PREMIUM_FEATURES.map((feat) => (
-                  <div key={feat.text} className="flex items-center gap-3">
+                  <div key={feat.key} className="flex items-center gap-3">
                     <span className="text-lg">{feat.emoji}</span>
-                    <Text variant="bodySmall">{feat.text}</Text>
+                    <Text variant="bodySmall">{t(`subscription.features.${feat.key}`)}</Text>
                   </div>
                 ))}
               </div>
@@ -218,7 +219,9 @@ export default function SubscriptionScreen() {
                 return (
                   <button
                     key={plan.key}
-                    onClick={() => setSelectedPlanId(plan.id)}
+                    onClick={() => {
+                      setSelectedPlanId(plan.id);
+                    }}
                     className="text-left"
                   >
                     <Card
@@ -227,28 +230,28 @@ export default function SubscriptionScreen() {
                       className={isSelected ? 'ring-nova-blue ring-2' : ''}
                     >
                       <div className="space-y-2 text-center">
-                        {plan.highlighted && plan.badge && (
+                        {'badgeKey' in plan && (
                           <span className="bg-nova-orange inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white">
-                            {plan.badge}
+                            {t(`subscription.${plan.badgeKey}`)}
                           </span>
                         )}
                         <Text variant="body" weight="bold">
-                          {plan.label}
+                          {t(`subscription.${plan.labelKey}`)}
                         </Text>
                         <Text variant="h3" className="text-nova-blue">
                           {plan.priceTRY}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
-                          {plan.period}
+                          {t(`subscription.${plan.periodKey}`)}
                         </Text>
-                        {'monthlyEquiv' in plan && plan.monthlyEquiv && (
+                        {'monthlyEquiv' in plan && (
                           <Text variant="caption" className="text-success font-semibold">
                             {plan.monthlyEquiv}
                           </Text>
                         )}
                         {isSelected && (
                           <span className="text-nova-blue block text-xs font-semibold">
-                            ✔ Seçildi
+                            {t('subscription.selected')}
                           </span>
                         )}
                       </div>
@@ -266,11 +269,10 @@ export default function SubscriptionScreen() {
               onClick={handlePurchase}
               disabled={purchasing}
             >
-              {purchasing ? 'İşleniyor…' : '7 Gün Ücretsiz Dene'}
+              {purchasing ? t('subscription.processing') : t('subscription.trial')}
             </Button>
             <Text variant="caption" align="center" className="text-text-secondary">
-              7 günlük deneme süresi sonunda seçtiğiniz plan üzerinden ücretlendirilirsiniz.
-              İstediğiniz zaman iptal edebilirsiniz.
+              {t('subscription.trialNote1')} {t('subscription.trialNote2')}
             </Text>
 
             {/* Restore */}
@@ -281,7 +283,7 @@ export default function SubscriptionScreen() {
               onClick={handleRestore}
               disabled={restoring}
             >
-              {restoring ? 'Kontrol ediliyor…' : 'Satın alma geçmişini geri yükle'}
+              {restoring ? t('subscription.checking') : t('subscription.restoreCta')}
             </Button>
           </motion.div>
         )}
@@ -291,27 +293,27 @@ export default function SubscriptionScreen() {
           <div className="space-y-4">
             <Card variant="elevated" padding="md">
               <div className="space-y-3">
-                <Text variant="h4">Plan Detayları</Text>
+                <Text variant="h4">{t('subscription.planDetails')}</Text>
                 <div className="flex justify-between">
                   <Text variant="bodySmall" className="text-text-secondary">
-                    Plan
+                    {t('subscription.planLabel')}
                   </Text>
                   <Text variant="bodySmall" weight="bold">
-                    NovaLingo Plus
+                    {t('subscription.plusName')}
                   </Text>
                 </div>
                 <div className="flex justify-between">
                   <Text variant="bodySmall" className="text-text-secondary">
-                    Durum
+                    {t('subscription.statusLabel')}
                   </Text>
                   <Text variant="bodySmall" weight="bold" className="text-success">
-                    Aktif
+                    {t('subscription.active')}
                   </Text>
                 </div>
                 {child && (
                   <div className="flex justify-between">
                     <Text variant="bodySmall" className="text-text-secondary">
-                      Aktif Profil
+                      {t('subscription.activeProfile')}
                     </Text>
                     <Text variant="bodySmall" weight="bold">
                       {child.name}
@@ -324,13 +326,14 @@ export default function SubscriptionScreen() {
             <Card variant="outlined" padding="md">
               <div className="space-y-3 text-center">
                 <Text variant="bodySmall" className="text-text-secondary">
-                  Aboneliğinizi{' '}
-                  {platform === 'ios'
-                    ? 'App Store'
-                    : platform === 'android'
-                      ? 'Google Play'
-                      : 'mağaza'}{' '}
-                  üzerinden yönetebilirsiniz.
+                  {t('subscription.manageText', {
+                    store:
+                      platform === 'ios'
+                        ? t('subscription.storeAppStore')
+                        : platform === 'android'
+                          ? t('subscription.storeGooglePlay')
+                          : t('subscription.storeGeneric'),
+                  })}
                 </Text>
                 {platform === 'ios' && (
                   <Button
@@ -338,7 +341,7 @@ export default function SubscriptionScreen() {
                     size="sm"
                     onClick={() => window.open(IOS_MANAGE_SUBSCRIPTIONS_URL, '_system')}
                   >
-                    App Store Aboneliklerini Yönet
+                    {t('subscription.manageAppStore')}
                   </Button>
                 )}
                 {platform === 'android' && (
@@ -347,7 +350,7 @@ export default function SubscriptionScreen() {
                     size="sm"
                     onClick={() => window.open(ANDROID_MANAGE_SUBSCRIPTIONS_URL, '_blank')}
                   >
-                    Google Play Aboneliklerini Yönet
+                    {t('subscription.manageGooglePlay')}
                   </Button>
                 )}
               </div>
@@ -361,13 +364,13 @@ export default function SubscriptionScreen() {
             className="text-text-secondary text-xs underline"
             onClick={() => window.open(PRIVACY_POLICY_URL, '_blank', 'noopener,noreferrer')}
           >
-            Gizlilik Politikası
+            {t('subscription.privacy')}
           </button>
           <button
             className="text-text-secondary text-xs underline"
             onClick={() => window.open(TERMS_OF_SERVICE_URL, '_blank', 'noopener,noreferrer')}
           >
-            Kullanım Koşulları
+            {t('subscription.terms')}
           </button>
         </div>
       </div>

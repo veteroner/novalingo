@@ -1,9 +1,8 @@
 import * as Sentry from '@sentry/react';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
-import { Button } from '@components/atoms/Button';
-import { Text } from '@components/atoms/Text';
 import type { ActivityOutcome } from './types';
+import { ActivityErrorFallback } from './ActivityErrorFallback';
 
 interface Props {
   children: ReactNode;
@@ -44,16 +43,7 @@ export default class ActivityErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="flex flex-col items-center justify-center gap-4 p-8">
-          <Text variant="body" className="text-error">
-            Bir şeyler ters gitti 😅
-          </Text>
-          <Button variant="primary" size="md" onClick={this.handleSkip}>
-            Devam Et
-          </Button>
-        </div>
-      );
+      return <ActivityErrorFallback onSkip={this.handleSkip} />;
     }
     return this.props.children;
   }

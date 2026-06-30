@@ -18,10 +18,12 @@ import { useChildStore } from '@stores/childStore';
 import { useLessonStore } from '@stores/lessonStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 export default function ReviewScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('lesson');
   const child = useChildStore((s) => s.activeChild);
   const { data: vocabularyCards } = useVocabularyCards(child?.id);
 
@@ -94,12 +96,12 @@ export default function ReviewScreen() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
         <Text variant="h2" align="center">
-          📚 Tekrar
+          {t('review.title')}
         </Text>
         <Text variant="body" align="center" className="text-text-secondary">
-          Henüz tekrar edilecek kelime yok. Önce birkaç ders tamamla!
+          {t('review.emptyMessage')}
         </Text>
-        <Button onClick={() => navigate('/home')}>Ana Sayfaya Dön</Button>
+        <Button onClick={() => navigate('/home')}>{t('review.backHome')}</Button>
       </div>
     );
   }
@@ -109,34 +111,34 @@ export default function ReviewScreen() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
         <Text variant="h2" align="center">
-          📚 Tekrar
+          {t('review.title')}
         </Text>
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-3">
-          <StatCard label="Bugün Tekrar" value={stats.dueToday} emoji="🔔" highlight />
-          <StatCard label="Toplam Kelime" value={stats.totalCards} emoji="📖" />
-          <StatCard label="Öğreniliyor" value={stats.learningCards} emoji="📝" />
-          <StatCard label="Ustalaşılan" value={stats.masteredCards} emoji="⭐" />
+          <StatCard label={t('review.statDueToday')} value={stats.dueToday} emoji="🔔" highlight />
+          <StatCard label={t('review.statTotal')} value={stats.totalCards} emoji="📖" />
+          <StatCard label={t('review.statLearning')} value={stats.learningCards} emoji="📝" />
+          <StatCard label={t('review.statMastered')} value={stats.masteredCards} emoji="⭐" />
         </div>
 
         {stats.dueToday > 0 ? (
           <Button onClick={handleStart} size="lg">
-            🚀 Tekrar Başla ({stats.dueToday} kelime)
+            {t('review.start', { count: stats.dueToday })}
           </Button>
         ) : (
           <div className="text-center">
             <Text variant="body" className="text-green-600">
-              ✅ Bugünlük tekrar tamamlandı!
+              {t('review.doneToday')}
             </Text>
             <Button variant="secondary" onClick={() => navigate('/home')} className="mt-4">
-              Ana Sayfaya Dön
+              {t('review.backHome')}
             </Button>
           </div>
         )}
 
         <Button variant="ghost" onClick={() => navigate('/home')}>
-          ← Geri
+          {t('review.back')}
         </Button>
       </div>
     );
@@ -154,13 +156,13 @@ export default function ReviewScreen() {
           🎉
         </Text>
         <Text variant="h2" align="center">
-          Tekrar Tamamlandı!
+          {t('review.completedTitle')}
         </Text>
         <Text variant="body" align="center" className="text-text-secondary">
-          {correctCount} / {activities.length} doğru
+          {t('review.score', { correct: correctCount, total: activities.length })}
         </Text>
         <div className="flex gap-3">
-          <Button onClick={() => navigate('/home')}>Ana Sayfaya Dön</Button>
+          <Button onClick={() => navigate('/home')}>{t('review.backHome')}</Button>
           <Button
             variant="secondary"
             onClick={() => {
@@ -170,7 +172,7 @@ export default function ReviewScreen() {
               sessionRef.current = null;
             }}
           >
-            Tekrar Et
+            {t('review.retry')}
           </Button>
         </div>
       </motion.div>

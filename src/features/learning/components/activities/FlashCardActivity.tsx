@@ -14,6 +14,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface FlashCardActivityProps extends ActivityCallbacks {
@@ -21,6 +22,7 @@ interface FlashCardActivityProps extends ActivityCallbacks {
 }
 
 export default function FlashCardActivity({ data, onComplete }: FlashCardActivityProps) {
+  const { t } = useTranslation('lesson');
   const [isFlipped, setIsFlipped] = useState(false);
   const [hasSeenBack, setHasSeenBack] = useState(false);
   const startTime = useRef(Date.now());
@@ -67,7 +69,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
     <div className="mx-auto flex w-full max-w-sm flex-col items-center gap-6">
       {/* Instruction */}
       <Text variant="bodySmall" className="text-text-secondary">
-        Kartı çevirmek için dokun 👆
+        {t('activityUI.flashCard.tapToFlip')}
       </Text>
 
       {/* 3D Flip Card */}
@@ -107,7 +109,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
                   e.stopPropagation();
                   speak(data.word);
                 }}
-                aria-label="Dinle"
+                aria-label={t('activityUI.flashCard.wordListenAria')}
               >
                 🔊
               </button>
@@ -117,14 +119,14 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
                   e.stopPropagation();
                   speak(data.word, true);
                 }}
-                aria-label="Yavaş dinle"
+                aria-label={t('activityUI.flashCard.slowListenAria')}
               >
                 🐢
               </button>
             </div>
 
             <Text variant="caption" className="mt-1 text-blue-400">
-              Çevirmek için dokun
+              {t('activityUI.flashCard.flip')}
             </Text>
           </div>
 
@@ -141,7 +143,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
 
             <div className="mt-1 w-full border-t border-green-200 pt-3">
               <Text variant="caption" className="block text-center text-green-500">
-                Örnek Cümle:
+                {t('activityUI.flashCard.example')}
               </Text>
               <Text variant="body" align="center" className="mt-1 font-medium text-green-800">
                 "{data.exampleSentence}"
@@ -157,7 +159,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
                 e.stopPropagation();
                 speak(data.exampleSentence);
               }}
-              aria-label="Cümleyi dinle"
+              aria-label={t('activityUI.flashCard.listenAria')}
             >
               🔊
             </button>
@@ -175,7 +177,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
             className="w-full max-w-xs"
           >
             <Button variant="success" size="lg" fullWidth onClick={handleComplete}>
-              Öğrendim! Devam Et ✨
+              {t('activityUI.flashCard.learned')}
             </Button>
           </motion.div>
         )}

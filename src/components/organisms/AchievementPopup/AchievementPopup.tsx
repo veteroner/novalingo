@@ -11,6 +11,7 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface AchievementPopupProps {
   achievement: AchievementDefinition | null;
@@ -25,14 +26,8 @@ const rarityColors: Record<string, string> = {
   legendary: 'text-nova-orange',
 };
 
-const rarityLabels: Record<string, string> = {
-  common: 'Yaygın',
-  rare: 'Nadir',
-  epic: 'Epik',
-  legendary: 'Efsanevi',
-};
-
 export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPopupProps) {
+  const { t } = useTranslation('common');
   if (!achievement) return null;
 
   return (
@@ -89,7 +84,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
               transition={{ delay: 0.2 }}
             >
               <Text variant="overline" className="text-nova-orange mb-1">
-                🎉 Başarım Açıldı!
+                {t('achievement.title')}
               </Text>
               <Text variant="h3" className="mb-2">
                 {achievement.name}
@@ -112,7 +107,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
                   rarityColors[achievement.rarity],
                 )}
               >
-                ✦ {rarityLabels[achievement.rarity]} ✦
+                ✦ {t(`achievement.rarity.${achievement.rarity}`)} ✦
               </span>
             </motion.div>
 

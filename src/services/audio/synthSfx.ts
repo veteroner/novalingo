@@ -333,7 +333,7 @@ const sfxGenerators: Record<SfxName, () => void> = {
 export function playSfx(name: SfxName): void {
   if (muted) return;
   const gen = sfxGenerators[name];
-  if (gen) gen();
+  gen();
 }
 
 /** Set master volume (0–1) */

@@ -12,6 +12,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface MatchPairsActivityProps extends ActivityCallbacks {
@@ -26,6 +27,7 @@ interface PairState {
 }
 
 export default function MatchPairsActivity({ data, onComplete }: MatchPairsActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const wrongAttempts = useRef(0);
   const matchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -149,9 +151,9 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-5">
       {/* Title */}
       <div className="text-center">
-        <Text variant="h3">🔗 Eşleştir</Text>
+        <Text variant="h3">{t('activityUI.matchPairs.title')}</Text>
         <Text variant="bodySmall" className="text-text-secondary">
-          İngilizce kelimeyi Türkçe karşılığıyla eşleştir
+          {t('activityUI.matchPairs.subtitle')}
         </Text>
       </div>
 
@@ -210,7 +212,7 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
         {/* Right column — Turkish */}
         <div className="flex flex-1 flex-col gap-3">
           <Text variant="caption" weight="bold" className="text-center text-orange-500">
-            Türkçe 🇹🇷
+            {t('activityUI.matchPairs.turkish')}
           </Text>
           <AnimatePresence>
             {shuffledRight.map((item) => (

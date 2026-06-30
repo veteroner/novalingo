@@ -3,7 +3,7 @@ import type { World } from '@/types/content';
 import type { LessonProgress } from '@/types/progress';
 import type { User } from '@/types/user';
 
-function toMillis(value: LessonProgress['completedAt']): number {
+function toMillis(value: LessonProgress['completedAt'] | undefined): number {
   if (typeof value?.toMillis === 'function') return value.toMillis();
   return Date.now();
 }
@@ -21,7 +21,7 @@ export function isWorldPremiumLocked(
   user: User | null | undefined,
   world: Pick<World, 'isPremium'>,
 ): boolean {
-  return Boolean(world.isPremium) && !isPremiumUser(user);
+  return world.isPremium && !isPremiumUser(user);
 }
 
 export function getLessonsCompletedToday(progress: LessonProgress[] | undefined): number {

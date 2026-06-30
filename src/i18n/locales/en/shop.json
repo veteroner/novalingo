@@ -29,5 +29,62 @@
     "hintBoostDesc": "5 extra hint uses",
     "timeBoost": "Time Extend",
     "timeBoostDesc": "Lesson time +30 seconds"
+  },
+
+  "screen": {
+    "title": "🛒 Shop",
+    "emptyTitle": "No items in this category yet",
+    "emptyDesc": "Complete lessons and earn stars — new items will unlock!",
+    "buy": "Buy",
+    "insufficient": "Not enough",
+    "buying": "...",
+    "purchaseSuccessTitle": "Purchased! 🎉",
+    "purchaseSuccessMessage": "{{name}} was added to your collection.",
+    "insufficientTitle": "Insufficient balance",
+    "purchaseFailTitle": "Purchase failed",
+    "purchaseFailMessage": "Something went wrong, please try again.",
+    "insufficientFunds": "Not enough {{currency}} for {{name}}.",
+    "gems": "gems",
+    "stars": "stars"
+  },
+
+  "screenCategories": {
+    "avatars": "Avatar",
+    "themes": "Theme",
+    "boosters": "Booster",
+    "frames": "Frame",
+    "effects": "Effect",
+    "nova": "Nova"
+  },
+
+  "items": {
+    "avatar_fox": "Fox",
+    "avatar_panda": "Panda",
+    "avatar_unicorn": "Unicorn",
+    "avatar_dragon": "Dragon",
+    "avatar_astronaut": "Astronaut",
+    "avatar_robot": "Robot",
+    "theme_ocean": "Ocean",
+    "theme_space": "Space",
+    "theme_forest": "Forest",
+    "theme_candy": "Candy",
+    "boost_2x_xp": "2x XP (1 hour)",
+    "boost_streak_freeze": "Streak Protector",
+    "boost_hint_pack": "Hint Pack (10x)",
+    "boost_star_doubler": "Star 2x (1 day)",
+    "frame_gold": "Gold Frame",
+    "frame_rainbow": "Rainbow",
+    "frame_star": "Star Frame",
+    "frame_crown": "Crown Frame",
+    "effect_sparkle": "Sparkle",
+    "effect_confetti": "Confetti",
+    "effect_fireworks": "Fireworks",
+    "effect_hearts": "Hearts",
+    "nova_hat_wizard": "Wizard Hat",
+    "nova_hat_crown": "King's Crown",
+    "nova_cape_red": "Red Cape",
+    "nova_glasses": "Sunglasses",
+    "nova_wings": "Angel Wings",
+    "nova_scarf": "Scarf"
   }
 }

@@ -24,6 +24,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface StoryTimeActivityProps extends ActivityCallbacks {
@@ -54,6 +55,7 @@ function cleanWord(word: string): string {
 }
 
 export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const completionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ambientRef = useRef<HTMLAudioElement | null>(null);
@@ -108,7 +110,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
   const choiceData = useMemo(() => {
     if (page?.interactionType !== 'choice' || !page.interactionData) return null;
     return {
-      question: (page.interactionData.question as string) ?? '',
+      question: (page.interactionData.question as string | undefined) ?? '',
       options: (page.interactionData.options ?? []) as Array<{
         label: string;
         emoji?: string;
@@ -213,7 +215,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
         setDragFeedback('wrong');
       }
       setDraggedWord(null);
-      setTimeout(() => setDragFeedback(null), 600);
+      setTimeout(() => {
+        setDragFeedback(null);
+      }, 600);
     },
     [draggedWord],
   );
@@ -313,12 +317,12 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
     (isRhyme ? '🎶' : isChain ? '🔗' : isPicture ? '🖼️' : '📖');
 
   const storyLabel = isRhyme
-    ? 'KAFİYE HİKAYESİ'
+    ? t('activityUI.storyTime.modeRhyme')
     : isChain
-      ? 'ZİNCİR HİKAYE'
+      ? t('activityUI.storyTime.modeChain')
       : isPicture
-        ? 'RESİM HİKAYESİ'
-        : 'HİKAYE ZAMANI';
+        ? t('activityUI.storyTime.modePicture')
+        : t('activityUI.storyTime.modeDefault');
 
   // ── Blank counter for tap-reveal ──
   let blankIdx = -1;
@@ -413,7 +417,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                               : 'text-gray-700'
                       }`}
                       whileTap={{ scale: 1.15 }}
-                      onClick={() => handleWordTap(word)}
+                      onClick={() => {
+                        handleWordTap(word);
+                      }}
                     >
                       {word}
                     </motion.span>
@@ -442,7 +448,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                             : 'border-2 border-dashed border-purple-300 bg-purple-50 text-purple-400'
                         }`}
                         whileTap={{ scale: 1.1 }}
-                        onClick={() => handleTapReveal(currentBlankIdx)}
+                        onClick={() => {
+                          handleTapReveal(currentBlankIdx);
+                        }}
                         animate={revealed ? { scale: [1, 1.2, 1] } : {}}
                         transition={{ duration: 0.3 }}
                       >
@@ -481,8 +489,12 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                               ? 'border-green-400 bg-green-100 text-green-700'
                               : 'border-dashed border-orange-300 bg-orange-50 text-orange-400'
                           }`}
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={() => handleDropOnBlank(currentBlankIdx, blankDef.answer)}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                          }}
+                          onDrop={() => {
+                            handleDropOnBlank(currentBlankIdx, blankDef.answer);
+                          }}
                           animate={
                             dragFeedback === 'wrong' && !filled ? { x: [-4, 4, -4, 4, 0] } : {}
                           }
@@ -509,8 +521,12 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                       <motion.span
                         key={opt}
                         draggable
-                        onDragStart={() => setDraggedWord(opt)}
-                        onTouchStart={() => setDraggedWord(opt)}
+                        onDragStart={() => {
+                          setDraggedWord(opt);
+                        }}
+                        onTouchStart={() => {
+                          setDraggedWord(opt);
+                        }}
                         className="cursor-grab rounded-xl bg-purple-100 px-4 py-2 text-base font-bold text-purple-700 shadow-sm active:cursor-grabbing"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -555,7 +571,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                                 : 'bg-white text-gray-700 shadow-sm'
                           }`}
                           whileTap={!choiceMade ? { scale: 0.97 } : {}}
-                          onClick={() => !choiceMade && handleChoice(opt.label)}
+                          onClick={() => {
+                            if (!choiceMade) handleChoice(opt.label);
+                          }}
                           disabled={!!choiceMade}
                         >
                           {opt.emoji && <span className="mr-2">{opt.emoji}</span>}
@@ -587,7 +605,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                   | { options: string[]; promptText?: string }
                   | null
                   | undefined;
-                if (!wsData?.options?.length) return null;
+                if (!wsData?.options.length) return null;
                 return (
                   <div className="space-y-3">
                     <div className="flex flex-wrap gap-1 leading-relaxed">
@@ -612,7 +630,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                         weight="bold"
                         className="mb-3 text-center text-teal-700"
                       >
-                        {wsData.promptText ?? 'Bir kelime seç!'}
+                        {wsData.promptText ?? t('activityUI.storyTime.pickWord')}
                       </Text>
                       <div className="flex flex-wrap justify-center gap-2">
                         {wsData.options.map((opt) => {
@@ -628,7 +646,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                                     : 'bg-white text-teal-700 shadow-sm'
                               }`}
                               whileTap={!selectedWord ? { scale: 0.95 } : {}}
-                              onClick={() => !selectedWord && handleWordSelect(opt)}
+                              onClick={() => {
+                                if (!selectedWord) handleWordSelect(opt);
+                              }}
                               disabled={!!selectedWord}
                             >
                               {opt}
@@ -643,7 +663,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                           className="mt-3 text-center"
                         >
                           <Text variant="bodySmall" className="text-teal-700">
-                            ✅ &ldquo;{selectedWord}&rdquo; seçtin — harika!
+                            {t('activityUI.storyTime.wordPicked', { word: selectedWord })}
                           </Text>
                         </motion.div>
                       )}
@@ -662,7 +682,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                 return (
                   <div className="space-y-4">
                     <Text variant="body" className="text-center text-gray-700">
-                      {siData?.prompt ?? 'Resimde ne görüyorsun? Anlatabilir misin?'}
+                      {siData?.prompt ?? t('activityUI.storyTime.picturePrompt')}
                     </Text>
                     {siData?.targetWords && siData.targetWords.length > 0 && (
                       <div className="flex flex-wrap justify-center gap-1">
@@ -694,10 +714,10 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                         </span>
                         <Text variant="bodySmall" weight="bold">
                           {speakItDone
-                            ? 'Harika anlattın!'
+                            ? t('activityUI.storyTime.toldGreat')
                             : isSpeaking
-                              ? 'Dinliyorum...'
-                              : 'Konuş!'}
+                              ? t('activityUI.storyTime.listening')
+                              : t('activityUI.storyTime.speak')}
                         </Text>
                       </motion.button>
                     </div>
@@ -722,7 +742,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
               whileTap={{ scale: 0.95 }}
               onClick={handlePrev}
             >
-              ← Geri
+              {t('activityUI.storyTime.back')}
             </motion.button>
           )}
           <motion.button
@@ -732,10 +752,14 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                 : 'bg-purple-500 text-white'
             } ${!isInteractionComplete ? 'opacity-50' : ''}`}
             whileTap={isInteractionComplete ? { scale: 0.95 } : {}}
-            onClick={() => isInteractionComplete && handleNext()}
+            onClick={() => {
+              if (isInteractionComplete) handleNext();
+            }}
             disabled={!isInteractionComplete}
           >
-            {currentPage === totalPages - 1 ? '✨ Bitir' : 'İleri →'}
+            {currentPage === totalPages - 1
+              ? t('activityUI.storyTime.finish')
+              : t('activityUI.storyTime.next')}
           </motion.button>
         </div>
       )}
@@ -753,15 +777,18 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
             </div>
             <Text variant="h3" className="text-purple-600">
               {isRhyme
-                ? 'Kafiye Bitti!'
+                ? t('activityUI.storyTime.rhymeComplete')
                 : isChain
-                  ? 'Zincir Tamamlandı!'
+                  ? t('activityUI.storyTime.chainComplete')
                   : isPicture
-                    ? 'Harika Anlattın!'
-                    : 'Hikaye Tamamlandı!'}
+                    ? t('activityUI.storyTime.toldGreatTitle')
+                    : t('activityUI.storyTime.storyComplete')}
             </Text>
             <Text variant="body" className="text-gray-500">
-              {totalTapped} / {totalHighlights} kelime keşfettin
+              {t('activityUI.storyTime.wordsDiscovered', {
+                tapped: totalTapped,
+                total: totalHighlights,
+              })}
             </Text>
           </motion.div>
         )}

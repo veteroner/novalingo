@@ -13,6 +13,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface WordBuilderActivityProps extends ActivityCallbacks {
@@ -26,6 +27,7 @@ interface LetterTile {
 }
 
 export default function WordBuilderActivity({ data, onComplete }: WordBuilderActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const [hintsUsed, setHintsUsed] = useState(0);
   const completionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -182,7 +184,7 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-5">
       {/* Title */}
       <Text variant="h3" align="center">
-        🔤 Kelimeyi Oluştur
+        {t('activityUI.wordBuilder.title')}
       </Text>
 
       {/* Word display: emoji + audio */}
@@ -268,10 +270,10 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
           onClick={handleUndo}
           disabled={placedTileIds.length === 0 || isComplete}
         >
-          ↩ Geri Al
+          {t('activityUI.wordBuilder.undo')}
         </Button>
         <Button variant="secondary" size="sm" onClick={handleHint} disabled={isComplete}>
-          💡 İpucu
+          {t('activityUI.wordBuilder.hint')}
         </Button>
       </div>
 
@@ -284,7 +286,7 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
             className="rounded-2xl bg-green-100 px-6 py-3 text-center"
           >
             <Text variant="h3" className="text-green-700">
-              ✨ Mükemmel!
+              {t('activityUI.wordBuilder.perfect')}
             </Text>
             <Text variant="body" className="text-green-600">
               {data.word} = {data.translation}

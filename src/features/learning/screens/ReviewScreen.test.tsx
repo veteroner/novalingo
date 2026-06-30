@@ -76,7 +76,8 @@ describe('ReviewScreen', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /Tekrar Başla/i }));
+    // react-i18next is mocked (t returns the key) — see src/test/setup.ts
+    fireEvent.click(screen.getByRole('button', { name: /review\.start/i }));
 
     expect(useLessonStore.getState().isActive).toBe(true);
     expect(useLessonStore.getState().lessonId).toBe('review');

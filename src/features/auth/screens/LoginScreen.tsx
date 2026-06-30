@@ -13,10 +13,12 @@ import { signInAnonymousUser, signInWithApple, signInWithGoogle } from '@service
 import { useAuthStore } from '@stores/authStore';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
   const setLoading = useAuthStore((s) => s.setLoading);
   const setError = useAuthStore((s) => s.setError);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -29,12 +31,12 @@ export default function LoginScreen() {
       await signInWithGoogle();
       void navigate('/onboarding');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Giriş başarısız');
+      setError(err instanceof Error ? err.message : t('login.error'));
     } finally {
       setIsLoggingIn(false);
       setLoading(false);
     }
-  }, [navigate, setLoading, setError]);
+  }, [navigate, setLoading, setError, t]);
 
   const handleAppleLogin = useCallback(async () => {
     try {
@@ -43,12 +45,12 @@ export default function LoginScreen() {
       await signInWithApple();
       void navigate('/onboarding');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Giriş başarısız');
+      setError(err instanceof Error ? err.message : t('login.error'));
     } finally {
       setIsLoggingIn(false);
       setLoading(false);
     }
-  }, [navigate, setLoading, setError]);
+  }, [navigate, setLoading, setError, t]);
 
   const handleAnonymousLogin = useCallback(async () => {
     try {
@@ -57,12 +59,12 @@ export default function LoginScreen() {
       await signInAnonymousUser();
       void navigate('/onboarding');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Giriş başarısız');
+      setError(err instanceof Error ? err.message : t('login.error'));
     } finally {
       setIsLoggingIn(false);
       setLoading(false);
     }
-  }, [navigate, setLoading, setError]);
+  }, [navigate, setLoading, setError, t]);
 
   return (
     <div className="from-nova-sky flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
@@ -84,7 +86,7 @@ export default function LoginScreen() {
           NovaLingo
         </Text>
         <Text variant="body" align="center" className="text-text-secondary mt-2">
-          İngilizce öğrenmenin en eğlenceli yolu!
+          {t('login.tagline')}
         </Text>
       </motion.div>
 
@@ -109,7 +111,7 @@ export default function LoginScreen() {
               icon={<span>🔵</span>}
               disabled={!kvkkAccepted}
             >
-              Google ile Giriş Yap
+              {t('login.withGoogle')}
             </Button>
 
             <Button
@@ -120,7 +122,7 @@ export default function LoginScreen() {
               icon={<span>🍎</span>}
               disabled={!kvkkAccepted}
             >
-              Apple ile Giriş Yap
+              {t('login.withApple')}
             </Button>
 
             <div className="relative py-4">
@@ -129,7 +131,7 @@ export default function LoginScreen() {
               </div>
               <div className="relative flex justify-center">
                 <Text variant="caption" className="text-text-secondary bg-white px-4">
-                  veya
+                  {t('login.or')}
                 </Text>
               </div>
             </div>
@@ -141,7 +143,7 @@ export default function LoginScreen() {
               onClick={handleAnonymousLogin}
               disabled={!kvkkAccepted}
             >
-              Hemen Başla (Kayıtsız)
+              {t('login.asGuest')}
             </Button>
 
             <label className="mt-4 flex cursor-pointer items-start gap-3 text-left">
@@ -154,18 +156,30 @@ export default function LoginScreen() {
                 className="accent-nova-blue mt-1 h-5 w-5 shrink-0 rounded"
               />
               <Text variant="caption" className="text-text-tertiary">
-                <Link to="/legal/terms" className="text-text-secondary font-medium underline">
-                  Kullanım Koşulları
-                </Link>
-                ,{' '}
-                <Link to="/legal/privacy" className="text-text-secondary font-medium underline">
-                  Gizlilik Politikası
-                </Link>{' '}
-                ve{' '}
-                <Link to="/legal/privacy" className="text-text-secondary font-medium underline">
-                  KVKK Aydınlatma Metni
-                </Link>
-                &#39;ni okudum ve kabul ediyorum.
+                <Trans
+                  i18nKey="login.consent"
+                  ns="auth"
+                  components={{
+                    terms: (
+                      <Link
+                        to="/legal/terms"
+                        className="text-text-secondary font-medium underline"
+                      />
+                    ),
+                    privacy: (
+                      <Link
+                        to="/legal/privacy"
+                        className="text-text-secondary font-medium underline"
+                      />
+                    ),
+                    kvkk: (
+                      <Link
+                        to="/legal/privacy"
+                        className="text-text-secondary font-medium underline"
+                      />
+                    ),
+                  }}
+                />
               </Text>
             </label>
           </>

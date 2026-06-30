@@ -1,0 +1,87 @@
+{
+  "profile": {
+    "level": "Level {{level}}",
+    "quickSettings": "⚙️ Quick Settings",
+    "streakFreeze": "🔥 Streak Freeze",
+    "stats": {
+      "completedLessons": "Lessons Completed",
+      "totalTime": "Total Time (min)",
+      "longestStreak": "Longest Streak",
+      "totalXP": "Total XP"
+    },
+    "menu": {
+      "achievements": "🏆 Achievements",
+      "collection": "📦 Collection",
+      "shop": "🛒 Shop",
+      "leaderboard": "📊 Leaderboard",
+      "parent": "👨‍👩‍👧 Parent Panel"
+    },
+    "stage": {
+      "egg": "Egg",
+      "baby": "Baby Nova",
+      "child": "Child Nova",
+      "teen": "Teen Nova",
+      "adult": "Adult Nova",
+      "legendary": "Legendary Nova"
+    },
+    "nextStage": "Next: {{name}} · {{xp}} XP left",
+    "maxStage": "✦ Maximum Stage ✦"
+  },
+  "quests": {
+    "title": "⚔️ Daily Quests",
+    "subtitle": "New quests await you every day!",
+    "dailyProgress": "Daily Progress",
+    "allComplete": "🎉 All quests complete! You earned a bonus reward!",
+    "empty": "No quests yet",
+    "comingSoon": "Daily quests are coming soon!",
+    "nextIn": "New quests in: {{time}}",
+    "rewardErrorTitle": "Reward failed",
+    "rewardErrorMessage": "Something went wrong, please try again."
+  },
+  "collection": {
+    "title": "📦 Collection",
+    "collected": "{{collected}}/{{total}} items collected",
+    "empty": "No collectibles yet",
+    "emptyDesc": "Complete lessons to earn collectible pieces!",
+    "itemDescription": "{{name}} was added to your collection. Complete lessons and quests to unlock more items.",
+    "itemFact": "A special piece from the {{category}} category.",
+    "fallbackCategory": "Collection",
+    "categories": {
+      "animals": "Animals",
+      "flags": "Flags",
+      "stickers": "Stickers",
+      "characters": "Characters",
+      "landmarks": "Landmarks",
+      "foods": "Foods",
+      "vehicles": "Vehicles"
+    }
+  },
+  "achievements": {
+    "title": "🏆 Achievements",
+    "unlockedCount": "{{unlocked}}/{{total}} achievements unlocked",
+    "empty": "No achievements yet",
+    "emptyDesc": "Complete lessons to earn achievements!",
+    "filter": {
+      "all": "All",
+      "learning": "📚 Learning",
+      "streak": "🔥 Streak",
+      "collection": "📦 Collecting",
+      "social": "🤝 Social",
+      "special": "⭐ Special"
+    }
+  },
+  "event": {
+    "notFound": "Event not found",
+    "back": "Back",
+    "congrats": "Congratulations!",
+    "daysLeft": "{{count}} days left",
+    "soon": "Soon",
+    "rewardCount": "{{count}} Rewards",
+    "progress": "Progress",
+    "limitedRewards": "🎁 Limited-Time Rewards",
+    "wordsToLearn": "🔤 Words to Learn",
+    "allComplete": "You completed all lessons in this event!",
+    "completed": "Completed!",
+    "upcoming": "Coming soon: {{name}}"
+  }
+}

@@ -570,7 +570,9 @@ export function getRandomCollectible(excludeIds?: Set<string>): CatalogCollectib
     if (roll <= 0) return item;
   }
 
-  return pool[pool.length - 1]!;
+  const last = pool[pool.length - 1];
+  if (!last) throw new Error('collectible pool is empty');
+  return last;
 }
 
 /** Get a guaranteed rare+ collectible (for boss lessons) */
@@ -586,5 +588,7 @@ export function getRandomRareCollectible(excludeIds?: Set<string>): CatalogColle
       (c) => c.rarity === 'rare' || c.rarity === 'epic' || c.rarity === 'legendary',
     );
   }
-  return pool[Math.floor(Math.random() * pool.length)]!;
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  if (!picked) throw new Error('rare collectible pool is empty');
+  return picked;
 }

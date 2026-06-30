@@ -11,44 +11,21 @@ import { Text } from '@components/atoms/Text';
 import { ParentalGate } from '@components/organisms/ParentalGate';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-interface OnboardingPage {
-  title: string;
-  description: string;
-  emoji: string;
-}
-
-const pages: OnboardingPage[] = [
-  {
-    title: 'Merhaba! Ben Nova 🦉',
-    description: 'İngilizce öğrenme macerana hoş geldin! Seninle birlikte öğreneceğim.',
-    emoji: '👋',
-  },
-  {
-    title: 'Oyun Gibi Öğren',
-    description: 'Her derste XP kazan, seviye atla ve harika ödüller topla!',
-    emoji: '🎮',
-  },
-  {
-    title: 'Her Gün Biraz',
-    description: 'Günde sadece 10 dakika ile İngilizce konuşmaya başla!',
-    emoji: '⏰',
-  },
-  {
-    title: 'Hazır mısın?',
-    description: 'Profilini oluşturalım ve maceraya başlayalım!',
-    emoji: '🚀',
-  },
-];
+// Sayfa görselleri sabit; başlık/açıklama metinleri i18n'den gelir (auth.onboarding.pageN*).
+const pageEmojis = ['👋', '🎮', '⏰', '🚀'];
+const PAGE_COUNT = pageEmojis.length;
 
 export default function OnboardingScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
   const [currentPage, setCurrentPage] = useState(0);
   const [showParentalGate, setShowParentalGate] = useState(false);
 
   const handleNext = useCallback(() => {
-    if (currentPage < pages.length - 1) {
+    if (currentPage < PAGE_COUNT - 1) {
       setCurrentPage((p) => p + 1);
     } else {
       // Son sayfada ebeveyn kapısını göster
@@ -68,20 +45,21 @@ export default function OnboardingScreen() {
     setShowParentalGate(false);
   }, []);
 
-  const page = pages[currentPage];
-  if (!page) return null;
+  const emoji = pageEmojis[currentPage];
+  if (!emoji) return null;
+  const pageNum = currentPage + 1;
 
   return (
     <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col bg-linear-to-b to-white">
       {/* Progress */}
       <div className="px-6 pt-4">
-        <ProgressBar value={(currentPage + 1) / pages.length} variant="lesson" size="xs" />
+        <ProgressBar value={(currentPage + 1) / PAGE_COUNT} variant="lesson" size="xs" />
       </div>
 
       {/* Skip */}
       <div className="flex justify-end px-6 pt-2">
         <button onClick={handleSkip} className="text-text-secondary text-sm font-semibold">
-          Atla
+          {t('onboarding.skip')}
         </button>
       </div>
 
@@ -101,15 +79,15 @@ export default function OnboardingScreen() {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              {page.emoji}
+              {emoji}
             </motion.div>
 
             <Text variant="h2" align="center" className="mb-3">
-              {page.title}
+              {t(`onboarding.page${pageNum}Title`)}
             </Text>
 
             <Text variant="body" align="center" className="text-text-secondary mx-auto max-w-xs">
-              {page.description}
+              {t(`onboarding.page${pageNum}Desc`)}
             </Text>
           </motion.div>
         </AnimatePresence>
@@ -119,7 +97,7 @@ export default function OnboardingScreen() {
       <div className="space-y-3 px-6 pb-8">
         {/* Dots */}
         <div className="flex justify-center gap-2">
-          {pages.map((_, i) => (
+          {pageEmojis.map((_, i) => (
             <motion.div
               key={i}
               className="h-2 rounded-full"
@@ -133,7 +111,7 @@ export default function OnboardingScreen() {
         </div>
 
         <Button variant="primary" size="xl" fullWidth onClick={handleNext}>
-          {currentPage < pages.length - 1 ? 'Devam Et' : 'Başlayalım! 🚀'}
+          {currentPage < PAGE_COUNT - 1 ? t('onboarding.next') : t('onboarding.start')}
         </Button>
       </div>
 

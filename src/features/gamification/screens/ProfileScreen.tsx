@@ -19,20 +19,22 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProfileScreen() {
   const child = useChildStore((s) => s.activeChild);
   const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
+  const { t } = useTranslation('gamification');
 
   if (!child) return null;
 
   const stats = [
-    { label: 'Tamamlanan Ders', value: child.completedLessons, emoji: '📚' },
-    { label: 'Toplam Süre (dk)', value: child.totalPlayTimeMinutes, emoji: '📝' },
-    { label: 'En Uzun Seri', value: child.longestStreak, emoji: '🔥' },
-    { label: 'Toplam XP', value: child.totalXP, emoji: '⚡' },
+    { label: t('profile.stats.completedLessons'), value: child.completedLessons, emoji: '📚' },
+    { label: t('profile.stats.totalTime'), value: child.totalPlayTimeMinutes, emoji: '📝' },
+    { label: t('profile.stats.longestStreak'), value: child.longestStreak, emoji: '🔥' },
+    { label: t('profile.stats.totalXP'), value: child.totalXP, emoji: '⚡' },
   ];
 
   return (
@@ -49,7 +51,7 @@ export default function ProfileScreen() {
             {child.name}
           </Text>
           <Badge variant="level" size="lg" className="mt-1">
-            Seviye {child.level}
+            {t('profile.level', { level: child.level })}
           </Badge>
         </motion.div>
 
@@ -99,7 +101,7 @@ export default function ProfileScreen() {
           >
             <div className="flex items-center justify-between">
               <Text variant="body" weight="semibold">
-                ⚙️ Hızlı Ayarlar
+                {t('profile.quickSettings')}
               </Text>
               <span className="text-gray-400">→</span>
             </div>
@@ -115,21 +117,21 @@ export default function ProfileScreen() {
           >
             <div className="flex items-center justify-between">
               <Text variant="body" weight="semibold">
-                🔥 Seri Koruma
+                {t('profile.streakFreeze')}
               </Text>
               <span className="text-gray-400">→</span>
             </div>
           </Card>
 
           {[
-            { label: '🏆 Başarımlar', path: '/achievements' },
-            { label: '📦 Koleksiyon', path: '/collection' },
-            { label: '🛒 Mağaza', path: '/shop' },
-            { label: '📊 Liderlik', path: '/leaderboard' },
-            { label: '👨‍👩‍👧 Ebeveyn Paneli', path: '/parent' },
+            { label: t('profile.menu.achievements'), path: '/achievements' },
+            { label: t('profile.menu.collection'), path: '/collection' },
+            { label: t('profile.menu.shop'), path: '/shop' },
+            { label: t('profile.menu.leaderboard'), path: '/leaderboard' },
+            { label: t('profile.menu.parent'), path: '/parent' },
           ].map((link) => (
             <Card
-              key={link.label}
+              key={link.path}
               variant="outlined"
               pressable
               padding="sm"
@@ -151,15 +153,6 @@ export default function ProfileScreen() {
 
 // ===== Nova Stage Card =====
 
-const STAGE_LABELS_TR: Record<NovaStage, string> = {
-  egg: 'Yumurta',
-  baby: 'Bebek Nova',
-  child: 'Çocuk Nova',
-  teen: 'Genç Nova',
-  adult: 'Yetişkin Nova',
-  legendary: 'Efsanevi Nova',
-};
-
 function NovaStageCard({
   stage,
   totalXP,
@@ -169,13 +162,14 @@ function NovaStageCard({
   totalXP: number;
   happiness: number;
 }) {
+  const { t } = useTranslation('gamification');
   const stageProgress = useMemo(() => {
     const currentIdx = NOVA_STAGES.findIndex((s) => s.stage === stage);
     const currentThreshold = NOVA_STAGES[currentIdx];
     const nextThreshold = NOVA_STAGES[currentIdx + 1];
 
     if (!nextThreshold || !currentThreshold) {
-      return { progress: 1, xpToNext: 0, nextStageName: null };
+      return { progress: 1, xpToNext: 0, nextStageKey: null as NovaStage | null };
     }
 
     const rangeXP = nextThreshold.minXP - currentThreshold.minXP;
@@ -184,7 +178,7 @@ function NovaStageCard({
     return {
       progress: Math.min(progressXP / rangeXP, 1),
       xpToNext: nextThreshold.minXP - totalXP,
-      nextStageName: STAGE_LABELS_TR[nextThreshold.stage],
+      nextStageKey: nextThreshold.stage,
     };
   }, [stage, totalXP]);
 
@@ -197,7 +191,7 @@ function NovaStageCard({
         <div className="w-full">
           <div className="flex items-center gap-2">
             <Text variant="body" weight="bold" style={{ color: config.bodyColor }}>
-              {STAGE_LABELS_TR[stage]}
+              {t(`profile.stage.${stage}`)}
             </Text>
             <Text variant="caption" className="text-text-secondary">
               😊 {happiness}%
@@ -205,16 +199,19 @@ function NovaStageCard({
           </div>
 
           {/* Progress to next stage */}
-          {stageProgress.nextStageName ? (
+          {stageProgress.nextStageKey ? (
             <>
               <ProgressBar value={stageProgress.progress} variant="xp" size="xs" className="mt-1" />
               <Text variant="caption" className="text-text-secondary mt-0.5">
-                Sonraki: {stageProgress.nextStageName} · {stageProgress.xpToNext} XP kaldı
+                {t('profile.nextStage', {
+                  name: t(`profile.stage.${stageProgress.nextStageKey}`),
+                  xp: stageProgress.xpToNext,
+                })}
               </Text>
             </>
           ) : (
             <Text variant="caption" className="text-nova-orange mt-1 font-semibold">
-              ✦ Maksimum Aşama ✦
+              {t('profile.maxStage')}
             </Text>
           )}
         </div>

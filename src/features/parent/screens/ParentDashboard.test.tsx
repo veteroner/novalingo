@@ -189,7 +189,7 @@ async function unlockDashboard() {
   fireEvent.click(screen.getByRole('button', { name: '3' }));
   fireEvent.click(screen.getByRole('button', { name: '4' }));
 
-  await screen.findByText('🧭 Konuşma Temaları');
+  await screen.findByText('dashboard.themesTitle');
 }
 
 describe('ParentDashboard', () => {
@@ -210,12 +210,13 @@ describe('ParentDashboard', () => {
   it('renders conversation analytics blocks including the recommended repeat theme', async () => {
     await unlockDashboard();
 
-    expect(screen.getByText('🎙️ Son Konuşma Oturumları')).toBeInTheDocument();
-    expect(screen.getByText('Güçlü giden temalar')).toBeInTheDocument();
-    expect(screen.getByText('Biraz daha destek isteyen temalar')).toBeInTheDocument();
-    expect(screen.getByText('Tekrar için önerilen tema: clothes')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.sessionsTitle')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.strongThemes')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.supportThemes')).toBeInTheDocument();
+    // recommendedTheme is interpolated; the i18n mock returns the bare key (ignores options).
+    expect(screen.getByText('dashboard.recommendedTheme')).toBeInTheDocument();
     expect(screen.getByText(/Bu temada oturum başına ortalama 1.2 ipucu/)).toBeInTheDocument();
-    expect(screen.getByText('Tema bazlı gerçek cümle örnekleri')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.themeExamples')).toBeInTheDocument();
     expect(screen.getAllByText('coat').length).toBeGreaterThan(0);
     expect(screen.getAllByText('boots').length).toBeGreaterThan(0);
     expect(screen.getByText('I wear my blue coat • boots for rain')).toBeInTheDocument();
@@ -225,7 +226,7 @@ describe('ParentDashboard', () => {
   it('starts a conversation directly from the recommended theme CTA', async () => {
     await unlockDashboard();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Bu temayla konuşmayı başlat' }));
+    fireEvent.click(screen.getByRole('button', { name: 'dashboard.startThemeConversation' }));
 
     expect(navigateMock).toHaveBeenCalledWith('/conversation?theme=clothes');
   });
@@ -240,6 +241,6 @@ describe('ParentDashboard', () => {
     fireEvent.click(screen.getByRole('button', { name: '3' }));
     fireEvent.click(screen.getByRole('button', { name: '4' }));
 
-    expect(await screen.findByText(/Detaylı Raporlar Plus/)).toBeInTheDocument();
+    expect(await screen.findByText('dashboard.lockedTitle')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,13 @@
-import { ArrowLeft, CalendarDots, CheckCircle, Gift, Lock, Sparkle } from '@phosphor-icons/react';
+import {
+  ArrowLeftIcon as ArrowLeft,
+  CalendarDotsIcon as CalendarDots,
+  CheckCircleIcon as CheckCircle,
+  GiftIcon as Gift,
+  LockIcon as Lock,
+  SparkleIcon as Sparkle,
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SEASONAL_EVENTS } from '@/features/gamification/data/seasonalEvents';
@@ -9,6 +17,7 @@ import type { SeasonalCollectible, SeasonalLesson } from '@/types/gamification';
 export default function SeasonalEventScreen() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation('gamification');
   const { activeEvent, daysRemaining, progress, lessonsCompleted, totalLessons, isEventComplete } =
     useSeasonalEvent();
 
@@ -16,7 +25,7 @@ export default function SeasonalEventScreen() {
   if (!event) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">Etkinlik bulunamadı</p>
+        <p className="text-gray-500">{t('event.notFound')}</p>
       </div>
     );
   }
@@ -39,7 +48,7 @@ export default function SeasonalEventScreen() {
           className="mb-4 flex items-center gap-1 text-white/80 hover:text-white"
         >
           <ArrowLeft className="h-5 w-5" />
-          <span className="text-sm">Geri</span>
+          <span className="text-sm">{t('event.back')}</span>
         </button>
 
         <div className="flex items-center gap-3">
@@ -54,7 +63,7 @@ export default function SeasonalEventScreen() {
         <div className="mt-4 flex gap-4">
           <div className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white">
             <CalendarDots className="h-4 w-4" />
-            {isActive ? `${daysRemaining} gün kaldı` : 'Yakında'}
+            {isActive ? t('event.daysLeft', { count: daysRemaining }) : t('event.soon')}
           </div>
           <div className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white">
             <Sparkle className="h-4 w-4" />
@@ -62,7 +71,7 @@ export default function SeasonalEventScreen() {
           </div>
           <div className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white">
             <Gift className="h-4 w-4" />
-            {event.collectibles.length} Ödül
+            {t('event.rewardCount', { count: event.collectibles.length })}
           </div>
         </div>
 
@@ -70,7 +79,7 @@ export default function SeasonalEventScreen() {
         {isActive && (
           <div className="mt-4">
             <div className="mb-1 flex justify-between text-xs text-white/70">
-              <span>İlerleme</span>
+              <span>{t('event.progress')}</span>
               <span>
                 {lessonsCompleted}/{totalLessons}
               </span>
@@ -109,7 +118,7 @@ export default function SeasonalEventScreen() {
 
         {/* Collectibles */}
         <h2 className="mt-8 mb-3 text-lg font-bold text-gray-800 dark:text-gray-100">
-          🎁 Sınırlı Süreli Ödüller
+          {t('event.limitedRewards')}
         </h2>
         <div className="grid grid-cols-3 gap-3">
           {event.collectibles.map((item) => (
@@ -119,7 +128,7 @@ export default function SeasonalEventScreen() {
 
         {/* Vocabulary preview */}
         <h2 className="mt-8 mb-3 text-lg font-bold text-gray-800 dark:text-gray-100">
-          🔤 Öğrenilecek Kelimeler
+          {t('event.wordsToLearn')}
         </h2>
         <div className="flex flex-wrap gap-2">
           {event.lessons
@@ -143,11 +152,9 @@ export default function SeasonalEventScreen() {
           >
             <span className="text-4xl">🏆</span>
             <h3 className="mt-2 text-lg font-bold text-green-700 dark:text-green-400">
-              Tebrikler!
+              {t('event.congrats')}
             </h3>
-            <p className="text-sm text-green-600 dark:text-green-500">
-              Bu etkinliğin tüm derslerini tamamladın!
-            </p>
+            <p className="text-sm text-green-600 dark:text-green-500">{t('event.allComplete')}</p>
           </motion.div>
         )}
       </div>

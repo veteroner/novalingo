@@ -127,5 +127,199 @@
     "desc": "Kısa bir video izleyerek XP ve yıldızlarını 2x yap",
     "watch": "Videoyu İzle",
     "noThanks": "Hayır, Teşekkürler"
+  },
+
+  "lessonScreen": {
+    "loading": "Ders yükleniyor...",
+    "quit": "Dersi Bırak",
+    "pauseTitle": "⏸️ Duraklat",
+    "resume": "Devam Et",
+    "savingTitle": "Ders kaydediliyor",
+    "limitTitle": "Günlük Limit Doldu",
+    "limitMessage": "Bugünkü ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus'a geçin.",
+    "resultOpened": "Sonuç ekranı açıldı. Kayıt arka planda tamamlanacak."
+  },
+
+  "review": {
+    "title": "📚 Tekrar",
+    "emptyMessage": "Henüz tekrar edilecek kelime yok. Önce birkaç ders tamamla!",
+    "backHome": "Ana Sayfaya Dön",
+    "back": "← Geri",
+    "statDueToday": "Bugün Tekrar",
+    "statTotal": "Toplam Kelime",
+    "statLearning": "Öğreniliyor",
+    "statMastered": "Ustalaşılan",
+    "start": "🚀 Tekrar Başla ({{count}} kelime)",
+    "doneToday": "✅ Bugünlük tekrar tamamlandı!",
+    "completedTitle": "Tekrar Tamamlandı!",
+    "score": "{{correct}} / {{total}} doğru",
+    "retry": "Tekrar Et"
+  },
+
+  "storyLibrary": {
+    "title": "📖 Hikaye Kütüphanesi",
+    "subtitle": "{{count}} hikaye — okumaya başla!",
+    "backHome": "← Ana Sayfa",
+    "all": "Tümü",
+    "emptyWorld": "Bu dünya için henüz hikaye yok.",
+    "pageCount": "{{count}} sayfa",
+    "worlds": {
+      "w1": "Başlangıç Bahçesi",
+      "w2": "Gramer Kalesi",
+      "w3": "Hikaye Ormanı",
+      "w4": "Şehir Meydanı",
+      "w5": "Bilim Adası",
+      "w6": "Macera Galaksisi"
+    }
+  },
+
+  "storyViewer": {
+    "notFound": "Hikaye bulunamadı 😕",
+    "backToLibrary": "Kütüphaneye Dön"
+  },
+
+  "lessonResult": {
+    "backHome": "Ana Sayfaya Dön",
+    "bossDefeatTitle": "Patron Seni Yendi!",
+    "bossDefeatSubtitle": "Ama yenilmek söz konusu değil… henüz.",
+    "attackAgain": "🗡️ Tekrar Saldır!",
+    "tryLater": "Sonra Dene",
+    "bossDefeatNova": "Sen bunu yapabilirsin! Her deneme seni daha güçlü yapıyor! 💪",
+    "bossVictoryTitle": "👑 PATRON YENİLDİ!",
+    "bossVictorySubtitle": "Mükemmel bir zafer! Harikaşsın!",
+    "congrats": "Tebrikler! 🎉",
+    "lessonDone": "Ders Tamamlandı",
+    "xpEarned": "XP Kazanıldı",
+    "accuracy": "Doğruluk",
+    "time": "Süre",
+    "correctAnswers": "Doğru Cevap",
+    "bossReward": "Boss Ödülü!",
+    "streakBadge": "{{count}} gün seri!",
+    "perfect": "Mükemmel!",
+    "levelUp": "🎉 Seviye {{level}}!",
+    "levelUpDesc": "Yeni seviyeye ulaştın!",
+    "newCollectible": "🎁 Yeni Collectible!",
+    "rarity": {
+      "common": "⚪ Yaygın",
+      "uncommon": "🟢 Nadir Değil",
+      "rare": "🔵 Nadir",
+      "epic": "🟣 Destansı",
+      "legendary": "🟡 Efsanevi"
+    },
+    "canDo": "✅ Artık şunu yapabilirsin",
+    "newWorldUnlocked": "🎊 Yeni Dünya Açıldı",
+    "newWorldDesc": "Yeni macera hazır. Nova seni sıradaki dünyaya götürüyor.",
+    "vocabRecap": "📚 Öğrenilen Kelimeler",
+    "autoAdvance": "{{count}} saniye sonra otomatik devam edecek.",
+    "conversationCta": "🎭 Konuşma Pratiği Yap",
+    "retry": "Tekrar Dene",
+    "nextGame": "Sonraki Oyun: {{name}}",
+    "nextWorldLabel": "Yeni Dünya: {{emoji}} {{name}}",
+    "hintNextLesson": "Hazırsan sıradaki derse geç.",
+    "hintNextWorld": "Bu dünya bitti. Sıradaki dünyaya geçebilirsin.",
+    "hintAllDone": "Tüm dünyalar tamamlandı. Harika iş!"
+  },
+
+  "activityUI": {
+    "errorBoundary": {
+      "message": "Bir şeyler ters gitti 😅",
+      "continue": "Devam Et"
+    },
+    "fillBlank": {
+      "title": "📝 Boşluğu Doldur",
+      "correctAnswer": "Doğru cevap:",
+      "listenAria": "Cümleyi dinle",
+      "correct": "🎉 Harika! Doğru cevap!",
+      "wrong": "😢 Yanlış, ama sorun değil!"
+    },
+    "flashCard": {
+      "tapToFlip": "Kartı çevirmek için dokun 👆",
+      "wordListenAria": "Dinle",
+      "slowListenAria": "Yavaş dinle",
+      "flip": "Çevirmek için dokun",
+      "example": "Örnek Cümle:",
+      "listenAria": "Cümleyi dinle",
+      "learned": "Öğrendim! Devam Et ✨"
+    },
+    "grammar": {
+      "title": "🔄 GRAMER DÖNÜŞÜMü",
+      "hintStart": "💡 Doğru cevap \"{{prefix}}...\" ile başlıyor",
+      "showHint": "💡 İpucu göster"
+    },
+    "listenAndTap": {
+      "title": "👂 Dinle ve Seç",
+      "noListensLeft": "Dinleme hakkın bitti",
+      "listensLeft": "{{count}} kez daha dinleyebilirsin",
+      "correct": "🎉 Doğru! Harika!",
+      "wrong": "❌ Doğru cevap: {{answer}}"
+    },
+    "matchPairs": {
+      "title": "🔗 Eşleştir",
+      "subtitle": "İngilizce kelimeyi Türkçe karşılığıyla eşleştir",
+      "turkish": "Türkçe 🇹🇷"
+    },
+    "memory": {
+      "subtitle": "Eşleşen kartları bul!",
+      "great": "Harika!",
+      "complete": "Tüm kartları eşleştirdin!"
+    },
+    "quizBattle": {
+      "score": "{{correct}} / {{total}} Doğru"
+    },
+    "sentenceBuilder": {
+      "title": "📝 Cümleyi Oluştur",
+      "turkish": "Türkçesi:",
+      "placeholder": "Kelimelere tıklayarak cümle kur...",
+      "undo": "↩ Geri Al",
+      "hint": "💡 İpucu"
+    },
+    "speakIt": {
+      "title": "🎤 SÖYLE",
+      "prompt": "Bu kelimeyi söyle:",
+      "listening": "Dinleniyor...",
+      "tapMic": "Mikrofona dokun ve söyle",
+      "pronunciation": "💡 Okunuşu:",
+      "micUnavailable": "Mikrofon kullanılamıyor — kendini değerlendir:",
+      "couldNotSay": "Söyleyemedim 😕",
+      "said": "Söyledim! ✓"
+    },
+    "storyComprehension": {
+      "hideTranslation": "🙈 Çeviriyi gizle",
+      "showTranslation": "👁️ Çeviriyi göster",
+      "answerQuestions": "Soruları Cevapla →",
+      "correct": "✅ Doğru!"
+    },
+    "storyTime": {
+      "modeRhyme": "KAFİYE HİKAYESİ",
+      "modeChain": "ZİNCİR HİKAYE",
+      "modePicture": "RESİM HİKAYESİ",
+      "modeDefault": "HİKAYE ZAMANI",
+      "pickWord": "Bir kelime seç!",
+      "wordPicked": "✅ “{{word}}” seçtin — harika!",
+      "picturePrompt": "Resimde ne görüyorsun? Anlatabilir misin?",
+      "toldGreat": "Harika anlattın!",
+      "listening": "Dinliyorum...",
+      "speak": "Konuş!",
+      "back": "← Geri",
+      "finish": "✨ Bitir",
+      "next": "İleri →",
+      "rhymeComplete": "Kafiye Bitti!",
+      "chainComplete": "Zincir Tamamlandı!",
+      "toldGreatTitle": "Harika Anlattın!",
+      "storyComplete": "Hikaye Tamamlandı!",
+      "wordsDiscovered": "{{tapped}} / {{total}} kelime keşfettin"
+    },
+    "wordBuilder": {
+      "title": "🔤 Kelimeyi Oluştur",
+      "undo": "↩ Geri Al",
+      "hint": "💡 İpucu",
+      "perfect": "✨ Mükemmel!"
+    },
+    "wordSearch": {
+      "title": "🔍 KELİME BULMACA",
+      "subtitle": "Gizli kelimeleri bul! Harfleri sırayla tıkla.",
+      "cancel": "İptal",
+      "complete": "Tüm kelimeleri buldun!"
+    }
   }
 }

@@ -9249,7 +9249,7 @@ const EMOJI_FALLBACK_ALIASES: Record<string, string> = {
   takeoff: '🛫',
   tap: '👆',
   tape: '📼',
-  test: '📝',
+  test: '✍️',
   thousand: '💯',
   timer: '⏲️',
   tissue: '🤧',
@@ -10900,6 +10900,7 @@ function generateConversation(lessonId: string, words: string[], startOrder: num
 
   // Legacy path — only reached if the registry flag is explicitly disabled via env var.
   trackConversationLegacyFallback();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- intentional legacy fallback
   const template = findBestTemplate(words);
   const selectedWords = words.slice(0, Math.max(template.minWords, 3));
   const translations = selectedWords.map((w) => getVocab(w).tr);

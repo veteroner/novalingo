@@ -1,0 +1,87 @@
+{
+  "profile": {
+    "level": "Seviye {{level}}",
+    "quickSettings": "⚙️ Hızlı Ayarlar",
+    "streakFreeze": "🔥 Seri Koruma",
+    "stats": {
+      "completedLessons": "Tamamlanan Ders",
+      "totalTime": "Toplam Süre (dk)",
+      "longestStreak": "En Uzun Seri",
+      "totalXP": "Toplam XP"
+    },
+    "menu": {
+      "achievements": "🏆 Başarımlar",
+      "collection": "📦 Koleksiyon",
+      "shop": "🛒 Mağaza",
+      "leaderboard": "📊 Liderlik",
+      "parent": "👨‍👩‍👧 Ebeveyn Paneli"
+    },
+    "stage": {
+      "egg": "Yumurta",
+      "baby": "Bebek Nova",
+      "child": "Çocuk Nova",
+      "teen": "Genç Nova",
+      "adult": "Yetişkin Nova",
+      "legendary": "Efsanevi Nova"
+    },
+    "nextStage": "Sonraki: {{name}} · {{xp}} XP kaldı",
+    "maxStage": "✦ Maksimum Aşama ✦"
+  },
+  "quests": {
+    "title": "⚔️ Günlük Görevler",
+    "subtitle": "Her gün yeni görevler seni bekliyor!",
+    "dailyProgress": "Günlük İlerleme",
+    "allComplete": "🎉 Tüm görevler tamamlandı! Bonus ödül kazandın!",
+    "empty": "Henüz görev yok",
+    "comingSoon": "Günlük görevler yakında gelecek!",
+    "nextIn": "Yeni görevlere kalan: {{time}}",
+    "rewardErrorTitle": "Ödül alınamadı",
+    "rewardErrorMessage": "Bir hata oluştu, lütfen tekrar dene."
+  },
+  "collection": {
+    "title": "📦 Koleksiyon",
+    "collected": "{{collected}}/{{total}} öğe toplandı",
+    "empty": "Henüz koleksiyon yok",
+    "emptyDesc": "Dersleri tamamlayarak koleksiyon parçaları kazanabilirsin!",
+    "itemDescription": "{{name}} koleksiyonuna eklendi. Dersleri ve görevleri tamamlayarak daha fazla öğe açabilirsin.",
+    "itemFact": "{{category}} kategorisinden özel bir parça.",
+    "fallbackCategory": "Koleksiyon",
+    "categories": {
+      "animals": "Hayvanlar",
+      "flags": "Bayraklar",
+      "stickers": "Çıkartmalar",
+      "characters": "Karakterler",
+      "landmarks": "Yapılar",
+      "foods": "Yiyecekler",
+      "vehicles": "Araçlar"
+    }
+  },
+  "achievements": {
+    "title": "🏆 Başarımlar",
+    "unlockedCount": "{{unlocked}}/{{total}} başarım açıldı",
+    "empty": "Henüz başarım yok",
+    "emptyDesc": "Dersleri tamamlayarak başarımlar kazanabilirsin!",
+    "filter": {
+      "all": "Tümü",
+      "learning": "📚 Öğrenme",
+      "streak": "🔥 Seri",
+      "collection": "📦 Toplama",
+      "social": "🤝 Sosyal",
+      "special": "⭐ Özel"
+    }
+  },
+  "event": {
+    "notFound": "Etkinlik bulunamadı",
+    "back": "Geri",
+    "congrats": "Tebrikler!",
+    "daysLeft": "{{count}} gün kaldı",
+    "soon": "Yakında",
+    "rewardCount": "{{count}} Ödül",
+    "progress": "İlerleme",
+    "limitedRewards": "🎁 Sınırlı Süreli Ödüller",
+    "wordsToLearn": "🔤 Öğrenilecek Kelimeler",
+    "allComplete": "Bu etkinliğin tüm derslerini tamamladın!",
+    "completed": "Tamamlandı!",
+    "upcoming": "Yakında: {{name}}"
+  }
+}

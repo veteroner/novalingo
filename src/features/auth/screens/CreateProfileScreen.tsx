@@ -11,47 +11,41 @@ import { Card } from '@components/molecules/Card';
 import { useCreateChild } from '@hooks/queries';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 interface AgeGroupOption {
   id: AgeGroup;
-  label: string;
-  range: string;
   emoji: string;
   color: string;
 }
 
+// Etiket ve yaş aralığı i18n'den gelir (auth.createProfile.age / ageRange, id'ye göre).
 const ageGroups: AgeGroupOption[] = [
-  { id: 'cubs', label: 'Yavrular', range: '4-6 yaş', emoji: '🐻', color: 'border-success' },
-  { id: 'stars', label: 'Yıldızlar', range: '7-9 yaş', emoji: '⭐', color: 'border-nova-orange' },
-  {
-    id: 'legends',
-    label: 'Efsaneler',
-    range: '10-12 yaş',
-    emoji: '🏆',
-    color: 'border-nova-purple',
-  },
+  { id: 'cubs', emoji: '🐻', color: 'border-success' },
+  { id: 'stars', emoji: '⭐', color: 'border-nova-orange' },
+  { id: 'legends', emoji: '🏆', color: 'border-nova-purple' },
 ];
 
 interface AvatarOption {
   id: string;
   emoji: string;
-  label: string;
 }
 
+// Etiket i18n'den gelir (auth.createProfile.avatar, id'ye göre).
 const avatars: AvatarOption[] = [
-  { id: 'fox', emoji: '🦊', label: 'Tilki' },
-  { id: 'panda', emoji: '🐼', label: 'Panda' },
-  { id: 'unicorn', emoji: '🦄', label: 'Unicorn' },
-  { id: 'lion', emoji: '🦁', label: 'Aslan' },
-  { id: 'owl', emoji: '🦉', label: 'Baykuş' },
-  { id: 'rabbit', emoji: '🐰', label: 'Tavşan' },
-  { id: 'cat', emoji: '🐱', label: 'Kedi' },
-  { id: 'dog', emoji: '🐶', label: 'Köpek' },
-  { id: 'dragon', emoji: '🐉', label: 'Ejderha' },
-  { id: 'astronaut', emoji: '🧑‍🚀', label: 'Astronot' },
-  { id: 'robot', emoji: '🤖', label: 'Robot' },
-  { id: 'star', emoji: '🌟', label: 'Yıldız' },
+  { id: 'fox', emoji: '🦊' },
+  { id: 'panda', emoji: '🐼' },
+  { id: 'unicorn', emoji: '🦄' },
+  { id: 'lion', emoji: '🦁' },
+  { id: 'owl', emoji: '🦉' },
+  { id: 'rabbit', emoji: '🐰' },
+  { id: 'cat', emoji: '🐱' },
+  { id: 'dog', emoji: '🐶' },
+  { id: 'dragon', emoji: '🐉' },
+  { id: 'astronaut', emoji: '🧑‍🚀' },
+  { id: 'robot', emoji: '🤖' },
+  { id: 'star', emoji: '🌟' },
 ];
 
 // Allow Unicode letters, spaces, and emoji only
@@ -59,6 +53,7 @@ const NAME_PATTERN = /^[\p{L}\p{Extended_Pictographic}\s]+$/u;
 
 export default function CreateProfileScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
   const createChildMutation = useCreateChild();
   const [name, setName] = useState('');
   const [selectedAge, setSelectedAge] = useState<AgeGroup | null>(null);
@@ -68,13 +63,16 @@ export default function CreateProfileScreen() {
 
   const isCreating = createChildMutation.isPending;
 
-  const validateName = useCallback((value: string): string | null => {
-    const trimmed = value.trim();
-    if (trimmed.length < 2) return 'İsim en az 2 karakter olmalı';
-    if (trimmed.length > 20) return 'İsim en fazla 20 karakter olabilir';
-    if (!NAME_PATTERN.test(trimmed)) return 'İsimde yalnızca harf ve emoji kullanılabilir';
-    return null;
-  }, []);
+  const validateName = useCallback(
+    (value: string): string | null => {
+      const trimmed = value.trim();
+      if (trimmed.length < 2) return t('createProfile.nameTooShort');
+      if (trimmed.length > 20) return t('createProfile.nameTooLong');
+      if (!NAME_PATTERN.test(trimmed)) return t('createProfile.nameInvalid');
+      return null;
+    },
+    [t],
+  );
 
   const nameError = name.length > 0 ? validateName(name) : null;
   const isNameValid = name.trim().length >= 2 && !nameError;
@@ -103,7 +101,7 @@ export default function CreateProfileScreen() {
             void navigate('/home');
           },
           onError: (err) => {
-            setError(err instanceof Error ? err.message : 'Profil oluşturulamadı');
+            setError(err instanceof Error ? err.message : t('createProfile.createError'));
           },
         },
       );
@@ -117,6 +115,7 @@ export default function CreateProfileScreen() {
     isCreating,
     navigate,
     createChildMutation,
+    t,
   ]);
 
   return (
@@ -130,7 +129,7 @@ export default function CreateProfileScreen() {
             }}
             className="text-nova-blue text-sm font-semibold"
           >
-            ← Geri
+            {t('createProfile.back')}
           </button>
         )}
       </div>
@@ -144,10 +143,10 @@ export default function CreateProfileScreen() {
           >
             <div className="text-center">
               <Text variant="h2" align="center" className="mb-2">
-                Adın ne? 🎉
+                {t('createProfile.nameTitle')}
               </Text>
               <Text variant="body" align="center" className="text-text-secondary">
-                Nova seni tanımak istiyor!
+                {t('createProfile.nameSubtitle')}
               </Text>
             </div>
 
@@ -157,7 +156,7 @@ export default function CreateProfileScreen() {
               onChange={(e) => {
                 setName(e.target.value);
               }}
-              placeholder="Adını yaz..."
+              placeholder={t('createProfile.namePlaceholder')}
               maxLength={20}
               className="focus:border-nova-blue h-14 w-full rounded-2xl border-3 border-gray-200 bg-white px-4 text-center text-xl font-bold transition-colors focus:outline-none"
               autoFocus
@@ -178,10 +177,10 @@ export default function CreateProfileScreen() {
           >
             <div className="text-center">
               <Text variant="h2" align="center" className="mb-2">
-                Yaşın kaç? 🎂
+                {t('createProfile.ageTitle')}
               </Text>
               <Text variant="body" align="center" className="text-text-secondary">
-                Sana en uygun dersleri hazırlayalım!
+                {t('createProfile.ageSubtitle')}
               </Text>
             </div>
 
@@ -202,9 +201,9 @@ export default function CreateProfileScreen() {
                   <div className="flex items-center gap-4">
                     <span className="text-4xl">{group.emoji}</span>
                     <div>
-                      <Text variant="h4">{group.label}</Text>
+                      <Text variant="h4">{t(`createProfile.age.${group.id}`)}</Text>
                       <Text variant="bodySmall" className="text-text-secondary">
-                        {group.range}
+                        {t(`createProfile.ageRange.${group.id}`)}
                       </Text>
                     </div>
                     {selectedAge === group.id && (
@@ -232,10 +231,10 @@ export default function CreateProfileScreen() {
           >
             <div className="text-center">
               <Text variant="h2" align="center" className="mb-2">
-                Avatarını seç! 🎨
+                {t('createProfile.avatarTitle')}
               </Text>
               <Text variant="body" align="center" className="text-text-secondary">
-                Nova&apos;da seni temsil edecek karakteri seç!
+                {t('createProfile.avatarSubtitle')}
               </Text>
             </div>
 
@@ -255,7 +254,7 @@ export default function CreateProfileScreen() {
                 >
                   <span className="text-3xl">{avatar.emoji}</span>
                   <Text variant="caption" className="text-text-secondary">
-                    {avatar.label}
+                    {t(`createProfile.avatar.${avatar.id}`)}
                   </Text>
                 </button>
               ))}
@@ -286,10 +285,10 @@ export default function CreateProfileScreen() {
           }
         >
           {isCreating
-            ? 'Oluşturuluyor...'
+            ? t('createProfile.creating')
             : step === 'avatar'
-              ? 'Maceraya Başla! 🚀'
-              : 'Devam Et →'}
+              ? t('createProfile.start')
+              : t('createProfile.continue')}
         </Button>
       </div>
     </div>

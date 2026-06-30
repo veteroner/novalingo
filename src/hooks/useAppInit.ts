@@ -43,7 +43,7 @@ export function useAppInit(): void {
       // by the screen that reads notification data from the store or query params.
       // The listener is still needed to keep Capacitor's listener registry active.
       if (import.meta.env.DEV) {
-        console.log('[useAppInit] push notification received:', data);
+        console.warn('[useAppInit] push notification received:', data);
       }
     });
 

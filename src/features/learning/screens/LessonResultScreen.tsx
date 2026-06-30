@@ -26,6 +26,7 @@ import { formatTime } from '@utils/time';
 import { calculateStars } from '@utils/xp';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface LessonSummary {
@@ -43,6 +44,7 @@ interface LessonSummary {
 export default function LessonResultScreen() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation('lesson');
   const state = location.state as {
     summary?: LessonSummary;
     backendResult?: SubmitLessonResultRes;
@@ -59,6 +61,43 @@ export default function LessonResultScreen() {
   // Read BEFORE render so completedLessons reflects state prior to this lesson
   const activeChild = useChildStore.getState().activeChild;
   const analyticsTrackedRef = useRef(false);
+
+  // Auto-advance navigation targets. Computed null-safe BEFORE any early return so the
+  // hooks below always run in the same order (Rules of Hooks): summary may be undefined.
+  const lesson = summary ? getLesson(summary.lessonId) : undefined;
+  const currentWorldId = summary ? (summary.lessonId.split('_')[0] ?? '') : '';
+  const currentWorld = getWorld(currentWorldId);
+  const flatWorldLessons = currentWorld ? currentWorld.units.flatMap((unit) => unit.lessons) : [];
+  const currentLessonIndex = summary
+    ? flatWorldLessons.findIndex((item) => item.id === summary.lessonId)
+    : -1;
+  const nextLesson =
+    currentLessonIndex >= 0 ? (flatWorldLessons[currentLessonIndex + 1] ?? null) : null;
+  const currentWorldIndex = curriculum.findIndex((world) => world.id === currentWorldId);
+  const nextWorld = currentWorldIndex >= 0 ? (curriculum[currentWorldIndex + 1] ?? null) : null;
+
+  const [secondsRemaining, setSecondsRemaining] = useState(5);
+  const autoAdvanceHandledRef = useRef(false);
+  // Never auto-advance on the missing-summary or boss-defeat screens.
+  const shouldAutoAdvance = Boolean(summary && !bossGameOver && (nextLesson || nextWorld));
+
+  const handlePrimaryAction = () => {
+    if (autoAdvanceHandledRef.current) return;
+    autoAdvanceHandledRef.current = true;
+
+    if (nextLesson) {
+      void unlockAudioPlayback();
+      void navigate(`/lesson/${nextLesson.id}`);
+      return;
+    }
+
+    if (nextWorld) {
+      void navigate(`/world/${nextWorld.id}`);
+      return;
+    }
+
+    void navigate('/home');
+  };
 
   useEffect(() => {
     if (!summary || analyticsTrackedRef.current) return;
@@ -87,11 +126,37 @@ export default function LessonResultScreen() {
     void recordSessionAndMaybePromptRating();
   }, [summary, backendResult, activeChild]);
 
+  useEffect(() => {
+    autoAdvanceHandledRef.current = false;
+    setSecondsRemaining(5);
+  }, [summary?.lessonId, nextLesson?.id, nextWorld?.id]);
+
+  useEffect(() => {
+    if (!shouldAutoAdvance) return;
+
+    const intervalId = window.setInterval(() => {
+      setSecondsRemaining((current) => {
+        if (current <= 1) {
+          window.clearInterval(intervalId);
+          handlePrimaryAction();
+          return 0;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldAutoAdvance, summary?.lessonId, nextLesson?.id, nextWorld?.id]);
+
   if (!summary) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Button variant="primary" onClick={() => navigate('/home')}>
-          Ana Sayfaya Dön
+          {t('lessonResult.backHome')}
         </Button>
       </div>
     );
@@ -117,10 +182,10 @@ export default function LessonResultScreen() {
           transition={{ delay: 0.5 }}
         >
           <Text variant="h2" align="center" className="text-white">
-            Patron Seni Yendi!
+            {t('lessonResult.bossDefeatTitle')}
           </Text>
           <Text variant="body" align="center" className="mt-2 text-red-200">
-            Ama yenilmek söz konusu değil… henüz.
+            {t('lessonResult.bossDefeatSubtitle')}
           </Text>
         </motion.div>
 
@@ -135,7 +200,7 @@ export default function LessonResultScreen() {
               {summary.correctAnswers}
             </Text>
             <Text variant="caption" className="text-red-200">
-              Doğru Cevap
+              {t('lessonResult.correctAnswers')}
             </Text>
           </div>
           <div className="rounded-2xl bg-white/10 p-4 text-center">
@@ -143,7 +208,7 @@ export default function LessonResultScreen() {
               {formatTime(summary.durationSeconds)}
             </Text>
             <Text variant="caption" className="text-red-200">
-              Süre
+              {t('lessonResult.time')}
             </Text>
           </div>
         </motion.div>
@@ -163,16 +228,16 @@ export default function LessonResultScreen() {
               void navigate(`/lesson/${summary.lessonId}`);
             }}
           >
-            🗡️ Tekrar Saldır!
+            {t('lessonResult.attackAgain')}
           </Button>
           <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
-            <span className="text-white">Sonra Dene</span>
+            <span className="text-white">{t('lessonResult.tryLater')}</span>
           </Button>
         </motion.div>
 
         <NovaCompanion
           mood="encouraging"
-          message="Sen bunu yapabilirsin! Her deneme seni daha güçlü yapıyor! 💪"
+          message={t('lessonResult.bossDefeatNova')}
           position="center"
           size="lg"
           className="mt-6"
@@ -193,70 +258,16 @@ export default function LessonResultScreen() {
   };
 
   const { mood, msg } = getMoodMessage();
-  const lesson = getLesson(summary.lessonId);
-  const currentWorldId = summary.lessonId.split('_')[0] ?? '';
-  const currentWorld = getWorld(currentWorldId);
-  const flatWorldLessons = currentWorld ? currentWorld.units.flatMap((unit) => unit.lessons) : [];
-  const currentLessonIndex = flatWorldLessons.findIndex((item) => item.id === summary.lessonId);
-  const nextLesson =
-    currentLessonIndex >= 0 ? (flatWorldLessons[currentLessonIndex + 1] ?? null) : null;
-  const currentWorldIndex = curriculum.findIndex((world) => world.id === currentWorldId);
-  const nextWorld = currentWorldIndex >= 0 ? (curriculum[currentWorldIndex + 1] ?? null) : null;
-  const [secondsRemaining, setSecondsRemaining] = useState(5);
-  const autoAdvanceHandledRef = useRef(false);
-  const shouldAutoAdvance = Boolean(nextLesson || nextWorld);
   const primaryActionLabel = nextLesson
-    ? `Sonraki Oyun: ${nextLesson.name}`
+    ? t('lessonResult.nextGame', { name: nextLesson.name })
     : nextWorld
-      ? `Yeni Dünya: ${nextWorld.emoji} ${nextWorld.name}`
-      : 'Ana Sayfaya Dön';
-  const handlePrimaryAction = () => {
-    if (autoAdvanceHandledRef.current) return;
-    autoAdvanceHandledRef.current = true;
-
-    if (nextLesson) {
-      void unlockAudioPlayback();
-      void navigate(`/lesson/${nextLesson.id}`);
-      return;
-    }
-
-    if (nextWorld) {
-      void navigate(`/world/${nextWorld.id}`);
-      return;
-    }
-
-    void navigate('/home');
-  };
+      ? t('lessonResult.nextWorldLabel', { emoji: nextWorld.emoji, name: nextWorld.name })
+      : t('lessonResult.backHome');
   const primaryActionHint = nextLesson
-    ? 'Hazırsan sıradaki derse geç.'
+    ? t('lessonResult.hintNextLesson')
     : nextWorld
-      ? 'Bu dünya bitti. Sıradaki dünyaya geçebilirsin.'
-      : 'Tüm dünyalar tamamlandı. Harika iş!';
-
-  useEffect(() => {
-    autoAdvanceHandledRef.current = false;
-    setSecondsRemaining(5);
-  }, [summary.lessonId, nextLesson?.id, nextWorld?.id]);
-
-  useEffect(() => {
-    if (!shouldAutoAdvance) return;
-
-    const intervalId = window.setInterval(() => {
-      setSecondsRemaining((current) => {
-        if (current <= 1) {
-          window.clearInterval(intervalId);
-          handlePrimaryAction();
-          return 0;
-        }
-
-        return current - 1;
-      });
-    }, 1000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [shouldAutoAdvance, summary.lessonId, nextLesson?.id, nextWorld?.id]);
+      ? t('lessonResult.hintNextWorld')
+      : t('lessonResult.hintAllDone');
 
   return (
     <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
@@ -269,10 +280,10 @@ export default function LessonResultScreen() {
           transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 12 }}
         >
           <Text variant="h2" align="center" className="text-white drop-shadow">
-            👑 PATRON YENİLDİ!
+            {t('lessonResult.bossVictoryTitle')}
           </Text>
           <Text variant="bodySmall" align="center" className="mt-1 text-yellow-100">
-            Mükemmel bir zafer! Harikaşsın!
+            {t('lessonResult.bossVictorySubtitle')}
           </Text>
         </motion.div>
       )}
@@ -294,7 +305,7 @@ export default function LessonResultScreen() {
         transition={{ delay: 0.8 }}
       >
         <Text variant="h2" align="center">
-          {stars >= 2 ? 'Tebrikler! 🎉' : 'Ders Tamamlandı'}
+          {stars >= 2 ? t('lessonResult.congrats') : t('lessonResult.lessonDone')}
         </Text>
       </motion.div>
 
@@ -310,7 +321,7 @@ export default function LessonResultScreen() {
             +{xpEarned}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            XP Kazanıldı
+            {t('lessonResult.xpEarned')}
           </Text>
         </div>
 
@@ -319,7 +330,7 @@ export default function LessonResultScreen() {
             %{Math.round(accuracy * 100)}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Doğruluk
+            {t('lessonResult.accuracy')}
           </Text>
         </div>
 
@@ -328,7 +339,7 @@ export default function LessonResultScreen() {
             {formatTime(summary.durationSeconds)}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Süre
+            {t('lessonResult.time')}
           </Text>
         </div>
 
@@ -337,7 +348,7 @@ export default function LessonResultScreen() {
             {summary.correctAnswers}/{summary.totalActivities}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Doğru Cevap
+            {t('lessonResult.correctAnswers')}
           </Text>
         </div>
       </motion.div>
@@ -351,17 +362,17 @@ export default function LessonResultScreen() {
       >
         {isBossLesson && (
           <Badge variant="xp" size="lg" icon={<span>👑</span>}>
-            Boss Ödülü!
+            {t('lessonResult.bossReward')}
           </Badge>
         )}
         {backendResult && backendResult.streak > 0 && (
           <Badge variant="streak" size="lg" icon={<span>🔥</span>}>
-            {backendResult.streak} gün seri!
+            {t('lessonResult.streakBadge', { count: backendResult.streak })}
           </Badge>
         )}
         {backendResult?.isPerfect && (
           <Badge variant="xp" size="lg" icon={<span>⭐</span>}>
-            Mükemmel!
+            {t('lessonResult.perfect')}
           </Badge>
         )}
       </motion.div>
@@ -375,10 +386,10 @@ export default function LessonResultScreen() {
           transition={{ delay: 1.6, type: 'spring', stiffness: 200 }}
         >
           <Text variant="h3" className="text-nova-orange">
-            🎉 Seviye {backendResult.newLevel}!
+            {t('lessonResult.levelUp', { level: backendResult.newLevel })}
           </Text>
           <Text variant="caption" className="text-text-secondary">
-            Yeni seviyeye ulaştın!
+            {t('lessonResult.levelUpDesc')}
           </Text>
         </motion.div>
       )}
@@ -403,7 +414,7 @@ export default function LessonResultScreen() {
               variant="caption"
               className="text-nova-purple mt-2 font-bold tracking-wide uppercase"
             >
-              🎁 Yeni Collectible!
+              {t('lessonResult.newCollectible')}
             </Text>
             <Text variant="h4" align="center" className="mt-1">
               {backendResult.collectibleGranted.name}
@@ -412,11 +423,7 @@ export default function LessonResultScreen() {
               variant={backendResult.collectibleGranted.rarity === 'legendary' ? 'xp' : 'info'}
               size="sm"
             >
-              {backendResult.collectibleGranted.rarity === 'common' && '⚪ Yaygın'}
-              {backendResult.collectibleGranted.rarity === 'uncommon' && '🟢 Nadir Değil'}
-              {backendResult.collectibleGranted.rarity === 'rare' && '🔵 Nadir'}
-              {backendResult.collectibleGranted.rarity === 'epic' && '🟣 Destansı'}
-              {backendResult.collectibleGranted.rarity === 'legendary' && '🟡 Efsanevi'}
+              {t(`lessonResult.rarity.${backendResult.collectibleGranted.rarity}`)}
             </Badge>
           </div>
         </motion.div>
@@ -431,7 +438,7 @@ export default function LessonResultScreen() {
           transition={{ delay: 1.75, type: 'spring', stiffness: 180 }}
         >
           <Text variant="caption" className="text-success mb-1 font-bold tracking-wide uppercase">
-            ✅ Artık şunu yapabilirsin
+            {t('lessonResult.canDo')}
           </Text>
           <Text variant="body" className="text-surface-900 dark:text-surface-100 font-semibold">
             {lesson.canDo}
@@ -448,13 +455,13 @@ export default function LessonResultScreen() {
         >
           <div className="rounded-[calc(1.5rem-1px)] bg-white px-5 py-4 text-center">
             <Text variant="caption" className="font-bold tracking-wide text-orange-500 uppercase">
-              🎊 Yeni Dünya Açıldı
+              {t('lessonResult.newWorldUnlocked')}
             </Text>
             <Text variant="h4" align="center" className="mt-1">
               {nextWorld.emoji} {nextWorld.name}
             </Text>
             <Text variant="bodySmall" className="mt-1 text-gray-600">
-              Yeni macera hazır. Nova seni sıradaki dünyaya götürüyor.
+              {t('lessonResult.newWorldDesc')}
             </Text>
           </div>
         </motion.div>
@@ -469,7 +476,7 @@ export default function LessonResultScreen() {
           transition={{ delay: 1.4 }}
         >
           <Text variant="h4" align="center" className="mb-3">
-            📚 Öğrenilen Kelimeler
+            {t('lessonResult.vocabRecap')}
           </Text>
           <div className="flex flex-wrap justify-center gap-2">
             {vocabulary.map((word) => {
@@ -509,7 +516,7 @@ export default function LessonResultScreen() {
           </Text>
           {shouldAutoAdvance && (
             <Text variant="caption" className="mt-1 block text-indigo-500">
-              {secondsRemaining} saniye sonra otomatik devam edecek.
+              {t('lessonResult.autoAdvance', { count: secondsRemaining })}
             </Text>
           )}
         </div>
@@ -528,11 +535,11 @@ export default function LessonResultScreen() {
             void navigate('/conversation');
           }}
         >
-          🎭 Konuşma Pratiği Yap
+          {t('lessonResult.conversationCta')}
         </Button>
 
         <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/home')}>
-          Ana Sayfaya Dön
+          {t('lessonResult.backHome')}
         </Button>
 
         {stars < 3 && (
@@ -545,7 +552,7 @@ export default function LessonResultScreen() {
               void navigate(`/lesson/${summary.lessonId}`);
             }}
           >
-            Tekrar Dene
+            {t('lessonResult.retry')}
           </Button>
         )}
       </motion.div>

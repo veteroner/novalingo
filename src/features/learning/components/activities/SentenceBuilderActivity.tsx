@@ -12,6 +12,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface SentenceBuilderActivityProps extends ActivityCallbacks {
@@ -22,6 +23,7 @@ export default function SentenceBuilderActivity({
   data,
   onComplete,
 }: SentenceBuilderActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const completionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -116,13 +118,13 @@ export default function SentenceBuilderActivity({
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-5">
       {/* Title */}
       <Text variant="h3" align="center">
-        📝 Cümleyi Oluştur
+        {t('activityUI.sentenceBuilder.title')}
       </Text>
 
       {/* Translation hint */}
       <div className="rounded-xl bg-blue-50 px-4 py-2 text-center">
         <Text variant="bodySmall" className="text-text-secondary">
-          Türkçesi:
+          {t('activityUI.sentenceBuilder.turkish')}
         </Text>
         <Text variant="body" className="font-semibold text-blue-700">
           {data.translation}
@@ -147,7 +149,7 @@ export default function SentenceBuilderActivity({
       >
         {builtWords.length === 0 ? (
           <Text variant="bodySmall" className="text-text-secondary italic">
-            Kelimelere tıklayarak cümle kur...
+            {t('activityUI.sentenceBuilder.placeholder')}
           </Text>
         ) : (
           builtWords.map((word, idx) => (
@@ -198,10 +200,10 @@ export default function SentenceBuilderActivity({
           onClick={handleUndo}
           disabled={placedIndices.length === 0 || isComplete}
         >
-          ↩ Geri Al
+          {t('activityUI.sentenceBuilder.undo')}
         </Button>
         <Button variant="secondary" size="sm" onClick={handleHint} disabled={isComplete}>
-          💡 İpucu
+          {t('activityUI.sentenceBuilder.hint')}
         </Button>
       </div>
 

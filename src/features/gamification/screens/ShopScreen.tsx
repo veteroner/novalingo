@@ -16,16 +16,18 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type ShopCategory = 'avatars' | 'themes' | 'boosters' | 'frames' | 'effects' | 'nova';
 
-const categories: { id: ShopCategory; label: string; emoji: string }[] = [
-  { id: 'avatars', label: 'Avatar', emoji: '👤' },
-  { id: 'themes', label: 'Tema', emoji: '🎨' },
-  { id: 'boosters', label: 'Güçlendirici', emoji: '⚡' },
-  { id: 'frames', label: 'Çerçeve', emoji: '🖼️' },
-  { id: 'effects', label: 'Efekt', emoji: '✨' },
-  { id: 'nova', label: 'Nova', emoji: '🦉' },
+// Etiketler i18n'den gelir (shop.screenCategories, id'ye göre); burada yalnızca emoji.
+const categories: { id: ShopCategory; emoji: string }[] = [
+  { id: 'avatars', emoji: '👤' },
+  { id: 'themes', emoji: '🎨' },
+  { id: 'boosters', emoji: '⚡' },
+  { id: 'frames', emoji: '🖼️' },
+  { id: 'effects', emoji: '✨' },
+  { id: 'nova', emoji: '🦉' },
 ];
 
 interface DisplayShopItem {
@@ -312,6 +314,7 @@ export default function ShopScreen() {
   const { data: serverItems } = useShopItems(activeCategory);
   const purchase = usePurchaseItem();
   const showToast = useUIStore((s) => s.showToast);
+  const { t } = useTranslation('shop');
 
   const items: DisplayShopItem[] = useMemo(() => {
     if (serverItems && serverItems.length > 0) {
@@ -325,7 +328,7 @@ export default function ShopScreen() {
         rarity: si.isPremium ? 'epic' : 'common',
       }));
     }
-    return defaultShopItems[activeCategory] ?? [];
+    return defaultShopItems[activeCategory];
   }, [serverItems, activeCategory]);
 
   const handlePurchase = useCallback(
@@ -337,8 +340,11 @@ export default function ShopScreen() {
       if (balance < item.price) {
         showToast({
           type: 'error',
-          title: 'Yetersiz bakiye',
-          message: `${item.name} için yeterli ${item.currency === 'gems' ? 'elmas' : 'yıldız'} yok.`,
+          title: t('screen.insufficientTitle'),
+          message: t('screen.insufficientFunds', {
+            name: item.name,
+            currency: item.currency === 'gems' ? t('screen.gems') : t('screen.stars'),
+          }),
         });
         return;
       }
@@ -349,21 +355,21 @@ export default function ShopScreen() {
           onSuccess: () => {
             showToast({
               type: 'success',
-              title: 'Satın alındı! 🎉',
-              message: `${item.name} koleksiyonuna eklendi.`,
+              title: t('screen.purchaseSuccessTitle'),
+              message: t('screen.purchaseSuccessMessage', { name: item.name }),
             });
           },
           onError: () => {
             showToast({
               type: 'error',
-              title: 'Satın alma başarısız',
-              message: 'Bir hata oluştu, lütfen tekrar dene.',
+              title: t('screen.purchaseFailTitle'),
+              message: t('screen.purchaseFailMessage'),
             });
           },
         },
       );
     },
-    [child, purchase, showToast],
+    [child, purchase, showToast, t],
   );
 
   if (!child) return null;
@@ -373,7 +379,7 @@ export default function ShopScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Text variant="h3">🛒 Mağaza</Text>
+          <Text variant="h3">{t('screen.title')}</Text>
           <CurrencyDisplay stars={child.stars} gems={child.gems} compact />
         </div>
 
@@ -393,7 +399,7 @@ export default function ShopScreen() {
               }}
             >
               <span>{cat.emoji}</span>
-              {cat.label}
+              {t(`screenCategories.${cat.id}`)}
             </motion.button>
           ))}
         </div>
@@ -404,10 +410,10 @@ export default function ShopScreen() {
             <div className="space-y-2 text-center">
               <span className="text-4xl">🛒</span>
               <Text variant="body" weight="bold">
-                Bu kategoride henüz ürün yok
+                {t('screen.emptyTitle')}
               </Text>
               <Text variant="caption" className="text-text-secondary">
-                Ders tamamla ve yıldız kazan — yeni ürünler açılacak!
+                {t('screen.emptyDesc')}
               </Text>
             </div>
           </Card>
@@ -425,7 +431,7 @@ export default function ShopScreen() {
                       {item.emoji}
                     </div>
                     <Text variant="bodySmall" weight="bold" truncate>
-                      {item.name}
+                      {t(`items.${item.id}`, { defaultValue: item.name })}
                     </Text>
                     <Badge variant={item.currency === 'gems' ? 'gem' : 'star'} size="sm">
                       {item.price} {item.currency === 'gems' ? '💎' : '⭐'}
@@ -439,7 +445,11 @@ export default function ShopScreen() {
                         handlePurchase(item);
                       }}
                     >
-                      {isBuying ? '...' : canAfford ? 'Satın Al' : 'Yetersiz'}
+                      {isBuying
+                        ? t('screen.buying')
+                        : canAfford
+                          ? t('screen.buy')
+                          : t('screen.insufficient')}
                     </Button>
                   </div>
                 </Card>

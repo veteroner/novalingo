@@ -18,7 +18,12 @@ describe('LevelUpModal', () => {
 
   it('shows level number when open', () => {
     render(
-      <LevelUpModal isOpen={true} level={10} rewards={{ stars: 100, gems: 20 }} onClose={vi.fn()} />,
+      <LevelUpModal
+        isOpen={true}
+        level={10}
+        rewards={{ stars: 100, gems: 20 }}
+        onClose={vi.fn()}
+      />,
     );
     expect(screen.getByText('10')).toBeInTheDocument();
   });
@@ -27,7 +32,7 @@ describe('LevelUpModal', () => {
     render(
       <LevelUpModal isOpen={true} level={5} rewards={{ stars: 50, gems: 0 }} onClose={vi.fn()} />,
     );
-    expect(screen.getByText(/Seviye Atladın/)).toBeInTheDocument();
+    expect(screen.getByText(/levelUpModal\.title/)).toBeInTheDocument();
   });
 
   it('shows star reward', () => {

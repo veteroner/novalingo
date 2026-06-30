@@ -535,7 +535,7 @@ const WORD_EMOJI_MAP: Record<string, string> = {
   Reminder: '🔔',
   Break: '☕',
   Meeting: '🗣️',
-  Test: '📝',
+  Test: '✍️',
   Coin: '🪙',
   Bill: '💵',
   Change: '💰',

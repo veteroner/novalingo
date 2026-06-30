@@ -176,9 +176,10 @@ function interpolateTemplate(
   slots: Record<string, string>,
   fallback?: string,
 ): string {
-  const interpolated = template.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_match, key) => {
-    return slots[key] ?? '';
-  });
+  const interpolated = template.replace(
+    /\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g,
+    (_match, key: string) => slots[key] ?? '',
+  );
   const normalized = interpolated.replace(/\s+/g, ' ').trim();
   if (normalized.length > 0) return normalized;
   return fallback ?? template;
@@ -569,7 +570,9 @@ export default function ConversationActivity({
             // Only start listening if there are still options for the child to respond to
             if (SpeechRecognitionAPI && optionsRef.current.length > 0) {
               // Small delay so the mic doesn't pick up the tail of TTS
-              pushTimer(() => startListeningRef.current(), 400);
+              pushTimer(() => {
+                startListeningRef.current();
+              }, 400);
             }
             return optionsRef.current.length > 0 ? 'listening' : 'idle';
           }
@@ -577,6 +580,8 @@ export default function ConversationActivity({
         });
       }
     });
+    // Mount-only TTS subscription; all live state is read through refs by design.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Build nodes map once
@@ -617,6 +622,8 @@ export default function ConversationActivity({
       // No valid start node — finish immediately to avoid blank screen
       finishConversationRef.current();
     }
+    // Runs once per scenario (data) change; worldId is stable for a given scenario.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   // Cleanup
@@ -1196,8 +1203,8 @@ export default function ConversationActivity({
         nodeRejectionsRef.current += 1;
 
         // After MAX_NODE_REJECTIONS, auto-accept first option so child isn't stuck
-        if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && options.length > 0) {
-          const fallback = options[0]!;
+        const fallback = options[0];
+        if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && fallback) {
           const helpText = `Let's say: ${fallback.text}`;
           setBubbles((prev) => [
             ...prev,
@@ -1205,7 +1212,9 @@ export default function ConversationActivity({
           ]);
           setNovaMood('speaking');
           void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
-          pushTimer(() => handleOptionSelect(fallback), 2500);
+          pushTimer(() => {
+            handleOptionSelect(fallback);
+          }, 2500);
           return;
         }
 
@@ -1276,8 +1285,8 @@ export default function ConversationActivity({
           nodeRejectionsRef.current += 1;
 
           // After MAX_NODE_REJECTIONS, auto-accept first option so child isn't stuck
-          if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && options.length > 0) {
-            const fallback = options[0]!;
+          const fallback = options[0];
+          if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && fallback) {
             const helpText = `Let's say: ${fallback.text}`;
             setBubbles((prev) => [
               ...prev,
@@ -1285,7 +1294,9 @@ export default function ConversationActivity({
             ]);
             setNovaMood('speaking');
             void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
-            pushTimer(() => handleOptionSelect(fallback), 2500);
+            pushTimer(() => {
+              handleOptionSelect(fallback);
+            }, 2500);
             return;
           }
 
@@ -1315,8 +1326,8 @@ export default function ConversationActivity({
       nodeRejectionsRef.current += 1;
 
       // After MAX_NODE_REJECTIONS, auto-accept first option so child isn't stuck
-      if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && options.length > 0) {
-        const fallback = options[0]!;
+      const fallback = options[0];
+      if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && fallback) {
         const helpText = `Let's say: ${fallback.text}`;
         setBubbles((prev) => [
           ...prev,
@@ -1324,7 +1335,9 @@ export default function ConversationActivity({
         ]);
         setNovaMood('speaking');
         void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
-        pushTimer(() => handleOptionSelect(fallback), 2500);
+        pushTimer(() => {
+          handleOptionSelect(fallback);
+        }, 2500);
         return;
       }
 
@@ -1351,6 +1364,9 @@ export default function ConversationActivity({
     [
       options,
       data.targetWords,
+      data.scenarioId,
+      data.scenarioMode,
+      data.targetPatterns,
       handleOptionSelect,
       haptic,
       rememberConversationSlot,
@@ -1421,7 +1437,7 @@ export default function ConversationActivity({
           feedbackTimerRef.current = setTimeout(() => {
             setFeedback('idle');
             setNovaMood('listening');
-            if (SpeechRecognitionAPI && optionsRef.current.length > 0) {
+            if (optionsRef.current.length > 0) {
               startListeningRef.current();
             }
           }, 1200);
@@ -1450,7 +1466,7 @@ export default function ConversationActivity({
 
         // Pass all alternatives so handleFreeInput can try each before giving up
         const [best, ...rest] = transcripts;
-        if (best) handleFreeInputRef.current(best, rest);
+        if (best) void handleFreeInputRef.current(best, rest);
       };
 
       recognition.start();
@@ -1470,7 +1486,9 @@ export default function ConversationActivity({
 
   // Keep handleFreeInputRef in sync so STT onresult always calls the latest version
   // (avoids stale closure when hintVisible changes mid-recognition session)
-  const handleFreeInputRef = useRef<(rawText: string, alternatives?: string[]) => void>(() => {});
+  const handleFreeInputRef = useRef<
+    (rawText: string, alternatives?: string[]) => void | Promise<void>
+  >(() => {});
   handleFreeInputRef.current = handleFreeInput;
 
   // Keep advanceToNode/finishConversation refs current so the data useEffect can call the

@@ -11,6 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { speak as ttsSpeak } from '@services/speech/speechService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface StoryComprehensionActivityProps extends ActivityCallbacks {
@@ -21,6 +22,7 @@ export default function StoryComprehensionActivity({
   data,
   onComplete,
 }: StoryComprehensionActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
   const [phase, setPhase] = useState<'reading' | 'questions'>('reading');
   const [currentQ, setCurrentQ] = useState(0);
@@ -125,13 +127,15 @@ export default function StoryComprehensionActivity({
                 setShowTranslation((p) => !p);
               }}
             >
-              {showTranslation ? '🙈 Çeviriyi gizle' : '👁️ Çeviriyi göster'}
+              {showTranslation
+                ? t('activityUI.storyComprehension.hideTranslation')
+                : t('activityUI.storyComprehension.showTranslation')}
             </motion.button>
           </div>
         </div>
 
         <Button variant="primary" className="w-full" onClick={handleStartQuestions}>
-          Soruları Cevapla →
+          {t('activityUI.storyComprehension.answerQuestions')}
         </Button>
       </div>
     );
@@ -211,7 +215,7 @@ export default function StoryComprehensionActivity({
           animate={{ opacity: 1, scale: 1 }}
           className="text-center text-2xl"
         >
-          ✅ Doğru!
+          {t('activityUI.storyComprehension.correct')}
         </motion.div>
       )}
 

@@ -1,19 +1,50 @@
 {
   "greeting": "Merhaba, {{name}}! 👋",
-  "dailyGoal": "Günlük Hedef",
-  "dailyGoalDesc": "{{current}}/{{target}} ders",
-  "streak": "{{count}} Günlük Seri 🔥",
-  "level": "Seviye {{level}}",
-  "worlds": "Dünyalar",
+  "subtitle": "Bugün ne öğrenmek istersin?",
+  "streakLabel": "Gün Seri",
+  "worldsTitle": "Dünyalar 🌍",
   "seeAll": "Tümünü Gör",
 
-  "quickActions": {
-    "title": "Hızlı Erişim",
-    "dailyQuest": "Günlük Görevler",
-    "practice": "Pratik Yap",
-    "collection": "Koleksiyon",
-    "achievements": "Başarılar"
+  "conversation": {
+    "title": "Nova ile Konuş",
+    "subtitle": "Birebir konuşma pratiği yap — her gün yeni senaryolar!"
   },
+
+  "review": {
+    "title": "Günlük Tekrar",
+    "subtitle": "{{count}} kelime tekrar bekliyor"
+  },
+
+  "quickActions": {
+    "continue": "Devam Et",
+    "continueDesc": "Bulunduğun dünyaya dön",
+    "dailyWheel": "Günlük Çark",
+    "dailyWheelDesc": "Günlük ödülünü çevir",
+    "achievements": "Başarımlar",
+    "achievementsDesc": "Açtığın rozetleri gör",
+    "quests": "Görevler",
+    "questsDesc": "Günlük görevleri tamamla",
+    "shop": "Mağaza",
+    "shopDesc": "Nova için yeni eşyalar",
+    "stories": "Hikayeler",
+    "storiesDesc": "İngilizce hikaye oku"
+  },
+
+  "worldCard": {
+    "current": " · Devam ediyor",
+    "active": "Aktif"
+  },
+
+  "premium": {
+    "title": "Premium Dünya",
+    "message": "Bu dünya NovaLingo Plus aboneliği gerektirir."
+  },
+
+  "dailyGoal": "Günlük Hedef",
+  "dailyGoalUnlimited": "Sınırsız ders erişimi aktif",
+  "dailyGoalProgress": "{{current}} / {{target}} ders tamamlandı",
+
+  "novaGreeting": "Bugün harika bir gün olacak! 🌟",
 
   "worldMap": {
     "title": "Dünya Haritası",
@@ -21,7 +52,15 @@
     "unlockAt": "Seviye {{level}}'de açılır",
     "progress": "%{{percent}} tamamlandı",
     "lessonsLeft": "{{count}} ders kaldı",
-    "completed": "Tamamlandı ✓"
+    "completed": "Tamamlandı ✓",
+    "back": "← Dünyalar",
+    "worldFallback": "Dünya",
+    "unitsFallback": "Üniteler",
+    "lessonsCompleted": "{{completed}}/{{total}} ders tamamlandı",
+    "conversationCta": "Öğrendiklerini pratik yap!",
+    "premiumMessage": "Bu dünyayı açmak için NovaLingo Plus gerekiyor.",
+    "limitTitle": "Günlük Limit Doldu",
+    "limitMessage": "Bugünkü 3 ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus'a geçin."
   },
 
   "worlds": {

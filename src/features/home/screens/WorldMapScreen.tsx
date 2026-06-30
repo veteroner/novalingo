@@ -23,7 +23,8 @@ import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // Lesson with local status overlay
@@ -72,6 +73,7 @@ interface PathNode {
 export default function WorldMapScreen() {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation('home');
   const child = useChildStore((s) => s.activeChild);
   const user = useAuthStore((s) => s.user);
   const showToast = useUIStore((s) => s.showToast);
@@ -90,32 +92,35 @@ export default function WorldMapScreen() {
   }, [lessonProgress]);
 
   const emoji = curWorld?.emoji ?? '🌍';
-  const worldName = curWorld?.name ?? 'Dünya';
+  const worldName = curWorld?.name ?? t('worldMap.worldFallback');
   const isPremiumLocked = curWorld ? isWorldPremiumLocked(user, curWorld) : false;
   const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgress);
 
   // Apply status based on per-lesson completion data
-  const applyStatus = (list: LessonWithStatus[]): LessonWithStatus[] => {
-    let foundFirstIncomplete = false;
-    return list.map((lesson) => {
-      const lp = lessonProgressMap.get(lesson.id);
-      const starsEarned = lp?.starsEarned ?? 0;
-      const isCompleted = lessonProgressMap.has(lesson.id);
-      const isActive = !isCompleted && !foundFirstIncomplete;
-      if (isActive) foundFirstIncomplete = true;
-      let status: LessonWithStatus['status'];
-      if (isCompleted) {
-        status = starsEarned === 3 ? 'perfect' : 'completed';
-      } else if (isActive) {
-        status = 'active';
-      } else if (!foundFirstIncomplete) {
-        status = 'active';
-      } else {
-        status = 'locked';
-      }
-      return { ...lesson, status, stars: starsEarned } as LessonWithStatus;
-    });
-  };
+  const applyStatus = useCallback(
+    (list: LessonWithStatus[]): LessonWithStatus[] => {
+      let foundFirstIncomplete = false;
+      return list.map((lesson) => {
+        const lp = lessonProgressMap.get(lesson.id);
+        const starsEarned = lp?.starsEarned ?? 0;
+        const isCompleted = lessonProgressMap.has(lesson.id);
+        const isActive = !isCompleted && !foundFirstIncomplete;
+        if (isActive) foundFirstIncomplete = true;
+        let status: LessonWithStatus['status'];
+        if (isCompleted) {
+          status = starsEarned === 3 ? 'perfect' : 'completed';
+        } else if (isActive) {
+          status = 'active';
+        } else if (!foundFirstIncomplete) {
+          status = 'active';
+        } else {
+          status = 'locked';
+        }
+        return { ...lesson, status, stars: starsEarned } as LessonWithStatus;
+      });
+    },
+    [lessonProgressMap],
+  );
 
   const lessons = useMemo(() => {
     if (firestoreLessons && firestoreLessons.length > 0) {
@@ -127,7 +132,7 @@ export default function WorldMapScreen() {
       return applyStatus(withStatus);
     }
     return applyStatus(fallback);
-  }, [firestoreLessons, fallback, lessonProgressMap]);
+  }, [firestoreLessons, fallback, applyStatus]);
 
   const completedCount = lessons.filter(
     (l) => l.status === 'completed' || l.status === 'perfect',
@@ -164,17 +169,17 @@ export default function WorldMapScreen() {
           onClick={() => navigate('/home')}
           className="mb-2 text-sm font-semibold text-white/80"
         >
-          ← Dünyalar
+          {t('worldMap.back')}
         </button>
         <Text variant="h3" className="text-white">
           {emoji} {worldName}
         </Text>
         <Text variant="bodySmall" className="mb-3 text-white/80">
-          {curWorld?.units.map((u) => u.name).join(' · ') ?? 'Üniteler'}
+          {curWorld?.units.map((u) => u.name).join(' · ') ?? t('worldMap.unitsFallback')}
         </Text>
         <ProgressBar value={progress} size="sm" variant="lesson" showLabel={false} />
         <Text variant="caption" className="mt-1 text-white/60">
-          {completedCount}/{lessons.length} ders tamamlandı
+          {t('worldMap.lessonsCompleted', { completed: completedCount, total: lessons.length })}
         </Text>
       </motion.div>
 
@@ -207,7 +212,7 @@ export default function WorldMapScreen() {
                 onClick={() => {
                   if (isConvLocked) return;
                   void unlockAudioPlayback();
-                  navigate(`/conversation?worldId=${node.worldId ?? 'w1'}`);
+                  void navigate(`/conversation?worldId=${node.worldId ?? 'w1'}`);
                 }}
                 disabled={isConvLocked}
               >
@@ -218,10 +223,10 @@ export default function WorldMapScreen() {
                     weight="bold"
                     className={isConvLocked ? 'text-gray-400' : 'text-nova-blue'}
                   >
-                    Nova ile Konuş
+                    {t('conversation.title')}
                   </Text>
                   <Text variant="caption" className="text-text-secondary">
-                    Öğrendiklerini pratik yap!
+                    {t('worldMap.conversationCta')}
                   </Text>
                 </div>
                 {!isConvLocked && <span className="ml-2 text-lg">→</span>}
@@ -229,7 +234,8 @@ export default function WorldMapScreen() {
             );
           }
 
-          const lesson = node.lesson!;
+          const lesson = node.lesson;
+          if (!lesson) return null;
           return (
             <LessonCard
               key={lesson.id}
@@ -242,20 +248,19 @@ export default function WorldMapScreen() {
                 if (isPremiumLocked) {
                   showToast({
                     type: 'info',
-                    title: 'Premium Dünya',
-                    message: 'Bu dünyayı açmak için NovaLingo Plus gerekiyor.',
+                    title: t('premium.title'),
+                    message: t('worldMap.premiumMessage'),
                   });
-                  navigate('/subscription');
+                  void navigate('/subscription');
                   return;
                 }
                 if (hasReachedDailyLimit) {
                   showToast({
                     type: 'info',
-                    title: 'Günlük Limit Doldu',
-                    message:
-                      'Bugünkü 3 ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus’a geçin.',
+                    title: t('worldMap.limitTitle'),
+                    message: t('worldMap.limitMessage'),
                   });
-                  navigate('/subscription');
+                  void navigate('/subscription');
                   return;
                 }
                 void unlockAudioPlayback();

@@ -19,6 +19,7 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const DAILY_WHEEL_SLICES: WheelSlice[] = [
@@ -126,11 +127,12 @@ function ConfirmationModal({
   onClose: () => void;
   modalData: Record<string, unknown> | null;
 }) {
-  const title = (modalData?.title as string) ?? 'Onay Gerekli';
-  const message = (modalData?.message as string) ?? 'Bu işlemi yapmak istediğine emin misin?';
-  const confirmText = (modalData?.confirmText as string) ?? 'Onayla';
-  const cancelText = (modalData?.cancelText as string) ?? 'Vazgeç';
-  const tone = (modalData?.tone as 'default' | 'danger') ?? 'default';
+  const { t } = useTranslation('common');
+  const title = (modalData?.title as string | undefined) ?? t('modals.confirmTitle');
+  const message = (modalData?.message as string | undefined) ?? t('modals.confirmDefault');
+  const confirmText = (modalData?.confirmText as string | undefined) ?? t('modals.confirmOk');
+  const cancelText = (modalData?.cancelText as string | undefined) ?? t('modals.cancel');
+  const tone = (modalData?.tone as 'default' | 'danger' | undefined) ?? 'default';
   const onConfirm = modalData?.onConfirm as (() => void | Promise<void>) | undefined;
   const onCancel = modalData?.onCancel as (() => void) | undefined;
 
@@ -175,7 +177,9 @@ function ConfirmationModal({
 }
 
 function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { t, i18n } = useTranslation('common');
   const navigate = useNavigate();
+  const activeLang = (i18n.resolvedLanguage ?? i18n.language).startsWith('en') ? 'en' : 'tr';
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const resetAuth = useAuthStore((s) => s.reset);
@@ -200,35 +204,64 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
     <ModalShell isOpen={isOpen} onClose={onClose}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-xl font-bold text-gray-900">⚙️ Hızlı Ayarlar</h3>
-          <p className="mt-1 text-sm text-gray-500">Ses, titreşim ve ebeveyn ayarlarına hızlı erişim.</p>
+          <h3 className="text-xl font-bold text-gray-900">{t('modals.settingsTitle')}</h3>
+          <p className="mt-1 text-sm text-gray-500">{t('modals.settingsDesc')}</p>
         </div>
       </div>
 
       <div className="mt-5 space-y-3">
-        {[
-          ['🔊 Ses efektleri', 'soundEnabled'],
-          ['🎵 Arka plan müziği', 'musicEnabled'],
-          ['📳 Titreşim', 'hapticEnabled'],
-          ['🔔 Bildirimler', 'notificationsEnabled'],
-        ].map(([label, key]) => (
-          <div key={String(key)} className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
-            <span className="text-sm font-semibold text-gray-700">{label}</span>
+        {(
+          [
+            ['modals.toggleSound', 'soundEnabled'],
+            ['modals.toggleMusic', 'musicEnabled'],
+            ['modals.toggleHaptic', 'hapticEnabled'],
+            ['modals.toggleNotifications', 'notificationsEnabled'],
+          ] as const
+        ).map(([labelKey, key]) => (
+          <div
+            key={key}
+            className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3"
+          >
+            <span className="text-sm font-semibold text-gray-700">{t(labelKey)}</span>
             <button
               type="button"
               onClick={() => {
-                toggleSetting(
-                  key as 'soundEnabled' | 'musicEnabled' | 'hapticEnabled' | 'notificationsEnabled',
-                );
+                toggleSetting(key);
               }}
               className={`rounded-full px-3 py-1 text-xs font-bold ${
-                user?.settings[key as keyof typeof user.settings] ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'
+                user?.settings[key] ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'
               }`}
             >
-              {user?.settings[key as keyof typeof user.settings] ? 'Açık' : 'Kapalı'}
+              {user?.settings[key] ? t('modals.on') : t('modals.off')}
             </button>
           </div>
         ))}
+      </div>
+
+      {/* Language switcher — UI dili (öğretilen dil değil) */}
+      <div className="mt-5 flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
+        <span className="text-sm font-semibold text-gray-700">{t('modals.language')}</span>
+        <div className="flex gap-2">
+          {(
+            [
+              ['tr', 'Türkçe'],
+              ['en', 'English'],
+            ] as const
+          ).map(([lng, label]) => (
+            <button
+              key={lng}
+              type="button"
+              onClick={() => {
+                void i18n.changeLanguage(lng);
+              }}
+              className={`rounded-full px-3 py-1 text-xs font-bold ${
+                activeLang === lng ? 'bg-nova-blue text-white' : 'bg-gray-200 text-gray-500'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-5 space-y-3">
@@ -238,19 +271,19 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             onClose();
             void navigate('/parent/settings');
           }}
-          className="w-full rounded-2xl bg-nova-blue/10 px-4 py-3 text-sm font-semibold text-nova-blue"
+          className="bg-nova-blue/10 text-nova-blue w-full rounded-2xl px-4 py-3 text-sm font-semibold"
         >
-          👨‍👩‍👧 Gelişmiş ebeveyn ayarları
+          {t('modals.advancedParent')}
         </button>
         <button
           type="button"
           onClick={() => {
             onClose();
             openModal('confirmation', {
-              title: 'Oturumu kapat',
-              message: 'Bu cihazdaki oturumu kapatıp giriş ekranına dönmek istiyor musun?',
-              confirmText: 'Çıkış yap',
-              cancelText: 'Kal',
+              title: t('modals.signOutTitle'),
+              message: t('modals.signOutMessage'),
+              confirmText: t('modals.signOutConfirm'),
+              cancelText: t('modals.signOutStay'),
               tone: 'danger',
               onConfirm: async () => {
                 await signOut();
@@ -262,7 +295,7 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
           }}
           className="w-full rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600"
         >
-          🚪 Oturumu kapat
+          {t('modals.signOutButton')}
         </button>
       </div>
     </ModalShell>
@@ -270,51 +303,57 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 }
 
 function StreakLostModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { t } = useTranslation('common');
   const child = useChildStore((s) => s.activeChild);
   const openModal = useUIStore((s) => s.openModal);
   const showToast = useUIStore((s) => s.showToast);
   const freezeMutation = useStreakFreezeAction();
 
-  const streakText = child?.currentStreak && child.currentStreak > 0 ? `${child.currentStreak} günlük seri aktif` : 'Serin risk altında';
+  const streakText =
+    child?.currentStreak && child.currentStreak > 0
+      ? t('modals.streakActive', { count: child.currentStreak })
+      : t('modals.streakAtRisk');
 
   return (
     <ModalShell isOpen={isOpen} onClose={onClose}>
       <div className="text-center">
         <div className="mb-3 text-5xl">🔥</div>
-        <h3 className="text-xl font-bold text-gray-900">Seriyi Koru</h3>
+        <h3 className="text-xl font-bold text-gray-900">{t('modals.streakTitle')}</h3>
         <p className="mt-2 text-sm leading-6 text-gray-500">
-          {streakText}. Elindeki seri korumaları kullanarak serini kaybetmeden devam edebilirsin.
+          {streakText}. {t('modals.streakDesc')}
         </p>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         <div className="rounded-2xl bg-orange-50 p-4 text-center">
           <div className="text-2xl font-bold text-orange-600">{child?.currentStreak ?? 0}</div>
-          <div className="mt-1 text-xs font-semibold text-gray-500">Aktif seri</div>
+          <div className="mt-1 text-xs font-semibold text-gray-500">
+            {t('modals.activeStreakLabel')}
+          </div>
         </div>
         <div className="rounded-2xl bg-sky-50 p-4 text-center">
           <div className="text-2xl font-bold text-sky-600">{child?.streakFreezes ?? 0}</div>
-          <div className="mt-1 text-xs font-semibold text-gray-500">Seri koruma</div>
+          <div className="mt-1 text-xs font-semibold text-gray-500">{t('modals.freezeLabel')}</div>
         </div>
       </div>
 
       <div className="mt-5 space-y-3">
         <button
           type="button"
-          disabled={!child || (child.streakFreezes ?? 0) <= 0 || freezeMutation.isPending}
+          disabled={!child || child.streakFreezes <= 0 || freezeMutation.isPending}
           onClick={() => {
-            if (!child || (child.streakFreezes ?? 0) <= 0) return;
+            if (!child || child.streakFreezes <= 0) return;
             openModal('confirmation', {
-              title: 'Seri koruma kullan',
-              message: '1 adet seri koruma harcanacak. Devam etmek istiyor musun?',
-              confirmText: 'Kullan',
-              cancelText: 'Vazgeç',
+              title: t('modals.useFreezeTitle'),
+              message: t('modals.useFreezeMessage'),
+              confirmText: t('modals.useFreezeConfirm'),
+              cancelText: t('modals.cancel'),
               onConfirm: async () => {
                 await freezeMutation.mutateAsync({ childId: child.id });
                 showToast({
                   type: 'success',
-                  title: 'Seri korundu',
-                  message: 'Bugünkü serin güvende.',
+                  title: t('modals.streakSavedTitle'),
+                  message: t('modals.streakSavedMessage'),
                 });
               },
             });
@@ -322,9 +361,9 @@ function StreakLostModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
           }}
           className="w-full rounded-2xl bg-sky-500 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-200"
         >
-          🧊 1 seri koruma kullan
+          {t('modals.useFreeze')}
         </button>
-        <p className="text-center text-xs text-gray-500">Koruman yoksa bugün bir ders tamamlayıp serini devam ettir.</p>
+        <p className="text-center text-xs text-gray-500">{t('modals.streakNoFreeze')}</p>
       </div>
     </ModalShell>
   );
@@ -339,18 +378,18 @@ function CollectibleModal({
   onClose: () => void;
   modalData: Record<string, unknown> | null;
 }) {
-  const name = (modalData?.name as string) ?? 'Koleksiyon Öğesi';
-  const emoji = (modalData?.emoji as string) ?? '✨';
-  const rarity = (modalData?.rarity as string) ?? 'common';
-  const description =
-    (modalData?.description as string) ?? 'Bu öğeyi dersler ve görevler üzerinden kazanabilirsin.';
-  const fact = (modalData?.fact as string) ?? 'Nova her koleksiyon parçasını saklamayı çok sever.';
+  const { t } = useTranslation('common');
+  const name = (modalData?.name as string | undefined) ?? t('modals.collectibleName');
+  const emoji = (modalData?.emoji as string | undefined) ?? '✨';
+  const rarity = (modalData?.rarity as string | undefined) ?? 'common';
+  const description = (modalData?.description as string | undefined) ?? t('modals.collectibleDesc');
+  const fact = (modalData?.fact as string | undefined) ?? t('modals.collectibleFact');
 
   return (
     <ModalShell isOpen={isOpen} onClose={onClose} size="max-w-sm">
       <div className="text-center">
         <div className="mb-3 text-6xl">{emoji}</div>
-        <div className="mb-2 inline-flex rounded-full bg-nova-purple/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-nova-purple">
+        <div className="bg-nova-purple/10 text-nova-purple mb-2 inline-flex rounded-full px-3 py-1 text-xs font-bold tracking-wide uppercase">
           {rarity}
         </div>
         <h3 className="text-2xl font-bold text-gray-900">{name}</h3>
@@ -358,7 +397,9 @@ function CollectibleModal({
       </div>
 
       <div className="mt-5 rounded-2xl bg-amber-50 p-4">
-        <div className="text-xs font-bold uppercase tracking-wide text-amber-700">Nova notu</div>
+        <div className="text-xs font-bold tracking-wide text-amber-700 uppercase">
+          {t('modals.novaNote')}
+        </div>
         <p className="mt-2 text-sm leading-6 text-amber-900">{fact}</p>
       </div>
     </ModalShell>
@@ -366,6 +407,7 @@ function CollectibleModal({
 }
 
 function DailyWheelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { t } = useTranslation('common');
   const child = useChildStore((s) => s.activeChild);
   const addXP = useChildStore((s) => s.addXP);
   const updateCurrency = useChildStore((s) => s.updateCurrency);
@@ -376,13 +418,16 @@ function DailyWheelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
 
   const canSpin = Boolean(child) && !hasSpunThisOpen && !spinWheel.isPending;
 
-  const rewardLabel = useCallback((type: string) => {
-    if (type === 'xp') return 'XP';
-    if (type === 'stars') return 'yıldız';
-    if (type === 'gems') return 'elmas';
-    if (type === 'streak_freeze') return 'seri koruma';
-    return 'ödül';
-  }, []);
+  const rewardLabel = useCallback(
+    (type: string) => {
+      if (type === 'xp') return t('reward.xp');
+      if (type === 'stars') return t('reward.stars');
+      if (type === 'gems') return t('reward.gems');
+      if (type === 'streak_freeze') return t('reward.streakFreeze');
+      return t('reward.generic');
+    },
+    [t],
+  );
 
   const handleSpin = useCallback(async () => {
     if (!child) {
@@ -407,7 +452,7 @@ function DailyWheelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
       trackDailyWheelSpin(`${result.reward.type}:${result.reward.amount}`);
       showToast({
         type: 'success',
-        title: 'Günlük ödül kazanıldı',
+        title: t('modals.wheelRewardTitle'),
         message: `+${result.reward.amount} ${rewardLabel(result.reward.type)}`,
       });
 
@@ -418,18 +463,18 @@ function DailyWheelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
     } catch (error) {
       showToast({
         type: 'error',
-        title: 'Çark çevrilemedi',
-        message: error instanceof Error ? error.message : 'Lütfen biraz sonra tekrar dene.',
+        title: t('modals.wheelErrorTitle'),
+        message: error instanceof Error ? error.message : t('modals.wheelErrorMessage'),
       });
       throw error;
     }
-  }, [addXP, child, rewardLabel, showToast, spinWheel, updateActiveChild, updateCurrency]);
+  }, [addXP, child, rewardLabel, showToast, spinWheel, updateActiveChild, updateCurrency, t]);
 
   const subtitle = useMemo(() => {
-    if (!child) return 'Çarkı çevirmek için önce bir profil seç.';
-    if (hasSpunThisOpen) return 'Bugünkü ödülünü aldın. Yarın tekrar gel.';
-    return 'Her gün bir kez çevir ve sürpriz ödül kazan.';
-  }, [child, hasSpunThisOpen]);
+    if (!child) return t('modals.wheelNoProfile');
+    if (hasSpunThisOpen) return t('modals.wheelAlreadySpun');
+    return t('modals.wheelPrompt');
+  }, [child, hasSpunThisOpen, t]);
 
   if (!isOpen) return null;
 
@@ -438,7 +483,7 @@ function DailyWheelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
       <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-gray-900">🎰 Günlük Çark</h3>
+            <h3 className="text-xl font-bold text-gray-900">{t('modals.wheelTitle')}</h3>
             <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
           </div>
           <button
@@ -466,10 +511,10 @@ export function GlobalModalRenderer() {
       {/* Level Up Modal */}
       <LevelUpModal
         isOpen={activeModal === 'levelUp'}
-        level={(modalData?.level as number) ?? 1}
+        level={(modalData?.level as number | undefined) ?? 1}
         rewards={{
-          stars: (modalData?.rewards as { stars: number; gems: number })?.stars ?? 0,
-          gems: (modalData?.rewards as { stars: number; gems: number })?.gems ?? 0,
+          stars: (modalData?.rewards as { stars: number; gems: number } | undefined)?.stars ?? 0,
+          gems: (modalData?.rewards as { stars: number; gems: number } | undefined)?.gems ?? 0,
         }}
         onClose={closeModal}
       />
@@ -477,15 +522,15 @@ export function GlobalModalRenderer() {
       {/* Nova Evolution Modal */}
       <NovaEvolutionModal
         isOpen={activeModal === 'novaEvolution'}
-        oldStage={(modalData?.oldStage as NovaStage) ?? 'egg'}
-        newStage={(modalData?.newStage as NovaStage) ?? 'baby'}
+        oldStage={(modalData?.oldStage as NovaStage | undefined) ?? 'egg'}
+        newStage={(modalData?.newStage as NovaStage | undefined) ?? 'baby'}
         onClose={closeModal}
       />
 
       {/* Achievement Popup */}
       <AchievementPopup
         isOpen={activeModal === 'achievement'}
-        achievement={(modalData?.achievement as AchievementDefinition) ?? null}
+        achievement={(modalData?.achievement as AchievementDefinition | undefined) ?? null}
         onClose={closeModal}
       />
 

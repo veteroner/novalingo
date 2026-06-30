@@ -6,7 +6,12 @@
  * App Store & Google Play zorunlu gereksinim.
  */
 
-import { ArrowLeft, BookOpen, ShieldCheck } from '@phosphor-icons/react';
+import {
+  ArrowLeftIcon as ArrowLeft,
+  BookOpenIcon as BookOpen,
+  ShieldCheckIcon as ShieldCheck,
+} from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 type LegalType = 'privacy' | 'terms';
@@ -16,6 +21,9 @@ const APP_NAME = 'NovaLingo';
 const COMPANY = 'NovaLingo';
 const CONTACT_EMAIL = 'privacy@novalingo.app';
 
+// NOT: Aşağıdaki yasal metin gövdeleri (PrivacyPolicy / TermsOfService) bilinçli olarak
+// Türkçe bırakılmıştır. Yasal belgeler makine çevirisiyle değil, profesyonel/hukuki
+// çeviriyle yerelleştirilmelidir. Ekran çerçevesi (başlık, sekmeler, geri) i18n'lidir.
 function PrivacyPolicy() {
   return (
     <div className="space-y-6 text-sm leading-relaxed text-gray-700">
@@ -275,6 +283,7 @@ function TermsOfService() {
 }
 
 export default function LegalScreen() {
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const { type } = useParams<{ type: LegalType }>();
   const legalType: LegalType = type === 'terms' ? 'terms' : 'privacy';
@@ -288,7 +297,7 @@ export default function LegalScreen() {
         <button
           onClick={() => navigate(-1)}
           className="rounded-full p-2 transition-colors hover:bg-gray-100"
-          aria-label="Geri"
+          aria-label={t('legal.back')}
         >
           <ArrowLeft size={20} weight="bold" className="text-gray-700" />
         </button>
@@ -299,7 +308,7 @@ export default function LegalScreen() {
             <BookOpen size={20} className="text-nova-blue" />
           )}
           <h1 className="text-base font-bold text-gray-900">
-            {isPrivacy ? 'Gizlilik Politikası' : 'Kullanım Koşulları'}
+            {isPrivacy ? t('legal.privacy') : t('legal.terms')}
           </h1>
         </div>
       </div>
@@ -314,7 +323,7 @@ export default function LegalScreen() {
               : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          Gizlilik Politikası
+          {t('legal.privacy')}
         </button>
         <button
           onClick={() => navigate('/legal/terms', { replace: true })}
@@ -324,7 +333,7 @@ export default function LegalScreen() {
               : 'text-gray-400 hover:text-gray-600'
           }`}
         >
-          Kullanım Koşulları
+          {t('legal.terms')}
         </button>
       </div>
 

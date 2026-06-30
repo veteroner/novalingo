@@ -10,6 +10,7 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 interface ParentalGateProps {
@@ -26,6 +27,7 @@ function generateQuestion(): { text: string; answer: number } {
 }
 
 export function ParentalGate({ onPass, onCancel, requireConsent = false }: ParentalGateProps) {
+  const { t } = useTranslation('common');
   const question = useMemo(() => generateQuestion(), []);
   const [input, setInput] = useState('');
   const [error, setError] = useState(false);
@@ -67,10 +69,10 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
           {!mathPassed ? (
             <>
               <Text variant="h3" align="center" className="mb-2">
-                🔒 Ebeveyn Doğrulaması
+                {t('parentalGate.title')}
               </Text>
               <Text variant="body" align="center" className="text-text-secondary mb-6">
-                Devam etmek için aşağıdaki soruyu cevaplayın.
+                {t('parentalGate.prompt')}
               </Text>
 
               <Text variant="h2" align="center" className="text-nova-blue mb-6">
@@ -88,14 +90,14 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleMathSubmit();
                 }}
-                placeholder="Cevabı yazın"
+                placeholder={t('parentalGate.answerPlaceholder')}
                 className="focus:border-nova-blue mb-2 h-14 w-full rounded-2xl border-3 border-gray-200 bg-white px-4 text-center text-2xl font-bold transition-colors focus:outline-none"
                 autoFocus
               />
 
               {error && (
                 <Text variant="caption" align="center" className="text-error mb-2">
-                  Yanlış cevap, tekrar deneyin.
+                  {t('parentalGate.wrong')}
                 </Text>
               )}
 
@@ -107,20 +109,20 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                   onClick={handleMathSubmit}
                   disabled={!canSubmitMath}
                 >
-                  Doğrula
+                  {t('parentalGate.verify')}
                 </Button>
                 <Button variant="ghost" size="md" fullWidth onClick={onCancel}>
-                  İptal
+                  {t('parentalGate.cancel')}
                 </Button>
               </div>
             </>
           ) : (
             <>
               <Text variant="h3" align="center" className="mb-2">
-                📋 Onay Gerekli
+                {t('parentalGate.consentTitle')}
               </Text>
               <Text variant="body" align="center" className="text-text-secondary mb-6">
-                Hesap oluşturmak için aşağıdaki koşulları onaylayın.
+                {t('parentalGate.consentPrompt')}
               </Text>
 
               <div className="mb-6 space-y-4">
@@ -132,17 +134,24 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                       setConsentPrivacy(e.target.checked);
                     }}
                     className="mt-1 h-5 w-5 shrink-0 rounded accent-blue-500"
-                    aria-label="Gizlilik Politikası ve Kullanım Koşulları onayı"
+                    aria-label={t('parentalGate.consentAria')}
                   />
                   <span className="text-sm leading-snug text-gray-700">
-                    <Link to="/legal/privacy" className="font-medium text-blue-600 underline">
-                      Gizlilik Politikası
-                    </Link>{' '}
-                    ve{' '}
-                    <Link to="/legal/terms" className="font-medium text-blue-600 underline">
-                      Kullanım Koşulları
-                    </Link>
-                    &apos;nı okudum ve kabul ediyorum.
+                    <Trans
+                      i18nKey="parentalGate.consentText"
+                      ns="common"
+                      components={{
+                        privacy: (
+                          <Link
+                            to="/legal/privacy"
+                            className="font-medium text-blue-600 underline"
+                          />
+                        ),
+                        terms: (
+                          <Link to="/legal/terms" className="font-medium text-blue-600 underline" />
+                        ),
+                      }}
+                    />
                   </span>
                 </label>
 
@@ -154,15 +163,21 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                       setConsentCoppa(e.target.checked);
                     }}
                     className="mt-1 h-5 w-5 shrink-0 rounded accent-blue-500"
-                    aria-label="Ebeveyn COPPA onayı"
+                    aria-label={t('parentalGate.coppaAria')}
                   />
                   <span className="text-sm leading-snug text-gray-700">
-                    Bu uygulamayı 13 yaş altı bir çocuk için ebeveyn/vasi sıfatıyla kullandığımı ve
-                    çocuğun kişisel verilerinin{' '}
-                    <Link to="/legal/privacy" className="font-medium text-blue-600 underline">
-                      Gizlilik Politikası
-                    </Link>{' '}
-                    kapsamında işleneceğini onaylıyorum.
+                    <Trans
+                      i18nKey="parentalGate.coppaText"
+                      ns="common"
+                      components={{
+                        privacy: (
+                          <Link
+                            to="/legal/privacy"
+                            className="font-medium text-blue-600 underline"
+                          />
+                        ),
+                      }}
+                    />
                   </span>
                 </label>
               </div>
@@ -175,10 +190,10 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                   onClick={onPass}
                   disabled={!canConfirmConsent}
                 >
-                  Devam Et
+                  {t('parentalGate.confirm')}
                 </Button>
                 <Button variant="ghost" size="md" fullWidth onClick={onCancel}>
-                  İptal
+                  {t('parentalGate.cancel')}
                 </Button>
               </div>
             </>

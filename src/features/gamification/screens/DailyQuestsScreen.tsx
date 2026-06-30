@@ -16,6 +16,7 @@ import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /** Seconds remaining until midnight (local time) */
 function secondsUntilMidnight(): number {
@@ -31,6 +32,7 @@ export default function DailyQuestsScreen() {
   const claimReward = useClaimQuestReward();
   const [localClaimed, setLocalClaimed] = useState<Set<string>>(new Set());
   const showToast = useUIStore((s) => s.showToast);
+  const { t } = useTranslation('gamification');
 
   const quests = serverQuests ?? [];
 
@@ -61,14 +63,14 @@ export default function DailyQuestsScreen() {
           onError: () => {
             showToast({
               type: 'error',
-              title: 'Ödül alınamadı',
-              message: 'Bir hata oluştu, lütfen tekrar dene.',
+              title: t('quests.rewardErrorTitle'),
+              message: t('quests.rewardErrorMessage'),
             });
           },
         },
       );
     },
-    [child, claimReward, showToast],
+    [child, claimReward, showToast, t],
   );
 
   return (
@@ -76,9 +78,9 @@ export default function DailyQuestsScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Header */}
         <div>
-          <Text variant="h3">⚔️ Günlük Görevler</Text>
+          <Text variant="h3">{t('quests.title')}</Text>
           <Text variant="bodySmall" className="text-text-secondary">
-            Her gün yeni görevler seni bekliyor!
+            {t('quests.subtitle')}
           </Text>
         </div>
 
@@ -87,7 +89,7 @@ export default function DailyQuestsScreen() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Text variant="bodySmall" weight="bold">
-                Günlük İlerleme
+                {t('quests.dailyProgress')}
               </Text>
               <Badge variant="success" size="sm">
                 {completedCount}/{quests.length}
@@ -97,7 +99,7 @@ export default function DailyQuestsScreen() {
             {progress >= 1 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <Text variant="caption" className="text-success text-center font-bold">
-                  🎉 Tüm görevler tamamlandı! Bonus ödül kazandın!
+                  {t('quests.allComplete')}
                 </Text>
               </motion.div>
             )}
@@ -111,10 +113,10 @@ export default function DailyQuestsScreen() {
               <div className="space-y-2 text-center">
                 <span className="text-4xl">⚔️</span>
                 <Text variant="body" weight="bold">
-                  Henüz görev yok
+                  {t('quests.empty')}
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
-                  Günlük görevler yakında gelecek!
+                  {t('quests.comingSoon')}
                 </Text>
               </div>
             </Card>
@@ -137,7 +139,7 @@ export default function DailyQuestsScreen() {
           <div className="flex items-center justify-center gap-2">
             <span className="text-lg">⏰</span>
             <Text variant="caption" weight="bold" className="text-text-secondary">
-              Yeni görevlere kalan: {timerText}
+              {t('quests.nextIn', { time: timerText })}
             </Text>
           </div>
         </Card>

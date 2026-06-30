@@ -11,6 +11,7 @@ import { Text } from '@components/atoms/Text';
 import { clsx } from 'clsx';
 import { motion, useAnimationControls } from 'framer-motion';
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface DailyWheelProps {
   slices: WheelSlice[];
@@ -31,6 +32,7 @@ const SLICE_COLORS = [
 ];
 
 export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelProps) {
+  const { t } = useTranslation('common');
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<{ type: string; amount: number } | null>(null);
   const controls = useAnimationControls();
@@ -165,7 +167,7 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
         isLoading={isSpinning}
         disabled={!canSpin}
       >
-        {canSpin ? '🎰 Çevir!' : 'Yarın Tekrar Gel!'}
+        {canSpin ? t('dailyWheelButton.spin') : t('dailyWheelButton.comeBack')}
       </Button>
     </div>
   );

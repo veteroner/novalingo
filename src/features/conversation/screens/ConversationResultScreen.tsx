@@ -115,8 +115,12 @@ export default function ConversationResultScreen() {
       goToNextScenario();
       return;
     }
-    const tid = setTimeout(() => setAutoNextRemaining((s) => s - 1), 1000);
-    return () => clearTimeout(tid);
+    const tid = setTimeout(() => {
+      setAutoNextRemaining((s) => s - 1);
+    }, 1000);
+    return () => {
+      clearTimeout(tid);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldAutoAdvance, autoNextCancelled, autoNextRemaining]);
 
@@ -490,7 +494,9 @@ export default function ConversationResultScreen() {
                 <button
                   type="button"
                   className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 active:bg-gray-200"
-                  onClick={() => setAutoNextCancelled(true)}
+                  onClick={() => {
+                    setAutoNextCancelled(true);
+                  }}
                 >
                   {t('conversationResult.autoNextCancel')}
                 </button>

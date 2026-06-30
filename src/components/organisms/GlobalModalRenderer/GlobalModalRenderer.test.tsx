@@ -78,7 +78,7 @@ describe('GlobalModalRenderer', () => {
     mockState.modalData = { level: 7, rewards: { stars: 70, gems: 0 } };
 
     render(<GlobalModalRenderer />);
-    expect(screen.getByText(/Seviye Atladın/)).toBeInTheDocument();
+    expect(screen.getByText(/levelUpModal\.title/)).toBeInTheDocument();
     expect(screen.getByText('7')).toBeInTheDocument();
   });
 
@@ -87,7 +87,7 @@ describe('GlobalModalRenderer', () => {
     mockState.modalData = { oldStage: 'egg', newStage: 'baby' };
 
     render(<GlobalModalRenderer />);
-    expect(screen.getByText(/Nova Evrimleşiyor/)).toBeInTheDocument();
+    expect(screen.getByText(/novaEvolution\.title/)).toBeInTheDocument();
   });
 
   it('does not show level modal when evolution modal is active', () => {
@@ -95,6 +95,6 @@ describe('GlobalModalRenderer', () => {
     mockState.modalData = { oldStage: 'child', newStage: 'teen' };
 
     render(<GlobalModalRenderer />);
-    expect(screen.queryByText(/Seviye Atladın/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/levelUpModal\.title/)).not.toBeInTheDocument();
   });
 });

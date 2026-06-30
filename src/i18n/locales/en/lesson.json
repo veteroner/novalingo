@@ -127,5 +127,199 @@
     "desc": "Watch a short video to 2x your XP and stars",
     "watch": "Watch Video",
     "noThanks": "No, Thanks"
+  },
+
+  "lessonScreen": {
+    "loading": "Loading lesson...",
+    "quit": "Quit Lesson",
+    "pauseTitle": "⏸️ Paused",
+    "resume": "Resume",
+    "savingTitle": "Saving lesson",
+    "limitTitle": "Daily Limit Reached",
+    "limitMessage": "You've used today's free lessons. Try again tomorrow or upgrade to Plus.",
+    "resultOpened": "Result screen opened. Saving will finish in the background."
+  },
+
+  "review": {
+    "title": "📚 Review",
+    "emptyMessage": "No words to review yet. Complete a few lessons first!",
+    "backHome": "Back to Home",
+    "back": "← Back",
+    "statDueToday": "Due Today",
+    "statTotal": "Total Words",
+    "statLearning": "Learning",
+    "statMastered": "Mastered",
+    "start": "🚀 Start Review ({{count}} words)",
+    "doneToday": "✅ Today's review is complete!",
+    "completedTitle": "Review Complete!",
+    "score": "{{correct}} / {{total}} correct",
+    "retry": "Review Again"
+  },
+
+  "storyLibrary": {
+    "title": "📖 Story Library",
+    "subtitle": "{{count}} stories — start reading!",
+    "backHome": "← Home",
+    "all": "All",
+    "emptyWorld": "No stories for this world yet.",
+    "pageCount": "{{count}} pages",
+    "worlds": {
+      "w1": "Beginner Garden",
+      "w2": "Grammar Castle",
+      "w3": "Story Forest",
+      "w4": "City Square",
+      "w5": "Science Island",
+      "w6": "Adventure Galaxy"
+    }
+  },
+
+  "storyViewer": {
+    "notFound": "Story not found 😕",
+    "backToLibrary": "Back to Library"
+  },
+
+  "lessonResult": {
+    "backHome": "Back to Home",
+    "bossDefeatTitle": "The Boss Beat You!",
+    "bossDefeatSubtitle": "But giving up is not an option… yet.",
+    "attackAgain": "🗡️ Attack Again!",
+    "tryLater": "Try Later",
+    "bossDefeatNova": "You can do this! Every try makes you stronger! 💪",
+    "bossVictoryTitle": "👑 BOSS DEFEATED!",
+    "bossVictorySubtitle": "A perfect victory! You're amazing!",
+    "congrats": "Congratulations! 🎉",
+    "lessonDone": "Lesson Complete",
+    "xpEarned": "XP Earned",
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "correctAnswers": "Correct",
+    "bossReward": "Boss Reward!",
+    "streakBadge": "{{count}} day streak!",
+    "perfect": "Perfect!",
+    "levelUp": "🎉 Level {{level}}!",
+    "levelUpDesc": "You reached a new level!",
+    "newCollectible": "🎁 New Collectible!",
+    "rarity": {
+      "common": "⚪ Common",
+      "uncommon": "🟢 Uncommon",
+      "rare": "🔵 Rare",
+      "epic": "🟣 Epic",
+      "legendary": "🟡 Legendary"
+    },
+    "canDo": "✅ You can now do this",
+    "newWorldUnlocked": "🎊 New World Unlocked",
+    "newWorldDesc": "A new adventure awaits. Nova is taking you to the next world.",
+    "vocabRecap": "📚 Words You Learned",
+    "autoAdvance": "Auto-continuing in {{count}} seconds.",
+    "conversationCta": "🎭 Practice Speaking",
+    "retry": "Try Again",
+    "nextGame": "Next Game: {{name}}",
+    "nextWorldLabel": "New World: {{emoji}} {{name}}",
+    "hintNextLesson": "When you're ready, move to the next lesson.",
+    "hintNextWorld": "This world is done. You can move to the next world.",
+    "hintAllDone": "All worlds complete. Great job!"
+  },
+
+  "activityUI": {
+    "errorBoundary": {
+      "message": "Something went wrong 😅",
+      "continue": "Continue"
+    },
+    "fillBlank": {
+      "title": "📝 Fill the Blank",
+      "correctAnswer": "Correct answer:",
+      "listenAria": "Listen to the sentence",
+      "correct": "🎉 Great! Correct answer!",
+      "wrong": "😢 Wrong, but that's okay!"
+    },
+    "flashCard": {
+      "tapToFlip": "Tap to flip the card 👆",
+      "wordListenAria": "Listen",
+      "slowListenAria": "Listen slowly",
+      "flip": "Tap to flip",
+      "example": "Example Sentence:",
+      "listenAria": "Listen to the sentence",
+      "learned": "Got it! Continue ✨"
+    },
+    "grammar": {
+      "title": "🔄 GRAMMAR TRANSFORM",
+      "hintStart": "💡 The correct answer starts with \"{{prefix}}...\"",
+      "showHint": "💡 Show hint"
+    },
+    "listenAndTap": {
+      "title": "👂 Listen and Choose",
+      "noListensLeft": "No listens left",
+      "listensLeft": "You can listen {{count}} more times",
+      "correct": "🎉 Correct! Awesome!",
+      "wrong": "❌ Correct answer: {{answer}}"
+    },
+    "matchPairs": {
+      "title": "🔗 Match",
+      "subtitle": "Match the English word with its Turkish meaning",
+      "turkish": "Turkish 🇹🇷"
+    },
+    "memory": {
+      "subtitle": "Find the matching cards!",
+      "great": "Great!",
+      "complete": "You matched all the cards!"
+    },
+    "quizBattle": {
+      "score": "{{correct}} / {{total}} Correct"
+    },
+    "sentenceBuilder": {
+      "title": "📝 Build the Sentence",
+      "turkish": "Turkish:",
+      "placeholder": "Tap the words to build a sentence...",
+      "undo": "↩ Undo",
+      "hint": "💡 Hint"
+    },
+    "speakIt": {
+      "title": "🎤 SPEAK",
+      "prompt": "Say this word:",
+      "listening": "Listening...",
+      "tapMic": "Tap the mic and speak",
+      "pronunciation": "💡 Pronunciation:",
+      "micUnavailable": "Microphone unavailable — rate yourself:",
+      "couldNotSay": "Couldn't say it 😕",
+      "said": "I said it! ✓"
+    },
+    "storyComprehension": {
+      "hideTranslation": "🙈 Hide translation",
+      "showTranslation": "👁️ Show translation",
+      "answerQuestions": "Answer the Questions →",
+      "correct": "✅ Correct!"
+    },
+    "storyTime": {
+      "modeRhyme": "RHYME STORY",
+      "modeChain": "CHAIN STORY",
+      "modePicture": "PICTURE STORY",
+      "modeDefault": "STORY TIME",
+      "pickWord": "Pick a word!",
+      "wordPicked": "✅ You picked “{{word}}” — great!",
+      "picturePrompt": "What do you see in the picture? Can you describe it?",
+      "toldGreat": "Great telling!",
+      "listening": "Listening...",
+      "speak": "Speak!",
+      "back": "← Back",
+      "finish": "✨ Finish",
+      "next": "Next →",
+      "rhymeComplete": "Rhyme Complete!",
+      "chainComplete": "Chain Complete!",
+      "toldGreatTitle": "Great Telling!",
+      "storyComplete": "Story Complete!",
+      "wordsDiscovered": "You discovered {{tapped}} / {{total}} words"
+    },
+    "wordBuilder": {
+      "title": "🔤 Build the Word",
+      "undo": "↩ Undo",
+      "hint": "💡 Hint",
+      "perfect": "✨ Perfect!"
+    },
+    "wordSearch": {
+      "title": "🔍 WORD SEARCH",
+      "subtitle": "Find the hidden words! Tap the letters in order.",
+      "cancel": "Cancel",
+      "complete": "You found all the words!"
+    }
   }
 }

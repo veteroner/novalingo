@@ -445,3 +445,19 @@
   --theme-text-inverse: #1a1a2e;
   --theme-border: #2a2a4e;
 }
+
+/* ─── Reduced Motion (WCAG 2.1 AA · SC 2.3.3) ─────────────────
+ * Kullanıcı OS'te "Hareketi Azalt"ı açtıysa CSS animasyon/geçişlerini
+ * neredeyse anlık yap (işlevsellik korunur, hareket kalkar). framer-motion
+ * tarafı AppProviders'taki <MotionConfig reducedMotion="user"> ile kapsanır.
+ * Çocuklarda vestibüler güvenlik için kritik. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -17,24 +17,18 @@ describe('NovaEvolutionModal', () => {
   });
 
   it('renders header when open', () => {
-    render(
-      <NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={vi.fn()} />,
-    );
-    expect(screen.getByText(/Nova Evrimleşiyor/)).toBeInTheDocument();
+    render(<NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={vi.fn()} />);
+    expect(screen.getByText(/novaEvolution\.title/)).toBeInTheDocument();
   });
 
   it('shows old stage label initially', () => {
-    render(
-      <NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={vi.fn()} />,
-    );
-    expect(screen.getByText('Yumurta')).toBeInTheDocument();
+    render(<NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={vi.fn()} />);
+    expect(screen.getByText('novaEvolution.stage.egg')).toBeInTheDocument();
   });
 
   it('shows evolve button initially', () => {
-    render(
-      <NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={vi.fn()} />,
-    );
-    expect(screen.getByText(/Evrimleştir/)).toBeInTheDocument();
+    render(<NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={vi.fn()} />);
+    expect(screen.getByText(/novaEvolution\.evolve/)).toBeInTheDocument();
   });
 
   it('renders two SVGs (old stage avatar)', () => {
@@ -49,12 +43,10 @@ describe('NovaEvolutionModal', () => {
   it('calls onClose when dismiss button is clicked', () => {
     vi.useFakeTimers();
     const onClose = vi.fn();
-    render(
-      <NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={onClose} />,
-    );
+    render(<NovaEvolutionModal isOpen={true} oldStage="egg" newStage="baby" onClose={onClose} />);
 
     // Click evolve button to start transformation
-    fireEvent.click(screen.getByText(/Evrimleştir/));
+    fireEvent.click(screen.getByText(/novaEvolution\.evolve/));
 
     // Wait for transform → new phase
     vi.advanceTimersByTime(1500);

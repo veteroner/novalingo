@@ -14,26 +14,24 @@ import { useLeaderboard } from '@hooks/queries';
 import { useChildStore } from '@stores/childStore';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-const leagueTiers: { id: LeagueTier; label: string; emoji: string; color: string }[] = [
-  { id: 'bronze', label: 'Bronz', emoji: '🥉', color: 'text-amber-700' },
-  { id: 'silver', label: 'Gümüş', emoji: '🥈', color: 'text-gray-400' },
-  { id: 'gold', label: 'Altın', emoji: '🥇', color: 'text-yellow-500' },
-  { id: 'platinum', label: 'Platin', emoji: '💫', color: 'text-cyan-500' },
-  { id: 'diamond', label: 'Elmas', emoji: '💎', color: 'text-nova-blue' },
-  { id: 'legend', label: 'Efsane', emoji: '👑', color: 'text-nova-purple' },
+// Etiketler i18n'den gelir (common.leaderboard.tiers, id'ye göre); burada emoji/renk.
+const leagueTiers: { id: LeagueTier; emoji: string; color: string }[] = [
+  { id: 'bronze', emoji: '🥉', color: 'text-amber-700' },
+  { id: 'silver', emoji: '🥈', color: 'text-gray-400' },
+  { id: 'gold', emoji: '🥇', color: 'text-yellow-500' },
+  { id: 'platinum', emoji: '💫', color: 'text-cyan-500' },
+  { id: 'diamond', emoji: '💎', color: 'text-nova-blue' },
+  { id: 'legend', emoji: '👑', color: 'text-nova-purple' },
 ];
 
 export default function LeaderboardScreen() {
+  const { t } = useTranslation('common');
   const child = useChildStore((s) => s.activeChild);
   const [currentLeague, setCurrentLeague] = useState<LeagueTier>(child?.leagueTier ?? 'silver');
-  const defaultTier = {
-    id: 'bronze' as LeagueTier,
-    label: 'Bronz',
-    emoji: '🥉',
-    color: 'text-amber-700',
-  };
-  const currentTier = leagueTiers.find((t) => t.id === currentLeague) ?? defaultTier;
+  const defaultTier = { id: 'bronze' as LeagueTier, emoji: '🥉', color: 'text-amber-700' };
+  const currentTier = leagueTiers.find((tier) => tier.id === currentLeague) ?? defaultTier;
 
   const { data } = useLeaderboard(currentLeague);
   const entries = data?.entries ?? [];
@@ -44,7 +42,7 @@ export default function LeaderboardScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Header */}
         <div className="text-center">
-          <Text variant="h3">📊 Liderlik Tablosu</Text>
+          <Text variant="h3">{t('leaderboard.title')}</Text>
           <motion.div
             className="mt-2"
             animate={{ scale: [1, 1.05, 1] }}
@@ -53,7 +51,7 @@ export default function LeaderboardScreen() {
             <span className="text-4xl">{currentTier.emoji}</span>
           </motion.div>
           <Text variant="h4" className={currentTier.color}>
-            {currentTier.label} Ligi
+            {t('leaderboard.leagueName', { tier: t(`leaderboard.tiers.${currentLeague}`) })}
           </Text>
         </div>
 
@@ -76,10 +74,10 @@ export default function LeaderboardScreen() {
         <Card variant="glass" padding="sm">
           <div className="flex items-center justify-between">
             <Text variant="caption" weight="bold" className="text-text-secondary">
-              Bu Hafta — Sıran: #{myRank}
+              {t('leaderboard.thisWeekRank', { rank: myRank })}
             </Text>
             <Badge variant="info" size="sm">
-              ⏰ 3 gün kaldı
+              {t('leaderboard.daysLeft', { count: 3 })}
             </Badge>
           </div>
         </Card>
@@ -89,7 +87,7 @@ export default function LeaderboardScreen() {
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm">🏆</span>
             <Text variant="caption" weight="bold" className="text-success">
-              İlk 3 bir üst lige yükselir!
+              {t('leaderboard.topPromote')}
             </Text>
           </div>
         </Card>
@@ -100,10 +98,10 @@ export default function LeaderboardScreen() {
             <div className="space-y-2 text-center">
               <span className="text-4xl">📊</span>
               <Text variant="body" weight="bold">
-                Henüz kimse yok
+                {t('leaderboard.empty')}
               </Text>
               <Text variant="caption" className="text-text-secondary">
-                Bu haftanın liderlik tablosu yakında dolacak!
+                {t('leaderboard.emptyDesc')}
               </Text>
             </div>
           </Card>

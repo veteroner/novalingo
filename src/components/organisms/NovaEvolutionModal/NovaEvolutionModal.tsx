@@ -12,6 +12,7 @@ import { Text } from '@components/atoms/Text';
 import { NovaStageAvatar, STAGE_CONFIG } from '@components/molecules/NovaStageAvatar';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface NovaEvolutionModalProps {
   isOpen: boolean;
@@ -19,24 +20,6 @@ interface NovaEvolutionModalProps {
   newStage: NovaStage;
   onClose: () => void;
 }
-
-const STAGE_LABELS_TR: Record<NovaStage, string> = {
-  egg: 'Yumurta',
-  baby: 'Bebek Nova',
-  child: 'Çocuk Nova',
-  teen: 'Genç Nova',
-  adult: 'Yetişkin Nova',
-  legendary: 'Efsanevi Nova',
-};
-
-const STAGE_DESCRIPTIONS_TR: Record<NovaStage, string> = {
-  egg: 'Nova henüz yumurtadan çıkmadı!',
-  baby: 'Nova yumurtadan çıktı! İlk adımlarını atıyor. 🐣',
-  child: 'Nova büyüyor! Artık kendi başına keşfedebilir. 🌟',
-  teen: 'Nova güçleniyor! Müzik ve stil sahibi oldu. 🎧',
-  adult: 'Nova artık bir bilge! Mezuniyet şapkasını taktı. 🎓',
-  legendary: 'Nova efsanevi güce ulaştı! Taç sahibi! 👑',
-};
 
 /** Floating particle spawned during the transformation */
 function Particle({ delay, x, y }: { delay: number; x: number; y: number }) {
@@ -63,6 +46,7 @@ export function NovaEvolutionModal({
   newStage,
   onClose,
 }: NovaEvolutionModalProps) {
+  const { t } = useTranslation('common');
   const [phase, setPhase] = useState<'old' | 'transform' | 'new'>('old');
 
   const newConfig = STAGE_CONFIG[newStage];
@@ -127,16 +111,15 @@ export function NovaEvolutionModal({
               transition={{ delay: 0.2 }}
             >
               <Text variant="overline" className="text-nova-purple">
-                🌟 Nova Evrimleşiyor!
+                {t('novaEvolution.title')}
               </Text>
             </motion.div>
 
             {/* Stage display area */}
             <div className="relative mx-auto mb-4 flex h-52 items-center justify-center">
               {/* Particles during transform */}
-              {phase === 'transform' && particles.map((p) => (
-                <Particle key={p.id} delay={p.delay} x={p.x} y={p.y} />
-              ))}
+              {phase === 'transform' &&
+                particles.map((p) => <Particle key={p.id} delay={p.delay} x={p.x} y={p.y} />)}
 
               {/* Old stage (visible in 'old' phase) */}
               <AnimatePresence mode="wait">
@@ -150,7 +133,7 @@ export function NovaEvolutionModal({
                   >
                     <NovaStageAvatar stage={oldStage} size="xl" animate={false} />
                     <Text variant="caption" className="text-text-secondary mt-2">
-                      {STAGE_LABELS_TR[oldStage]}
+                      {t(`novaEvolution.stage.${oldStage}`)}
                     </Text>
                   </motion.div>
                 )}
@@ -195,10 +178,10 @@ export function NovaEvolutionModal({
               transition={{ delay: 0.3 }}
             >
               <Text variant="h3" style={{ color: newConfig.bodyColor }}>
-                {STAGE_LABELS_TR[newStage]}
+                {t(`novaEvolution.stage.${newStage}`)}
               </Text>
               <Text variant="bodySmall" className="text-text-secondary mt-1">
-                {STAGE_DESCRIPTIONS_TR[newStage]}
+                {t(`novaEvolution.message.${newStage}`)}
               </Text>
             </motion.div>
 
@@ -211,15 +194,19 @@ export function NovaEvolutionModal({
                   transition={{ delay: 0.5 }}
                 >
                   <Button variant="primary" size="lg" fullWidth onClick={handleStart}>
-                    Evrimleştir! ✨
+                    {t('novaEvolution.evolve')}
                   </Button>
                 </motion.div>
               )}
 
               {phase === 'new' && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
                   <Button variant="primary" size="lg" fullWidth onClick={handleClose}>
-                    Harika! 🎉
+                    {t('novaEvolution.dismiss')}
                   </Button>
                 </motion.div>
               )}

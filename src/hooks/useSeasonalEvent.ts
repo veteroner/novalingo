@@ -56,8 +56,8 @@ export function useSeasonalEvent(): SeasonalEventState {
     staleTime: 2 * 60 * 1000,
   });
 
-  const lessonsCompleted = progressData?.lessonsCompleted?.length ?? 0;
-  const totalLessons = activeEvent?.lessons?.length ?? 0;
+  const lessonsCompleted = progressData?.lessonsCompleted.length ?? 0;
+  const totalLessons = activeEvent?.lessons.length ?? 0;
   const isEventComplete = totalLessons > 0 && lessonsCompleted >= totalLessons;
 
   return {

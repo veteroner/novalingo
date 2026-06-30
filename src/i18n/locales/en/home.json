@@ -1,19 +1,50 @@
 {
   "greeting": "Hello, {{name}}! 👋",
-  "dailyGoal": "Daily Goal",
-  "dailyGoalDesc": "{{current}}/{{target}} lessons",
-  "streak": "{{count}} Day Streak 🔥",
-  "level": "Level {{level}}",
-  "worlds": "Worlds",
+  "subtitle": "What would you like to learn today?",
+  "streakLabel": "Day Streak",
+  "worldsTitle": "Worlds 🌍",
   "seeAll": "See All",
 
-  "quickActions": {
-    "title": "Quick Access",
-    "dailyQuest": "Daily Quests",
-    "practice": "Practice",
-    "collection": "Collection",
-    "achievements": "Achievements"
+  "conversation": {
+    "title": "Talk with Nova",
+    "subtitle": "Practice one-on-one conversation — new scenarios every day!"
   },
+
+  "review": {
+    "title": "Daily Review",
+    "subtitle": "{{count}} words waiting for review"
+  },
+
+  "quickActions": {
+    "continue": "Continue",
+    "continueDesc": "Back to your current world",
+    "dailyWheel": "Daily Wheel",
+    "dailyWheelDesc": "Spin your daily reward",
+    "achievements": "Achievements",
+    "achievementsDesc": "See the badges you've unlocked",
+    "quests": "Quests",
+    "questsDesc": "Complete daily quests",
+    "shop": "Shop",
+    "shopDesc": "New items for Nova",
+    "stories": "Stories",
+    "storiesDesc": "Read an English story"
+  },
+
+  "worldCard": {
+    "current": " · In progress",
+    "active": "Active"
+  },
+
+  "premium": {
+    "title": "Premium World",
+    "message": "This world requires a NovaLingo Plus subscription."
+  },
+
+  "dailyGoal": "Daily Goal",
+  "dailyGoalUnlimited": "Unlimited lesson access is active",
+  "dailyGoalProgress": "{{current}} / {{target}} lessons completed",
+
+  "novaGreeting": "Today is going to be a great day! 🌟",
 
   "worldMap": {
     "title": "World Map",
@@ -21,7 +52,15 @@
     "unlockAt": "Unlocks at Level {{level}}",
     "progress": "{{percent}}% completed",
     "lessonsLeft": "{{count}} lessons left",
-    "completed": "Completed ✓"
+    "completed": "Completed ✓",
+    "back": "← Worlds",
+    "worldFallback": "World",
+    "unitsFallback": "Units",
+    "lessonsCompleted": "{{completed}}/{{total}} lessons completed",
+    "conversationCta": "Practice what you've learned!",
+    "premiumMessage": "You need NovaLingo Plus to unlock this world.",
+    "limitTitle": "Daily Limit Reached",
+    "limitMessage": "You've used today's 3 free lessons. Try again tomorrow or upgrade to Plus."
   },
 
   "worlds": {
