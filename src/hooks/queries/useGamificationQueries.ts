@@ -4,10 +4,17 @@
  * Quest, achievement, shop, wheel, leaderboard, vocabulary operasyonları.
  */
 
-import type { DailyQuest, LeaderboardEntry, ShopItem, UserAchievement } from '@/types/gamification';
+import type {
+  DailyQuest,
+  LeaderboardEntry,
+  QuestType,
+  ShopItem,
+  UserAchievement,
+} from '@/types/gamification';
 import { collections, queryCollection, where } from '@services/firebase/firestore';
 import {
   claimQuestReward,
+  ensureDailyQuests,
   getLeaderboard,
   purchaseShopItem,
   spinDailyWheel,
@@ -19,6 +26,7 @@ import {
   type UpdateVocabularyReq,
   type UseStreakFreezeReq,
 } from '@services/firebase/functions';
+import { getTodayTR } from '@services/spark/gameLogic';
 import { useChildStore } from '@stores/childStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -34,12 +42,80 @@ export const gamificationKeys = {
 };
 
 // ===== DAILY QUESTS =====
+
+/**
+ * Firestore'daki ham görev dokümanının şekli.
+ *
+ * Backend (`resetDailyQuests`, `onLessonCompleted`, `claimQuestReward`) bu düz
+ * şemayı yazar/okur; istemcinin zengin `DailyQuest` tipiyle eşleşmez. Bu yüzden
+ * okuma sınırında dönüştürüyoruz (yoksa `QuestItem` `quest.definition`'a erişince patlar).
+ */
+interface StoredQuestDoc {
+  id: string;
+  type?: 'lesson' | 'xp' | 'perfect' | 'word' | 'streak';
+  title?: string;
+  description?: string;
+  targetProgress?: number;
+  currentProgress?: number;
+  reward?: { type: 'stars' | 'gems' | 'xp'; amount: number };
+  claimed?: boolean;
+}
+
+/** Backend görev tipi → istemci `QuestType` (ikon/etiket eşlemesi için). */
+const BACKEND_QUEST_TYPE_MAP: Record<NonNullable<StoredQuestDoc['type']>, QuestType> = {
+  lesson: 'complete_lessons',
+  xp: 'earn_xp',
+  perfect: 'perfect_score',
+  word: 'learn_words',
+  streak: 'streak_maintain',
+};
+
+function mapStoredQuest(raw: StoredQuestDoc): DailyQuest {
+  const target = raw.targetProgress ?? 1;
+  const progress = raw.currentProgress ?? 0;
+  const rewardType = raw.reward?.type;
+  const rewardAmount = raw.reward?.amount ?? 0;
+
+  return {
+    questId: raw.id,
+    definition: {
+      id: raw.id,
+      type: raw.type ? BACKEND_QUEST_TYPE_MAP[raw.type] : 'complete_lessons',
+      title: raw.title ?? '',
+      titleEn: raw.title ?? '',
+      description: raw.description ?? '',
+      target,
+      reward: {
+        xp: rewardType === 'xp' ? rewardAmount : 0,
+        stars: rewardType === 'stars' ? rewardAmount : 0,
+        gems: rewardType === 'gems' ? rewardAmount : 0,
+      },
+      difficulty: 'easy',
+    },
+    progress,
+    target,
+    completed: progress >= target,
+    claimed: raw.claimed ?? false,
+    // Depoda ISO string olarak tutuluyor ve UI'da kullanılmıyor; Timestamp bekleyen
+    // alanı yanıltmamak için null bırakıyoruz.
+    assignedAt: null,
+  };
+}
+
 export function useDailyQuests(childId: string | undefined) {
   return useQuery({
     queryKey: gamificationKeys.quests(childId ?? ''),
-    queryFn: () => {
+    queryFn: async () => {
       if (!childId) return [];
-      return queryCollection<DailyQuest>(collections.childQuests(childId));
+      // Backend `resetDailyQuests` fonksiyonu deploy edilmediğinden görevleri
+      // istemci tarafında üretiyoruz (idempotent — sadece bugünkü görev yoksa yazar).
+      await ensureDailyQuests(childId);
+      const today = getTodayTR();
+      const raw = await queryCollection<StoredQuestDoc>(
+        collections.childQuests(childId),
+        where('id', '>=', today),
+      );
+      return raw.map(mapStoredQuest);
     },
     enabled: !!childId,
     staleTime: 60 * 1000, // 1 min

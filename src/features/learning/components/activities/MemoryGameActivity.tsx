@@ -6,7 +6,7 @@
  * Grid boyutu: data.gridSize (rows × cols)
  */
 
-import { getWordEmoji } from '@/features/learning/data/wordEmojiMap';
+import { tryGetWordEmoji } from '@/features/learning/data/wordEmojiMap';
 import type { MemoryGameData } from '@/types/content';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -174,49 +174,66 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
         }}
       >
         <AnimatePresence>
-          {cards.map((card) => (
-            <motion.button
-              key={card.id}
-              className={`flex aspect-square items-center justify-center rounded-2xl p-2 text-center transition-all duration-300 ${
-                card.isMatched
-                  ? 'border-2 border-green-300 bg-green-100 opacity-60'
-                  : card.isFlipped
-                    ? 'border-2 border-blue-400 bg-white shadow-md'
-                    : 'bg-linear-to-br from-blue-400 to-purple-500 shadow-md'
-              }`}
-              onClick={() => {
-                handleCardTap(card.id);
-              }}
-              whileTap={!card.isFlipped && !card.isMatched ? { scale: 0.95 } : {}}
-              layout
-            >
-              {card.isFlipped || card.isMatched ? (
-                <motion.div
-                  initial={{ rotateY: 90 }}
-                  animate={{ rotateY: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex flex-col items-center gap-1"
-                >
-                  <span className="text-2xl">{getWordEmoji(card.content)}</span>
-                  <span
-                    className={`text-xs leading-tight font-bold ${
-                      card.isMatched ? 'text-green-600' : 'text-gray-800'
-                    }`}
+          {cards.map((card) => {
+            // Emoji yalnızca haritada karşılığı olan kelimeler için gösterilir
+            // (Türkçe çeviri kartlarında '📝' yedeği görünmesin diye).
+            const emoji = tryGetWordEmoji(card.content);
+            return (
+              <motion.button
+                key={card.id}
+                // Ekran okuyucu için erişilebilir ad: açık kartta kelime, kapalı kartta "kapalı kart".
+                aria-label={
+                  card.isFlipped || card.isMatched
+                    ? card.content
+                    : t('activityUI.memory.cardHidden')
+                }
+                className={`flex aspect-square items-center justify-center rounded-2xl p-2 text-center transition-all duration-300 ${
+                  card.isMatched
+                    ? 'border-2 border-green-300 bg-green-100 opacity-60'
+                    : card.isFlipped
+                      ? 'border-2 border-blue-400 bg-white shadow-md'
+                      : 'bg-linear-to-br from-blue-400 to-purple-500 shadow-md'
+                }`}
+                onClick={() => {
+                  handleCardTap(card.id);
+                }}
+                whileTap={!card.isFlipped && !card.isMatched ? { scale: 0.95 } : {}}
+                layout
+              >
+                {card.isFlipped || card.isMatched ? (
+                  <motion.div
+                    initial={{ rotateY: 90 }}
+                    animate={{ rotateY: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col items-center gap-1"
                   >
-                    {card.content}
-                  </span>
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ rotateY: -90 }}
-                  animate={{ rotateY: 0 }}
-                  className="text-3xl text-white"
-                >
-                  ❓
-                </motion.div>
-              )}
-            </motion.button>
-          ))}
+                    {emoji !== null && (
+                      <span className="text-2xl" aria-hidden="true">
+                        {emoji}
+                      </span>
+                    )}
+                    {/* Emoji yoksa tek başına kalan kelimeyi biraz büyüterek eş kartla görsel denge kur */}
+                    <span
+                      className={`${emoji === null ? 'text-sm' : 'text-xs'} leading-tight font-bold ${
+                        card.isMatched ? 'text-green-600' : 'text-gray-800'
+                      }`}
+                    >
+                      {card.content}
+                    </span>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ rotateY: -90 }}
+                    animate={{ rotateY: 0 }}
+                    className="text-3xl text-white"
+                    aria-hidden="true"
+                  >
+                    ❓
+                  </motion.div>
+                )}
+              </motion.button>
+            );
+          })}
         </AnimatePresence>
       </div>
 

@@ -17,14 +17,15 @@ interface QuestItemProps {
   className?: string;
 }
 
+// Anahtarlar QuestType değerleriyle birebir eşleşmeli (aksi halde varsayılan 🎯 görünür).
 const questIcons: Record<string, string> = {
   complete_lessons: '📚',
   earn_xp: '⚡',
-  perfect_lesson: '🌟',
-  maintain_streak: '🔥',
-  review_vocabulary: '🧠',
-  play_time: '⏱️',
-  collect_stars: '⭐',
+  perfect_score: '🌟',
+  streak_maintain: '🔥',
+  learn_words: '🧠',
+  play_minutes: '⏱️',
+  activity_type: '🎯',
 };
 
 export function QuestItem({ quest, onClaim, className }: QuestItemProps) {

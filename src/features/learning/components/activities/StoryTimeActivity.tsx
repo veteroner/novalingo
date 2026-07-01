@@ -376,7 +376,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
           <div className="relative h-36 w-full overflow-hidden">
             <motion.img
               src={page.imageUrl || generateStoryPlaceholderImage(data.title, currentPage)}
-              alt="Story illustration"
+              alt={t('activityUI.storyTime.imageAlt')}
               className="absolute inset-0 h-full w-full object-cover"
               initial={{ scale: 1.15, x: 30 }}
               animate={{ scale: 1.05, x: 0 }}

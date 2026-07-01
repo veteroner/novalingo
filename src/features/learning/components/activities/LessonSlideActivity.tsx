@@ -11,6 +11,7 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityCallbacks } from './types';
 
 interface LessonSlideActivityProps extends ActivityCallbacks {
@@ -18,6 +19,7 @@ interface LessonSlideActivityProps extends ActivityCallbacks {
 }
 
 export default function LessonSlideActivity({ data, onComplete }: LessonSlideActivityProps) {
+  const { t } = useTranslation('lesson');
   const startTime = useRef(Date.now());
 
   function handleContinue() {
@@ -41,7 +43,9 @@ export default function LessonSlideActivity({ data, onComplete }: LessonSlideAct
         {data.text}
       </Text>
       <Button variant="primary" size="lg" onClick={handleContinue} className="w-full max-w-xs">
-        {data.type === 'lesson-intro' ? "Let's go! 🚀" : 'Continue 🌟'}
+        {data.type === 'lesson-intro'
+          ? t('activityUI.lessonSlide.intro')
+          : t('activityUI.lessonSlide.outro')}
       </Button>
     </motion.div>
   );
