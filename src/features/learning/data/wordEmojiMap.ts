@@ -549,15 +549,29 @@ const WORD_EMOJI_MAP: Record<string, string> = {
 };
 
 /**
- * Get an emoji for a word (case-insensitive).
- * Falls back to '📝' if no mapping exists.
+ * Emoji döndürülemediğinde kullanılan yedek (fallback) sembol.
  */
-export function getWordEmoji(word: string): string {
+export const WORD_EMOJI_FALLBACK = '📝';
+
+/**
+ * Bir kelimenin emoji'sini döndürür (büyük/küçük harf duyarsız).
+ * Eşleşme yoksa `null` döner — çağıran taraf yedek göstermek ister mi kendi karar verir.
+ * Not: Harita yalnızca İngilizce kelimelerle anahtarlanmıştır; Türkçe çeviriler eşleşmez.
+ */
+export function tryGetWordEmoji(word: string): string | null {
   // Try exact match first
   const direct = WORD_EMOJI_MAP[word];
   if (direct) return direct;
 
   // Try Title Case
   const titleCase = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  return WORD_EMOJI_MAP[titleCase] ?? '📝';
+  return WORD_EMOJI_MAP[titleCase] ?? null;
+}
+
+/**
+ * Get an emoji for a word (case-insensitive).
+ * Falls back to '📝' if no mapping exists.
+ */
+export function getWordEmoji(word: string): string {
+  return tryGetWordEmoji(word) ?? WORD_EMOJI_FALLBACK;
 }

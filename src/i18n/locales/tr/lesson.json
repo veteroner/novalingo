@@ -258,10 +258,15 @@
       "subtitle": "İngilizce kelimeyi Türkçe karşılığıyla eşleştir",
       "turkish": "Türkçe 🇹🇷"
     },
+    "lessonSlide": {
+      "intro": "Hadi başlayalım! 🚀",
+      "outro": "Devam et 🌟"
+    },
     "memory": {
       "subtitle": "Eşleşen kartları bul!",
       "great": "Harika!",
-      "complete": "Tüm kartları eşleştirdin!"
+      "complete": "Tüm kartları eşleştirdin!",
+      "cardHidden": "Kapalı kart"
     },
     "quizBattle": {
       "score": "{{correct}} / {{total}} Doğru"
@@ -294,6 +299,7 @@
       "modeChain": "ZİNCİR HİKAYE",
       "modePicture": "RESİM HİKAYESİ",
       "modeDefault": "HİKAYE ZAMANI",
+      "imageAlt": "Hikaye görseli",
       "pickWord": "Bir kelime seç!",
       "wordPicked": "✅ “{{word}}” seçtin — harika!",
       "picturePrompt": "Resimde ne görüyorsun? Anlatabilir misin?",

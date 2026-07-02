@@ -111,9 +111,35 @@ function copyFilteredPublicAssetsPlugin(bundleTtsAudio: boolean): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const bundleTtsAudio = env.VITE_BUNDLE_TTS_AUDIO !== 'false';
+
+  // Firebase config'i olmadan üretilen bir üretim/staging bundle'ı, açılışta
+  // `auth undefined` ile tüm uygulamayı çökertir. Bunu build anında sert durdur —
+  // böylece env dosyası olmayan bir dizinden (ör. git worktree) yanlışlıkla
+  // bozuk bir site deploy edilemez.
+  if (command === 'build' && mode !== 'development' && env.VITE_USE_EMULATORS !== 'true') {
+    const requiredFirebaseKeys = [
+      'VITE_FIREBASE_API_KEY',
+      'VITE_FIREBASE_AUTH_DOMAIN',
+      'VITE_FIREBASE_PROJECT_ID',
+      'VITE_FIREBASE_STORAGE_BUCKET',
+      'VITE_FIREBASE_MESSAGING_SENDER_ID',
+      'VITE_FIREBASE_APP_ID',
+    ];
+    // loadEnv tipte `string` dese de eksik anahtar çalışma anında `undefined` döner.
+    const envValues = env as Record<string, string | undefined>;
+    const missing = requiredFirebaseKeys.filter((key) => !envValues[key]);
+    if (missing.length > 0) {
+      throw new Error(
+        `[build] Firebase yapılandırması eksik: ${missing.join(', ')}.\n` +
+          `Bu değişkenler olmadan derlenen site açılışta çöker.\n` +
+          `Doğru .env.${mode} dosyasının bulunduğu dizinden derleyin ` +
+          `(worktree'de env dosyaları bulunmayabilir).`,
+      );
+    }
+  }
 
   return {
     plugins: [

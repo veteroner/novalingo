@@ -28,7 +28,7 @@ function secondsUntilMidnight(): number {
 
 export default function DailyQuestsScreen() {
   const child = useChildStore((s) => s.activeChild);
-  const { data: serverQuests } = useDailyQuests(child?.id);
+  const { data: serverQuests, isLoading } = useDailyQuests(child?.id);
   const claimReward = useClaimQuestReward();
   const [localClaimed, setLocalClaimed] = useState<Set<string>>(new Set());
   const showToast = useUIStore((s) => s.showToast);
@@ -84,31 +84,45 @@ export default function DailyQuestsScreen() {
           </Text>
         </div>
 
-        {/* Overall Progress */}
-        <Card variant="glass" padding="md">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Text variant="bodySmall" weight="bold">
-                {t('quests.dailyProgress')}
-              </Text>
-              <Badge variant="success" size="sm">
-                {completedCount}/{quests.length}
-              </Badge>
-            </div>
-            <ProgressBar value={progress} variant="xp" size="md" />
-            {progress >= 1 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Text variant="caption" className="text-success text-center font-bold">
-                  {t('quests.allComplete')}
+        {/* Overall Progress — yalnızca görev varken göster */}
+        {quests.length > 0 && (
+          <Card variant="glass" padding="md">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Text variant="bodySmall" weight="bold">
+                  {t('quests.dailyProgress')}
                 </Text>
-              </motion.div>
-            )}
-          </div>
-        </Card>
+                <Badge variant="success" size="sm">
+                  {completedCount}/{quests.length}
+                </Badge>
+              </div>
+              <ProgressBar value={progress} variant="xp" size="md" />
+              {progress >= 1 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <Text variant="caption" className="text-success text-center font-bold">
+                    {t('quests.allComplete')}
+                  </Text>
+                </motion.div>
+              )}
+            </div>
+          </Card>
+        )}
 
         {/* Quest List */}
         <div className="space-y-3">
-          {quests.length === 0 ? (
+          {isLoading && quests.length === 0 ? (
+            // Görevler istemci tarafında hazırlanırken yükleniyor durumu (boş durumdan ayrı).
+            <Card variant="filled" padding="lg">
+              <div className="space-y-3 text-center">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="h-14 animate-pulse rounded-2xl bg-gray-200" />
+                ))}
+                <Text variant="caption" className="text-text-secondary">
+                  {t('quests.loading')}
+                </Text>
+              </div>
+            </Card>
+          ) : quests.length === 0 ? (
             <Card variant="filled" padding="lg">
               <div className="space-y-2 text-center">
                 <span className="text-4xl">⚔️</span>

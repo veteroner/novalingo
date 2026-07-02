@@ -15,6 +15,7 @@ import {
   queryCollection,
 } from '@services/firebase/firestore';
 import {
+  advanceDailyQuests,
   advanceToNextWorld,
   submitLessonResult,
   type SubmitLessonResultReq,
@@ -24,6 +25,7 @@ import { useChildStore } from '@stores/childStore';
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { childKeys } from './useChildQueries';
+import { gamificationKeys } from './useGamificationQueries';
 
 // ===== QUERY KEYS =====
 export const lessonKeys = {
@@ -132,7 +134,7 @@ export function useSubmitLesson() {
 
   return useMutation({
     mutationFn: (data: SubmitLessonResultReq) => submitLessonResult(data),
-    onSuccess: async (result) => {
+    onSuccess: async (result, variables) => {
       addXP(result.xpEarned);
       if (child) {
         updateActiveChild({
@@ -143,6 +145,23 @@ export function useSubmitLesson() {
       // Invalidate progress & child
       if (child?.id) {
         void queryClient.invalidateQueries({ queryKey: lessonKeys.progress(child.id) });
+      }
+      // Günlük görev ilerlemesi (backend trigger yok — istemci işler).
+      if (child?.id) {
+        const childId = child.id;
+        const activities = variables.activities;
+        const correctCount = activities.filter((a) => a.correct).length;
+        const isPerfect = activities.length > 0 && correctCount === activities.length;
+        void advanceDailyQuests(childId, {
+          lessonsCompleted: 1,
+          xpEarned: result.xpEarned,
+          isPerfect,
+          wordsPracticed: correctCount,
+        })
+          .then(() => queryClient.invalidateQueries({ queryKey: gamificationKeys.quests(childId) }))
+          .catch((err: unknown) => {
+            console.warn('[useSubmitLesson] Quest progress update failed:', err);
+          });
       }
       if (uid) {
         void queryClient.invalidateQueries({ queryKey: childKeys.list(uid) });

@@ -258,10 +258,15 @@
       "subtitle": "Match the English word with its Turkish meaning",
       "turkish": "Turkish 🇹🇷"
     },
+    "lessonSlide": {
+      "intro": "Let's go! 🚀",
+      "outro": "Continue 🌟"
+    },
     "memory": {
       "subtitle": "Find the matching cards!",
       "great": "Great!",
-      "complete": "You matched all the cards!"
+      "complete": "You matched all the cards!",
+      "cardHidden": "Hidden card"
     },
     "quizBattle": {
       "score": "{{correct}} / {{total}} Correct"
@@ -294,6 +299,7 @@
       "modeChain": "CHAIN STORY",
       "modePicture": "PICTURE STORY",
       "modeDefault": "STORY TIME",
+      "imageAlt": "Story illustration",
       "pickWord": "Pick a word!",
       "wordPicked": "✅ You picked “{{word}}” — great!",
       "picturePrompt": "What do you see in the picture? Can you describe it?",

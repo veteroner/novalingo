@@ -32,8 +32,9 @@
     "subtitle": "New quests await you every day!",
     "dailyProgress": "Daily Progress",
     "allComplete": "🎉 All quests complete! You earned a bonus reward!",
-    "empty": "No quests yet",
-    "comingSoon": "Daily quests are coming soon!",
+    "loading": "Getting your quests ready…",
+    "empty": "Couldn't load quests",
+    "comingSoon": "Try again in a moment 🔄",
     "nextIn": "New quests in: {{time}}",
     "rewardErrorTitle": "Reward failed",
     "rewardErrorMessage": "Something went wrong, please try again."

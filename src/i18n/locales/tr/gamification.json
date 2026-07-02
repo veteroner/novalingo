@@ -32,8 +32,9 @@
     "subtitle": "Her gün yeni görevler seni bekliyor!",
     "dailyProgress": "Günlük İlerleme",
     "allComplete": "🎉 Tüm görevler tamamlandı! Bonus ödül kazandın!",
-    "empty": "Henüz görev yok",
-    "comingSoon": "Günlük görevler yakında gelecek!",
+    "loading": "Görevlerin hazırlanıyor…",
+    "empty": "Görevler yüklenemedi",
+    "comingSoon": "Birazdan tekrar dene 🔄",
     "nextIn": "Yeni görevlere kalan: {{time}}",
     "rewardErrorTitle": "Ödül alınamadı",
     "rewardErrorMessage": "Bir hata oluştu, lütfen tekrar dene."

@@ -10,11 +10,15 @@ import { clsx } from 'clsx';
 import { Badge } from '@components/atoms/Badge';
 import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
-import { xpRequiredForLevel } from '@utils/xp';
 
 interface XPDisplayProps {
+  /** Toplam kazanılan XP (kompakt rozette gösterilir) */
   currentXP: number;
   level: number;
+  /** Mevcut seviyeye ait XP (ilerleme çubuğu payı — yalnızca full varyantta kullanılır) */
+  currentLevelXP?: number;
+  /** Bir sonraki seviye için gereken XP (ilerleme çubuğu paydası — yalnızca full varyantta) */
+  nextLevelXP?: number;
   xpGain?: number;
   compact?: boolean;
   className?: string;
@@ -23,15 +27,15 @@ interface XPDisplayProps {
 export function XPDisplay({
   currentXP,
   level,
+  currentLevelXP = 0,
+  nextLevelXP = 0,
   xpGain,
   compact = false,
   className,
 }: XPDisplayProps) {
-  const xpForCurrentLevel = xpRequiredForLevel(level);
-  const xpForNextLevel = xpRequiredForLevel(level + 1);
-  const xpInLevel = currentXP - xpForCurrentLevel;
-  const xpNeeded = xpForNextLevel - xpForCurrentLevel;
-  const progress = xpNeeded > 0 ? xpInLevel / xpNeeded : 1;
+  const xpInLevel = Math.max(0, currentLevelXP);
+  const xpNeeded = Math.max(0, nextLevelXP);
+  const progress = xpNeeded > 0 ? Math.min(1, xpInLevel / xpNeeded) : 1;
 
   if (compact) {
     return (

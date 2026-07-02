@@ -6,6 +6,8 @@ import '@/styles/globals.css';
 initSentry();
 
 import { App } from '@/app/App';
+import { FirebaseConfigError } from '@/app/FirebaseConfigError';
+import { firebaseInitError } from '@/services/firebase/app';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -24,8 +26,10 @@ if (!rootElement) {
   throw new Error('Root element not found. Check index.html has <div id="root">.');
 }
 
+// Firebase başlatılamadıysa (ör. eksik yapılandırma), uygulamayı mount edip
+// çökmek yerine net bir hata ekranı göster.
 createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    {firebaseInitError ? <FirebaseConfigError error={firebaseInitError} /> : <App />}
   </StrictMode>,
 );

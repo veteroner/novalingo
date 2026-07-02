@@ -60,6 +60,9 @@ let storage: FirebaseStorage;
 let functions: Functions;
 let analytics: Analytics | null = null;
 let appCheck: AppCheck | null = null;
+// Başlatma başarısız olursa uygulama, Firebase'i çağırıp çökmek yerine net bir
+// hata ekranı gösterebilsin diye hatayı burada tutuyoruz (bkz. main.tsx).
+let firebaseInitError: Error | null = null;
 
 function getMissingFirebaseConfigKeys(): string[] {
   return requiredFirebaseConfigEntries.filter(([, value]) => !value).map(([name]) => name);
@@ -138,10 +141,11 @@ function initializeFirebase() {
 try {
   initializeFirebase();
 } catch (error) {
+  firebaseInitError = error instanceof Error ? error : new Error(String(error));
   if (import.meta.env.DEV) console.error('[Firebase] Initialization failed:', error);
-  Sentry.captureException(error instanceof Error ? error : new Error(String(error)), {
+  Sentry.captureException(firebaseInitError, {
     extra: { context: '[Firebase] Initialization failed' },
   });
 }
 
-export { analytics, app, appCheck, auth, db, functions, storage };
+export { analytics, app, appCheck, auth, db, firebaseInitError, functions, storage };

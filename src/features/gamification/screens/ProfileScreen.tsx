@@ -56,7 +56,12 @@ export default function ProfileScreen() {
         </motion.div>
 
         {/* XP Progress */}
-        <XPDisplay currentXP={child.totalXP} level={child.level} />
+        <XPDisplay
+          currentXP={child.totalXP}
+          level={child.level}
+          currentLevelXP={child.currentLevelXP}
+          nextLevelXP={child.nextLevelXP}
+        />
 
         {/* Currency */}
         <Card variant="glass" padding="md">

@@ -1354,3 +1354,73 @@ export async function ensureDailyQuests(childId: string): Promise<void> {
   }
   await batch.commit();
 }
+
+export interface DailyQuestProgress {
+  /** Bu oturumda tamamlanan ders sayısı (varsayılan 1). */
+  lessonsCompleted?: number;
+  /** Bu derste kazanılan XP. */
+  xpEarned?: number;
+  /** Ders %100 doğrulukla mı bitti? */
+  isPerfect?: boolean;
+  /** Bu derste pratik yapılan kelime sayısı (yaklaşık). */
+  wordsPracticed?: number;
+}
+
+/**
+ * Ders tamamlandığında bugünkü günlük görevlerin ilerlemesini artırır.
+ *
+ * Backend `onLessonCompleted` trigger'ı deploy edilmediğinden ilerlemeyi istemci
+ * tarafında işliyoruz. Her görev tipi kendi sinyaliyle ilerler; değerler hedefte
+ * kapatılır (aşım olmaz). Hata olursa sessizce yutulmalı — ders akışını bozmamalı.
+ */
+export async function advanceDailyQuests(
+  childId: string,
+  progress: DailyQuestProgress,
+): Promise<void> {
+  const uid = requireCurrentUserId();
+  await getOwnedChild(childId, uid);
+  const today = getTodayTR();
+  const questsRef = collection(db, 'children', childId, 'quests');
+  const snap = await getDocs(query(questsRef, where('id', '>=', today)));
+  if (snap.empty) return;
+
+  const batch = writeBatch(db);
+  let hasUpdate = false;
+
+  for (const questDoc of snap.docs) {
+    const quest = questDoc.data() as StoredQuest & { type?: string };
+    if (quest.claimed) continue;
+
+    const current = quest.currentProgress ?? 0;
+    const target = quest.targetProgress ?? 1;
+    if (current >= target) continue;
+
+    let delta = 0;
+    switch (quest.type) {
+      case 'lesson':
+        delta = progress.lessonsCompleted ?? 1;
+        break;
+      case 'xp':
+        delta = progress.xpEarned ?? 0;
+        break;
+      case 'perfect':
+        delta = progress.isPerfect ? 1 : 0;
+        break;
+      case 'streak':
+        delta = 1;
+        break;
+      case 'word':
+        delta = progress.wordsPracticed ?? 0;
+        break;
+    }
+    if (delta <= 0) continue;
+
+    batch.update(questDoc.ref, {
+      currentProgress: Math.min(target, current + delta),
+      updatedAt: serverTimestamp(),
+    });
+    hasUpdate = true;
+  }
+
+  if (hasUpdate) await batch.commit();
+}

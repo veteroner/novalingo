@@ -130,6 +130,8 @@ export default function HomeScreen() {
             </div>
           </Card>
           <Card variant="filled" padding="sm" className="flex-1">
+            {/* Ana sayfada kompakt rozet — streak kartıyla tek satır dengeli durur.
+                İlerleme çubuğu (full varyant) Profil ekranında gösterilir. */}
             <XPDisplay currentXP={child.totalXP} level={child.level} compact />
           </Card>
         </div>
