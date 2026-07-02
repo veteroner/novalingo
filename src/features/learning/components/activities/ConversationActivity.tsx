@@ -148,6 +148,10 @@ interface ChatBubble {
   textTr: string;
   emoji?: string;
   audioUrl?: string;
+  /** İpucu/destek balonları için ton — amber uyarı, rose hata, sky bilgi */
+  tone?: 'warning' | 'error' | 'info';
+  /** Destek balonunda gösterilecek örnek cümle çipi */
+  example?: string;
 }
 
 const CHILD_ACCEPT_THRESHOLD = 0.65;
@@ -185,6 +189,39 @@ function interpolateTemplate(
   return fallback ?? template;
 }
 
+/**
+ * Senaryo temasına göre canlı arka plan gradyanı (UX spec: chat-first redesign).
+ * Metinler her zaman beyaz/açık kartlar üzerinde durur — kontrast gradyana bağlı değildir.
+ */
+const THEME_GRADIENTS: Record<string, string> = {
+  animals: 'from-emerald-200 via-lime-100 to-amber-100',
+  nature: 'from-emerald-200 via-sky-100 to-cyan-100',
+  weather: 'from-sky-200 via-cyan-100 to-blue-100',
+  food: 'from-orange-200 via-amber-100 to-yellow-100',
+  school: 'from-sky-200 via-indigo-100 to-violet-100',
+  family: 'from-rose-200 via-pink-100 to-amber-100',
+  friends: 'from-pink-200 via-rose-100 to-orange-100',
+  city: 'from-slate-200 via-sky-100 to-indigo-100',
+  travel: 'from-cyan-200 via-sky-100 to-emerald-100',
+  transport: 'from-cyan-200 via-sky-100 to-emerald-100',
+  transportation: 'from-cyan-200 via-sky-100 to-emerald-100',
+  sports: 'from-lime-200 via-emerald-100 to-teal-100',
+  jobs: 'from-amber-200 via-yellow-100 to-orange-100',
+  helpers: 'from-blue-200 via-sky-100 to-cyan-100',
+  time: 'from-violet-200 via-purple-100 to-indigo-100',
+  routine: 'from-violet-200 via-purple-100 to-indigo-100',
+  health: 'from-teal-200 via-emerald-100 to-green-100',
+  art: 'from-fuchsia-200 via-pink-100 to-purple-100',
+  colors: 'from-fuchsia-200 via-pink-100 to-purple-100',
+  emotions: 'from-yellow-200 via-amber-100 to-rose-100',
+  toys: 'from-pink-200 via-fuchsia-100 to-violet-100',
+  home: 'from-amber-200 via-orange-100 to-rose-100',
+  clothes: 'from-purple-200 via-fuchsia-100 to-pink-100',
+  body: 'from-rose-200 via-orange-100 to-amber-100',
+  actions: 'from-lime-200 via-green-100 to-emerald-100',
+};
+const DEFAULT_THEME_GRADIENT = 'from-indigo-200 via-violet-100 to-fuchsia-100';
+
 const AVATAR_EMOJIS: Record<string, string> = {
   fox: '🦊',
   panda: '🐼',
@@ -200,9 +237,9 @@ const AVATAR_EMOJIS: Record<string, string> = {
   star: '🌟',
 };
 
-/* ─── Nova Speaking Avatar — Hero character with mood animations ─── */
+/* ─── Nova Header Avatar — kompakt (64px) mood animasyonlu avatar (chat-first redesign) ─── */
 
-function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
+function NovaHeaderAvatar({ mood }: { mood: NovaMood }) {
   const isSpeaking = mood === 'speaking';
   const isCelebrating = mood === 'celebrating';
   const isListening = mood === 'listening';
@@ -210,41 +247,44 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
   const isThinking = mood === 'thinking';
 
   return (
-    <div className="relative flex items-center justify-center" style={{ height: 172 }}>
-      {/* Glow ring */}
+    <div
+      className="relative flex shrink-0 items-center justify-center"
+      style={{ width: 64, height: 64 }}
+    >
+      {/* Mood glow ring */}
       <motion.div
         className="absolute rounded-full"
-        style={{ width: 152, height: 152 }}
+        style={{ width: 52, height: 52 }}
         animate={
           isSpeaking
             ? {
                 boxShadow: [
-                  '0 0 20px 8px rgba(99,102,241,0.2)',
-                  '0 0 44px 16px rgba(99,102,241,0.45)',
-                  '0 0 20px 8px rgba(99,102,241,0.2)',
+                  '0 0 8px 3px rgba(99,102,241,0.25)',
+                  '0 0 18px 7px rgba(99,102,241,0.5)',
+                  '0 0 8px 3px rgba(99,102,241,0.25)',
                 ],
               }
             : isCelebrating
-              ? { boxShadow: '0 0 30px 12px rgba(52,211,153,0.35)' }
+              ? { boxShadow: '0 0 14px 6px rgba(52,211,153,0.45)' }
               : isListening
                 ? {
                     boxShadow: [
-                      '0 0 16px 6px rgba(251,191,36,0.15)',
-                      '0 0 28px 10px rgba(251,191,36,0.3)',
-                      '0 0 16px 6px rgba(251,191,36,0.15)',
+                      '0 0 6px 2px rgba(251,191,36,0.2)',
+                      '0 0 14px 5px rgba(251,191,36,0.4)',
+                      '0 0 6px 2px rgba(251,191,36,0.2)',
                     ],
                   }
                 : isSad
-                  ? { boxShadow: '0 0 24px 10px rgba(239,68,68,0.25)' }
+                  ? { boxShadow: '0 0 10px 4px rgba(239,68,68,0.3)' }
                   : isThinking
                     ? {
                         boxShadow: [
-                          '0 0 12px 4px rgba(168,85,247,0.1)',
-                          '0 0 20px 8px rgba(168,85,247,0.25)',
-                          '0 0 12px 4px rgba(168,85,247,0.1)',
+                          '0 0 5px 2px rgba(168,85,247,0.15)',
+                          '0 0 10px 4px rgba(168,85,247,0.3)',
+                          '0 0 5px 2px rgba(168,85,247,0.15)',
                         ],
                       }
-                    : { boxShadow: '0 0 10px 4px rgba(99,102,241,0.06)' }
+                    : { boxShadow: '0 0 4px 2px rgba(99,102,241,0.1)' }
         }
         transition={
           isSpeaking || isListening || isThinking
@@ -258,16 +298,16 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
         className="relative"
         animate={
           isSpeaking
-            ? { y: [0, -3, 0], rotate: [0, 0.8, -0.8, 0] }
+            ? { y: [0, -2, 0], rotate: [0, 1.5, -1.5, 0] }
             : isCelebrating
-              ? { y: [0, -18, 0], scale: [1, 1.12, 1], rotate: [0, -4, 4, 0] }
+              ? { y: [0, -8, 0], scale: [1, 1.15, 1], rotate: [0, -5, 5, 0] }
               : isListening
-                ? { y: [0, -1, 0], scale: [1, 1.015, 1] }
+                ? { y: [0, -1, 0], scale: [1, 1.03, 1] }
                 : isSad
-                  ? { rotate: [0, -6, 6, -6, 0], y: [0, 2, 0] }
+                  ? { rotate: [0, -6, 6, -6, 0], y: [0, 1, 0] }
                   : isThinking
-                    ? { rotate: [0, 4, -4, 0], y: [0, -2, 0] }
-                    : { y: [0, -2, 0] }
+                    ? { rotate: [0, 4, -4, 0], y: [0, -1, 0] }
+                    : { y: [0, -1, 0] }
         }
         transition={
           isSpeaking
@@ -281,67 +321,14 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
                   : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
         }
       >
-        <img src={novaMascot} alt="Nova" className="h-36 w-36 drop-shadow-2xl" />
-
-        {/* Animated mouth overlay — positioned over the beak */}
-        <div
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2"
-          style={{ bottom: '55%' }}
-        >
-          <svg viewBox="0 0 30 16" className="h-2.5 w-5">
-            <motion.g
-              style={{ transformOrigin: '15px 8px' }}
-              animate={
-                isSpeaking
-                  ? {
-                      scaleY: [0.35, 1.6, 0.6, 1.35, 0.35, 1.8, 0.75, 0.35],
-                      y: [0, -1, 0, -1, 0, -1, 0, 0],
-                    }
-                  : isCelebrating
-                    ? { scaleY: 0.9, y: -0.5 }
-                    : isSad
-                      ? { scaleY: 0.45, y: 2 }
-                      : isThinking
-                        ? { scaleY: [0.3, 0.45, 0.3] }
-                        : { scaleY: 0.3, y: 0 }
-              }
-              transition={
-                isSpeaking ? { duration: 0.4, repeat: Infinity, ease: 'linear' } : { duration: 0.3 }
-              }
-            >
-              <ellipse cx="15" cy="8" rx="6" ry="4.5" fill={isSad ? '#EF4444' : '#D84315'} />
-            </motion.g>
-          </svg>
-        </div>
+        <img src={novaMascot} alt="Nova" className="h-14 w-14 drop-shadow-lg" />
       </motion.div>
 
-      {/* Sound wave indicators */}
-      <AnimatePresence>
-        {isSpeaking && (
-          <motion.div
-            className="absolute flex flex-col items-start gap-1"
-            style={{ right: 2, top: '40%' }}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -6 }}
-          >
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="h-0.5 rounded-full bg-indigo-400"
-                animate={{ width: [3, 14, 3], opacity: [0.3, 0.8, 0.3] }}
-                transition={{ duration: 0.6, delay: i * 0.12, repeat: Infinity }}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Listening indicator */}
+      {/* Listening bars */}
       <AnimatePresence>
         {isListening && (
           <motion.div
-            className="absolute -bottom-1 flex items-center gap-0.5"
+            className="absolute -bottom-0.5 flex items-center gap-0.5"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -349,8 +336,8 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-1.5 rounded-full bg-amber-400"
-                animate={{ height: [4, 12, 4] }}
+                className="w-1 rounded-full bg-amber-400"
+                animate={{ height: [3, 9, 3] }}
                 transition={{ duration: 0.5, delay: i * 0.15, repeat: Infinity }}
               />
             ))}
@@ -358,50 +345,11 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
         )}
       </AnimatePresence>
 
-      {/* Celebration particles */}
-      <AnimatePresence>
-        {isCelebrating && (
-          <>
-            {['⭐', '🎉', '✨', '💫', '🌟'].map((emoji, i) => (
-              <motion.span
-                key={emoji}
-                className="pointer-events-none absolute text-lg"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{
-                  opacity: [0, 1, 0],
-                  scale: [0, 1.2, 0],
-                  x: Math.cos((i * 2 * Math.PI) / 5) * 65,
-                  y: Math.sin((i * 2 * Math.PI) / 5) * 45 - 25,
-                }}
-                transition={{ duration: 1.1, delay: i * 0.08 }}
-              >
-                {emoji}
-              </motion.span>
-            ))}
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Sad reaction */}
-      <AnimatePresence>
-        {isSad && (
-          <motion.span
-            className="pointer-events-none absolute -top-1 text-2xl"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: -10 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-          >
-            😿
-          </motion.span>
-        )}
-      </AnimatePresence>
-
       {/* Thinking dots */}
       <AnimatePresence>
         {isThinking && (
           <motion.div
-            className="absolute -bottom-2 flex items-center gap-1"
+            className="absolute -bottom-0.5 flex items-center gap-0.5"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -409,12 +357,41 @@ function NovaSpeakingAvatar({ mood }: { mood: NovaMood }) {
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="h-2 w-2 rounded-full bg-purple-400"
-                animate={{ y: [0, -6, 0], opacity: [0.4, 1, 0.4] }}
+                className="h-1.5 w-1.5 rounded-full bg-purple-400"
+                animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
               />
             ))}
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Celebration sparkle */}
+      <AnimatePresence>
+        {isCelebrating && (
+          <motion.span
+            className="pointer-events-none absolute -top-1 -right-1 text-base"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: [0, 1, 0], scale: [0, 1.3, 0] }}
+            transition={{ duration: 1.1, repeat: 1 }}
+          >
+            ✨
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      {/* Sad reaction */}
+      <AnimatePresence>
+        {isSad && (
+          <motion.span
+            className="pointer-events-none absolute -top-1 -right-1 text-base"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.5 }}
+          >
+            😿
+          </motion.span>
         )}
       </AnimatePresence>
     </div>
@@ -648,10 +625,10 @@ export default function ConversationActivity({
     });
   }, []);
 
-  // Auto-scroll chat to bottom
+  // Auto-scroll chat to bottom — yeni balon, ipucu balonu veya typing göstergesi gelince
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [bubbles]);
+  }, [bubbles, hintVisible, novaMood]);
 
   const getLegacyMarkedWords = useCallback(
     (option: ConversationActivityOption): string[] => {
@@ -1043,6 +1020,8 @@ export default function ConversationActivity({
           speaker: 'nova',
           text: bubbleText,
           textTr: '',
+          tone: params.tone,
+          example: params.example,
         },
       ]);
 
@@ -1506,8 +1485,23 @@ export default function ConversationActivity({
     setNovaMood('listening');
   };
 
+  const themeGradient = THEME_GRADIENTS[data.scenarioTheme ?? ''] ?? DEFAULT_THEME_GRADIENT;
+  const inputActive = options.length > 0;
+  // TTS konuşurken en yeni Nova balonunda "konuşuyor" göstergesi gösterilir
+  // (eski altyazı kartının yerini alır — UX spec Zone B)
+  let lastNovaBubbleId: string | null = null;
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    const bubble = bubbles[i];
+    if (bubble && bubble.speaker === 'nova') {
+      lastNovaBubbleId = bubble.id;
+      break;
+    }
+  }
+
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-linear-to-b from-indigo-50 via-white to-slate-50">
+    <div
+      className={`relative flex h-full flex-col overflow-hidden bg-linear-to-b ${themeGradient}`}
+    >
       {/* ═══ Scenario Intro Card ═══ */}
       <AnimatePresence>
         {showIntro && data.scenarioSummary && (
@@ -1515,7 +1509,7 @@ export default function ConversationActivity({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            className="absolute inset-0 z-20 flex items-center justify-center bg-indigo-50/90 p-6"
+            className="absolute inset-0 z-20 flex items-center justify-center bg-white/70 p-6 backdrop-blur-sm"
           >
             <div className="w-full max-w-xs rounded-3xl bg-white p-6 text-center shadow-xl">
               <span className="text-4xl">{data.sceneEmoji}</span>
@@ -1541,171 +1535,181 @@ export default function ConversationActivity({
         )}
       </AnimatePresence>
 
-      {/* ═══ Top Bar ═══ */}
-      <div className="flex shrink-0 items-center justify-between px-4 py-2">
-        <div className="flex items-center gap-1.5">
-          <span className="text-lg">{data.sceneEmoji}</span>
-          <div className="flex flex-col leading-tight">
-            <Text variant="overline" className="text-[10px] text-indigo-400">
-              {t('activities.conversationHeader')}
-            </Text>
-            <Text variant="caption" className="text-xs font-medium text-gray-600">
+      {/* ═══ Zone A — Kompakt Başlık (≤88px, sabit) ═══ */}
+      <div className="shrink-0 px-3 pt-2">
+        <div className="flex items-center gap-2 rounded-3xl bg-white/90 py-1 pr-2 pl-1 shadow-md backdrop-blur">
+          <NovaHeaderAvatar mood={novaMood} />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 leading-tight">
+              <span aria-hidden="true" className="text-sm">
+                {data.sceneEmoji}
+              </span>
+              <Text variant="overline" className="text-[10px] text-indigo-400">
+                {t('activities.conversationHeader')}
+              </Text>
+            </div>
+            <Text variant="caption" className="block truncate text-xs font-semibold text-gray-700">
               {data.titleTr}
             </Text>
-          </div>
-        </div>
-        <ProgressDots current={currentRound} total={totalRounds} />
-        <button
-          onClick={() => {
-            setSpeechRateIndex((i) => (i + 1) % SPEECH_RATES.length);
-          }}
-          className="rounded-full bg-white/80 px-2.5 py-1 text-xs font-bold text-indigo-500 shadow-sm active:bg-indigo-50"
-        >
-          {SPEECH_RATES[speechRateIndex]}x
-        </button>
-      </div>
-
-      {/* ═══ Nova Hero Area ═══ */}
-      <div className="flex shrink-0 flex-col items-center px-4">
-        <NovaSpeakingAvatar mood={novaMood} />
-
-        {/* Current speech subtitle card */}
-        {currentSpeech && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="-mt-1 w-full max-w-sm rounded-2xl bg-white px-5 py-3 shadow-md"
-          >
-            <p className="text-center text-base font-semibold text-gray-800">
-              {currentSpeech.text}
-            </p>
-            <AnimatePresence>
-              {showTranslation && (
-                <motion.p
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="mt-0.5 overflow-hidden text-center text-sm text-gray-400"
-                >
-                  {currentSpeech.textTr}
-                </motion.p>
-              )}
-            </AnimatePresence>
-            <div className="mt-2 flex justify-center gap-3">
-              <button
-                onClick={() => {
-                  replaySpeech();
-                }}
-                className="flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-500 active:bg-indigo-100"
-              >
-                🔊 {t('activities.conversationReplay')}
-              </button>
-              <button
-                onClick={() => {
-                  setShowTranslation((v) => !v);
-                }}
-                className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                  showTranslation ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'
-                }`}
-              >
-                🇹🇷 {t('activities.conversationTranslate')}
-              </button>
+            <div className="mt-0.5">
+              <ProgressDots current={currentRound} total={totalRounds} />
             </div>
-          </motion.div>
-        )}
+          </div>
+          <button
+            onClick={() => {
+              setSpeechRateIndex((i) => (i + 1) % SPEECH_RATES.length);
+            }}
+            className="flex h-11 min-w-11 items-center justify-center rounded-full bg-indigo-50 px-2 text-xs font-bold text-indigo-500 active:bg-indigo-100"
+          >
+            {SPEECH_RATES[speechRateIndex]}x
+          </button>
+          <button
+            onClick={() => {
+              setShowTranslation((v) => !v);
+            }}
+            aria-pressed={showTranslation}
+            aria-label={t('activities.conversationTranslate')}
+            className={`flex h-11 w-11 items-center justify-center rounded-full text-lg ${
+              showTranslation ? 'bg-emerald-100' : 'bg-gray-100 opacity-60'
+            }`}
+          >
+            <span aria-hidden="true">🇹🇷</span>
+          </button>
+        </div>
       </div>
 
-      {/* ═══ Compact Chat History ═══ */}
+      {/* ═══ Zone B — Sohbet Dizisi (tek esnek bölge, kaydırılabilir) ═══ */}
       <div
         ref={scrollRef}
-        className="mx-4 mt-2 flex-1 space-y-1.5 overflow-y-auto rounded-xl bg-white/50 p-3"
-        style={{ minHeight: 48 }}
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain px-3 py-3"
       >
         <AnimatePresence initial={false}>
-          {bubbles.map((bubble) => (
-            <motion.div
-              key={bubble.id}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              className={`group flex items-start gap-1.5 ${
-                bubble.speaker === 'child' ? 'flex-row-reverse' : ''
-              }`}
-            >
-              {bubble.speaker === 'nova' ? (
-                <img
-                  src={novaMascot}
-                  alt=""
-                  className="h-6 w-6 shrink-0 rounded-full bg-indigo-50 p-0.5"
-                />
-              ) : (
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs">
-                  {childAvatarEmoji}
-                </span>
-              )}
-
-              <div
-                className={`max-w-[78%] rounded-2xl px-3 py-1.5 ${
-                  bubble.speaker === 'nova'
-                    ? 'rounded-tl-sm bg-white shadow-sm'
-                    : 'rounded-tr-sm bg-indigo-500 text-white'
+          {bubbles.map((bubble) => {
+            const isSpeakingBubble =
+              bubble.speaker === 'nova' &&
+              bubble.id === lastNovaBubbleId &&
+              novaMood === 'speaking';
+            const novaBubbleClass =
+              bubble.tone === 'error'
+                ? 'border border-rose-200 bg-rose-50'
+                : bubble.tone === 'warning'
+                  ? 'border border-amber-200 bg-amber-50'
+                  : bubble.tone === 'info'
+                    ? 'border border-sky-200 bg-sky-50'
+                    : 'bg-white';
+            return (
+              <motion.div
+                key={bubble.id}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                className={`flex items-start gap-1.5 ${
+                  bubble.speaker === 'child' ? 'flex-row-reverse' : ''
                 }`}
               >
-                <p
-                  className={`text-sm font-medium ${
-                    bubble.speaker === 'nova' ? 'text-gray-700' : 'text-white'
+                {bubble.speaker === 'nova' ? (
+                  <img
+                    src={novaMascot}
+                    alt=""
+                    className="h-7 w-7 shrink-0 rounded-full bg-white/80 p-0.5 shadow-sm"
+                  />
+                ) : (
+                  <span
+                    aria-hidden="true"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/80 text-sm shadow-sm"
+                  >
+                    {childAvatarEmoji}
+                  </span>
+                )}
+
+                <div
+                  className={`max-w-[80%] rounded-3xl px-4 py-2.5 shadow-md ${
+                    bubble.speaker === 'nova'
+                      ? `rounded-tl-md ${novaBubbleClass}`
+                      : 'rounded-tr-md bg-indigo-500 text-white'
                   }`}
                 >
-                  {bubble.text}
-                </p>
-                {showTranslation && bubble.textTr.trim().length > 0 && (
                   <p
-                    className={`text-xs ${
-                      bubble.speaker === 'nova' ? 'text-gray-400' : 'text-indigo-200'
+                    className={`text-base font-semibold ${
+                      bubble.speaker === 'nova'
+                        ? bubble.tone === 'error'
+                          ? 'text-rose-700'
+                          : bubble.tone === 'warning'
+                            ? 'text-amber-700'
+                            : 'text-gray-800'
+                        : 'text-white'
                     }`}
                   >
-                    {bubble.textTr}
+                    {bubble.text}
+                    {isSpeakingBubble && (
+                      <span
+                        role="img"
+                        aria-label={t('activities.conversationSpeaking')}
+                        className="ml-1.5 inline-flex items-end gap-0.5 align-baseline"
+                      >
+                        {[0, 1, 2].map((i) => (
+                          <motion.span
+                            key={i}
+                            className="w-1 rounded-full bg-indigo-400"
+                            animate={{ height: [4, 10, 4] }}
+                            transition={{ duration: 0.5, delay: i * 0.15, repeat: Infinity }}
+                          />
+                        ))}
+                      </span>
+                    )}
                   </p>
-                )}
-                {bubble.speaker === 'nova' && (
-                  <button
-                    onClick={() => {
-                      replaySpeech(bubble.text, bubble.audioUrl);
-                    }}
-                    className="mt-0.5 text-xs text-indigo-300 opacity-60 transition-opacity active:opacity-100"
-                    aria-label={t('activities.conversationReplay')}
-                  >
-                    🔊
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          ))}
+                  {showTranslation && bubble.textTr.trim().length > 0 && (
+                    <p
+                      className={`mt-0.5 text-xs ${
+                        bubble.speaker === 'nova' ? 'text-gray-400' : 'text-indigo-200'
+                      }`}
+                    >
+                      {bubble.textTr}
+                    </p>
+                  )}
+                  {bubble.example && (
+                    <span className="mt-1.5 inline-flex max-w-full rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm">
+                      {bubble.example}
+                    </span>
+                  )}
+                  {bubble.speaker === 'nova' && (
+                    <button
+                      onClick={() => {
+                        replaySpeech(bubble.text, bubble.audioUrl);
+                      }}
+                      className="-mb-1.5 -ml-1.5 flex min-h-11 min-w-11 items-center justify-center rounded-full text-base text-indigo-400 opacity-70 transition-opacity active:opacity-100"
+                      aria-label={t('activities.conversationReplay')}
+                    >
+                      <span aria-hidden="true">🔊</span>
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
-      </div>
 
-      {/* ═══ Response Area — free-form dialogue ═══ */}
-      {options.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="shrink-0 border-t border-indigo-100/50 bg-white px-4 pt-3 pb-4"
-        >
-          {/* Hint: gently suggest the first option after HINT_DELAY_MS */}
-          <AnimatePresence>
-            {hintVisible && options[0] && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-3 overflow-hidden rounded-xl bg-amber-50 px-4 py-2 text-center"
+        {/* İpucu — sabit banner yerine sohbet balonu (dock yüksekliği sabit kalır) */}
+        <AnimatePresence>
+          {hintVisible && options[0] && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex items-start gap-1.5"
+            >
+              <span
+                aria-hidden="true"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm shadow-sm"
               >
+                💡
+              </span>
+              <div className="max-w-[80%] rounded-3xl rounded-tl-md border border-amber-200 bg-amber-50 px-4 py-2.5 shadow-md">
                 <p className="text-xs text-amber-500">{t('activities.conversationTryThis')}</p>
-                <p className="text-sm font-semibold text-amber-700">{options[0].text}</p>
+                <p className="text-base font-semibold text-amber-700">{options[0].text}</p>
                 {showTranslation && <p className="text-xs text-amber-400">{options[0].textTr}</p>}
-                {/* Pattern reveal badges */}
                 {data.targetPatterns && data.targetPatterns.length > 0 && (
-                  <div className="mt-1.5 flex flex-wrap justify-center gap-1">
+                  <div className="mt-1.5 flex flex-wrap gap-1">
                     {data.targetPatterns.map((p) => (
                       <span
                         key={p}
@@ -1716,158 +1720,141 @@ export default function ConversationActivity({
                     ))}
                   </div>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <AnimatePresence>
-            {supportBanner && !isListening && (
-              <motion.div
-                initial={{ opacity: 0, y: 8, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: 'auto' }}
-                exit={{ opacity: 0, y: -8, height: 0 }}
-                className={`mb-3 overflow-hidden rounded-2xl border px-4 py-3 text-center shadow-sm ${
-                  supportBanner.tone === 'error'
-                    ? 'border-rose-200 bg-rose-50'
-                    : supportBanner.tone === 'warning'
-                      ? 'border-amber-200 bg-amber-50'
-                      : 'border-sky-200 bg-sky-50'
-                }`}
+        {/* Nova düşünüyor — typing göstergesi balonu */}
+        <AnimatePresence>
+          {novaMood === 'thinking' && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex items-start gap-1.5"
+            >
+              <img
+                src={novaMascot}
+                alt=""
+                className="h-7 w-7 shrink-0 rounded-full bg-white/80 p-0.5 shadow-sm"
+              />
+              <div
+                role="status"
+                aria-label={t('activities.conversationTypingIndicator')}
+                className="flex items-center gap-1 rounded-3xl rounded-tl-md bg-white px-4 py-3.5 shadow-md"
               >
-                <p
-                  className={`text-sm font-bold ${
-                    supportBanner.tone === 'error'
-                      ? 'text-rose-700'
-                      : supportBanner.tone === 'warning'
-                        ? 'text-amber-700'
-                        : 'text-sky-700'
-                  }`}
-                >
-                  {supportBanner.title}
-                </p>
-                <p
-                  className={`mt-1 text-xs ${
-                    supportBanner.tone === 'error'
-                      ? 'text-rose-500'
-                      : supportBanner.tone === 'warning'
-                        ? 'text-amber-600'
-                        : 'text-sky-600'
-                  }`}
-                >
-                  {supportBanner.detail}
-                </p>
-                {supportBanner.example && (
-                  <div className="mt-2 inline-flex max-w-full items-center justify-center rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-gray-700">
-                    {supportBanner.example}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                {[0, 1, 2].map((i) => (
+                  <motion.span
+                    key={i}
+                    className="h-2 w-2 rounded-full bg-indigo-300"
+                    animate={{ y: [0, -5, 0], opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-          {/* Free-form text input */}
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={freeInputText}
-              onChange={(e) => {
-                setFreeInputText(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && freeInputText.trim()) {
+      {/* ═══ Zone C — Sabit Alt Dock (her zaman görünür, yüksekliği durumla oynamaz) ═══ */}
+      <div className="safe-area-bottom shrink-0 px-3 pt-1 pb-3">
+        {/* Sabit yükseklikte durum satırı — dock zıplamaz */}
+        <div className="flex h-6 items-center justify-center" aria-live="polite">
+          {isListening ? (
+            <Text variant="caption" className="font-semibold text-indigo-600">
+              {t('activities.conversationListening')}
+            </Text>
+          ) : feedback === 'wrong' ? (
+            <Text variant="caption" className="font-semibold text-rose-600">
+              {t('activities.conversationTryAgain')}
+            </Text>
+          ) : micError && !supportBanner ? (
+            <Text variant="caption" className="text-amber-700">
+              {micError}
+            </Text>
+          ) : inputActive && SpeechRecognitionAPI ? (
+            <Text variant="caption" className="text-gray-600">
+              {t('activities.conversationModeHint')}
+            </Text>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-2 rounded-3xl bg-white/95 p-2 shadow-lg backdrop-blur">
+          <input
+            type="text"
+            value={freeInputText}
+            disabled={!inputActive}
+            onChange={(e) => {
+              setFreeInputText(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && freeInputText.trim()) {
+                const val = freeInputText.trim();
+                setFreeInputText('');
+                void handleFreeInput(val);
+              }
+            }}
+            placeholder={t('activities.conversationTypeHere')}
+            className="h-11 min-w-0 flex-1 rounded-full border border-indigo-100 bg-indigo-50 px-4 text-base text-gray-700 placeholder:text-gray-400 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 focus:outline-none disabled:opacity-40"
+          />
+          <AnimatePresence>
+            {freeInputText.trim() && (
+              <motion.button
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
                   const val = freeInputText.trim();
                   setFreeInputText('');
                   void handleFreeInput(val);
-                }
-              }}
-              placeholder={t('activities.conversationTypeHere')}
-              className="flex-1 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-300 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 focus:outline-none"
-            />
-            <AnimatePresence>
-              {freeInputText.trim() && (
-                <motion.button
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => {
-                    const val = freeInputText.trim();
-                    setFreeInputText('');
-                    void handleFreeInput(val);
-                  }}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white shadow-md"
-                >
-                  <span className="text-lg">➤</span>
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Mic button + hint toggle */}
-          <div className="mt-3 flex items-center justify-center gap-4">
-            {SpeechRecognitionAPI && (
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={isListening ? abortRecognition : startListening}
-                className={`flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition-all ${
-                  isListening
-                    ? 'animate-pulse bg-red-500'
-                    : feedback === 'wrong'
-                      ? 'bg-red-100 text-red-500'
-                      : 'bg-indigo-500 active:scale-95'
-                } text-white`}
-                aria-label={
-                  isListening
-                    ? t('activities.conversationListening')
-                    : t('activities.conversationKeyboard')
-                }
+                }}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white shadow-md"
               >
-                <span className="text-3xl">{isListening ? '🔴' : '🎤'}</span>
+                <span className="text-lg">➤</span>
               </motion.button>
             )}
-
-            <button
-              onClick={() => {
-                setShowTranslation(true);
-                setHintVisible(true);
-              }}
-              className={`flex h-10 w-10 items-center justify-center rounded-full active:bg-amber-100 ${
-                hintVisible ? 'bg-amber-200 text-amber-600' : 'bg-amber-50 text-amber-500'
+          </AnimatePresence>
+          {SpeechRecognitionAPI && (
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              disabled={!inputActive}
+              onClick={isListening ? abortRecognition : startListening}
+              className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full shadow-lg transition-all disabled:opacity-40 ${
+                isListening
+                  ? 'animate-pulse bg-red-500'
+                  : feedback === 'wrong'
+                    ? 'bg-red-100'
+                    : 'bg-indigo-500 active:scale-95'
               }`}
-              aria-label="Hint"
+              aria-label={
+                isListening
+                  ? t('activities.conversationListening')
+                  : t('activities.conversationMicStart')
+              }
             >
-              💡
-            </button>
-          </div>
-
-          {/* Status text */}
-          {isListening && (
-            <Text variant="caption" className="mt-2 text-center text-indigo-400">
-              {t('activities.conversationListening')}
-            </Text>
+              <span aria-hidden="true" className="text-2xl">
+                {isListening ? '🔴' : '🎤'}
+              </span>
+            </motion.button>
           )}
-          {feedback === 'wrong' && !isListening && (
-            <Text variant="caption" className="mt-2 text-center text-red-400">
-              {t('activities.conversationTryAgain')}
-            </Text>
-          )}
-          {micError && !isListening && feedback !== 'wrong' && !supportBanner && (
-            <Text variant="caption" className="mt-2 text-center text-amber-500">
-              {micError}
-            </Text>
-          )}
-          {/* Subtle mode-switch hint when idle */}
-          {!isListening &&
-            feedback === 'idle' &&
-            !micError &&
-            !supportBanner &&
-            SpeechRecognitionAPI && (
-              <Text variant="caption" className="mt-1.5 text-center text-gray-300">
-                {t('activities.conversationModeHint')}
-              </Text>
-            )}
-        </motion.div>
-      )}
+          <button
+            disabled={!inputActive}
+            onClick={() => {
+              setShowTranslation(true);
+              setHintVisible(true);
+            }}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full active:bg-amber-100 disabled:opacity-40 ${
+              hintVisible ? 'bg-amber-200' : 'bg-amber-50'
+            }`}
+            aria-label={t('activities.conversationHintButton')}
+          >
+            <span aria-hidden="true">💡</span>
+          </button>
+        </div>
+      </div>
 
       {/* ═══ Correct Feedback ═══ */}
       <AnimatePresence>

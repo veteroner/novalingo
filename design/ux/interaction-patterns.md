@@ -14,6 +14,7 @@
 - **Activity feedback (correct/wrong)** — answer judgment in learning activities.
 - **Auto-advance with countdown** — hands-free progression for young children.
 - **Speak-and-check (with manual fallback)** — pronunciation input.
+- **Chat thread with docked input** — scrollable dialogue + fixed bottom input bar.
 
 ## Patterns
 
@@ -68,6 +69,18 @@
 - **Spec:** request mic → listen → evaluate (Web Speech API on web). **If unsupported (native WebView),
   fall back** to a manual "Söyledim ✓" path so the child is never blocked. (Real native STT is a known gap.)
 - **Reference:** `SpeakItActivity.tsx`. See CLAUDE.md "Konuşma Tanıma (STT)".
+
+### Chat thread with docked input
+
+- **Category:** layout/input · **Used in:** `ConversationActivity` (Nova ile Konuş)
+- **Spec:** three-zone flex column — compact fixed header (≤88px), chat thread as the ONLY
+  `flex-1 min-h-0 overflow-y-auto overscroll-contain` region, and a fixed bottom dock
+  (`shrink-0`, `safe-area-bottom`) holding text input + mic + hint with a constant-height status
+  slot (`aria-live`). Hints/support render as tinted bubbles INSIDE the thread, never as banners
+  that grow the dock. Auto-scroll to bottom on new bubble only (no snap while user reads history).
+- **When not to use:** screens without an ongoing message stream; single-question activities keep
+  their existing layouts.
+- **Reference:** `ConversationActivity.tsx`, UX spec `design/ux/conversation-screen-redesign.md`.
 
 ## Gaps & Patterns Needed
 

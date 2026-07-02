@@ -102,7 +102,7 @@ export default function ConversationScreen() {
   // Tap-to-start overlay — ensures audio is unlocked via direct user gesture on mobile
   if (!audioReady) {
     return (
-      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-indigo-50 to-white px-6">
+      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-indigo-200 via-violet-100 to-fuchsia-100 px-6">
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
@@ -129,7 +129,7 @@ export default function ConversationScreen() {
   // Loading state — session started but scenario not yet ready
   if (!session || !scenario || !isActive) {
     return (
-      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-white">
+      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-indigo-200 via-violet-100 to-fuchsia-100">
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 1.5, repeat: Infinity }}
