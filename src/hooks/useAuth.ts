@@ -6,7 +6,7 @@
  * (bu, onUserCreated trigger'ını tetikler → preferences + welcome quest).
  */
 
-import { type User } from '@/types/user';
+import { type User, DEFAULT_USER_SETTINGS } from '@/types/user';
 import { onAuthChanged } from '@services/firebase/auth';
 import {
   docs,
@@ -57,7 +57,11 @@ export function useAuth() {
           if (latestUidRef.current !== uid) return;
 
           if (userData) {
-            setUser(userData);
+            // Merge defaults so legacy docs missing `settings` don't crash the UI
+            setUser({
+              ...userData,
+              settings: { ...DEFAULT_USER_SETTINGS, ...userData.settings },
+            });
           } else {
             // New user — create Firestore document (triggers onUserCreated)
             const newUser = {
@@ -73,17 +77,7 @@ export function useAuth() {
               activeChildId: null,
               createdAt: serverTimestamp(),
               lastLoginAt: serverTimestamp(),
-              settings: {
-                language: 'tr' as const,
-                soundEnabled: true,
-                musicEnabled: true,
-                sfxVolume: 0.8,
-                bgmVolume: 0.5,
-                hapticEnabled: true,
-                notificationsEnabled: true,
-                dailyGoalMinutes: 10,
-                parentPin: null,
-              },
+              settings: { ...DEFAULT_USER_SETTINGS },
             };
             void setDocument(docs.user(uid), newUser).catch((err: unknown) => {
               setError(err instanceof Error ? err.message : 'Failed to create user');

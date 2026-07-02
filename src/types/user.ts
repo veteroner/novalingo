@@ -58,6 +58,19 @@ export interface UserSettings {
   parentPin: string | null;
 }
 
+/** Sensible defaults used when a Firestore user document has no `settings` field. */
+export const DEFAULT_USER_SETTINGS: UserSettings = {
+  language: 'tr',
+  soundEnabled: true,
+  musicEnabled: true,
+  sfxVolume: 0.8,
+  bgmVolume: 0.5,
+  hapticEnabled: true,
+  notificationsEnabled: true,
+  dailyGoalMinutes: 10,
+  parentPin: null,
+};
+
 // ===== CHILD PROFILE =====
 export interface ChildProfile {
   id: string;
