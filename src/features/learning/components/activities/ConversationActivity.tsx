@@ -442,12 +442,6 @@ export default function ConversationActivity({
   const [attempts, setAttempts] = useState(0);
   const [freeInputText, setFreeInputText] = useState('');
   const [micError, setMicError] = useState<string | null>(null);
-  const [supportBanner, setSupportBanner] = useState<{
-    tone: 'warning' | 'error' | 'info';
-    title: string;
-    detail: string;
-    example?: string;
-  } | null>(null);
 
   // ── Premium UX state ──
   const [novaMood, setNovaMood] = useState<NovaMood>('idle');
@@ -881,7 +875,6 @@ export default function ConversationActivity({
       setOptions([]);
       setCurrentRound((r) => r + 1);
       setHintVisible(false);
-      setSupportBanner(null);
       setMicError(null);
       currentPromptOpenEndedRef.current = null;
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
@@ -1003,37 +996,6 @@ export default function ConversationActivity({
     );
   }, []);
 
-  const showNovaSupport = useCallback(
-    (params: {
-      tone: 'warning' | 'error' | 'info';
-      title: string;
-      detail: string;
-      example?: string;
-    }) => {
-      setSupportBanner(params);
-
-      const bubbleText = [params.title, params.detail].filter(Boolean).join(' ');
-      setBubbles((prev) => [
-        ...prev,
-        {
-          id: `nova-support-${Date.now()}`,
-          speaker: 'nova',
-          text: bubbleText,
-          textTr: '',
-          tone: params.tone,
-          example: params.example,
-        },
-      ]);
-
-      setNovaMood('thinking');
-      pushTimer(() => {
-        setNovaMood('speaking');
-        void ttsSpeak(bubbleText, { rate: SPEECH_RATES[speechRateRef.current] });
-      }, 200);
-    },
-    [pushTimer],
-  );
-
   // ── Free-form input handler (STT transcript or typed text) ──
   // alternatives: additional STT candidates to try if rawText doesn't match
   const handleFreeInput = useCallback(
@@ -1067,7 +1029,6 @@ export default function ConversationActivity({
       }
       skipNextRawAnswerLogRef.current = alreadyLoggedRawAnswer;
       skipNextChildBubbleRef.current = alreadyLoggedRawAnswer;
-      setSupportBanner(null);
       setMicError(null);
 
       const openEndedConfig = currentPromptOpenEndedRef.current;
@@ -1323,12 +1284,10 @@ export default function ConversationActivity({
       setFeedback('wrong');
       setNovaMood('sad');
       void haptic.error();
-      showNovaSupport({
-        tone: 'warning',
-        title: t('activities.conversationNovaDidNotUnderstand'),
-        detail: t('activities.conversationNovaDidNotUnderstandHint'),
-        example: options[0]?.text,
-      });
+      // Sesli "Nova seni anlayamadı" kaldırıldı (yalnızca çocuk sesi çalmalı) —
+      // sessiz görsel yönlendirme: ipucu balonu doğru cevabı gösterir
+      setHintVisible(true);
+      setShowTranslation(true);
       if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
       feedbackTimerRef.current = setTimeout(() => {
         setFeedback('idle');
@@ -1351,9 +1310,7 @@ export default function ConversationActivity({
       rememberConversationSlot,
       acceptConversationResponse,
       pushTimer,
-      showNovaSupport,
       syncLastHeardBubble,
-      t,
     ],
   );
 
@@ -1386,7 +1343,6 @@ export default function ConversationActivity({
       recognition.onstart = () => {
         setIsListening(true);
         setMicError(null);
-        setSupportBanner(null);
       };
       recognition.onend = () => {
         setIsListening(false);
@@ -1395,23 +1351,15 @@ export default function ConversationActivity({
         setIsListening(false);
         const errorType = event.error;
         if (errorType === 'not-allowed') {
-          const message = t('activities.conversationMicNotAllowed');
-          setMicError(message);
-          showNovaSupport({
-            tone: 'error',
-            title: t('activities.conversationNovaMicIssue'),
-            detail: message,
-          });
+          // Sessiz görsel bildirim — dock'taki durum satırı mesajı gösterir
+          setMicError(t('activities.conversationMicNotAllowed'));
         } else if (errorType === 'no-speech') {
           setFeedback('wrong');
           setNovaMood('sad');
           void haptic.error();
-          showNovaSupport({
-            tone: 'warning',
-            title: t('activities.conversationNovaDidNotUnderstand'),
-            detail: t('activities.conversationNovaDidNotUnderstandHint'),
-            example: optionsRef.current[0]?.text,
-          });
+          // Sesli destek yerine sessiz ipucu balonu (yalnızca çocuk sesi çalmalı)
+          setHintVisible(true);
+          setShowTranslation(true);
           if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
           feedbackTimerRef.current = setTimeout(() => {
             setFeedback('idle');
@@ -1421,13 +1369,7 @@ export default function ConversationActivity({
             }
           }, 1200);
         } else if (errorType !== 'aborted') {
-          const message = t('activities.conversationMicError');
-          setMicError(message);
-          showNovaSupport({
-            tone: 'error',
-            title: t('activities.conversationNovaMicIssue'),
-            detail: message,
-          });
+          setMicError(t('activities.conversationMicError'));
         }
       };
 
@@ -1450,15 +1392,9 @@ export default function ConversationActivity({
 
       recognition.start();
     } catch {
-      const message = t('activities.conversationMicError');
-      setMicError(message);
-      showNovaSupport({
-        tone: 'error',
-        title: t('activities.conversationNovaMicIssue'),
-        detail: message,
-      });
+      setMicError(t('activities.conversationMicError'));
     }
-  }, [options, haptic, showNovaSupport, t]);
+  }, [options, haptic, t]);
 
   // Keep startListeningRef in sync for auto-listen
   startListeningRef.current = startListening;
@@ -1770,7 +1706,7 @@ export default function ConversationActivity({
             <Text variant="caption" className="font-semibold text-rose-600">
               {t('activities.conversationTryAgain')}
             </Text>
-          ) : micError && !supportBanner ? (
+          ) : micError ? (
             <Text variant="caption" className="text-amber-700">
               {micError}
             </Text>
