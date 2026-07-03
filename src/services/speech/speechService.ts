@@ -163,9 +163,54 @@ function playAudio(src: string): Promise<boolean> {
 let cachedEnglishVoice: SpeechSynthesisVoice | null = null;
 let voiceResolved = false;
 
+// Kullanıcılar çocuk — kalın yetişkin erkek sesleri korkutabilir. Bilinen erkek ses
+// adlarından kaçın, yumuşak/kadın seslerini tercih et (gerçek çocuk sesi hiçbir
+// platformda garanti değil; pitch yükseltmesi speakWithWebSpeechAPI'de uygulanır).
+const AVOIDED_MALE_VOICE_NAMES = [
+  'daniel',
+  'alex',
+  'fred',
+  'arthur',
+  'aaron',
+  'gordon',
+  'rishi',
+  'albert',
+  'bruce',
+  'david',
+  'mark',
+  'george',
+  'oliver',
+  'thomas',
+  'james',
+  'guy',
+  'male',
+];
+
+const CHILD_FRIENDLY_VOICE_NAMES = [
+  'samantha',
+  'karen',
+  'moira',
+  'tessa',
+  'zira',
+  'aria',
+  'jenny',
+  'michelle',
+  'ava',
+  'allison',
+  'nicky',
+  'fiona',
+  'victoria',
+  'kathy',
+];
+
+function soundsMale(voice: SpeechSynthesisVoice): boolean {
+  const name = voice.name.toLowerCase();
+  return AVOIDED_MALE_VOICE_NAMES.some((male) => name.includes(male));
+}
+
 /**
  * Find the best English voice available on this device.
- * Prefers: Google/Samantha/Daniel high-quality voices > any en-US > any en-*
+ * Prefers: known soft/female voices > high-quality non-male > en-US non-male > any non-male > any en-*
  */
 function findBestEnglishVoice(): SpeechSynthesisVoice | null {
   const voices = window.speechSynthesis.getVoices();
@@ -174,18 +219,28 @@ function findBestEnglishVoice(): SpeechSynthesisVoice | null {
   const enVoices = voices.filter((v) => v.lang.startsWith('en'));
   if (enVoices.length === 0) return null;
 
-  // Prefer high-quality voices (Google, Apple Samantha/Daniel, Microsoft)
-  const preferredNames = ['google', 'samantha', 'daniel', 'karen', 'moira', 'enhanced'];
-  const preferred = enVoices.find((v) =>
-    preferredNames.some((name) => v.name.toLowerCase().includes(name)),
+  // Known child-friendly (soft/female) voices first
+  const childFriendly = enVoices.find((v) =>
+    CHILD_FRIENDLY_VOICE_NAMES.some((name) => v.name.toLowerCase().includes(name)),
+  );
+  if (childFriendly) return childFriendly;
+
+  // High-quality voices (Google/enhanced/natural) — never a known male voice
+  const preferredNames = ['google', 'enhanced', 'premium', 'natural'];
+  const preferred = enVoices.find(
+    (v) => preferredNames.some((name) => v.name.toLowerCase().includes(name)) && !soundsMale(v),
   );
   if (preferred) return preferred;
 
-  // Prefer en-US
-  const enUS = enVoices.find((v) => v.lang === 'en-US');
+  // en-US, avoiding known male voices
+  const enUS = enVoices.find((v) => v.lang === 'en-US' && !soundsMale(v));
   if (enUS) return enUS;
 
-  // Any English voice
+  // Any English voice that isn't a known male voice
+  const nonMale = enVoices.find((v) => !soundsMale(v));
+  if (nonMale) return nonMale;
+
+  // Last resort — any English voice (pitch boost softens it)
   return enVoices[0] ?? null;
 }
 
@@ -207,22 +262,47 @@ if (synthAvailable) {
 }
 
 /**
- * Web Speech API fallback — used only when cloud TTS is unavailable.
- * Explicitly selects an English voice to avoid Turkish pronunciation.
+ * Sesler bazı tarayıcılarda asenkron yüklenir. Liste boşken konuşursak utterance
+ * sese atanmaz ve sistem varsayılanı (çoğu cihazda yetişkin erkek) çalar — çocuk
+ * kullanıcı için korkutucu. Kısa bir süre voiceschanged'i bekleyerek bunu önle.
  */
-function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (!synthAvailable) {
+function waitForVoices(timeoutMs = 1500): Promise<void> {
+  return new Promise((resolve) => {
+    if (!synthAvailable || window.speechSynthesis.getVoices().length > 0) {
       resolve();
       return;
     }
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.speechSynthesis.removeEventListener('voiceschanged', finish);
+      resolve();
+    };
+    window.speechSynthesis.addEventListener('voiceschanged', finish);
+    setTimeout(finish, timeoutMs);
+  });
+}
 
+/**
+ * Web Speech API fallback — used only when cloud TTS is unavailable.
+ * Explicitly selects an English voice to avoid Turkish pronunciation.
+ */
+async function speakWithWebSpeechAPI(text: string, options: SpeakOptions): Promise<void> {
+  if (!synthAvailable) return;
+
+  // Ses listesi hazır olmadan konuşma — varsayılan (erkek) sese düşmeyi önler
+  await waitForVoices();
+
+  return new Promise((resolve, reject) => {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(normalizeSpeechText(text));
     utterance.lang = options.lang ?? 'en-US';
     utterance.rate = options.rate ?? 0.85;
-    utterance.pitch = options.pitch ?? 1.1;
+    // Yüksek pitch fallback sesi çocuksulaştırır — önceden kayıtlı çocuk sesi
+    // MP3'leriyle ton uyumu için varsayılanı yüksek tut
+    utterance.pitch = options.pitch ?? 1.3;
     utterance.volume = options.volume ?? 1;
 
     const voice = resolveEnglishVoice();
