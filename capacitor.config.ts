@@ -8,10 +8,18 @@ const config: CapacitorConfig = {
     androidScheme: 'https',
     iosScheme: 'https',
   },
+  // Webview'deki console.* çıktısını native log'a köprüler. Varsayılan 'debug' yalnızca
+  // debug build'lerde çalışır; 'production' ile Release/TestFlight build'lerinde de
+  // Xcode konsolunda (ve Console.app'te) görünür. Bkz. src/utils/logger.ts
+  loggingBehavior: 'production',
   ios: {
-    contentInset: 'automatic',
+    // 'never': güvenli alan boşluklarını CSS env(safe-area-inset-*) ile kendimiz
+    // yönetiyoruz (globals.css `.safe-area-*`), WKWebView otomatik inset eklerse çift boşluk olur.
+    contentInset: 'never',
     allowsLinkPreview: false,
-    scrollEnabled: false,
+    // Sayfa kaydırması WKWebView'in scroll view'ına bağlı; false olursa
+    // ekranlar (ör. Ana Sayfa → Dünyalar listesi) hiç kaydırılamaz.
+    scrollEnabled: true,
   },
   android: {
     allowMixedContent: false,
