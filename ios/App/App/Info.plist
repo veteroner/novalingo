@@ -86,11 +86,12 @@
 		</dict>
 	</array>
 
-	<!-- App Transport Security — allow HTTPS only -->
+	<!-- App Transport Security — yalnızca HTTPS.
+	     Rastgele (http) yüklemelere izin verilmez; App Review gerekçe ister. -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<true/>
+		<false/>
 	</dict>
 
 </dict>

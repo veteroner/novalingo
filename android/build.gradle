@@ -7,8 +7,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.1'
-        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'com.google.gms:google-services:4.4.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -21,6 +21,17 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+}
+
+// exFAT sürücülerde macOS her yazılan dosya için `._*` AppleDouble ikizi üretir;
+// R8 bunları sınıf dosyası sanıp `Invalid classfile header` ile düşer.
+// NOVALINGO_ANDROID_BUILD_DIR verildiğinde build çıktısı APFS'teki bu dizine alınır.
+// (CI/Linux'ta değişken tanımsızdır, davranış değişmez.)
+def externalBuildDir = System.getenv("NOVALINGO_ANDROID_BUILD_DIR")
+if (externalBuildDir != null && !externalBuildDir.isEmpty()) {
+    allprojects {
+        layout.buildDirectory.set(new File(externalBuildDir, project.path.replace(':', '_')))
     }
 }
 

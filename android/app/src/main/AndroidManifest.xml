@@ -50,4 +50,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Android 13+ (API 33) bildirim izni — günlük hatırlatmalar için gerekli -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Google Play Faturalandırma — abonelik satın alma -->
+    <uses-permission android:name="com.android.vending.BILLING" />
 </manifest>
