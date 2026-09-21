@@ -18,7 +18,7 @@ import { curriculum } from '@features/learning/data/curriculum';
 import { useLessonProgress, useVocabularyCards, useWorlds } from '@hooks/queries';
 import { getReviewQueue } from '@services/srs/srsEngine';
 import {
-  getLessonsCompletedToday,
+  getDailyLessonCount,
   isPremiumUser,
   isWorldPremiumLocked,
 } from '@services/subscription/premiumAccess';
@@ -60,7 +60,7 @@ export default function HomeScreen() {
     () => (vocabCards ? getReviewQueue(vocabCards).length : 0),
     [vocabCards],
   );
-  const lessonsToday = getLessonsCompletedToday(lessonProgress);
+  const lessonsToday = getDailyLessonCount(child, lessonProgress);
   const isPremium = isPremiumUser(user);
 
   // Otomatik streak-lost modal: seri kırılmışsa (currentStreak===0 ve daha önce bir seri vardıysa)

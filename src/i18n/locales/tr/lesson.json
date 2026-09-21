@@ -15,7 +15,6 @@
   "incorrect": "Yanlış 😢",
   "tryAgain": "Tekrar Dene",
   "almostThere": "Az kaldı! 💪",
-
   "activities": {
     "wordMatch": "Eşleştir",
     "wordMatchDesc": "Kelimeyi resmiyle eşleştir",
@@ -67,7 +66,6 @@
     "conversationScreenLoading": "Senaryo hazırlanıyor...",
     "conversationScreenEpisode": "{{episode}}/{{total}}. Bölüm"
   },
-
   "conversationResult": {
     "home": "Ana Sayfaya Dön",
     "newSession": "Yeni Konuşma Başlat 🎭",
@@ -102,7 +100,6 @@
     "wordsTitle": "🎯 Pratik Edilen Kelimeler",
     "rawAnswersTitle": "🗣 Gerçek Cevapların"
   },
-
   "result": {
     "title": "Ders Bitti!",
     "perfect": "Mükemmel! ⭐⭐⭐",
@@ -125,14 +122,12 @@
       "noHint": "İpucusuz Bonus"
     }
   },
-
   "rewardAd": {
     "title": "Ödülünü 2 Katına Çıkar!",
     "desc": "Kısa bir video izleyerek XP ve yıldızlarını 2x yap",
     "watch": "Videoyu İzle",
     "noThanks": "Hayır, Teşekkürler"
   },
-
   "lessonScreen": {
     "loading": "Ders yükleniyor...",
     "quit": "Dersi Bırak",
@@ -140,10 +135,9 @@
     "resume": "Devam Et",
     "savingTitle": "Ders kaydediliyor",
     "limitTitle": "Günlük Limit Doldu",
-    "limitMessage": "Bugünkü ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus'a geçin.",
+    "limitMessage": "Bugünkü 3 ücretsiz ders hakkınız doldu (tekrar oynanan dersler de sayılır). Yarın yenilenir veya Plus'a geçebilirsiniz.",
     "resultOpened": "Sonuç ekranı açıldı. Kayıt arka planda tamamlanacak."
   },
-
   "review": {
     "title": "📚 Tekrar",
     "emptyMessage": "Henüz tekrar edilecek kelime yok. Önce birkaç ders tamamla!",
@@ -159,7 +153,6 @@
     "score": "{{correct}} / {{total}} doğru",
     "retry": "Tekrar Et"
   },
-
   "storyLibrary": {
     "title": "📖 Hikaye Kütüphanesi",
     "subtitle": "{{count}} hikaye — okumaya başla!",
@@ -176,12 +169,10 @@
       "w6": "Macera Galaksisi"
     }
   },
-
   "storyViewer": {
     "notFound": "Hikaye bulunamadı 😕",
     "backToLibrary": "Kütüphaneye Dön"
   },
-
   "lessonResult": {
     "backHome": "Ana Sayfaya Dön",
     "bossDefeatTitle": "Patron Seni Yendi!",
@@ -223,7 +214,6 @@
     "hintNextWorld": "Bu dünya bitti. Sıradaki dünyaya geçebilirsin.",
     "hintAllDone": "Tüm dünyalar tamamlandı. Harika iş!"
   },
-
   "activityUI": {
     "errorBoundary": {
       "message": "Bir şeyler ters gitti 😅",

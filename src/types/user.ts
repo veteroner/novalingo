@@ -31,7 +31,8 @@ export interface User {
   photoURL: string | null;
   provider: 'google' | 'apple' | 'anonymous';
   isPremium: boolean;
-  premiumExpiresAt: Timestamp | null;
+  /** Sunucu (abonelik doğrulaması) yazar; yeni kullanıcıda bulunmaz. */
+  premiumExpiresAt?: Timestamp | null;
   subscriptionState?: string | null;
   subscriptionPlatform?: string | null;
   subscriptionProductId?: string | null;
@@ -112,6 +113,12 @@ export interface ChildProfile {
   completedLessons: number;
   totalPlayTimeMinutes: number;
   wordsLearned?: number;
+
+  // Ücretsiz katman günlük ders sayacı (firestore.rules tarafından zorlanır)
+  /** Sayacın ait olduğu TR tarihi (YYYY-MM-DD). */
+  dailyLessonDate?: string;
+  /** O tarihte tamamlanan ders sayısı. */
+  dailyLessonCount?: number;
 }
 
 // ===== NOVA COMPANION =====

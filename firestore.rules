@@ -121,12 +121,98 @@ service cloud.firestore {
         && d.updatedAt is timestamp;
     }
 
+    // ===== ABONELIK / YETKI KORUMASI =====
+    // Bu alanlar yalnızca sunucu (Admin SDK / Cloud Functions) tarafından yazılır.
+    // İstemci hiçbir koşulda premium yetkisini kendisine veremez.
+    function entitlementFields() {
+      return [
+        'isPremium',
+        'premiumExpiresAt',
+        'subscriptionState',
+        'subscriptionPlatform',
+        'subscriptionProductId',
+        'subscriptionExternalId',
+        'pilotCohort',
+        'role',
+        'admin'
+      ];
+    }
+
+    // Oluştururken yazılabilecek tek yetki alanı isPremium=false'tur; diğerleri
+    // HİÇ bulunmamalıdır (null bile değil). 16 Mayıs 2026'da yayına alınan
+    // `userCreateHasNoEntitlement` kuralıyla birebir aynı anlam.
+    function isCleanUserCreate(d) {
+      return (!('isPremium' in d) || d.isPremium == false)
+        && !d.keys().hasAny([
+          'premiumExpiresAt',
+          'subscriptionState',
+          'subscriptionPlatform',
+          'subscriptionProductId',
+          'subscriptionExternalId',
+          'pilotCohort',
+          'role',
+          'admin'
+        ]);
+    }
+
+    function keepsEntitlementUntouched() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(entitlementFields());
+    }
+
+    // ===== ÜCRETSİZ KATMAN GÜNLÜK DERS LİMİTİ =====
+    // Limit istemcide de gösterilir, ama asıl zorlama burada yapılır.
+    // ÖNEMLİ: Aşağıdaki 3 sayısı src/config/constants.ts içindeki
+    // FREE_TIER.DAILY_LESSONS ile elle senkron tutulmalıdır.
+    function twoDigits(value) {
+      return value < 10 ? '0' + string(value) : string(value);
+    }
+
+    function dateString(ts) {
+      return string(ts.year()) + '-' + twoDigits(ts.month()) + '-' + twoDigits(ts.day());
+    }
+
+    // TR saati UTC+3 olduğu için istemcinin yazdığı gün, UTC bugün ya da UTC yarın olabilir.
+    function isCurrentDate(value) {
+      return value == dateString(request.time)
+        || value == dateString(request.time + duration.value(1, 'd'));
+    }
+
+    function parentIsPremium() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isPremium == true;
+    }
+
+    function isWithinDailyLessonLimit() {
+      let d = request.resource.data;
+      let old = resource.data;
+      let delta = d.completedLessons - old.get('completedLessons', 0);
+      return delta <= 0
+        || (
+          d.dailyLessonDate is string
+          && d.dailyLessonCount is int
+          && isCurrentDate(d.dailyLessonDate)
+          && (
+            d.dailyLessonDate == old.get('dailyLessonDate', '')
+              ? d.dailyLessonCount == old.get('dailyLessonCount', 0) + delta
+              : d.dailyLessonCount == delta
+          )
+          && (d.dailyLessonCount <= 3 || parentIsPremium())
+        );
+    }
+
     // ===== USERS COLLECTION =====
     match /users/{userId} {
       allow read: if isOwner(userId);
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
+      // Yeni hesap premium olarak açılamaz.
+      allow create: if isOwner(userId) && isCleanUserCreate(request.resource.data);
+      // Abonelik/yetki alanları istemciden değiştirilemez (sunucu projeksiyonu).
+      allow update: if isOwner(userId) && keepsEntitlementUntouched();
       allow delete: if isOwner(userId); // COPPA: kullanıcı kendi hesabını silebilir
+
+      // Doğrulanmış abonelik kayıtları — yalnızca backend yazar.
+      match /subscriptions/{subscriptionId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
 
       // Purchase records
       match /purchases/{purchaseId} {
@@ -143,7 +229,8 @@ service cloud.firestore {
       allow create: if isAuthenticated() && isValidChildCreate(request.resource.data);
       allow update: if isAuthenticated()
         && resource.data.parentUid == request.auth.uid
-        && isValidChildUpdate();
+        && isValidChildUpdate()
+        && isWithinDailyLessonLimit();
       allow delete: if isAuthenticated() && resource.data.parentUid == request.auth.uid;
 
       // Alt koleksiyonlar — client-side yazım (Spark plan uyumlu)
