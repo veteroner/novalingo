@@ -24,17 +24,21 @@ import { useEffect, useRef } from 'react';
 
 export function useAppInit(): void {
   const user = useAuthStore((s) => s.user);
+  // Başlatma yalnızca kullanıcı KİMLİĞİ değiştiğinde yeniden çalışmalı. `user` nesnesi
+  // her Firestore anlık görüntüsünde yenilenir; ona bağlanmak bildirim izni ve
+  // dinleyicileri döngü halinde yeniden kuruyordu (emülatörde 88 kez görüldü).
+  const userId = user?.id;
   const initializedRef = useRef(false);
   const lastSubscriptionStateRef = useRef<string | null>(null);
   const lastPremiumRef = useRef<boolean | null>(null);
 
   useEffect(() => {
-    if (!user || initializedRef.current) return;
+    if (!userId || initializedRef.current) return;
     initializedRef.current = true;
 
     // Platform-agnostic services (safe to call on web — they no-op gracefully)
     startSyncManager();
-    void initializeNotifications(user.id);
+    void initializeNotifications(userId);
 
     // Wire notification tap/receive handlers (native only — no-op on web via guard in service)
     setupNotificationListeners((data) => {
@@ -74,7 +78,7 @@ export function useAppInit(): void {
       void stopSyncManager();
       initializedRef.current = false;
     };
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
     if (!user) return;

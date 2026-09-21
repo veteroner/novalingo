@@ -69,11 +69,10 @@ export function useAuth() {
               displayName: fbUser.displayName ?? '',
               photoURL: fbUser.photoURL ?? null,
               provider: mapProvider(fbUser.providerData[0]?.providerId),
+              // Yalnızca isPremium=false yazılabilir. premiumExpiresAt / subscription*
+              // alanları sunucuya aittir ve oluştururken HİÇ bulunmamalıdır —
+              // firestore.rules (isCleanUserCreate) aksi halde oluşturmayı reddeder.
               isPremium: false,
-              premiumExpiresAt: null,
-              subscriptionState: 'expired',
-              subscriptionPlatform: null,
-              subscriptionProductId: null,
               activeChildId: null,
               createdAt: serverTimestamp(),
               lastLoginAt: serverTimestamp(),
