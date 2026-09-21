@@ -65,6 +65,17 @@ export async function sendToParent(
     const fcmToken = userData?.fcmToken;
     if (!fcmToken) return false;
 
+    // İstemci token'ın sağlayıcısını yazar. iOS'ta Firebase SDK entegre
+    // edilmeden gelen token bir APNs cihaz token'ıdır ve FCM ile gönderilemez;
+    // sessizce başarısız olmak yerine açıkça atlıyoruz (bkz. docs/PUSH_SETUP.md).
+    if (userData?.pushProvider === 'apns') {
+      console.warn(
+        `Push skipped for ${parentUid}: APNs token cannot be used with FCM. ` +
+          'Integrate Firebase messaging on iOS to obtain an FCM registration token.',
+      );
+      return false;
+    }
+
     // Honor parent preferences when a category is supplied.
     if (payload.category) {
       const prefs: ParentNotificationPrefs = {

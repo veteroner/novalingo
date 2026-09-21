@@ -226,9 +226,9 @@ export function useLeaderboard(leagueId: string | undefined) {
       if (!childId || !leagueId) return { entries: [] as LeaderboardEntry[], myRank: 0 };
       const result = await getLeaderboard({ childId, leagueId });
       return {
-        entries: result.entries.map((e, i) => ({
-          childId: `c${i}`,
-          displayName: e.displayName,
+        entries: result.entries.map((e) => ({
+          childId: e.childId,
+          anonNumber: e.anonNumber,
           avatarId: e.avatarId,
           level: e.level,
           weeklyXP: e.weeklyXP,

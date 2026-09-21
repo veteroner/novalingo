@@ -201,7 +201,11 @@ export interface WheelSpin {
 // ===== LEADERBOARD =====
 export interface LeaderboardEntry {
   childId: string;
-  displayName: string;
+  /**
+   * Anonim etiket numarası. Liderlik tablosunda başka çocukların **adı
+   * gösterilmez** (Play Families / COPPA); etiket childId'den türetilir.
+   */
+  anonNumber: number;
   avatarId: string;
   level: number;
   weeklyXP: number;

@@ -106,7 +106,11 @@ export default function LeaderboardScreen() {
             </div>
           </Card>
         ) : (
-          <Leaderboard entries={entries} currentUserId={child?.id ?? 'current'} />
+          <Leaderboard
+            entries={entries}
+            currentUserId={child?.id ?? 'current'}
+            currentUserName={child?.name}
+          />
         )}
       </div>
     </MainLayout>
