@@ -15,12 +15,18 @@ Current TTS staging origin:
 
 - `https://novalingo-b0c92-tts.web.app`
 
+Production TTS origin:
+
+- `https://novalingo-app-tts.web.app`
+
 ## Frontend Environment Variables
 
 ```bash
 VITE_APP_ENV=staging|production
 VITE_BUNDLE_TTS_AUDIO=false
-VITE_TTS_AUDIO_BASE_URL=https://novalingo-b0c92-tts.web.app
+# staging: https://novalingo-b0c92-tts.web.app
+# production: https://novalingo-app-tts.web.app
+VITE_TTS_AUDIO_BASE_URL=https://novalingo-app-tts.web.app
 VITE_FIREBASE_API_KEY=...
 VITE_FIREBASE_AUTH_DOMAIN=...
 VITE_FIREBASE_PROJECT_ID=...
@@ -76,9 +82,35 @@ pnpm run android:device:staging
 
 ```bash
 pnpm run type-check
+pnpm run lint
 pnpm run test
+pnpm run test:rules   # Firestore security rules (starts the emulator itself)
 cd functions && npm run build
 ```
+
+### Release signing
+
+Android release builds are signed from `android/keystore.properties` locally
+(see `android/keystore.properties.example`) or from these CI secrets:
+
+| Secret                      | Purpose                         |
+| --------------------------- | ------------------------------- |
+| `ANDROID_KEYSTORE`          | base64-encoded upload keystore  |
+| `ANDROID_KEYSTORE_PASSWORD` | keystore password               |
+| `ANDROID_KEY_ALIAS`         | key alias                       |
+| `ANDROID_KEY_PASSWORD`      | key password                    |
+| `IOS_DIST_CERT_P12`         | base64 distribution certificate |
+| `IOS_DIST_CERT_PASSWORD`    | certificate password            |
+| `IOS_PROVISIONING_PROFILE`  | base64 provisioning profile     |
+| `APPLE_TEAM_ID`             | Apple Developer team id         |
+
+`.github/workflows/mobile-build.yml` produces a signed **AAB** for Play and a
+signed **IPA** for App Store Connect (`ios/ExportOptions.plist`).
+
+### Push notifications
+
+Scheduled reminders require the Blaze plan and native Firebase config on both
+platforms — see [PUSH_SETUP.md](PUSH_SETUP.md).
 
 ### Required billing validation before public release
 

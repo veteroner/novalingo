@@ -1,12 +1,14 @@
 export {
   comparePronunciation,
   getAvailableVoices,
-  getEnglishVoices, isRecognitionActive, isSpeakingNow, isSpeechRecognitionSupported,
+  getEnglishVoices,
+  isRecognitionActive,
+  isSpeakingNow,
+  isSpeechRecognitionSupported,
   isSpeechSynthesisSupported,
   onSpeakingStateChange,
   speak,
   startRecognition,
   stopRecognition,
-  stopSpeaking
+  stopSpeaking,
 } from './speechService';
-

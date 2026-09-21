@@ -61,7 +61,10 @@ exports.streakDangerReminder = (0, scheduler_1.onSchedule)({
         const notified = await (0, notificationService_1.notifyParentAboutChild)(childDoc.id, {
             title: '🔥 Seri tehlikede!',
             body: `${childName} bugün henüz oynamadı. ${streakDays} günlük seriyi birlikte koruyalım!`,
-            category: 'inactivityAlert',
+            // Bu bildirim "bugün henüz oynamadı" uyarısıdır → günlük hatırlatma
+            // tercihine bağlıdır. `inactivityAlert` varsayılanı kapalıdır ve
+            // ayarlarda "3 gün giriş yapılmazsa" olarak tanımlanmıştır.
+            category: 'dailyReminder',
             data: {
                 type: 'streak_danger',
                 childId: childDoc.id,

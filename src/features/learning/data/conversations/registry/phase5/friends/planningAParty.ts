@@ -36,7 +36,9 @@ export const planningAPartyScenario: ConversationScenario = {
     preferredIfTagsSeen: ['friends', 'social'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -44,7 +46,8 @@ export const planningAPartyScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "It is my birthday soon! Say: Let's have a party on Saturday!",
-      textTr: "Yak\u0131nda do\u011fum g\u00fcn\u00fcm! S\u00f6yle: Let's have a party on Saturday!",
+      textTr:
+        "Yak\u0131nda do\u011fum g\u00fcn\u00fcm! S\u00f6yle: Let's have a party on Saturday!",
       emoji: '\ud83e\udd73',
       goalType: 'answer',
       targetPattern: "Let's have a party on ___!",
@@ -110,7 +113,8 @@ export const planningAPartyScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes! What do we need for the party? Describe the things we need!',
-      textTr: 'Evet! Parti i\u00e7in neye ihtiyac\u0131m\u0131z var? \u0130htiyac\u0131m\u0131z olan \u015feyleri anlat!',
+      textTr:
+        'Evet! Parti i\u00e7in neye ihtiyac\u0131m\u0131z var? \u0130htiyac\u0131m\u0131z olan \u015feyleri anlat!',
       emoji: '\ud83c\udf88',
       goalType: 'describe',
       targetPattern: 'We need ___ and ___',
@@ -246,7 +250,7 @@ export const planningAPartyScenario: ConversationScenario = {
       role: 'friend',
       text: "Now let's invite people! Who will you invite? Say: I will invite all my friends!",
       textTr:
-        "\u015eimdi insanlar\u0131 davet edelim! Kimi davet edeceksin? S\u00f6yle: I will invite all my friends!",
+        '\u015eimdi insanlar\u0131 davet edelim! Kimi davet edeceksin? S\u00f6yle: I will invite all my friends!',
       emoji: '\ud83d\udc8c',
       goalType: 'answer',
       targetPattern: 'I will invite ___!',
@@ -259,7 +263,8 @@ export const planningAPartyScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: I will invite ___!  (all my friends, my class, Tom and Sara)',
-        promptTr: 'S\u00f6yle: I will invite ___!  (t\u00fcm arkada\u015flar\u0131m\u0131, s\u0131n\u0131f\u0131m\u0131, Tom ve Sara)',
+        promptTr:
+          'S\u00f6yle: I will invite ___!  (t\u00fcm arkada\u015flar\u0131m\u0131, s\u0131n\u0131f\u0131m\u0131, Tom ve Sara)',
         maxRetries: 2,
       },
       responses: [
@@ -293,7 +298,7 @@ export const planningAPartyScenario: ConversationScenario = {
       id: 'n6',
       speaker: 'nova',
       role: 'friend',
-      text: "Great! Invite one more person. Say: I will invite my best friend!",
+      text: 'Great! Invite one more person. Say: I will invite my best friend!',
       textTr: 'Harika! Bir ki\u015fi daha davet et. S\u00f6yle: I will invite my best friend!',
       emoji: '\ud83e\udd1d',
       goalType: 'answer',
@@ -333,7 +338,8 @@ export const planningAPartyScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'What kind of cake do we need? Say: We need a big birthday cake!',
-      textTr: 'Nasil bir pastaya ihtiyac\u0131m\u0131z var? S\u00f6yle: We need a big birthday cake!',
+      textTr:
+        'Nasil bir pastaya ihtiyac\u0131m\u0131z var? S\u00f6yle: We need a big birthday cake!',
       emoji: '\ud83c\udf82',
       goalType: 'answer',
       targetPattern: 'We need ___ and ___',
@@ -353,7 +359,8 @@ export const planningAPartyScenario: ConversationScenario = {
         {
           id: 'r7_cake',
           expectedText: 'We need a big birthday cake!',
-          expectedTextTr: 'B\u00fcy\u00fck bir do\u011fum g\u00fcn\u00fc pastas\u0131na ihtiyac\u0131m\u0131z var!',
+          expectedTextTr:
+            'B\u00fcy\u00fck bir do\u011fum g\u00fcn\u00fc pastas\u0131na ihtiyac\u0131m\u0131z var!',
           acceptedVariants: [
             'we need a big birthday cake',
             'a big birthday cake',
@@ -372,8 +379,7 @@ export const planningAPartyScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "The party is here! It is time to celebrate! Say: Let's celebrate together!",
-      textTr:
-        'Parti burada! Kutlama vakti! S\u00f6yle: Let\'s celebrate together!',
+      textTr: "Parti burada! Kutlama vakti! S\u00f6yle: Let's celebrate together!",
       emoji: '\ud83c\udf8a',
       goalType: 'answer',
       targetPattern: "Let's celebrate together!",
@@ -419,9 +425,9 @@ export const planningAPartyScenario: ConversationScenario = {
       targetPattern: '',
       hint: {
         delayMs: 9000,
-        text: "Try: We planned a party. We need balloons and cake. We decorate the room. I invite my friends. We celebrate together!",
+        text: 'Try: We planned a party. We need balloons and cake. We decorate the room. I invite my friends. We celebrate together!',
         textTr:
-          "Dene: We planned a party. We need balloons and cake. We decorate the room. I invite my friends. We celebrate together!",
+          'Dene: We planned a party. We need balloons and cake. We decorate the room. I invite my friends. We celebrate together!',
         revealPattern: false,
       },
       repair: {

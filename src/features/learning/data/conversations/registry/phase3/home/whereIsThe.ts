@@ -36,7 +36,9 @@ export const whereIsTheScenario: ConversationScenario = {
     preferredIfTagsSeen: ['home', 'prepositions'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131ay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131ay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -44,7 +46,8 @@ export const whereIsTheScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "Oh no! I can't find my book. Can you help me? Ask me: Where is the book?",
-      textTr: 'Oh hay\u0131r! Kitab\u0131m\u0131 bulamod\u0131m. Bana yard\u0131m eder misin? Sor: Where is the book?',
+      textTr:
+        'Oh hay\u0131r! Kitab\u0131m\u0131 bulamod\u0131m. Bana yard\u0131m eder misin? Sor: Where is the book?',
       emoji: '\u{1F50D}',
       goalType: 'answer',
       targetPattern: 'Where is the ___?',
@@ -212,7 +215,8 @@ export const whereIsTheScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "Now it's your turn to ask! The cat is hiding. Ask me: Where is the cat?",
-      textTr: '\u015eimdi siras\u0131 sende sorman\u0131n! Kedi saklan\u0131yor. Sor: Where is the cat?',
+      textTr:
+        '\u015eimdi siras\u0131 sende sorman\u0131n! Kedi saklan\u0131yor. Sor: Where is the cat?',
       emoji: '\u{1F431}',
       goalType: 'answer',
       targetPattern: 'Where is the ___?',
@@ -248,7 +252,8 @@ export const whereIsTheScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'The dog is near the door. Where is the dog? Tell me with: It is in the ___',
-      textTr: 'K\u00f6pek kap\u0131n\u0131n yan\u0131nda. K\u00f6pek nerede? S\u00f6yle: It is in the ___',
+      textTr:
+        'K\u00f6pek kap\u0131n\u0131n yan\u0131nda. K\u00f6pek nerede? S\u00f6yle: It is in the ___',
       emoji: '\u{1F436}',
       goalType: 'answer',
       targetPattern: 'It is in the ___',
@@ -308,7 +313,8 @@ export const whereIsTheScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Look under the table! My ball is somewhere low. Say: It is under the ___',
-      textTr: 'Masas\u0131n\u0131n alt\u0131na bak! Topum a\u015fa\u011f\u0131da bir yerde. S\u00f6yle: It is under the ___',
+      textTr:
+        'Masas\u0131n\u0131n alt\u0131na bak! Topum a\u015fa\u011f\u0131da bir yerde. S\u00f6yle: It is under the ___',
       emoji: '\u26bd',
       goalType: 'answer',
       targetPattern: 'It is under the ___',
@@ -404,7 +410,8 @@ export const whereIsTheScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Last one! Describe where something is in YOUR home. Say: The ___ is in/on the ___',
-      textTr: 'Son bir tane! Evindeki bir \u015feyin nerede oldu\u011funu anlat. S\u00f6yle: The ___ is in/on the ___',
+      textTr:
+        'Son bir tane! Evindeki bir \u015feyin nerede oldu\u011funu anlat. S\u00f6yle: The ___ is in/on the ___',
       emoji: '\u{1F4DD}',
       goalType: 'describe',
       targetPattern: 'It is in the ___',
@@ -436,7 +443,8 @@ export const whereIsTheScenario: ConversationScenario = {
           rewardXp: 25,
           feedbackEmoji: '\u{1F4DA}',
           feedbackText: 'The book on the table — perfect description!',
-          feedbackTextTr: 'Masas\u0131n\u0131n \u00fczerindeki kitap — m\u00fckemmel tan\u0131mlama!',
+          feedbackTextTr:
+            'Masas\u0131n\u0131n \u00fczerindeki kitap — m\u00fckemmel tan\u0131mlama!',
         },
         {
           id: 'r9_in_bedroom',
@@ -463,8 +471,9 @@ export const whereIsTheScenario: ConversationScenario = {
       id: 'n10',
       speaker: 'nova',
       role: 'friend',
-      text: "Amazing! You found everything and you know all the places! You are the best home explorer! \u{1F3C6}",
-      textTr: "\u0130nan\u0131lmaz! Her \u015feyi buldun ve t\u00fcm yerleri biliyorsun! Sen en iyi ev ke\u015fif\u00e7isisin! \u{1F3C6}",
+      text: 'Amazing! You found everything and you know all the places! You are the best home explorer! \u{1F3C6}',
+      textTr:
+        '\u0130nan\u0131lmaz! Her \u015feyi buldun ve t\u00fcm yerleri biliyorsun! Sen en iyi ev ke\u015fif\u00e7isisin! \u{1F3C6}',
       emoji: '\u{1F3C6}',
     },
   ],

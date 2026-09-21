@@ -18,6 +18,7 @@ import { Text } from '@components/atoms/Text';
 import { LessonLayout } from '@components/templates/LessonLayout';
 import { useLessonProgress, useSubmitLesson, useVocabularyCards } from '@hooks/queries';
 import { playSfx } from '@services/audio/synthSfx';
+import { DAILY_LESSON_LIMIT_ERROR } from '@services/firebase/functions';
 import {
   checkNovaEvolution,
   processLessonResult,
@@ -83,7 +84,7 @@ export default function LessonScreen() {
   // Fetch child's vocabulary cards & lesson progress for SRS + adaptive difficulty
   const { data: vocabularyCards } = useVocabularyCards(child?.id);
   const { data: lessonProgressData } = useLessonProgress(child?.id);
-  const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgressData);
+  const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgressData, child);
 
   useEffect(() => {
     if (!lessonId || !child || !hasReachedDailyLimit) return;
@@ -374,7 +375,24 @@ export default function LessonScreen() {
                     vocabulary: session?.vocabulary ?? [],
                   });
                 },
-                onError: () => {
+                onError: (error: unknown) => {
+                  // Ücretsiz katman limiti veya kural reddi: çevrimdışı kuyruğa ALMA,
+                  // yoksa limit çevrimdışı senkron üzerinden aşılabilir.
+                  const message = error instanceof Error ? error.message : '';
+                  if (
+                    message.includes(DAILY_LESSON_LIMIT_ERROR) ||
+                    message.includes('permission-denied') ||
+                    message.includes('Missing or insufficient permissions')
+                  ) {
+                    showToast({
+                      type: 'info',
+                      title: t('lessonScreen.limitTitle'),
+                      message: t('lessonScreen.limitMessage'),
+                    });
+                    void navigate('/subscription');
+                    return;
+                  }
+
                   // Offline — enqueue for background sync + give local XP estimate
                   addXP(summary.score);
                   void enqueueAction('lessonComplete', {
@@ -410,6 +428,7 @@ export default function LessonScreen() {
       endLesson,
       addXP,
       child,
+      navigate,
       navigateToResult,
       submitLessonMutation,
       vocabularyCards,

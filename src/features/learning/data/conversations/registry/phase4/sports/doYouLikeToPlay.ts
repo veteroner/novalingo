@@ -36,7 +36,9 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
     preferredIfTagsSeen: ['sports', 'preferences'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -225,7 +227,8 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Great choice! Now ask me \u2014 do I like to play basketball?',
-      textTr: 'Harika se\u00e7im! \u015eimdi sor bana \u2014 basketbol oynamay\u0131 seviyor muyum?',
+      textTr:
+        'Harika se\u00e7im! \u015eimdi sor bana \u2014 basketbol oynamay\u0131 seviyor muyum?',
       emoji: '\u{1F3C0}',
       goalType: 'answer',
       targetPattern: 'Do you like to play ___?',
@@ -262,11 +265,7 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
           id: 'r4_swimming',
           expectedText: 'Do you like to play swimming?',
           expectedTextTr: 'Y\u00fczmeyi seviyor musun?',
-          acceptedVariants: [
-            'do you like swimming',
-            'swimming',
-            'like swimming',
-          ],
+          acceptedVariants: ['do you like swimming', 'swimming', 'like swimming'],
           acceptedWords: ['swimming'],
           nextNodeId: 'n5',
           emoji: '\u{1F3CA}',
@@ -326,7 +325,8 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'I like running too! Tell me \u2014 what do you like about running?',
-      textTr: 'Ko\u015fmay\u0131 da severim! S\u00f6yle bana \u2014 ko\u015fmak hakk\u0131nda ne seviyorsun?',
+      textTr:
+        'Ko\u015fmay\u0131 da severim! S\u00f6yle bana \u2014 ko\u015fmak hakk\u0131nda ne seviyorsun?',
       emoji: '\u{1F3C3}',
       goalType: 'describe',
       hint: {
@@ -400,11 +400,7 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
           id: 'r7_gymnastics',
           expectedText: 'Do you like gymnastics?',
           expectedTextTr: 'Jimnasti\u011fi seviyor musun?',
-          acceptedVariants: [
-            'do you like gymnastics',
-            'gymnastics',
-            'like gymnastics',
-          ],
+          acceptedVariants: ['do you like gymnastics', 'gymnastics', 'like gymnastics'],
           acceptedWords: ['gymnastics'],
           nextNodeId: 'n8',
           emoji: '\u{1F938}',
@@ -513,11 +509,7 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
           id: 'r9_gymnastics',
           expectedText: 'My favourite sport is gymnastics.',
           expectedTextTr: 'En sevdi\u011fim spor jimnastik.',
-          acceptedVariants: [
-            'favourite sport is gymnastics',
-            'i love gymnastics',
-            'gymnastics',
-          ],
+          acceptedVariants: ['favourite sport is gymnastics', 'i love gymnastics', 'gymnastics'],
           acceptedWords: ['gymnastics'],
           nextNodeId: 'n10',
           emoji: '\u{1F938}',
@@ -529,8 +521,9 @@ export const doYouLikeToPlayScenario: ConversationScenario = {
       id: 'n10',
       speaker: 'nova',
       role: 'guide',
-      text: "Sports champion! You talked about what you love and what you prefer. Let\u2019s play!",
-      textTr: 'Spor \u015fampiyonu! Ne sevdi\u011fini ve neyi tercih etti\u011fini konu\u015ftun. Oynay\u0131m!',
+      text: 'Sports champion! You talked about what you love and what you prefer. Let\u2019s play!',
+      textTr:
+        'Spor \u015fampiyonu! Ne sevdi\u011fini ve neyi tercih etti\u011fini konu\u015ftun. Oynay\u0131m!',
       emoji: '\u{1F3C6}',
     },
   ],

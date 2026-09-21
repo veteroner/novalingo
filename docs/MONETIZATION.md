@@ -31,10 +31,15 @@ Free is intentionally useful but bounded.
 
 These limits are aligned with the current app constants and runtime enforcement:
 
-- `FREE_TIER.DAILY_LESSONS = 3`
+- `FREE_TIER.DAILY_LESSONS = 3` — enforced in `firestore.rules` through the
+  `dailyLessonDate` / `dailyLessonCount` counters on the child document, not only in the UI.
+  The limit counts **lesson sessions**, so replaying a finished lesson also consumes one of
+  the three; the in-app message says so explicitly.
 - `FREE_TIER.MAX_CHILD_PROFILES = 1`
 - premium world gating enforced in Home, World Map, and Lesson flows
 - detailed reporting gated in Parent Dashboard
+- `users.isPremium` and every `subscription*` field are rejected by security rules
+  when written from a client; only backend verification writes them
 
 ## NovaLingo Plus
 
@@ -64,6 +69,11 @@ Premium access is not granted from the client alone.
 Launch rule: `users.isPremium` is a projection, not the source of truth.
 
 ## Pricing Direction
+
+The paywall never hardcodes a price: `getProductPricing()` reads the localized price,
+billing period and (optional) free-trial length from the store, and the auto-renewal
+disclosure under the CTA is generated from those values. If no introductory offer is
+configured in the store, the app shows "Start Subscription" instead of a trial promise.
 
 Exact local pricing is set in App Store Connect and Google Play Console, but product strategy is:
 

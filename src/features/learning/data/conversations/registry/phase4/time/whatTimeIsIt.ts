@@ -7,7 +7,8 @@ export const whatTimeIsItScenario: ConversationScenario = {
   title: 'What Time Is It?',
   titleTr: 'Saat Ka\u00e7?',
   summary: 'Learn to tell and ask about the time with Nova. Practice clock vocabulary.',
-  summaryTr: 'Nova ile saati s\u00f6ylemeyi ve sormay\u0131 \u00f6\u011fren. Saat kelimelerini pratik yap.',
+  summaryTr:
+    'Nova ile saati s\u00f6ylemeyi ve sormay\u0131 \u00f6\u011fren. Saat kelimelerini pratik yap.',
   theme: 'time',
   subTheme: 'telling time',
   tags: ['time', 'clock', 'numbers', 'stretch'],
@@ -19,7 +20,7 @@ export const whatTimeIsItScenario: ConversationScenario = {
   turnCount: 10,
   sceneEmoji: '\u{1F550}',
   targetWords: ['clock', 'morning', 'afternoon', 'evening', 'hour', 'minute'],
-  targetPatterns: ['What time is it?', "It is ___ o\u2019clock", 'It is ___ in the morning'],
+  targetPatterns: ['What time is it?', 'It is ___ o\u2019clock', 'It is ___ in the morning'],
   learningGoals: ['ask for and tell the time', 'use morning/afternoon/evening'],
   successCriteria: {
     minimumAcceptedTurns: 6,
@@ -34,7 +35,9 @@ export const whatTimeIsItScenario: ConversationScenario = {
     preferredIfTagsSeen: ['time', 'numbers'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -76,34 +79,35 @@ export const whatTimeIsItScenario: ConversationScenario = {
       id: 'n2',
       speaker: 'nova',
       role: 'guide',
-      text: "It is three o\u2019clock in the afternoon! Now you say: It is three o\u2019clock.",
-      textTr: "\u00d6\u011fleden sonra saat \u00fc\u00e7! \u015eimdi sen s\u00f6yle: It is three o\u2019clock.",
+      text: 'It is three o\u2019clock in the afternoon! Now you say: It is three o\u2019clock.',
+      textTr:
+        '\u00d6\u011fleden sonra saat \u00fc\u00e7! \u015eimdi sen s\u00f6yle: It is three o\u2019clock.',
       emoji: '\u{1F552}',
       goalType: 'answer',
-      targetPattern: "It is ___ o\u2019clock",
+      targetPattern: 'It is ___ o\u2019clock',
       hint: {
         delayMs: 7000,
-        text: "Say: It is three o\u2019clock",
-        textTr: "S\u00f6yle: It is three o\u2019clock",
+        text: 'Say: It is three o\u2019clock',
+        textTr: 'S\u00f6yle: It is three o\u2019clock',
         revealPattern: true,
       },
       repair: {
         enabled: true,
-        prompt: "Say: It is ___ o\u2019clock",
-        promptTr: "S\u00f6yle: It is ___ o\u2019clock",
+        prompt: 'Say: It is ___ o\u2019clock',
+        promptTr: 'S\u00f6yle: It is ___ o\u2019clock',
         maxRetries: 2,
       },
       responses: [
         {
           id: 'r2_three',
-          expectedText: "It is three o\u2019clock.",
+          expectedText: 'It is three o\u2019clock.',
           expectedTextTr: 'Saat \u00fc\u00e7.',
           acceptedVariants: ["it is three o'clock", "three o'clock", 'it is three', 'three'],
           acceptedWords: ['clock'],
           nextNodeId: 'n3',
           emoji: '3\uFE0F\u20E3',
           marksTargetWord: ['clock'],
-          marksPattern: ["It is ___ o\u2019clock"],
+          marksPattern: ['It is ___ o\u2019clock'],
         },
         {
           id: 'r2_afternoon',
@@ -123,7 +127,8 @@ export const whatTimeIsItScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Perfect! Now tell me \u2014 do you wake up in the morning or in the afternoon?',
-      textTr: 'M\u00fCkemmel! \u015eimdi s\u00f6yle bana \u2014 sabah m\u0131 yoksa \u00f6\u011fleden sonra m\u0131 uyan\u0131yorsun?',
+      textTr:
+        'M\u00fCkemmel! \u015eimdi s\u00f6yle bana \u2014 sabah m\u0131 yoksa \u00f6\u011fleden sonra m\u0131 uyan\u0131yorsun?',
       emoji: '\u{1F305}',
       goalType: 'answer',
       targetPattern: 'It is ___ in the morning',
@@ -202,8 +207,8 @@ export const whatTimeIsItScenario: ConversationScenario = {
       id: 'n5',
       speaker: 'nova',
       role: 'guide',
-      text: "It is nine in the morning! Breakfast time! Say: It is nine in the morning.",
-      textTr: "Sabah saat dokuz! Kahvalt\u0131 zaman\u0131! S\u00f6yle: It is nine in the morning.",
+      text: 'It is nine in the morning! Breakfast time! Say: It is nine in the morning.',
+      textTr: 'Sabah saat dokuz! Kahvalt\u0131 zaman\u0131! S\u00f6yle: It is nine in the morning.',
       emoji: '\u{1F373}',
       goalType: 'answer',
       targetPattern: 'It is ___ in the morning',
@@ -215,8 +220,8 @@ export const whatTimeIsItScenario: ConversationScenario = {
       },
       repair: {
         enabled: true,
-        prompt: "Say: It is ___ in the morning",
-        promptTr: "S\u00f6yle: It is ___ in the morning",
+        prompt: 'Say: It is ___ in the morning',
+        promptTr: 'S\u00f6yle: It is ___ in the morning',
         maxRetries: 2,
       },
       responses: [
@@ -238,14 +243,14 @@ export const whatTimeIsItScenario: ConversationScenario = {
         },
         {
           id: 'r5_nine_oclock',
-          expectedText: "It is nine o\u2019clock.",
+          expectedText: 'It is nine o\u2019clock.',
           expectedTextTr: 'Saat dokuz.',
           acceptedVariants: ["nine o'clock", 'nine', 'it is nine'],
           acceptedWords: ['clock'],
           nextNodeId: 'n6',
           emoji: '9\uFE0F\u20E3',
           marksTargetWord: ['clock'],
-          marksPattern: ["It is ___ o\u2019clock"],
+          marksPattern: ['It is ___ o\u2019clock'],
         },
       ],
     },
@@ -299,7 +304,7 @@ export const whatTimeIsItScenario: ConversationScenario = {
       textTr: 'Hangisi daha uzun \u2014 bir saat mi yoksa bir dakika m\u0131? S\u00f6yle bana!',
       emoji: '\u23F1\uFE0F',
       goalType: 'answer',
-      targetPattern: "It is ___ o\u2019clock",
+      targetPattern: 'It is ___ o\u2019clock',
       hint: {
         delayMs: 7000,
         text: 'Say: One hour is longer than one minute',
@@ -316,12 +321,7 @@ export const whatTimeIsItScenario: ConversationScenario = {
           id: 'r7_hour',
           expectedText: 'One hour is longer.',
           expectedTextTr: 'Bir saat daha uzun.',
-          acceptedVariants: [
-            'one hour is longer',
-            'hour is longer',
-            'hour',
-            'hour longer',
-          ],
+          acceptedVariants: ['one hour is longer', 'hour is longer', 'hour', 'hour longer'],
           acceptedWords: ['hour'],
           nextNodeId: 'n8',
           emoji: '\u23F1\uFE0F',
@@ -365,7 +365,12 @@ export const whatTimeIsItScenario: ConversationScenario = {
           id: 'r8_tv',
           expectedText: 'In the evening I watch TV.',
           expectedTextTr: 'Ak\u015famlar\u0131 TV izliyorum.',
-          acceptedVariants: ['in the evening watch tv', 'watch tv', 'evening tv', 'evening i watch'],
+          acceptedVariants: [
+            'in the evening watch tv',
+            'watch tv',
+            'evening tv',
+            'evening i watch',
+          ],
           acceptedWords: ['evening'],
           nextNodeId: 'n9',
           emoji: '\u{1F4FA}',
@@ -395,7 +400,8 @@ export const whatTimeIsItScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Tell me about your whole day: morning, afternoon, and evening!',
-      textTr: 'T\u00fcm g\u00fcn\u00fcn\u00fc anlat bana: sabah, \u00f6\u011fleden sonra ve ak\u015fam!',
+      textTr:
+        'T\u00fcm g\u00fcn\u00fcn\u00fc anlat bana: sabah, \u00f6\u011fleden sonra ve ak\u015fam!',
       emoji: '\u{1F4C5}',
       goalType: 'describe',
       hint: {
@@ -406,7 +412,8 @@ export const whatTimeIsItScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Tell me one thing for morning, afternoon, and evening',
-        promptTr: 'Sabah, \u00f6\u011fleden sonra ve ak\u015fam i\u00e7in birer \u015fey s\u00f6yle',
+        promptTr:
+          'Sabah, \u00f6\u011fleden sonra ve ak\u015fam i\u00e7in birer \u015fey s\u00f6yle',
         maxRetries: 2,
       },
       responses: [

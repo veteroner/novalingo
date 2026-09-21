@@ -39,9 +39,18 @@ export async function initializeNotifications(uid?: string): Promise<string | nu
       });
     });
 
-    // Persist FCM token to Firestore for backend notification targeting
+    // Token'ı backend hedeflemesi için Firestore'a yaz.
+    //
+    // DİKKAT: @capacitor/push-notifications iOS'ta APNs cihaz token'ı döndürür,
+    // Android'de (google-services.json varken) FCM kayıt token'ı döndürür.
+    // Backend FCM ile gönderim yaptığı için sağlayıcıyı da yazıyoruz; APNs
+    // token'ına FCM ile gönderim yapılamaz (bkz. docs/PUSH_SETUP.md).
     if (token && uid) {
-      await updateDocument(docs.user(uid), { fcmToken: token });
+      await updateDocument(docs.user(uid), {
+        fcmToken: token,
+        pushProvider: getPlatform() === 'ios' ? 'apns' : 'fcm',
+        pushTokenUpdatedAt: new Date().toISOString(),
+      });
     }
 
     return token;

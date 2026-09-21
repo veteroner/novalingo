@@ -1,7 +1,9 @@
 import { LoadingScreen } from '@components/atoms/Spinner/LoadingScreen';
+import { ParentalGate } from '@components/organisms/ParentalGate';
+import { isParentGatePassed, markParentGatePassed } from '@services/parentGate/parentGateSession';
 import { useAuthStore } from '@stores/authStore';
-import { lazy, Suspense, type ReactNode } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { lazy, Suspense, useCallback, useState, type ReactNode } from 'react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
 // ===== Lazy-loaded Screens =====
 // Auth
@@ -59,6 +61,31 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return <>{children}</>;
+}
+
+/**
+ * Ebeveyn kapısı.
+ *
+ * Satın alma ve ebeveyn ekranları çocuk tarafından açılamamalıdır
+ * (Apple App Review Kids kılavuzu 1.3 / 3.1.1 ve COPPA). Doğrulama
+ * `parentGateSession` içinde kısa süreli tutulur.
+ */
+function ParentGateRoute({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
+  const [passed, setPassed] = useState(() => isParentGatePassed());
+
+  const handlePass = useCallback(() => {
+    markParentGatePassed();
+    setPassed(true);
+  }, []);
+
+  const handleCancel = useCallback(() => {
+    void navigate('/home', { replace: true });
+  }, [navigate]);
+
+  if (passed) return <>{children}</>;
+
+  return <ParentalGate onPass={handlePass} onCancel={handleCancel} />;
 }
 
 function PublicRoute({ children }: { children: ReactNode }) {
@@ -239,12 +266,14 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         />
-        {/* Parent Routes — Parental Gate ile korunmalı */}
+        {/* Parent Routes — ebeveyn kapısı arkasında */}
         <Route
           path="/parent"
           element={
             <ProtectedRoute>
-              <ParentDashboard />
+              <ParentGateRoute>
+                <ParentDashboard />
+              </ParentGateRoute>
             </ProtectedRoute>
           }
         />
@@ -252,7 +281,9 @@ export function AppRouter() {
           path="/parent/settings"
           element={
             <ProtectedRoute>
-              <ParentSettings />
+              <ParentGateRoute>
+                <ParentSettings />
+              </ParentGateRoute>
             </ProtectedRoute>
           }
         />
@@ -260,7 +291,9 @@ export function AppRouter() {
           path="/subscription"
           element={
             <ProtectedRoute>
-              <SubscriptionScreen />
+              <ParentGateRoute>
+                <SubscriptionScreen />
+              </ParentGateRoute>
             </ProtectedRoute>
           }
         />

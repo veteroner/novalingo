@@ -36,7 +36,9 @@ export const writingALetterScenario: ConversationScenario = {
     preferredIfTagsSeen: ['school', 'writing'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -144,7 +146,7 @@ export const writingALetterScenario: ConversationScenario = {
         {
           id: 'r3_greetings',
           expectedText: 'Greetings from Nova!',
-          expectedTextTr: 'Nova\'dan selamlar!',
+          expectedTextTr: "Nova'dan selamlar!",
           acceptedVariants: [
             'greetings from nova',
             'greetings from me',
@@ -230,15 +232,15 @@ export const writingALetterScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Now describe yourself in the letter. What do you look like? What are you like?',
-      textTr: '\u015eimdi mektupta kendini anlat. Nas\u0131l g\u00f6r\u00fcn\u00fcyorsun? Nas\u0131l birisin?',
+      textTr:
+        '\u015eimdi mektupta kendini anlat. Nas\u0131l g\u00f6r\u00fcn\u00fcyorsun? Nas\u0131l birisin?',
       emoji: '\ud83d\udc64',
       goalType: 'describe',
       targetPattern: '',
       hint: {
         delayMs: 9000,
         text: 'Try: I have brown hair and blue eyes. I am funny and kind. I love school!',
-        textTr:
-          'Dene: I have brown hair and blue eyes. I am funny and kind. I love school!',
+        textTr: 'Dene: I have brown hair and blue eyes. I am funny and kind. I love school!',
         revealPattern: false,
       },
       repair: {
@@ -251,7 +253,8 @@ export const writingALetterScenario: ConversationScenario = {
         {
           id: 'r5_describe',
           expectedText: 'I have brown hair and I am kind and funny.',
-          expectedTextTr: 'Kahverengi sa\u00e7lar\u0131m var ve nazik ile e\u011flenceli birisiyim.',
+          expectedTextTr:
+            'Kahverengi sa\u00e7lar\u0131m var ve nazik ile e\u011flenceli birisiyim.',
           acceptedVariants: [
             'i have brown hair',
             'i have blue eyes',
@@ -273,7 +276,8 @@ export const writingALetterScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Great letter! Tell your pen pal another thing you like: I like sports and games.',
-      textTr: 'Harika mektup! Mektup arkada\u015f\u0131na sevdi\u011fin bir \u015feyi daha s\u00f6yle: I like sports and games.',
+      textTr:
+        'Harika mektup! Mektup arkada\u015f\u0131na sevdi\u011fin bir \u015feyi daha s\u00f6yle: I like sports and games.',
       emoji: '\ud83c\udfae',
       goalType: 'answer',
       targetPattern: 'I like ___ and ___',

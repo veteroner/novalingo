@@ -66,8 +66,54 @@ Serbest konuşma değerlendirmesi backend'de **Gemini** ile yapılır (`evaluate
 ## Abonelik / Premium
 
 Yetki otoritesi **sunucudur** (`users/{uid}/subscriptions/*`); `users.isPremium` bir projeksiyondur.
-İstemci kontrolleri `src/services/subscription/premiumAccess.ts`. Ücretsiz katman günde 3 ders ile sınırlıdır,
-ancak bu limit şu an yalnızca istemci tarafında zorlanır (sunucu kontrolü yok).
+İstemci kontrolleri `src/services/subscription/premiumAccess.ts`.
+
+- `firestore.rules` istemcinin `isPremium`, `premiumExpiresAt`, `subscription*` alanlarını yazmasını
+  **engeller**; bu alanlar yalnızca Admin SDK (Cloud Functions) tarafından yazılır.
+- Ücretsiz katman günde 3 ders (`FREE_TIER.DAILY_LESSONS`). Limit çocuk dokümanındaki
+  `dailyLessonDate` / `dailyLessonCount` sayacıyla **kurallarda** zorlanır; rules içindeki `3`
+  sabiti `FREE_TIER.DAILY_LESSONS` ile elle senkron tutulmalıdır.
+- Kural testleri: `pnpm test:rules` (Firestore emülatörünü kendisi başlatır).
+- Paywall fiyatları **mağazadan** okunur (`getProductPricing`); sabit fiyat gösterilmez ve
+  özellik listesi yalnızca gerçekten zorlanan faydaları içerir (bkz. `docs/MONETIZATION.md`).
+- `/subscription`, `/parent`, `/parent/settings` rotaları **ebeveyn kapısı** arkasındadır
+  (`src/app/Router.tsx` → `ParentGateRoute`, `src/services/parentGate/parentGateSession.ts`).
+
+## Giriş (Google / Apple)
+
+`signInWithPopup` Capacitor WebView'inde **çalışmaz**. Native'de kimlik bilgisi
+`@capacitor-firebase/authentication` ile (`skipNativeAuth: true`) telefonun hesap seçicisinden alınır ve
+`signInWithCredential` ile Firebase JS SDK'sına verilir (`src/services/firebase/auth.ts`); web'de popup kalır.
+
+- Android: Firebase'deki Android uygulamasına imzalama anahtarının **SHA-1**'i eklenmeli ve
+  `google-services.json` yeniden indirilmeli (debug anahtarı eklendi; Play App Signing anahtarı yayından önce).
+- iOS: `GoogleService-Info.plist` (gitignored; CI'da `GOOGLE_SERVICE_INFO_PLIST` secret'ı) +
+  `Info.plist`'te `REVERSED_CLIENT_ID` URL şeması + Podfile'da `CapacitorFirebaseAuthentication/Google`.
+- Apple ile Giriş yalnızca **iOS**'ta gösterilir (`isAppleSignInAvailable`); App Store 4.8 bunu Google
+  girişi olan iOS uygulamasında zorunlu tutar. Web/Android için Apple Services ID + anahtar gerekirdi.
+
+## Çocuk Gizliliği (COPPA / Play Families)
+
+- Bildirimler **ebeveyne** gider, çocuğa değil (`functions/src/services/notificationService.ts`).
+- Liderlik tablosunda başka çocukların **adı ne yazılır ne gösterilir**: `leaderboards/*/entries/*`
+  yalnızca `childId`/`avatarId`/`level`/`weeklyXP`/`tier` tutar; UI `leaderboard.anonymousName`
+  ile "Kâşif 4821" gibi kimlik taşımayan etiket gösterir, çocuk yalnızca kendi adını görür.
+- Ebeveyn paneli ve satın alma ekranı ebeveyn kapısı arkasındadır.
+
+## Zamanlanmış Bildirimler
+
+Blaze planı **gerekmez**: FCM gönderimi Spark'ta ücretsizdir, ücretli olan Cloud
+Scheduler'dır. Zamanlanmış işler GitHub Actions cron ile çalışır
+(`.github/workflows/scheduled-notifications.yml` +
+`.github/scripts/send-scheduled-notifications.mjs`, secret: `FIREBASE_SERVICE_ACCOUNT`).
+`functions/src/scheduled/*` Blaze'e geçilirse diye duruyor; dedup alanları aynıdır.
+
+## Android Derleme (exFAT uyarısı)
+
+Depo exFAT sürücüdeyse macOS `._*` AppleDouble ikizleri üretir; Gradle/R8
+`Invalid classfile header` ile düşer. `pnpm android:build:local` önce bu dosyaları temizler ve
+build çıktısını `NOVALINGO_ANDROID_BUILD_DIR` ile APFS'teki geçici dizine alır. CI/Linux'ta
+değişken tanımsızdır, davranış değişmez.
 
 ## i18n
 

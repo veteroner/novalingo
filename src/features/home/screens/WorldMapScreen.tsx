@@ -94,7 +94,7 @@ export default function WorldMapScreen() {
   const emoji = curWorld?.emoji ?? '🌍';
   const worldName = curWorld?.name ?? t('worldMap.worldFallback');
   const isPremiumLocked = curWorld ? isWorldPremiumLocked(user, curWorld) : false;
-  const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgress);
+  const hasReachedDailyLimit = hasReachedFreeLessonLimit(user, lessonProgress, child);
 
   // Apply status based on per-lesson completion data
   const applyStatus = useCallback(

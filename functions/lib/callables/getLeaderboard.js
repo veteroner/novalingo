@@ -4,11 +4,22 @@
  *
  * Returns weekly leaderboard for a specific league tier.
  * Paginated, with current user's rank highlighted.
+ *
+ * Privacy: other children's names are never returned. Entries carry a stable
+ * pseudonymous number derived from the child id (Play Families / COPPA).
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLeaderboard = void 0;
 const https_1 = require("firebase-functions/v2/https");
 const admin_1 = require("../utils/admin");
+/** Stable, non-identifying 4-digit label derived from the child id. */
+function anonNumberFromId(id) {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+        hash = (hash * 31 + id.charCodeAt(i)) % 9000;
+    }
+    return 1000 + hash;
+}
 exports.getLeaderboard = (0, https_1.onCall)(admin_1.callableOpts, async (request) => {
     const uid = (0, admin_1.requireAuth)(request);
     const { childId, tier = 'bronze', limit = 20 } = request.data;
@@ -27,7 +38,7 @@ exports.getLeaderboard = (0, https_1.onCall)(admin_1.callableOpts, async (reques
     const snapshot = await leaderboardRef.get();
     const entries = snapshot.docs.map((doc, index) => ({
         childId: doc.id,
-        name: doc.data().name,
+        anonNumber: anonNumberFromId(doc.id),
         avatarId: doc.data().avatarId,
         level: doc.data().level,
         weeklyXP: doc.data().weeklyXP,

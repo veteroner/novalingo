@@ -72,7 +72,9 @@ export const onLessonCompleted = onDocumentWritten(
       batch.set(
         lbRef,
         {
-          name: child.name,
+          // The child's name is deliberately NOT stored here: this collection is
+          // readable by other parents (Play Families / COPPA). The leaderboard
+          // shows pseudonymous labels; a child sees their own name locally.
           avatarId: child.avatarId,
           level: child.level,
           tier: child.leagueTier ?? 'bronze',

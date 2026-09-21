@@ -6,4 +6,3 @@ export { NovaStageAvatar, STAGE_CONFIG } from './NovaStageAvatar';
 export { QuestItem } from './QuestItem';
 export { StarRating } from './StarRating';
 export { XPDisplay } from './XPDisplay';
-

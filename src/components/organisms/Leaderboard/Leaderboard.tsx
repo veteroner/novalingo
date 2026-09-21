@@ -3,6 +3,9 @@
  *
  * Haftalık liderlik tablosu — kendi liginin en iyileri.
  * Animasyonlu sıralama, mevcut kullanıcı vurgusu.
+ *
+ * Gizlilik: Diğer çocukların **adı gösterilmez**; anonim etiket kullanılır
+ * (Play Families / COPPA). Yalnızca oturumdaki çocuk kendi adını görür.
  */
 
 import type { LeaderboardEntry } from '@/types';
@@ -12,10 +15,13 @@ import { Text } from '@components/atoms/Text';
 import { formatNumber } from '@utils/number';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface LeaderboardProps {
   entries: LeaderboardEntry[];
   currentUserId: string;
+  /** Oturumdaki çocuğun adı — yalnızca kendi satırında gösterilir. */
+  currentUserName?: string;
   className?: string;
 }
 
@@ -25,13 +31,23 @@ const rankMedals: Record<number, string> = {
   3: '🥉',
 };
 
-export function Leaderboard({ entries, currentUserId, className }: LeaderboardProps) {
+export function Leaderboard({
+  entries,
+  currentUserId,
+  currentUserName,
+  className,
+}: LeaderboardProps) {
+  const { t } = useTranslation('common');
+
   return (
     <div className={clsx('space-y-2', className)}>
       {entries.map((entry, index) => {
         const rank = index + 1;
         const isCurrentUser = entry.childId === currentUserId;
         const medal = rankMedals[rank];
+        const label = isCurrentUser
+          ? (currentUserName ?? t('leaderboard.youLabel'))
+          : t('leaderboard.anonymousName', { number: entry.anonNumber });
 
         return (
           <motion.div
@@ -59,18 +75,15 @@ export function Leaderboard({ entries, currentUserId, className }: LeaderboardPr
             </div>
 
             {/* Avatar */}
-            <Avatar
-              name={entry.displayName}
-              src={entry.avatarId}
-              size="sm"
-              showLevel={entry.level}
-            />
+            <Avatar name={label} src={entry.avatarId} size="sm" showLevel={entry.level} />
 
             {/* Name */}
             <div className="min-w-0 flex-1">
               <Text variant="bodySmall" weight="bold" truncate>
-                {entry.displayName}
-                {isCurrentUser && <span className="text-nova-blue ml-1">(Sen)</span>}
+                {label}
+                {isCurrentUser && (
+                  <span className="text-nova-blue ml-1">{t('leaderboard.you')}</span>
+                )}
               </Text>
             </div>
 

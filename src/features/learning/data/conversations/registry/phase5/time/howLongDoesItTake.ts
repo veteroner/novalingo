@@ -7,7 +7,8 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
   title: 'How Long Does It Take?',
   titleTr: 'Ne Kadar S\u00fcrer?',
   summary: 'Ask and answer how long activities take. Practice duration expressions.',
-  summaryTr: 'Aktivitelerin ne kadar s\u00fcrd\u00fc\u011f\u00fcn\u00fc sor ve yan\u0131tla. S\u00fcre ifadelerini pratik yap.',
+  summaryTr:
+    'Aktivitelerin ne kadar s\u00fcrd\u00fc\u011f\u00fcn\u00fc sor ve yan\u0131tla. S\u00fcre ifadelerini pratik yap.',
   theme: 'time',
   subTheme: 'duration',
   tags: ['time', 'duration', 'how long', 'semi_open'],
@@ -34,7 +35,9 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
     preferredIfTagsSeen: ['time', 'duration'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -81,7 +84,8 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'It takes twenty minutes! Now tell me: It takes ___ minutes to brush your teeth.',
-      textTr: 'Yirmi dakika s\u00fcr\u00fcyor! \u015eim\u0131 s\u00f6yle: It takes ___ minutes to brush your teeth.',
+      textTr:
+        'Yirmi dakika s\u00fcr\u00fcyor! \u015eim\u0131 s\u00f6yle: It takes ___ minutes to brush your teeth.',
       emoji: '\ud83e\uddb7',
       goalType: 'answer',
       targetPattern: 'It takes ___ minutes',
@@ -135,7 +139,8 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'How long does cooking dinner take? Say: It takes about one hour  OR  It takes about half an hour.',
-      textTr: 'Ak\u015fam yeme\u011fi pi\u015firmek ne kadar s\u00fcrer? S\u00f6yle: It takes about one hour  Veya  It takes about half an hour.',
+      textTr:
+        'Ak\u015fam yeme\u011fi pi\u015firmek ne kadar s\u00fcrer? S\u00f6yle: It takes about one hour  Veya  It takes about half an hour.',
       emoji: '\ud83c\udf73',
       goalType: 'answer',
       targetPattern: 'It takes about ___',
@@ -184,7 +189,8 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Some activities are short and some are long. Name a short activity! Say: Brushing teeth is short.',
-      textTr: 'Baz\u0131 aktiviteler k\u0131sa, baz\u0131lar\u0131 uzun. K\u0131sa bir aktivite s\u00f6yle! S\u00f6yle: Brushing teeth is short.',
+      textTr:
+        'Baz\u0131 aktiviteler k\u0131sa, baz\u0131lar\u0131 uzun. K\u0131sa bir aktivite s\u00f6yle! S\u00f6yle: Brushing teeth is short.',
       emoji: '\u23f0',
       goalType: 'answer',
       targetPattern: '___ is short',
@@ -224,7 +230,7 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
       id: 'n5',
       speaker: 'nova',
       role: 'friend',
-      text: "Now ask me about school! Use: How long does ___ take? Say: How long does school take?",
+      text: 'Now ask me about school! Use: How long does ___ take? Say: How long does school take?',
       textTr:
         'Okul hakk\u0131nda sor bana! Kullan: How long does ___ take? S\u00f6yle: How long does school take?',
       emoji: '\ud83c\udfeb',
@@ -265,7 +271,8 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'School takes about six hours! Say: It takes about six hours.',
-      textTr: 'Okul yakla\u015f\u0131k alt\u0131 saat s\u00fcr\u00fcyor! S\u00f6yle: It takes about six hours.',
+      textTr:
+        'Okul yakla\u015f\u0131k alt\u0131 saat s\u00fcr\u00fcyor! S\u00f6yle: It takes about six hours.',
       emoji: '\ud83d\udcda',
       goalType: 'answer',
       targetPattern: 'It takes about ___',
@@ -305,7 +312,8 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'That is a long school day! Is sleeping long or short? Say: Sleeping is long.',
-      textTr: 'Bu uzun bir okul g\u00fcn\u00fc! Uyumak uzun mu k\u0131sa m\u0131? S\u00f6yle: Sleeping is long.',
+      textTr:
+        'Bu uzun bir okul g\u00fcn\u00fc! Uyumak uzun mu k\u0131sa m\u0131? S\u00f6yle: Sleeping is long.',
       emoji: '\ud83d\udca4',
       goalType: 'answer',
       targetPattern: '___ is long',
@@ -326,12 +334,7 @@ export const howLongDoesItTakeScenario: ConversationScenario = {
           id: 'r7_long',
           expectedText: 'Sleeping is long.',
           expectedTextTr: 'Uyumak uzun.',
-          acceptedVariants: [
-            'sleeping is long',
-            'sleeping is not short',
-            'it is long',
-            'long',
-          ],
+          acceptedVariants: ['sleeping is long', 'sleeping is not short', 'it is long', 'long'],
           nextNodeId: 'n8',
           emoji: '\ud83d\udca4',
           marksTargetWord: ['long'],

@@ -34,14 +34,16 @@ export const whatDoYouWorkScenario: ConversationScenario = {
     preferredIfTagsSeen: ['jobs', 'community'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
       id: 'n1',
       speaker: 'nova',
       role: 'friend',
-      text: "Let\u2019s talk about jobs! Look \u2014 this person wears white and helps sick people. What is her job?",
+      text: 'Let\u2019s talk about jobs! Look \u2014 this person wears white and helps sick people. What is her job?',
       textTr:
         'Meslekler hakk\u0131nda konu\u015falim! Bak \u2014 bu ki\u015fi beyaz giyiyor ve hasta insanlara yard\u0131m ediyor. Onun mesle\u011fi ne?',
       emoji: '\u{1F3E5}',
@@ -89,7 +91,8 @@ export const whatDoYouWorkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes! And this one drives a big red truck and puts out fires. He is a ___?',
-      textTr: 'Evet! Peki bu b\u00fcy\u00fck k\u0131rm\u0131z\u0131 bir kamyon s\u00fcrer ve yang\u0131nlar\u0131 s\u00f6nd\u00fcr\u00fcr. O bir ___?',
+      textTr:
+        'Evet! Peki bu b\u00fcy\u00fck k\u0131rm\u0131z\u0131 bir kamyon s\u00fcrer ve yang\u0131nlar\u0131 s\u00f6nd\u00fcr\u00fcr. O bir ___?',
       emoji: '\u{1F692}',
       goalType: 'answer',
       targetPattern: 'He/She is a ___',
@@ -135,7 +138,8 @@ export const whatDoYouWorkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Great! Now \u2014 who works at a school and teaches children? They work at the ___?',
-      textTr: 'Harika! \u015eimdi \u2014 okulda \u00e7al\u0131\u015fan ve \u00e7ocuklara \u00f6\u011freten kim? Onlar ___ de \u00e7al\u0131\u015f\u0131yor?',
+      textTr:
+        'Harika! \u015eimdi \u2014 okulda \u00e7al\u0131\u015fan ve \u00e7ocuklara \u00f6\u011freten kim? Onlar ___ de \u00e7al\u0131\u015f\u0131yor?',
       emoji: '\u{1F3EB}',
       goalType: 'describe',
       targetPattern: 'They work at the ___',
@@ -231,7 +235,8 @@ export const whatDoYouWorkScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'What does a chef do? Cook? Bake?',
-        promptTr: 'Bir a\u015f\u00e7\u0131 ne yapar? Pi\u015firir mi? F\u0131r\u0131nda pi\u015firir mi?',
+        promptTr:
+          'Bir a\u015f\u00e7\u0131 ne yapar? Pi\u015firir mi? F\u0131r\u0131nda pi\u015firir mi?',
         maxRetries: 2,
       },
       responses: [
@@ -305,7 +310,8 @@ export const whatDoYouWorkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Brilliant! How does a doctor help people? Say: A doctor helps people ___.',
-      textTr: 'M\u00fCkemmel! Bir doktor insanlara nas\u0131l yard\u0131m eder? S\u00f6yle: A doctor helps people ___.',
+      textTr:
+        'M\u00fCkemmel! Bir doktor insanlara nas\u0131l yard\u0131m eder? S\u00f6yle: A doctor helps people ___.',
       emoji: '\u{1F3E5}',
       goalType: 'describe',
       targetPattern: 'A ___ helps people',
@@ -326,7 +332,12 @@ export const whatDoYouWorkScenario: ConversationScenario = {
           id: 'r7_sick',
           expectedText: 'A doctor helps people when they are sick.',
           expectedTextTr: 'Bir doktor insanlara hasta olduklar\u0131nda yard\u0131m eder.',
-          acceptedVariants: ['helps people when sick', 'helps sick people', 'doctor helps sick', 'helps people'],
+          acceptedVariants: [
+            'helps people when sick',
+            'helps sick people',
+            'doctor helps sick',
+            'helps people',
+          ],
           acceptedWords: ['doctor'],
           nextNodeId: 'n8',
           emoji: '\u{1F469}\u200D\u2695\uFE0F',
@@ -375,7 +386,8 @@ export const whatDoYouWorkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Amazing! Which job do you like best? Tell me: A ___ helps people by ___.',
-      textTr: 'Harika! En \u00e7ok hangi mesle\u011fi seviyorsun? S\u00f6yle: A ___ helps people by ___.',
+      textTr:
+        'Harika! En \u00e7ok hangi mesle\u011fi seviyorsun? S\u00f6yle: A ___ helps people by ___.',
       emoji: '\u2764\uFE0F',
       goalType: 'describe',
       targetPattern: 'A ___ helps people',
@@ -388,7 +400,8 @@ export const whatDoYouWorkScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Which job helps people? Doctor? Teacher? Firefighter?',
-        promptTr: 'Hangi meslek insanlara yard\u0131m eder? Doktor mu? \u00d6\u011fretmen mi? \u0130tfaiyeci mi?',
+        promptTr:
+          'Hangi meslek insanlara yard\u0131m eder? Doktor mu? \u00d6\u011fretmen mi? \u0130tfaiyeci mi?',
         maxRetries: 2,
       },
       responses: [
@@ -418,7 +431,11 @@ export const whatDoYouWorkScenario: ConversationScenario = {
           id: 'r9_firefighter',
           expectedText: 'A firefighter helps people by stopping fires.',
           expectedTextTr: 'Bir itfaiyeci yang\u0131nlar\u0131 durdurarak yard\u0131m eder.',
-          acceptedVariants: ['firefighter helps people', 'a firefighter helps', 'firefighter helps by'],
+          acceptedVariants: [
+            'firefighter helps people',
+            'a firefighter helps',
+            'firefighter helps by',
+          ],
           acceptedWords: ['firefighter'],
           nextNodeId: 'n10',
           emoji: '\u{1F9D1}\u200D\u{1F692}',

@@ -4,17 +4,14 @@
   "streakLabel": "Day Streak",
   "worldsTitle": "Worlds 🌍",
   "seeAll": "See All",
-
   "conversation": {
     "title": "Talk with Nova",
     "subtitle": "Practice one-on-one conversation — new scenarios every day!"
   },
-
   "review": {
     "title": "Daily Review",
     "subtitle": "{{count}} words waiting for review"
   },
-
   "quickActions": {
     "continue": "Continue",
     "continueDesc": "Back to your current world",
@@ -29,23 +26,18 @@
     "stories": "Stories",
     "storiesDesc": "Read an English story"
   },
-
   "worldCard": {
     "current": " · In progress",
     "active": "Active"
   },
-
   "premium": {
     "title": "Premium World",
     "message": "This world requires a NovaLingo Plus subscription."
   },
-
   "dailyGoal": "Daily Goal",
   "dailyGoalUnlimited": "Unlimited lesson access is active",
   "dailyGoalProgress": "{{current}} / {{target}} lessons completed",
-
   "novaGreeting": "Today is going to be a great day! 🌟",
-
   "worldMap": {
     "title": "World Map",
     "locked": "Locked",
@@ -60,9 +52,8 @@
     "conversationCta": "Practice what you've learned!",
     "premiumMessage": "You need NovaLingo Plus to unlock this world.",
     "limitTitle": "Daily Limit Reached",
-    "limitMessage": "You've used today's 3 free lessons. Try again tomorrow or upgrade to Plus."
+    "limitMessage": "You've used today's 3 free lessons (replays count too). They reset tomorrow, or you can upgrade to Plus."
   },
-
   "worlds": {
     "alphabet": "Alphabet Island",
     "alphabetDesc": "Learn letters and sounds",

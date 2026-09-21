@@ -7,7 +7,8 @@ export const scienceClassScenario: ConversationScenario = {
   title: 'Science Class!',
   titleTr: 'Fen Dersi!',
   summary: 'Do a fun experiment with Nova. Practise observation language and science vocabulary.',
-  summaryTr: 'Nova ile e\u011flenceli bir deney yap. G\u00f6zlem dilini ve fen s\u00f6zc\u00fcklerini pratik yap.',
+  summaryTr:
+    'Nova ile e\u011flenceli bir deney yap. G\u00f6zlem dilini ve fen s\u00f6zc\u00fcklerini pratik yap.',
   theme: 'school',
   subTheme: 'experiment',
   tags: ['school', 'science', 'experiment', 'mission'],
@@ -34,7 +35,9 @@ export const scienceClassScenario: ConversationScenario = {
     preferredIfTagsSeen: ['school', 'science'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -42,7 +45,8 @@ export const scienceClassScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: "Welcome to science class! Are you ready? Say: Let's do an experiment!",
-      textTr: "Fen dersine ho\u015f geldin! Haz\u0131r m\u0131s\u0131n? S\u00f6yle: Let's do an experiment!",
+      textTr:
+        "Fen dersine ho\u015f geldin! Haz\u0131r m\u0131s\u0131n? S\u00f6yle: Let's do an experiment!",
       emoji: '\ud83e\uddea',
       goalType: 'answer',
       targetPattern: "Let's do an experiment!",
@@ -326,7 +330,8 @@ export const scienceClassScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'A scientist always observes carefully! Say: I observe the colour change.',
-      textTr: 'Bir bilim insan\u0131 her zaman dikkatlice g\u00f6zlemler! S\u00f6yle: I observe the colour change.',
+      textTr:
+        'Bir bilim insan\u0131 her zaman dikkatlice g\u00f6zlemler! S\u00f6yle: I observe the colour change.',
       emoji: '\ud83d\udd2d',
       goalType: 'answer',
       targetPattern: 'I observe ___',
@@ -373,15 +378,16 @@ export const scienceClassScenario: ConversationScenario = {
       targetPattern: '',
       hint: {
         delayMs: 9000,
-        text: "Try: We did an experiment. We mixed water and vinegar. I observed bubbles. The result was amazing! Then we mixed colours!",
+        text: 'Try: We did an experiment. We mixed water and vinegar. I observed bubbles. The result was amazing! Then we mixed colours!',
         textTr:
-          "Dene: We did an experiment. We mixed water and vinegar. I observed bubbles. The result was amazing! Then we mixed colours!",
+          'Dene: We did an experiment. We mixed water and vinegar. I observed bubbles. The result was amazing! Then we mixed colours!',
         revealPattern: false,
       },
       repair: {
         enabled: true,
         prompt: 'Tell me about the experiments: mix, observe, result, bubbles, colours...',
-        promptTr: 'Deneyler hakk\u0131nda anlat: kar\u0131\u015ft\u0131r, g\u00f6zlemle, sonu\u00e7, kabarcıklar, renkler...',
+        promptTr:
+          'Deneyler hakk\u0131nda anlat: kar\u0131\u015ft\u0131r, g\u00f6zlemle, sonu\u00e7, kabarcıklar, renkler...',
         maxRetries: 2,
       },
       responses: [
@@ -403,7 +409,11 @@ export const scienceClassScenario: ConversationScenario = {
           nextNodeId: 'n10',
           emoji: '\ud83c\udf1f',
           marksTargetWord: ['experiment', 'mix', 'observe', 'result', 'bubbles', 'colour'],
-          marksPattern: ["Let's do an experiment!", 'Mix the ___ and the ___', 'The result is ___!'],
+          marksPattern: [
+            "Let's do an experiment!",
+            'Mix the ___ and the ___',
+            'The result is ___!',
+          ],
         },
       ],
     },

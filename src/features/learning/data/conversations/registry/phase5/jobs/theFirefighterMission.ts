@@ -6,7 +6,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
   phase: 'phase5',
   title: 'The Firefighter Mission',
   titleTr: '\u0130tfaiyeci G\u00f6revi',
-  summary: 'Play as a firefighter with Nova. Practice emergency vocabulary and giving instructions.',
+  summary:
+    'Play as a firefighter with Nova. Practice emergency vocabulary and giving instructions.',
   summaryTr: 'Nova ile itfaiyeci oyna. Acil durum kelimelerini ve talimat vermeyi pratik yap.',
   theme: 'jobs',
   subTheme: 'firefighter',
@@ -34,7 +35,9 @@ export const theFirefighterMissionScenario: ConversationScenario = {
     preferredIfTagsSeen: ['jobs', 'emergency'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -42,7 +45,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'There is a fire! What do we do first? Shout: Call the fire station!',
-      textTr: 'Yang\u0131n var! Ne yap\u0131yoruz \u00f6nce? Ba\u011f\u0131r: Call the fire station!',
+      textTr:
+        'Yang\u0131n var! Ne yap\u0131yoruz \u00f6nce? Ba\u011f\u0131r: Call the fire station!',
       emoji: '\ud83d\udd25',
       goalType: 'answer',
       targetPattern: 'Call the fire station!',
@@ -164,7 +168,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'Someone is trapped! The firefighters will rescue them! Say: Rescue the people!',
-      textTr: 'Biri mahsur kald\u0131! \u0130tfaiyeciler onlar\u0131 kurtaracak! S\u00f6yle: Rescue the people!',
+      textTr:
+        'Biri mahsur kald\u0131! \u0130tfaiyeciler onlar\u0131 kurtaracak! S\u00f6yle: Rescue the people!',
       emoji: '\ud83e\uddb8',
       goalType: 'answer',
       targetPattern: 'Rescue the people',
@@ -185,12 +190,7 @@ export const theFirefighterMissionScenario: ConversationScenario = {
           id: 'r4_rescue',
           expectedText: 'Rescue the people!',
           expectedTextTr: '\u0130nsanlar\u0131 kurtar!',
-          acceptedVariants: [
-            'rescue the people',
-            'rescue them',
-            'rescue everyone',
-            'rescue',
-          ],
+          acceptedVariants: ['rescue the people', 'rescue them', 'rescue everyone', 'rescue'],
           nextNodeId: 'n5',
           emoji: '\ud83e\uddb8',
           marksTargetWord: ['rescue'],
@@ -217,14 +217,16 @@ export const theFirefighterMissionScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Describe what you see: fire truck, hose, ladder, firefighters...',
-        promptTr: 'G\u00f6rd\u00fcklerini s\u00f6yle: itfaiye arac\u0131, hortum, merdiven, itfaiyeciler...',
+        promptTr:
+          'G\u00f6rd\u00fcklerini s\u00f6yle: itfaiye arac\u0131, hortum, merdiven, itfaiyeciler...',
         maxRetries: 2,
       },
       responses: [
         {
           id: 'r5_describe',
           expectedText: 'I see a big red fire truck and brave firefighters.',
-          expectedTextTr: 'B\u00fcy\u00fck k\u0131rm\u0131z\u0131 bir itfaiye arac\u0131 ve cesur itfaiyeciler g\u00f6r\u00fcyorum.',
+          expectedTextTr:
+            'B\u00fcy\u00fck k\u0131rm\u0131z\u0131 bir itfaiye arac\u0131 ve cesur itfaiyeciler g\u00f6r\u00fcyorum.',
           acceptedVariants: [
             'i see a fire truck',
             'i see the firefighters',
@@ -246,7 +248,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'Now use the ladder to reach the top floor! Say: Use the ladder!',
-      textTr: '\u015eimdi \u00fcst kata ula\u015fmak i\u00e7in merdiveni kullan! S\u00f6yle: Use the ladder!',
+      textTr:
+        '\u015eimdi \u00fcst kata ula\u015fmak i\u00e7in merdiveni kullan! S\u00f6yle: Use the ladder!',
       emoji: '\ud83e\ude9c',
       goalType: 'answer',
       targetPattern: 'Use the ___!',
@@ -280,7 +283,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'The firefighters rescued everyone! Look \u2014 they are all safe! Say: Everyone is safe!',
-      textTr: '\u0130tfaiyeciler herkesi kurtard\u0131! Bak \u2014 hepsi g\u00fcvende! S\u00f6yle: Everyone is safe!',
+      textTr:
+        '\u0130tfaiyeciler herkesi kurtard\u0131! Bak \u2014 hepsi g\u00fcvende! S\u00f6yle: Everyone is safe!',
       emoji: '\ud83e\uddba',
       goalType: 'answer',
       targetPattern: 'Everyone is safe!',
@@ -363,7 +367,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Tell me what happened: fire, hose, ladder, rescue, safe, emergency...',
-        promptTr: 'Ne oldu\u011funu s\u00f6yle: yang\u0131n, hortum, merdiven, kurtarma, g\u00fcvenli, acil...',
+        promptTr:
+          'Ne oldu\u011funu s\u00f6yle: yang\u0131n, hortum, merdiven, kurtarma, g\u00fcvenli, acil...',
         maxRetries: 2,
       },
       responses: [
@@ -371,7 +376,8 @@ export const theFirefighterMissionScenario: ConversationScenario = {
           id: 'r9_summary',
           expectedText:
             'There was a fire. The firefighters rescued everyone. Now everyone is safe!',
-          expectedTextTr: 'Yang\u0131n vard\u0131. \u0130tfaiyeciler herkesi kurtard\u0131. \u015eimdi herkes g\u00fcvende!',
+          expectedTextTr:
+            'Yang\u0131n vard\u0131. \u0130tfaiyeciler herkesi kurtard\u0131. \u015eimdi herkes g\u00fcvende!',
           acceptedVariants: [
             'there was a fire',
             'called the fire station',

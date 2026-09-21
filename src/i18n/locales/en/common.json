@@ -22,7 +22,6 @@
   "noInternetDesc": "You can continue in offline mode",
   "comingSoon": "Coming Soon!",
   "underConstruction": "We're working on this feature",
-
   "time": {
     "now": "Now",
     "minuteAgo": "{{count}} minute ago",
@@ -35,13 +34,11 @@
     "hours": "{{count}} hr",
     "days": "{{count}} days"
   },
-
   "currency": {
     "stars": "Stars",
     "gems": "Gems",
     "xp": "XP"
   },
-
   "ageGroups": {
     "cubs": "Cubs",
     "cubsDesc": "Ages 4–6",
@@ -50,7 +47,6 @@
     "legends": "Legends",
     "legendsDesc": "Ages 10–12"
   },
-
   "nova": {
     "greeting": "Hi! I'm Nova 🌟",
     "encouragement": "You're doing great!",
@@ -61,14 +57,12 @@
     "welcome": "Welcome to NovaLingo!",
     "levelUp": "You leveled up! 🎉"
   },
-
   "tabs": {
     "home": "Home",
     "worlds": "Worlds",
     "quests": "Quests",
     "profile": "Profile"
   },
-
   "errors": {
     "generic": "Something went wrong",
     "network": "Connection error",
@@ -76,14 +70,12 @@
     "notFound": "Not found",
     "permission": "Permission denied"
   },
-
   "notifications": {
     "dailyReminder": "Don't forget your lesson today! 📚",
     "streakWarning": "Your streak is about to end! Do a lesson now! 🔥",
     "achievementUnlocked": "New achievement unlocked: {{name}} 🏆",
     "weeklyReport": "Your weekly report is ready! 📊"
   },
-
   "reward": {
     "xp": "XP",
     "stars": "stars",
@@ -91,7 +83,6 @@
     "streakFreeze": "streak freeze",
     "generic": "reward"
   },
-
   "modals": {
     "confirmTitle": "Confirmation Needed",
     "confirmOk": "Confirm",
@@ -137,7 +128,6 @@
     "wheelAlreadySpun": "You got today's reward. Come back tomorrow.",
     "wheelPrompt": "Spin once a day and win a surprise reward."
   },
-
   "parentalGate": {
     "title": "🔒 Parent Verification",
     "prompt": "Answer the question below to continue.",
@@ -153,7 +143,6 @@
     "coppaAria": "Parent COPPA consent",
     "coppaText": "I confirm that I am using this app as a parent/guardian for a child under 13 and that the child's personal data will be processed under the <privacy>Privacy Policy</privacy>."
   },
-
   "novaEvolution": {
     "title": "🌟 Nova is Evolving!",
     "evolve": "Evolve! ✨",
@@ -175,19 +164,16 @@
       "legendary": "Nova reached legendary power! Crowned! 👑"
     }
   },
-
   "nav": {
     "home": "Home",
     "learn": "Learn",
     "quests": "Quests",
     "profile": "Profile"
   },
-
   "dailyWheelButton": {
     "spin": "🎰 Spin!",
     "comeBack": "Come Back Tomorrow!"
   },
-
   "achievement": {
     "title": "🎉 Achievement Unlocked!",
     "rarity": {
@@ -197,22 +183,19 @@
       "legendary": "Legendary"
     }
   },
-
   "levelUpModal": {
     "title": "Level Up!"
   },
-
   "conversationTopics": {
     "title": "Talk with Nova 🎭",
     "subtitle": "Pick a topic and start talking!"
   },
-
   "legal": {
     "back": "Back",
     "privacy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "deleteAccount": "Delete Account"
   },
-
   "leaderboard": {
     "title": "📊 Leaderboard",
     "leagueName": "{{tier}} League",
@@ -228,6 +211,9 @@
     "daysLeft": "⏰ {{count}} days left",
     "topPromote": "Top 3 are promoted to a higher league!",
     "empty": "No one here yet",
-    "emptyDesc": "This week's leaderboard will fill up soon!"
+    "emptyDesc": "This week's leaderboard will fill up soon!",
+    "anonymousName": "Explorer {{number}}",
+    "you": "(You)",
+    "youLabel": "You"
   }
 }

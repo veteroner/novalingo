@@ -4,17 +4,14 @@
       "allWorlds": "Access to all worlds (6+ worlds)",
       "unlimited": "Unlimited lessons",
       "noAds": "No ads",
-      "offline": "Offline learning",
       "report": "Detailed parent report",
-      "evolutions": "All of Nova's evolutions",
-      "profiles": "5 child profiles",
-      "boost": "1 hour of 2x XP per day"
+      "profiles": "5 child profiles"
     },
     "planMonthly": "Monthly",
     "planYearly": "Yearly",
     "perMonth": "/mo",
     "perYear": "/year",
-    "saveBadge": "Save 50%",
+    "saveBadge": "Save {{percent}}%",
     "successTitle": "Subscription Active!",
     "successMessage": "NovaLingo Plus has started.",
     "restoreSuccessTitle": "Subscription Found!",
@@ -28,12 +25,9 @@
     "freePlan": "Free Plan",
     "plusName": "NovaLingo Plus",
     "premiumDesc": "You have access to all features",
-    "freeDesc": "First 2 worlds, 5 lessons/day, with ads",
+    "freeDesc": "First 2 worlds, 3 lessons/day, 1 child profile — ad-free",
     "selected": "✔ Selected",
     "processing": "Processing…",
-    "trial": "Try 7 Days Free",
-    "trialNote1": "After the 7-day trial you will be charged for your selected plan.",
-    "trialNote2": "You can cancel anytime.",
     "checking": "Checking…",
     "restoreCta": "Restore purchase history",
     "title": "💳 Subscription",
@@ -52,9 +46,15 @@
     "manageAppStore": "Manage App Store Subscriptions",
     "manageGooglePlay": "Manage Google Play Subscriptions",
     "privacy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "perMonthEquivalent": "{{price}} per month",
+    "periodMonth": "month",
+    "periodYear": "year",
+    "trialCta": "Try {{days}} Days Free",
+    "subscribeCta": "Start Subscription",
+    "renewalNotice": "The subscription renews automatically at {{price}}/{{period}}. You will be charged at the end of the period unless you cancel at least 24 hours before renewal. You can cancel anytime in your store account settings.",
+    "renewalNoticeTrial": "After the {{days}}-day free trial, the subscription renews automatically at {{price}}/{{period}}. You will be charged unless you cancel at least 24 hours before the trial ends. You can cancel anytime in your store account settings."
   },
-
   "settings": {
     "title": "⚙️ Settings",
     "titleFor": "Settings for {{name}}",
@@ -65,7 +65,7 @@
     "dailyReminder": "Daily Reminder",
     "dailyReminderDesc": "A learning-time reminder every day",
     "weeklyReport": "Weekly Report",
-    "weeklyReportDesc": "Get the progress report by email",
+    "weeklyReportDesc": "Get the weekly progress summary as a notification",
     "achievementAlert": "Achievement Alerts",
     "achievementAlertDesc": "Notify when a new achievement is earned",
     "inactivityAlert": "Inactivity Alert",
@@ -118,7 +118,6 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
   },
-
   "dashboard": {
     "gateTitle": "🔒 Parent Panel",
     "gatePrompt": "Enter your PIN code to continue",

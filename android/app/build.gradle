@@ -1,5 +1,17 @@
 apply plugin: 'com.android.application'
 
+// Release imzalama bilgileri.
+// Yerelde: android/keystore.properties (git'e girmez)
+// CI'da: ANDROID_KEYSTORE_PATH / _PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+def hasKeystoreFile = keystorePropertiesFile.exists()
+if (hasKeystoreFile) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+def envKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+def hasReleaseSigning = hasKeystoreFile || (envKeystorePath != null && !envKeystorePath.isEmpty())
+
 android {
     namespace "com.novalingo.app"
     compileSdk rootProject.ext.compileSdkVersion
@@ -16,10 +28,35 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (hasKeystoreFile) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            } else if (envKeystorePath != null && !envKeystorePath.isEmpty()) {
+                storeFile file(envKeystorePath)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // İmza bilgisi yoksa (ör. yerel debug) yapılandırma uygulanmaz.
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

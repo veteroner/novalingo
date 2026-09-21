@@ -88,3 +88,6 @@ yarn-error.log*
 # Local Netlify folder
 .netlify
 .pnpm-store/
+
+# Android release imzalama
+android/keystore.properties

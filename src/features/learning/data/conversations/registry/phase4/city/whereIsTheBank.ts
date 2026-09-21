@@ -34,7 +34,9 @@ export const whereIsTheBankScenario: ConversationScenario = {
     preferredIfTagsSeen: ['city', 'directions'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -42,7 +44,8 @@ export const whereIsTheBankScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'We are in the city! I need to find the bank. Can you ask: Where is the bank?',
-      textTr: '\u015eehirdeyiz! Bankay\u0131 bulmam laz\u0131m. Sorabilir misin: Where is the bank?',
+      textTr:
+        '\u015eehirdeyiz! Bankay\u0131 bulmam laz\u0131m. Sorabilir misin: Where is the bank?',
       emoji: '🏙️',
       goalType: 'answer',
       targetPattern: 'Where is the ___?',
@@ -88,7 +91,8 @@ export const whereIsTheBankScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Good question! The bank is straight ahead. Turn left at the park. Did you get that?',
-      textTr: 'G\u00fczel soru! Banka d\u00fcz kar\u015f\u0131da. Parkta sola d\u00f6n. Anlad\u0131n m\u0131?',
+      textTr:
+        'G\u00fczel soru! Banka d\u00fcz kar\u015f\u0131da. Parkta sola d\u00f6n. Anlad\u0131n m\u0131?',
       emoji: '🗺️',
       goalType: 'answer',
       targetPattern: 'Turn left / Turn right',
@@ -166,7 +170,7 @@ export const whereIsTheBankScenario: ConversationScenario = {
       id: 'n4',
       speaker: 'nova',
       role: 'guide',
-      text: 'Now let\'s find the park too! Where is the park? Ask me!',
+      text: "Now let's find the park too! Where is the park? Ask me!",
       textTr: '\u015eimdi de park\u0131 bulal\u0131m! Park nerede? Bana sor!',
       emoji: '🌳',
       goalType: 'answer',
@@ -354,7 +358,8 @@ export const whereIsTheBankScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'City expert! Name your favourite building in a city — bank, park, school, or hospital.',
-      textTr: '\u015eehir uzman\u0131! \u015eehirde en sevdi\u011fin binas\u0131 s\u00f6yle \u2014 banka, park, okul veya hastane.',
+      textTr:
+        '\u015eehir uzman\u0131! \u015eehirde en sevdi\u011fin binas\u0131 s\u00f6yle \u2014 banka, park, okul veya hastane.',
       emoji: '🏙️',
       goalType: 'describe',
       hint: {

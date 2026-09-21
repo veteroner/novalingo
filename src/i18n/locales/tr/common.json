@@ -22,7 +22,6 @@
   "noInternetDesc": "Çevrimdışı modda devam edebilirsin",
   "comingSoon": "Çok Yakında!",
   "underConstruction": "Bu özellik üzerinde çalışıyoruz",
-
   "time": {
     "now": "Şimdi",
     "minuteAgo": "{{count}} dakika önce",
@@ -35,13 +34,11 @@
     "hours": "{{count}} sa",
     "days": "{{count}} gün"
   },
-
   "currency": {
     "stars": "Yıldız",
     "gems": "Elmas",
     "xp": "XP"
   },
-
   "ageGroups": {
     "cubs": "Minikler",
     "cubsDesc": "4–6 yaş",
@@ -50,7 +47,6 @@
     "legends": "Efsaneler",
     "legendsDesc": "10–12 yaş"
   },
-
   "nova": {
     "greeting": "Merhaba! Ben Nova 🌟",
     "encouragement": "Harika gidiyorsun!",
@@ -61,14 +57,12 @@
     "welcome": "NovaLingo'ya hoş geldin!",
     "levelUp": "Seviye atladın! 🎉"
   },
-
   "tabs": {
     "home": "Ana Sayfa",
     "worlds": "Dünyalar",
     "quests": "Görevler",
     "profile": "Profil"
   },
-
   "errors": {
     "generic": "Bir şeyler yanlış gitti",
     "network": "Bağlantı hatası",
@@ -76,14 +70,12 @@
     "notFound": "Bulunamadı",
     "permission": "İzin reddedildi"
   },
-
   "notifications": {
     "dailyReminder": "Bugünkü dersini yapmayı unutma! 📚",
     "streakWarning": "Serin bitmek üzere! Hemen bir ders yap! 🔥",
     "achievementUnlocked": "Yeni başarı kazandın: {{name}} 🏆",
     "weeklyReport": "Haftalık raporun hazır! 📊"
   },
-
   "reward": {
     "xp": "XP",
     "stars": "yıldız",
@@ -91,7 +83,6 @@
     "streakFreeze": "seri koruma",
     "generic": "ödül"
   },
-
   "modals": {
     "confirmTitle": "Onay Gerekli",
     "confirmOk": "Onayla",
@@ -137,7 +128,6 @@
     "wheelAlreadySpun": "Bugünkü ödülünü aldın. Yarın tekrar gel.",
     "wheelPrompt": "Her gün bir kez çevir ve sürpriz ödül kazan."
   },
-
   "parentalGate": {
     "title": "🔒 Ebeveyn Doğrulaması",
     "prompt": "Devam etmek için aşağıdaki soruyu cevaplayın.",
@@ -153,7 +143,6 @@
     "coppaAria": "Ebeveyn COPPA onayı",
     "coppaText": "Bu uygulamayı 13 yaş altı bir çocuk için ebeveyn/vasi sıfatıyla kullandığımı ve çocuğun kişisel verilerinin <privacy>Gizlilik Politikası</privacy> kapsamında işleneceğini onaylıyorum."
   },
-
   "novaEvolution": {
     "title": "🌟 Nova Evrimleşiyor!",
     "evolve": "Evrimleştir! ✨",
@@ -175,19 +164,16 @@
       "legendary": "Nova efsanevi güce ulaştı! Taç sahibi! 👑"
     }
   },
-
   "nav": {
     "home": "Ana Sayfa",
     "learn": "Öğren",
     "quests": "Görevler",
     "profile": "Profil"
   },
-
   "dailyWheelButton": {
     "spin": "🎰 Çevir!",
     "comeBack": "Yarın Tekrar Gel!"
   },
-
   "achievement": {
     "title": "🎉 Başarım Açıldı!",
     "rarity": {
@@ -197,22 +183,19 @@
       "legendary": "Efsanevi"
     }
   },
-
   "levelUpModal": {
     "title": "Seviye Atladın!"
   },
-
   "conversationTopics": {
     "title": "Nova ile Konuş 🎭",
     "subtitle": "Bir konu seç ve konuşmaya başla!"
   },
-
   "legal": {
     "back": "Geri",
     "privacy": "Gizlilik Politikası",
-    "terms": "Kullanım Koşulları"
+    "terms": "Kullanım Koşulları",
+    "deleteAccount": "Hesap Silme"
   },
-
   "leaderboard": {
     "title": "📊 Liderlik Tablosu",
     "leagueName": "{{tier}} Ligi",
@@ -228,6 +211,9 @@
     "daysLeft": "⏰ {{count}} gün kaldı",
     "topPromote": "İlk 3 bir üst lige yükselir!",
     "empty": "Henüz kimse yok",
-    "emptyDesc": "Bu haftanın liderlik tablosu yakında dolacak!"
+    "emptyDesc": "Bu haftanın liderlik tablosu yakında dolacak!",
+    "anonymousName": "Kâşif {{number}}",
+    "you": "(Sen)",
+    "youLabel": "Sen"
   }
 }

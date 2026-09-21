@@ -6,7 +6,7 @@
  *
  * Satın alma akışı:
  *  1. Kullanıcı plan seçer (aylık / yıllık).
- *  2. "7 Gün Ücretsiz Dene" butonuna basar.
+ *  2. CTA'ya basar (deneme süresi mağazada tanımlıysa "N Gün Ücretsiz Dene").
  *  3. subscriptionService.purchaseSubscription() çağrılır.
  *  4. Native: App Store / Google Play abonelik sayfası açılır.
  *  5. Backend doğrulaması verified entitlement kaydını günceller.
@@ -31,33 +31,41 @@ import {
   trackSubscriptionRestoreFailed,
   trackSubscriptionTrialStarted,
 } from '@services/analytics';
-import { purchaseSubscription, restorePurchases } from '@services/subscription/subscriptionService';
+import {
+  getProductPricing,
+  onProductsUpdated,
+  purchaseSubscription,
+  restorePurchases,
+  type ProductPricing,
+} from '@services/subscription/subscriptionService';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-// Metinler i18n'den gelir (parent.subscription.*); burada emoji/fiyat/anahtar.
+// Metinler i18n'den gelir (parent.subscription.*); burada emoji/anahtar.
+// ÖNEMLİ: Bu liste yalnızca uygulamada GERÇEKTEN zorlanan faydaları içerir
+// (docs/MONETIZATION.md). Uygulanmayan bir fayda buraya eklenmemelidir —
+// mağaza metni ile davranış birebir eşleşmek zorundadır.
 const PREMIUM_FEATURES = [
   { emoji: '🌍', key: 'allWorlds' },
   { emoji: '♾️', key: 'unlimited' },
   { emoji: '🚫', key: 'noAds' },
-  { emoji: '📶', key: 'offline' },
   { emoji: '📊', key: 'report' },
-  { emoji: '🦉', key: 'evolutions' },
   { emoji: '👨‍👩‍👧‍👦', key: 'profiles' },
-  { emoji: '⚡', key: 'boost' },
 ] as const;
 
+// Fiyatlar mağazadan (App Store Connect / Play Console) okunur.
+// `fallbackPrice` yalnızca ürün bilgisi henüz yüklenmediğinde gösterilir.
 const PLANS = [
   {
     id: IAP_PRODUCTS.MONTHLY,
     key: 'monthly',
     labelKey: 'planMonthly',
-    priceTRY: '₺149.99',
+    fallbackPrice: '₺149,99',
     periodKey: 'perMonth',
     highlighted: false,
   },
@@ -65,17 +73,15 @@ const PLANS = [
     id: IAP_PRODUCTS.YEARLY,
     key: 'yearly',
     labelKey: 'planYearly',
-    priceTRY: '₺899.99',
+    fallbackPrice: '₺899,99',
     periodKey: 'perYear',
     highlighted: true,
-    badgeKey: 'saveBadge',
-    monthlyEquiv: '₺74.99/ay',
   },
 ] as const;
 
 export default function SubscriptionScreen() {
   const navigate = useNavigate();
-  const { t } = useTranslation('parent');
+  const { t, i18n } = useTranslation('parent');
   const user = useAuthStore((s) => s.user);
   const child = useChildStore((s) => s.activeChild);
   const showToast = useUIStore((s) => s.showToast);
@@ -84,6 +90,7 @@ export default function SubscriptionScreen() {
   const [selectedPlanId, setSelectedPlanId] = useState<string>(IAP_PRODUCTS.YEARLY);
   const [purchasing, setPurchasing] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [pricing, setPricing] = useState<Record<string, ProductPricing | null>>({});
 
   const platform = Capacitor.getPlatform();
   const isNativePlatform = platform === 'ios' || platform === 'android';
@@ -92,11 +99,63 @@ export default function SubscriptionScreen() {
     trackSubscriptionPaywallViewed({ source: 'subscription_screen', isPremium });
   }, [isPremium]);
 
+  // Fiyatlar mağazadan asenkron yüklenir; ürün bilgisi güncellendikçe tazele.
+  useEffect(() => {
+    let mounted = true;
+    const readPricing = () => {
+      if (!mounted) return;
+      setPricing({
+        [IAP_PRODUCTS.MONTHLY]: getProductPricing(IAP_PRODUCTS.MONTHLY),
+        [IAP_PRODUCTS.YEARLY]: getProductPricing(IAP_PRODUCTS.YEARLY),
+      });
+    };
+    readPricing();
+    onProductsUpdated(readPricing);
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const selectedPlan = PLANS.find((plan) => plan.id === selectedPlanId) ?? PLANS[1];
+  const selectedPricing = pricing[selectedPlanId] ?? null;
+  const trialDays = selectedPricing?.trialDays ?? null;
+
+  /** Mağaza fiyatı varsa onu, yoksa yedek fiyatı göster. */
+  const priceFor = useCallback(
+    (planId: string, fallbackPrice: string) => pricing[planId]?.price ?? fallbackPrice,
+    [pricing],
+  );
+
+  /**
+   * Yıllık planın aylık karşılığı ve tasarruf oranı — mağazadan gelen gerçek
+   * fiyatlardan hesaplanır. Fiyatlar yüklenmediyse hiçbir iddia gösterilmez.
+   */
+  const yearlyValue = useMemo(() => {
+    const monthly = pricing[IAP_PRODUCTS.MONTHLY];
+    const yearly = pricing[IAP_PRODUCTS.YEARLY];
+    if (!monthly?.priceMicros || !yearly?.priceMicros || !yearly.currency) return null;
+
+    const perMonthMicros = yearly.priceMicros / 12;
+    const savingsPercent = Math.round((1 - perMonthMicros / monthly.priceMicros) * 100);
+    const formatted = new Intl.NumberFormat(i18n.language, {
+      style: 'currency',
+      currency: yearly.currency,
+    }).format(perMonthMicros / 1_000_000);
+
+    return {
+      perMonth: formatted,
+      savingsPercent: savingsPercent > 0 ? savingsPercent : null,
+    };
+  }, [pricing, i18n.language]);
+
   async function handlePurchase() {
     if (purchasing) return;
     setPurchasing(true);
     try {
-      trackSubscriptionTrialStarted(selectedPlanId, platform);
+      // Deneme olayı yalnızca mağazada gerçekten deneme tanımlıysa gönderilir.
+      if (trialDays != null) {
+        trackSubscriptionTrialStarted(selectedPlanId, platform);
+      }
       const result = await purchaseSubscription(
         selectedPlanId as (typeof IAP_PRODUCTS)[keyof typeof IAP_PRODUCTS],
       );
@@ -230,23 +289,25 @@ export default function SubscriptionScreen() {
                       className={isSelected ? 'ring-nova-blue ring-2' : ''}
                     >
                       <div className="space-y-2 text-center">
-                        {'badgeKey' in plan && (
+                        {plan.highlighted && yearlyValue?.savingsPercent != null && (
                           <span className="bg-nova-orange inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white">
-                            {t(`subscription.${plan.badgeKey}`)}
+                            {t('subscription.saveBadge', { percent: yearlyValue.savingsPercent })}
                           </span>
                         )}
                         <Text variant="body" weight="bold">
                           {t(`subscription.${plan.labelKey}`)}
                         </Text>
                         <Text variant="h3" className="text-nova-blue">
-                          {plan.priceTRY}
+                          {priceFor(plan.id, plan.fallbackPrice)}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
                           {t(`subscription.${plan.periodKey}`)}
                         </Text>
-                        {'monthlyEquiv' in plan && (
+                        {plan.highlighted && yearlyValue && (
                           <Text variant="caption" className="text-success font-semibold">
-                            {plan.monthlyEquiv}
+                            {t('subscription.perMonthEquivalent', {
+                              price: yearlyValue.perMonth,
+                            })}
                           </Text>
                         )}
                         {isSelected && (
@@ -269,10 +330,29 @@ export default function SubscriptionScreen() {
               onClick={handlePurchase}
               disabled={purchasing}
             >
-              {purchasing ? t('subscription.processing') : t('subscription.trial')}
+              {purchasing
+                ? t('subscription.processing')
+                : trialDays != null
+                  ? t('subscription.trialCta', { days: trialDays })
+                  : t('subscription.subscribeCta')}
             </Button>
+
+            {/* Otomatik yenilenen abonelik açıklaması — App Store 3.1.2 / Play politikası */}
             <Text variant="caption" align="center" className="text-text-secondary">
-              {t('subscription.trialNote1')} {t('subscription.trialNote2')}
+              {t(
+                trialDays != null
+                  ? 'subscription.renewalNoticeTrial'
+                  : 'subscription.renewalNotice',
+                {
+                  days: trialDays,
+                  price: priceFor(selectedPlan.id, selectedPlan.fallbackPrice),
+                  period: t(
+                    selectedPlan.id === IAP_PRODUCTS.YEARLY
+                      ? 'subscription.periodYear'
+                      : 'subscription.periodMonth',
+                  ),
+                },
+              )}
             </Text>
 
             {/* Restore */}

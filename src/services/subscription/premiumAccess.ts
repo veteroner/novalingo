@@ -1,7 +1,8 @@
 import { FREE_TIER } from '@/config/constants';
 import type { World } from '@/types/content';
 import type { LessonProgress } from '@/types/progress';
-import type { User } from '@/types/user';
+import type { ChildProfile, User } from '@/types/user';
+import { getTodayTR } from '@services/spark/gameLogic';
 
 function toMillis(value: LessonProgress['completedAt'] | undefined): number {
   if (typeof value?.toMillis === 'function') return value.toMillis();
@@ -30,10 +31,26 @@ export function getLessonsCompletedToday(progress: LessonProgress[] | undefined)
   return progress.filter((record) => toMillis(record.completedAt) >= todayStartMs).length;
 }
 
+/**
+ * Günlük ders sayısı. Otorite, çocuk dokümanındaki sayaçtır
+ * (`firestore.rules` bu sayacı zorlar); sayaç yoksa eski kayıtlar için
+ * bugünkü `lessonProgress` kayıtlarına geri düşer.
+ */
+export function getDailyLessonCount(
+  child: Pick<ChildProfile, 'dailyLessonDate' | 'dailyLessonCount'> | null | undefined,
+  progress: LessonProgress[] | undefined,
+): number {
+  if (child?.dailyLessonDate != null) {
+    return child.dailyLessonDate === getTodayTR() ? (child.dailyLessonCount ?? 0) : 0;
+  }
+  return getLessonsCompletedToday(progress);
+}
+
 export function hasReachedFreeLessonLimit(
   user: User | null | undefined,
   progress: LessonProgress[] | undefined,
+  child?: Pick<ChildProfile, 'dailyLessonDate' | 'dailyLessonCount'> | null,
 ): boolean {
   if (isPremiumUser(user)) return false;
-  return getLessonsCompletedToday(progress) >= FREE_TIER.DAILY_LESSONS;
+  return getDailyLessonCount(child, progress) >= FREE_TIER.DAILY_LESSONS;
 }

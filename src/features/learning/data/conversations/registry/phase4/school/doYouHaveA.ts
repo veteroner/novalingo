@@ -20,7 +20,7 @@ export const doYouHaveAScenario: ConversationScenario = {
   turnCount: 10,
   sceneEmoji: '\u{1F392}',
   targetWords: ['pencil', 'ruler', 'eraser', 'scissors', 'glue', 'notebook'],
-  targetPatterns: ['Do you have a ___?', 'Yes, I have a ___', "No, I don\u2019t have a ___"],
+  targetPatterns: ['Do you have a ___?', 'Yes, I have a ___', 'No, I don\u2019t have a ___'],
   learningGoals: ['ask if someone has something', 'answer yes/no with "have"'],
   successCriteria: {
     minimumAcceptedTurns: 6,
@@ -35,15 +35,18 @@ export const doYouHaveAScenario: ConversationScenario = {
     preferredIfTagsSeen: ['school', 'supplies'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
       id: 'n1',
       speaker: 'nova',
       role: 'friend',
-      text: "It\u2019s our first day of school! I need to check my bag. Ask me: Do you have a pencil?",
-      textTr: 'Okulun ilk g\u00fcn\u00fc! \u00c7antam\u0131 kontrol etmem laz\u0131m. Sor bana: Do you have a pencil?',
+      text: 'It\u2019s our first day of school! I need to check my bag. Ask me: Do you have a pencil?',
+      textTr:
+        'Okulun ilk g\u00fcn\u00fc! \u00c7antam\u0131 kontrol etmem laz\u0131m. Sor bana: Do you have a pencil?',
       emoji: '\u270F\uFE0F',
       goalType: 'answer',
       targetPattern: 'Do you have a ___?',
@@ -107,14 +110,14 @@ export const doYouHaveAScenario: ConversationScenario = {
       targetPattern: 'Yes, I have a ___',
       hint: {
         delayMs: 7000,
-        text: "Say: Yes, I have an eraser  OR  No, I don\u2019t have an eraser",
-        textTr: "S\u00f6yle: Yes, I have an eraser  Veya  No, I don\u2019t have an eraser",
+        text: 'Say: Yes, I have an eraser  OR  No, I don\u2019t have an eraser',
+        textTr: 'S\u00f6yle: Yes, I have an eraser  Veya  No, I don\u2019t have an eraser',
         revealPattern: true,
       },
       repair: {
         enabled: true,
-        prompt: "Say: Yes, I have one  OR  No, I don\u2019t have one",
-        promptTr: "S\u00f6yle: Yes, I have one  Veya  No, I don\u2019t have one",
+        prompt: 'Say: Yes, I have one  OR  No, I don\u2019t have one',
+        promptTr: 'S\u00f6yle: Yes, I have one  Veya  No, I don\u2019t have one',
         maxRetries: 2,
       },
       responses: [
@@ -137,7 +140,7 @@ export const doYouHaveAScenario: ConversationScenario = {
         },
         {
           id: 'r2_no',
-          expectedText: "No, I don\u2019t have an eraser.",
+          expectedText: 'No, I don\u2019t have an eraser.',
           expectedTextTr: 'Hay\u0131r, bende silgi yok.',
           acceptedVariants: [
             "no i don't have",
@@ -149,7 +152,7 @@ export const doYouHaveAScenario: ConversationScenario = {
           acceptedWords: [],
           nextNodeId: 'n3',
           emoji: '\u274C',
-          marksPattern: ["No, I don\u2019t have a ___"],
+          marksPattern: ['No, I don\u2019t have a ___'],
         },
       ],
     },
@@ -266,20 +269,22 @@ export const doYouHaveAScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes, I do! Now you tell me \u2014 do you have glue? Answer yes or no.',
-      textTr: 'Evet, var! \u015eimdi sen s\u00f6yle \u2014 sende yap\u0131\u015ft\u0131r\u0131c\u0131 var m\u0131? Evet ya da hay\u0131r de.',
+      textTr:
+        'Evet, var! \u015eimdi sen s\u00f6yle \u2014 sende yap\u0131\u015ft\u0131r\u0131c\u0131 var m\u0131? Evet ya da hay\u0131r de.',
       emoji: '\u{1F9F4}',
       goalType: 'answer',
       targetPattern: 'Yes, I have a ___',
       hint: {
         delayMs: 6000,
-        text: "Say: Yes, I have glue  OR  No, I don\u2019t have glue",
-        textTr: "De: Yes, I have glue  Veya  No, I don\u2019t have glue",
+        text: 'Say: Yes, I have glue  OR  No, I don\u2019t have glue',
+        textTr: 'De: Yes, I have glue  Veya  No, I don\u2019t have glue',
         revealPattern: true,
       },
       repair: {
         enabled: true,
-        prompt: "Yes or no \u2014 do you have glue?",
-        promptTr: "Evet mi hay\u0131r m\u0131 \u2014 sende yap\u0131\u015ft\u0131r\u0131c\u0131 var m\u0131?",
+        prompt: 'Yes or no \u2014 do you have glue?',
+        promptTr:
+          'Evet mi hay\u0131r m\u0131 \u2014 sende yap\u0131\u015ft\u0131r\u0131c\u0131 var m\u0131?',
         maxRetries: 2,
       },
       responses: [
@@ -296,13 +301,13 @@ export const doYouHaveAScenario: ConversationScenario = {
         },
         {
           id: 'r5_no',
-          expectedText: "No, I don\u2019t have glue.",
+          expectedText: 'No, I don\u2019t have glue.',
           expectedTextTr: 'Hay\u0131r, bende yap\u0131\u015ft\u0131r\u0131c\u0131 yok.',
           acceptedVariants: ["no i don't have glue", "no i don't", 'no glue', 'no'],
           acceptedWords: [],
           nextNodeId: 'n6',
           emoji: '\u274C',
-          marksPattern: ["No, I don\u2019t have a ___"],
+          marksPattern: ['No, I don\u2019t have a ___'],
         },
       ],
     },
@@ -329,8 +334,14 @@ export const doYouHaveAScenario: ConversationScenario = {
         {
           id: 'r6_lines',
           expectedText: 'I use a ruler to draw straight lines.',
-          expectedTextTr: 'D\u00fcz \u00e7izgiler \u00e7izmek i\u00e7in cetvel kullan\u0131r\u0131m.',
-          acceptedVariants: ['draw straight lines', 'ruler for lines', 'straight lines', 'draw lines'],
+          expectedTextTr:
+            'D\u00fcz \u00e7izgiler \u00e7izmek i\u00e7in cetvel kullan\u0131r\u0131m.',
+          acceptedVariants: [
+            'draw straight lines',
+            'ruler for lines',
+            'straight lines',
+            'draw lines',
+          ],
           acceptedWords: ['ruler'],
           nextNodeId: 'n7',
           emoji: '\u{1F4CF}',
@@ -394,14 +405,14 @@ export const doYouHaveAScenario: ConversationScenario = {
       targetPattern: 'Yes, I have a ___',
       hint: {
         delayMs: 6000,
-        text: "Say: Yes, I have a notebook",
-        textTr: "De: Yes, I have a notebook",
+        text: 'Say: Yes, I have a notebook',
+        textTr: 'De: Yes, I have a notebook',
         revealPattern: true,
       },
       repair: {
         enabled: true,
-        prompt: "Do you have a notebook? Yes or no?",
-        promptTr: "Sende defter var m\u0131? Evet mi hay\u0131r m\u0131?",
+        prompt: 'Do you have a notebook? Yes or no?',
+        promptTr: 'Sende defter var m\u0131? Evet mi hay\u0131r m\u0131?',
         maxRetries: 2,
       },
       responses: [
@@ -418,13 +429,13 @@ export const doYouHaveAScenario: ConversationScenario = {
         },
         {
           id: 'r8_no',
-          expectedText: "No, I don\u2019t have a notebook.",
+          expectedText: 'No, I don\u2019t have a notebook.',
           expectedTextTr: 'Hay\u0131r, bende defter yok.',
           acceptedVariants: ["no i don't have notebook", "no i don't", 'no notebook', 'no'],
           acceptedWords: [],
           nextNodeId: 'n9',
           emoji: '\u274C',
-          marksPattern: ["No, I don\u2019t have a ___"],
+          marksPattern: ['No, I don\u2019t have a ___'],
         },
       ],
     },
@@ -452,7 +463,11 @@ export const doYouHaveAScenario: ConversationScenario = {
           id: 'r9_full_list',
           expectedText: 'I have a pencil, a ruler, and a notebook.',
           expectedTextTr: 'Bende kalem, cetvel ve defter var.',
-          acceptedVariants: ['pencil ruler notebook', 'pencil and ruler notebook', 'i have pencil ruler'],
+          acceptedVariants: [
+            'pencil ruler notebook',
+            'pencil and ruler notebook',
+            'i have pencil ruler',
+          ],
           acceptedWords: ['pencil', 'ruler', 'notebook'],
           nextNodeId: 'n10',
           emoji: '\u{1F392}',

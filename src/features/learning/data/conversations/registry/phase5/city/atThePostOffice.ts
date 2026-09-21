@@ -34,7 +34,9 @@ export const atThePostOfficeScenario: ConversationScenario = {
     preferredIfTagsSeen: ['city', 'services'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -95,7 +97,8 @@ export const atThePostOfficeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Good! You need an envelope to put the letter inside. Say: I have an envelope.',
-      textTr: 'Harika! Mektup koymak i\u00e7in bir zarfa ihtiyac\u0131n var. S\u00f6yle: I have an envelope.',
+      textTr:
+        'Harika! Mektup koymak i\u00e7in bir zarfa ihtiyac\u0131n var. S\u00f6yle: I have an envelope.',
       emoji: '\ud83d\udcec',
       goalType: 'answer',
       targetPattern: 'I have an envelope',
@@ -212,7 +215,8 @@ export const atThePostOfficeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'You need to write the address on the envelope. Ask me for help: Can you help me with the address?',
-      textTr: 'Zarfin \u00fcst\u00fcne adres yazman gerekiyor. Yard\u0131m iste: Can you help me with the address?',
+      textTr:
+        'Zarfin \u00fcst\u00fcne adres yazman gerekiyor. Yard\u0131m iste: Can you help me with the address?',
       emoji: '\ud83d\udccd',
       goalType: 'answer',
       targetPattern: 'Can you help me with ___?',
@@ -292,7 +296,8 @@ export const atThePostOfficeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Perfect! The address is written. Now say: I want to send this letter now.',
-      textTr: 'Harika! Adres yaz\u0131ld\u0131. \u015eimdi s\u00f6yle: I want to send this letter now.',
+      textTr:
+        'Harika! Adres yaz\u0131ld\u0131. \u015eimdi s\u00f6yle: I want to send this letter now.',
       emoji: '\ud83d\ude80',
       goalType: 'answer',
       targetPattern: 'I want to send a ___',
@@ -331,8 +336,7 @@ export const atThePostOfficeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Great! Your letter has the stamp, the envelope, and the address. Tell me: My letter is ready!',
-      textTr:
-        'Harika! Mektubunda pul, zarf ve adres var. S\u00f6yle: My letter is ready!',
+      textTr: 'Harika! Mektubunda pul, zarf ve adres var. S\u00f6yle: My letter is ready!',
       emoji: '\ud83d\udce7',
       goalType: 'answer',
       targetPattern: 'My letter is ready',
@@ -353,11 +357,7 @@ export const atThePostOfficeScenario: ConversationScenario = {
           id: 'r8_ready',
           expectedText: 'My letter is ready!',
           expectedTextTr: 'Mektubum haz\u0131r!',
-          acceptedVariants: [
-            'my letter is ready',
-            'letter is ready',
-            'my letter is ready to send',
-          ],
+          acceptedVariants: ['my letter is ready', 'letter is ready', 'my letter is ready to send'],
           nextNodeId: 'n9',
           emoji: '\ud83d\udce8',
           marksTargetWord: ['letter'],
@@ -385,7 +385,8 @@ export const atThePostOfficeScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Tell me what you did: post office, letter, stamp, envelope, address...',
-        promptTr: 'Ne yapt\u0131\u011f\u0131n\u0131 s\u00f6yle: postane, mektup, pul, zarf, adres...',
+        promptTr:
+          'Ne yapt\u0131\u011f\u0131n\u0131 s\u00f6yle: postane, mektup, pul, zarf, adres...',
         maxRetries: 2,
       },
       responses: [

@@ -15,7 +15,6 @@
   "incorrect": "Incorrect 😢",
   "tryAgain": "Try Again",
   "almostThere": "Almost there! 💪",
-
   "activities": {
     "wordMatch": "Match",
     "wordMatchDesc": "Match the word with the picture",
@@ -67,7 +66,6 @@
     "conversationScreenLoading": "Preparing scenario...",
     "conversationScreenEpisode": "Episode {{episode}}/{{total}}"
   },
-
   "conversationResult": {
     "home": "Go Home",
     "newSession": "New Conversation 🎭",
@@ -102,7 +100,6 @@
     "wordsTitle": "🎯 Practiced Words",
     "rawAnswersTitle": "🗣 Your Real Answers"
   },
-
   "result": {
     "title": "Lesson Complete!",
     "perfect": "Perfect! ⭐⭐⭐",
@@ -125,14 +122,12 @@
       "noHint": "No Hint Bonus"
     }
   },
-
   "rewardAd": {
     "title": "Double Your Reward!",
     "desc": "Watch a short video to 2x your XP and stars",
     "watch": "Watch Video",
     "noThanks": "No, Thanks"
   },
-
   "lessonScreen": {
     "loading": "Loading lesson...",
     "quit": "Quit Lesson",
@@ -140,10 +135,9 @@
     "resume": "Resume",
     "savingTitle": "Saving lesson",
     "limitTitle": "Daily Limit Reached",
-    "limitMessage": "You've used today's free lessons. Try again tomorrow or upgrade to Plus.",
+    "limitMessage": "You've used today's 3 free lessons (replays count too). They reset tomorrow, or you can upgrade to Plus.",
     "resultOpened": "Result screen opened. Saving will finish in the background."
   },
-
   "review": {
     "title": "📚 Review",
     "emptyMessage": "No words to review yet. Complete a few lessons first!",
@@ -159,7 +153,6 @@
     "score": "{{correct}} / {{total}} correct",
     "retry": "Review Again"
   },
-
   "storyLibrary": {
     "title": "📖 Story Library",
     "subtitle": "{{count}} stories — start reading!",
@@ -176,12 +169,10 @@
       "w6": "Adventure Galaxy"
     }
   },
-
   "storyViewer": {
     "notFound": "Story not found 😕",
     "backToLibrary": "Back to Library"
   },
-
   "lessonResult": {
     "backHome": "Back to Home",
     "bossDefeatTitle": "The Boss Beat You!",
@@ -223,7 +214,6 @@
     "hintNextWorld": "This world is done. You can move to the next world.",
     "hintAllDone": "All worlds complete. Great job!"
   },
-
   "activityUI": {
     "errorBoundary": {
       "message": "Something went wrong 😅",

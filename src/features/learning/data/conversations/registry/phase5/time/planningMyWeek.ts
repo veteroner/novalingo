@@ -34,7 +34,9 @@ export const planningMyWeekScenario: ConversationScenario = {
     preferredIfTagsSeen: ['time', 'days'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -42,7 +44,8 @@ export const planningMyWeekScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "Let's plan the week! What will you do on Monday? Say: On Monday I will go to school.",
-      textTr: 'Hafta\u0131y\u0131 planlayal\u0131m! Pazartesi ne yapacaks\u0131n? S\u00f6yle: On Monday I will go to school.',
+      textTr:
+        'Hafta\u0131y\u0131 planlayal\u0131m! Pazartesi ne yapacaks\u0131n? S\u00f6yle: On Monday I will go to school.',
       emoji: '\ud83d\udcc5',
       goalType: 'describe',
       targetPattern: 'On ___ I will ___',
@@ -91,7 +94,8 @@ export const planningMyWeekScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Are you free on Wednesday? Tell me: I am free on Wednesday.',
-      textTr: '\u00c7ar\u015famba g\u00fcn\u00fc bo\u015f musun? S\u00f6yle: I am free on Wednesday.',
+      textTr:
+        '\u00c7ar\u015famba g\u00fcn\u00fc bo\u015f musun? S\u00f6yle: I am free on Wednesday.',
       emoji: '\ud83d\uddd3\ufe0f',
       goalType: 'answer',
       targetPattern: 'I am free on ___',
@@ -140,7 +144,8 @@ export const planningMyWeekScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Are you busy on Friday? Some days are very busy! Say: I am busy on Friday.',
-      textTr: 'Cuma yo\u011fun musun? Baz\u0131 g\u00fcnler \u00e7ok yo\u011fun! S\u00f6yle: I am busy on Friday.',
+      textTr:
+        'Cuma yo\u011fun musun? Baz\u0131 g\u00fcnler \u00e7ok yo\u011fun! S\u00f6yle: I am busy on Friday.',
       emoji: '\ud83d\udccb',
       goalType: 'answer',
       targetPattern: 'I am busy on ___',
@@ -228,7 +233,7 @@ export const planningMyWeekScenario: ConversationScenario = {
       id: 'n5',
       speaker: 'nova',
       role: 'friend',
-      text: "Good plan! A plan helps you stay organised. Say: I have a great plan for my week!",
+      text: 'Good plan! A plan helps you stay organised. Say: I have a great plan for my week!',
       textTr:
         'G\u00fczel plan! Plan, d\u00fczenli kalman\u0131za yard\u0131mc\u0131 olur. S\u00f6yle: I have a great plan for my week!',
       emoji: '\ud83d\udca1',
@@ -309,7 +314,7 @@ export const planningMyWeekScenario: ConversationScenario = {
       id: 'n7',
       speaker: 'nova',
       role: 'friend',
-      text: "What is your Friday plan? Say: On Friday I will go to the cinema!",
+      text: 'What is your Friday plan? Say: On Friday I will go to the cinema!',
       textTr: 'Cuma plan\u0131n ne? S\u00f6yle: On Friday I will go to the cinema!',
       emoji: '\ud83c\udfa5',
       goalType: 'answer',
@@ -317,7 +322,8 @@ export const planningMyWeekScenario: ConversationScenario = {
       hint: {
         delayMs: 7000,
         text: 'Say: On Friday I will go to the cinema  OR  On Friday I will meet friends',
-        textTr: 'S\u00f6yle: On Friday I will go to the cinema  Veya  On Friday I will meet friends',
+        textTr:
+          'S\u00f6yle: On Friday I will go to the cinema  Veya  On Friday I will meet friends',
         revealPattern: true,
       },
       repair: {
@@ -350,14 +356,16 @@ export const planningMyWeekScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "Let's also plan the weekend again! Say: This weekend I want to visit grandma!",
-      textTr: 'Hafta sonunu da tekrar planlayal\u0131m! S\u00f6yle: This weekend I want to visit grandma!',
+      textTr:
+        'Hafta sonunu da tekrar planlayal\u0131m! S\u00f6yle: This weekend I want to visit grandma!',
       emoji: '\ud83c\udfe0',
       goalType: 'answer',
       targetPattern: 'This weekend I want to ___',
       hint: {
         delayMs: 7000,
         text: 'Say: This weekend I want to visit grandma  OR  This weekend I want to rest',
-        textTr: 'S\u00f6yle: This weekend I want to visit grandma  Veya  This weekend I want to rest',
+        textTr:
+          'S\u00f6yle: This weekend I want to visit grandma  Veya  This weekend I want to rest',
         revealPattern: true,
       },
       repair: {
@@ -405,7 +413,8 @@ export const planningMyWeekScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Talk about your week: Monday, Wednesday, Friday, busy, plan, weekend...',
-        promptTr: '  Haftan\u0131 anlat: Pazartesi, \u00c7ar\u015famba, Cuma, yo\u011fun, plan, hafta sonu...',
+        promptTr:
+          '  Haftan\u0131 anlat: Pazartesi, \u00c7ar\u015famba, Cuma, yo\u011fun, plan, hafta sonu...',
         maxRetries: 2,
       },
       responses: [

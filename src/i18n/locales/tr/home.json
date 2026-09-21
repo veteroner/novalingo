@@ -4,17 +4,14 @@
   "streakLabel": "Gün Seri",
   "worldsTitle": "Dünyalar 🌍",
   "seeAll": "Tümünü Gör",
-
   "conversation": {
     "title": "Nova ile Konuş",
     "subtitle": "Birebir konuşma pratiği yap — her gün yeni senaryolar!"
   },
-
   "review": {
     "title": "Günlük Tekrar",
     "subtitle": "{{count}} kelime tekrar bekliyor"
   },
-
   "quickActions": {
     "continue": "Devam Et",
     "continueDesc": "Bulunduğun dünyaya dön",
@@ -29,23 +26,18 @@
     "stories": "Hikayeler",
     "storiesDesc": "İngilizce hikaye oku"
   },
-
   "worldCard": {
     "current": " · Devam ediyor",
     "active": "Aktif"
   },
-
   "premium": {
     "title": "Premium Dünya",
     "message": "Bu dünya NovaLingo Plus aboneliği gerektirir."
   },
-
   "dailyGoal": "Günlük Hedef",
   "dailyGoalUnlimited": "Sınırsız ders erişimi aktif",
   "dailyGoalProgress": "{{current}} / {{target}} ders tamamlandı",
-
   "novaGreeting": "Bugün harika bir gün olacak! 🌟",
-
   "worldMap": {
     "title": "Dünya Haritası",
     "locked": "Kilitli",
@@ -60,9 +52,8 @@
     "conversationCta": "Öğrendiklerini pratik yap!",
     "premiumMessage": "Bu dünyayı açmak için NovaLingo Plus gerekiyor.",
     "limitTitle": "Günlük Limit Doldu",
-    "limitMessage": "Bugünkü 3 ücretsiz ders hakkınız doldu. Yarın tekrar deneyin veya Plus'a geçin."
+    "limitMessage": "Bugünkü 3 ücretsiz ders hakkınız doldu (tekrar oynanan dersler de sayılır). Yarın yenilenir veya Plus'a geçebilirsiniz."
   },
-
   "worlds": {
     "alphabet": "Alfabe Adası",
     "alphabetDesc": "Harfleri ve sesleri öğren",

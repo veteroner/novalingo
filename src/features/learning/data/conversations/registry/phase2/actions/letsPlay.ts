@@ -6,8 +6,10 @@ export const letsPlayScenario: ConversationScenario = {
   phase: 'phase2',
   title: "Let's Play!",
   titleTr: 'Hadi Oynayalim!',
-  summary: "Nova wants to play with you. Practice 'Let's ___!', 'Do you want to ___?', 'I want to ___'.",
-  summaryTr: "Nova seninle oynamak istiyor. 'Let's ___!', 'Do you want to ___?', 'I want to ___' pratik yap.",
+  summary:
+    "Nova wants to play with you. Practice 'Let's ___!', 'Do you want to ___?', 'I want to ___'.",
+  summaryTr:
+    "Nova seninle oynamak istiyor. 'Let's ___!', 'Do you want to ___?', 'I want to ___' pratik yap.",
   theme: 'actions',
   subTheme: 'suggestions',
   tags: ['actions', 'suggestions', 'core'],
@@ -320,7 +322,8 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes, yes, YES! I always want to play with you! You are my best talking buddy!',
-      textTr: 'Evet, evet, EVET! Seninle her zaman oynamak istiyorum! Sen benim en iyi konusma arkadasimsin!',
+      textTr:
+        'Evet, evet, EVET! Seninle her zaman oynamak istiyorum! Sen benim en iyi konusma arkadasimsin!',
       emoji: '\u{1F973}',
     },
   ],

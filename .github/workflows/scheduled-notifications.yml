@@ -1,0 +1,73 @@
+name: Scheduled Notifications
+
+# Firebase Cloud Scheduler (Blaze planı) yerine GitHub Actions cron.
+# FCM gönderimi Spark planında ücretsizdir; ücretli olan Cloud Functions/Scheduler'dır.
+# Mantık: .github/scripts/send-scheduled-notifications.mjs
+# Kurulum: docs/PUSH_SETUP.md
+
+on:
+  schedule:
+    # 09:00 TR (UTC+3) — tekrar zamanı gelen kelimeler
+    - cron: '0 6 * * *'
+    # 19:00 TR — seri tehlikede uyarısı
+    - cron: '0 16 * * *'
+    # Pazar 10:00 TR — haftalık ebeveyn raporu
+    - cron: '0 7 * * 0'
+
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Çalıştırılacak iş'
+        required: true
+        default: 'srs'
+        type: choice
+        options:
+          - srs
+          - streak
+          - weekly
+      dry_run:
+        description: 'Gerçekten gönderme, sadece logla'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  notify:
+    name: Send scheduled notifications
+    runs-on: ubuntu-latest
+    # Secret, GitHub'da "FIREBASE_SERVICE_ACCOUNT" adlı bir Environment'ın içinde
+    # tanımlı (repository secret değil). Environment secret'ları yalnızca bu
+    # ortamı adıyla belirten job'lara açılır.
+    environment: FIREBASE_SERVICE_ACCOUNT
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install firebase-admin
+        run: npm install --no-save --no-audit --no-fund firebase-admin@13
+
+      - name: Resolve job from schedule
+        id: resolve
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "job=${{ inputs.job }}" >> "$GITHUB_OUTPUT"
+            echo "dry_run=${{ inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+          else
+            case "${{ github.event.schedule }}" in
+              "0 6 * * *")  echo "job=srs"    >> "$GITHUB_OUTPUT" ;;
+              "0 16 * * *") echo "job=streak" >> "$GITHUB_OUTPUT" ;;
+              "0 7 * * 0")  echo "job=weekly" >> "$GITHUB_OUTPUT" ;;
+              *)            echo "job=srs"    >> "$GITHUB_OUTPUT" ;;
+            esac
+            echo "dry_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send notifications
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          JOB: ${{ steps.resolve.outputs.job }}
+          DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
+        run: node .github/scripts/send-scheduled-notifications.mjs

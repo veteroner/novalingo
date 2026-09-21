@@ -1,0 +1,18 @@
+{
+  // Firestore güvenlik kuralları testleri (emülatör gerektirir, `pnpm test:rules`).
+  // Ayrı bir proje: uygulama derlemesine (tsc -b) dahil değildir, ama ESLint'in
+  // tip-farkındalıklı kuralları bu dosyaları da denetler.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["tests", "vitest.rules.config.ts"]
+}

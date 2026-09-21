@@ -5,6 +5,7 @@
  * Blaze planı gerektirmez.
  */
 
+import { FREE_TIER } from '@/config/constants';
 import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectibleCatalog';
 import type { AgeGroup } from '@/types/user';
 import * as Sentry from '@sentry/react';
@@ -114,6 +115,10 @@ interface StoredChildProfile {
   novaHappiness?: number;
   novaOutfitId?: string | null;
   onboardingCompleted?: boolean;
+  /** Günlük ders sayacının ait olduğu TR tarihi (YYYY-MM-DD). */
+  dailyLessonDate?: string;
+  /** O tarihte tamamlanan ders sayısı — ücretsiz katman limiti için. */
+  dailyLessonCount?: number;
 }
 
 interface StoredReward {
@@ -141,6 +146,12 @@ interface StoredUserSettings {
   parentPinSalt?: string;
   parentPin?: string;
 }
+
+/**
+ * Ücretsiz katman günlük ders limiti aşıldığında fırlatılan hata kodu.
+ * UI bu kodu yakalayıp paywall'a yönlendirir.
+ */
+export const DAILY_LESSON_LIMIT_ERROR = 'DAILY_LESSON_LIMIT_REACHED';
 
 interface StoredUserProfile {
   isPremium?: boolean;
@@ -469,11 +480,22 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
         Boolean(evidence),
     );
 
+  const userRef = doc(db, 'users', uid);
+
   return runTransaction(db, async (tx) => {
-    const snap = await tx.get(childRef);
+    const [snap, userSnap] = await Promise.all([tx.get(childRef), tx.get(userRef)]);
     if (!snap.exists()) throw new Error('Child not found');
     const child = snap.data() as StoredChildProfile;
     if (child.parentUid !== uid) throw new Error('Not authorized');
+
+    // Ücretsiz katman günlük ders limiti — aynı kural firestore.rules içinde de zorlanır.
+    const isPremium = Boolean((userSnap.data() as StoredUserProfile | undefined)?.isPremium);
+    const today = getTodayTR();
+    const dailyLessonCount =
+      child.dailyLessonDate === today ? (child.dailyLessonCount ?? 0) + 1 : 1;
+    if (!isPremium && dailyLessonCount > FREE_TIER.DAILY_LESSONS) {
+      throw new Error(DAILY_LESSON_LIMIT_ERROR);
+    }
 
     const xp = calculateLessonXP(activities, totalTimeMs, child.currentStreak ?? 0);
     const streak = updateStreak(
@@ -497,8 +519,10 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
       stars: (child.stars ?? 0) + xp.starsEarned,
       currentStreak: streak.newStreak,
       longestStreak: streak.newLongest,
-      lastActivityDate: getTodayTR(),
+      lastActivityDate: today,
       completedLessons: (child.completedLessons ?? 0) + 1,
+      dailyLessonDate: today,
+      dailyLessonCount,
       totalPlayTimeMinutes: (child.totalPlayTimeMinutes ?? 0) + Math.round(totalTimeMs / 60000),
       weeklyXP: (child.weeklyXP ?? 0) + xp.totalXP,
       novaStage,
@@ -579,7 +603,8 @@ export function submitLessonResult(data: SubmitLessonResultReq): Promise<SubmitL
       entryRef,
       {
         childId,
-        name: child.name ?? '',
+        // Çocuk adı BİLEREK yazılmaz: bu koleksiyonu diğer ebeveynler de okur
+        // (Play Families / COPPA). Kendi satırında ad yerel profilden gelir.
         avatarId: child.avatarId ?? 'nova_default',
         level: newLevel,
         weeklyXP: (child.weeklyXP ?? 0) + xp.totalXP,
@@ -864,7 +889,11 @@ export interface GetLeaderboardReq {
 
 export interface GetLeaderboardRes {
   entries: Array<{
-    displayName: string;
+    childId: string;
+    /** Bu satır oturumdaki çocuğa mı ait? */
+    isCurrentChild: boolean;
+    /** Anonim etiket numarası — childId'den türetilir, kimlik taşımaz. */
+    anonNumber: number;
     avatarId: string;
     level: number;
     weeklyXP: number;
@@ -873,6 +902,15 @@ export interface GetLeaderboardRes {
   myRank: number;
   promotionLine: number;
   relegationLine: number;
+}
+
+/** childId'den kararlı, kimlik taşımayan 4 haneli etiket numarası üretir. */
+function anonNumberFromId(id: string): number {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) % 9000;
+  }
+  return 1000 + hash;
 }
 
 export async function getLeaderboard(data: GetLeaderboardReq): Promise<GetLeaderboardRes> {
@@ -890,7 +928,9 @@ export async function getLeaderboard(data: GetLeaderboardReq): Promise<GetLeader
   const entries = snap.docs.map((d, i) => {
     const e = d.data() as StoredLeaderboardEntry;
     return {
-      displayName: e.name ?? 'NovaLearner',
+      childId: d.id,
+      isCurrentChild: d.id === data.childId,
+      anonNumber: anonNumberFromId(d.id),
       avatarId: e.avatarId ?? 'nova_default',
       level: e.level ?? 1,
       weeklyXP: e.weeklyXP ?? 0,
@@ -898,7 +938,8 @@ export async function getLeaderboard(data: GetLeaderboardReq): Promise<GetLeader
     };
   });
 
-  const myRank = entries.findIndex((e) => e.displayName !== '') + 1 || entries.length + 1;
+  const myIndex = entries.findIndex((e) => e.isCurrentChild);
+  const myRank = myIndex >= 0 ? myIndex + 1 : entries.length + 1;
   return { entries, myRank, promotionLine: 3, relegationLine: Math.max(entries.length - 2, 4) };
 }
 
@@ -1307,7 +1348,8 @@ export function submitConversationResult(
       entryRef,
       {
         childId,
-        name: child.name ?? '',
+        // Çocuk adı BİLEREK yazılmaz: bu koleksiyonu diğer ebeveynler de okur
+        // (Play Families / COPPA). Kendi satırında ad yerel profilden gelir.
         avatarId: child.avatarId ?? 'nova_default',
         level: newLevel,
         weeklyXP: (child.weeklyXP ?? 0) + xpEarned,

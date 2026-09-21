@@ -57,9 +57,8 @@ const NOVA_STAGE_THRESHOLDS = [
 function calculateLevelRewards(level: number): { stars: number; gems: number } {
   return {
     stars: level * LEVEL_REWARD_STARS_PER_LEVEL,
-    gems: level % LEVEL_REWARD_GEMS_MILESTONE_INTERVAL === 0
-      ? level * LEVEL_REWARD_GEMS_MULTIPLIER
-      : 0,
+    gems:
+      level % LEVEL_REWARD_GEMS_MILESTONE_INTERVAL === 0 ? level * LEVEL_REWARD_GEMS_MULTIPLIER : 0,
   };
 }
 

@@ -123,6 +123,19 @@ Use the same promise structure as App Store copy:
 - Social features for children: No
 - Parent-facing upgrade path only
 
+## Copy Risks To Resolve Before Submission
+
+1. **Speech claims vs. iOS reality.** Speech recognition uses the Web Speech API, which does
+   not exist in iOS WKWebView; activities fall back to tap/manual input there. Either ship a
+   native/cloud STT path or soften the speaking claims ("speaking practice with Nova" instead
+   of "checks your pronunciation") until it is proven on device.
+2. ~~**Leaderboard vs. "no social features".**~~ Resolved (September 2026): the leaderboard is
+   pseudonymous. Children's names are no longer written to or read from
+   `leaderboards/*/entries/*`; other children appear as "Explorer 4821". The
+   "no child-to-child social features" declaration is therefore accurate.
+3. **Trial wording.** The in-app paywall now only mentions a free trial when the store actually
+   has an introductory offer configured. Store copy must follow the same rule.
+
 ## Launch Checklist
 
 - Internal testing sandbox purchases completed on iOS and Android
