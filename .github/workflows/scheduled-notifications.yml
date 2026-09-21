@@ -46,8 +46,16 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install firebase-admin
-        run: npm install --no-save --no-audit --no-fund firebase-admin@13
+      # firebase-admin repo kökünden BAĞIMSIZ bir klasöre kurulur: kökteki
+      # package.json'daki uygulama bağımlılıkları (ör. @capacitor-firebase/authentication
+      # → isteğe bağlı firebase@12) npm'in eş-bağımlılık çözümlemesini bozuyor.
+      - name: Install firebase-admin (isolated)
+        run: |
+          mkdir -p "$RUNNER_TEMP/notify"
+          cp .github/scripts/send-scheduled-notifications.mjs "$RUNNER_TEMP/notify/"
+          cd "$RUNNER_TEMP/notify"
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund firebase-admin@13
 
       - name: Resolve job from schedule
         id: resolve
@@ -70,4 +78,4 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           JOB: ${{ steps.resolve.outputs.job }}
           DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
-        run: node .github/scripts/send-scheduled-notifications.mjs
+        run: node "$RUNNER_TEMP/notify/send-scheduled-notifications.mjs"
