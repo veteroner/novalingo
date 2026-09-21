@@ -35,7 +35,9 @@ export const lunchAtSchoolScenario: ConversationScenario = {
     preferredIfTagsSeen: ['school', 'food'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -110,14 +112,15 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Oh, I forgot my lunch today! I am so hungry! Tell me: I am hungry.',
-      textTr: 'Oh, bug\u00fcn \u00f6\u011fle yeme\u011fimi unuttum! \u00c7ok a\u00e7\u0131m! S\u00f6yle: I am hungry.',
+      textTr:
+        'Oh, bug\u00fcn \u00f6\u011fle yeme\u011fimi unuttum! \u00c7ok a\u00e7\u0131m! S\u00f6yle: I am hungry.',
       emoji: '\ud83e\udd72',
       goalType: 'answer',
       targetPattern: 'I am hungry',
       hint: {
         delayMs: 7000,
-        text: "Say: I am hungry  OR  Nova is hungry too!",
-        textTr: "S\u00f6yle: I am hungry  Veya  Nova is hungry too!",
+        text: 'Say: I am hungry  OR  Nova is hungry too!',
+        textTr: 'S\u00f6yle: I am hungry  Veya  Nova is hungry too!',
         revealPattern: false,
       },
       repair: {
@@ -131,12 +134,7 @@ export const lunchAtSchoolScenario: ConversationScenario = {
           id: 'r2_hungry',
           expectedText: 'I am hungry.',
           expectedTextTr: 'A\u00e7\u0131m.',
-          acceptedVariants: [
-            'i am hungry',
-            'nova is hungry',
-            'we are hungry',
-            'so hungry',
-          ],
+          acceptedVariants: ['i am hungry', 'nova is hungry', 'we are hungry', 'so hungry'],
           nextNodeId: 'n3',
           emoji: '\ud83e\udd72',
           marksTargetWord: ['hungry'],
@@ -149,7 +147,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'I see your lunchbox! Tell me what is inside: I have a sandwich in my lunchbox.',
-      textTr: 'Beslenme \u00e7andan\u0131 g\u00f6r\u00fcyorum! \u0130\u00e7inde ne oldu\u011funu s\u00f6yle: I have a sandwich in my lunchbox.',
+      textTr:
+        'Beslenme \u00e7andan\u0131 g\u00f6r\u00fcyorum! \u0130\u00e7inde ne oldu\u011funu s\u00f6yle: I have a sandwich in my lunchbox.',
       emoji: '\ud83e\udd6a',
       goalType: 'answer',
       targetPattern: 'I have ___ in my lunchbox',
@@ -187,8 +186,9 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       id: 'n4',
       speaker: 'nova',
       role: 'friend',
-      text: "Your sandwich looks so good! Can we share it? Ask me: Do you want to share?",
-      textTr: 'Sandvi\u00e7in \u00e7ok iyi g\u00f6r\u00fcn\u00fcyor! Payla\u015fabilir miyiz? Bana sor: Do you want to share?',
+      text: 'Your sandwich looks so good! Can we share it? Ask me: Do you want to share?',
+      textTr:
+        'Sandvi\u00e7in \u00e7ok iyi g\u00f6r\u00fcn\u00fcyor! Payla\u015fabilir miyiz? Bana sor: Do you want to share?',
       emoji: '\ud83e\udd1d',
       goalType: 'answer',
       targetPattern: 'Do you want to share?',
@@ -228,7 +228,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Wonderful! Look at our full lunchboxes. Describe what you see in them!',
-      textTr: 'M\u00fckemmel! Dolu beslenme \u00e7antalar\u0131m\u0131za bak. \u0130\u00e7lerinde ne g\u00f6rd\u00fc\u011f\u00fcn\u00fc anlat!',
+      textTr:
+        'M\u00fckemmel! Dolu beslenme \u00e7antalar\u0131m\u0131za bak. \u0130\u00e7lerinde ne g\u00f6rd\u00fc\u011f\u00fcn\u00fc anlat!',
       emoji: '\ud83c\udf71',
       goalType: 'describe',
       targetPattern: '',
@@ -249,7 +250,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
         {
           id: 'r5_describe',
           expectedText: 'I see a sandwich, an apple, and a cookie in the lunchboxes.',
-          expectedTextTr: 'Beslenme \u00e7antalar\u0131nda sandvi\u00e7, elma ve kurabiye g\u00f6r\u00fcyorum.',
+          expectedTextTr:
+            'Beslenme \u00e7antalar\u0131nda sandvi\u00e7, elma ve kurabiye g\u00f6r\u00fcyorum.',
           acceptedVariants: [
             'i see a sandwich',
             'sandwich and apple',
@@ -276,7 +278,12 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       emoji: '\ud83d\ude0b',
       goalType: 'answer',
       targetPattern: 'It is delicious!',
-      hint: { delayMs: 6000, text: 'Say: It is delicious!', textTr: 'S\u00f6yle: It is delicious!', revealPattern: true },
+      hint: {
+        delayMs: 6000,
+        text: 'Say: It is delicious!',
+        textTr: 'S\u00f6yle: It is delicious!',
+        revealPattern: true,
+      },
       repair: {
         enabled: true,
         prompt: 'Say: It is delicious!  OR  It is very tasty!',
@@ -308,7 +315,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'I have a cookie to share with you! Say: Thank you for sharing your lunch!',
-      textTr: 'Seninle payla\u015facak bir kurabiyem var! S\u00f6yle: Thank you for sharing your lunch!',
+      textTr:
+        'Seninle payla\u015facak bir kurabiyem var! S\u00f6yle: Thank you for sharing your lunch!',
       emoji: '\ud83c\udf6a',
       goalType: 'answer',
       targetPattern: 'Thank you for sharing',
@@ -328,7 +336,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
         {
           id: 'r7_thanks',
           expectedText: 'Thank you for sharing your lunch!',
-          expectedTextTr: 'Yeme\u011fini payla\u015ft\u0131\u011f\u0131n i\u00e7in te\u015fekk\u00fcrler!',
+          expectedTextTr:
+            'Yeme\u011fini payla\u015ft\u0131\u011f\u0131n i\u00e7in te\u015fekk\u00fcrler!',
           acceptedVariants: [
             'thank you for sharing your lunch',
             'thank you for sharing',
@@ -347,7 +356,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Lunch at school is so much fun! Say: I love lunch at school!',
-      textTr: 'Okulda \u00f6\u011fle yeme\u011fi \u00e7ok e\u011flenceli! S\u00f6yle: I love lunch at school!',
+      textTr:
+        'Okulda \u00f6\u011fle yeme\u011fi \u00e7ok e\u011flenceli! S\u00f6yle: I love lunch at school!',
       emoji: '\ud83c\udf1f',
       goalType: 'answer',
       targetPattern: 'I love lunch at school',
@@ -401,7 +411,8 @@ export const lunchAtSchoolScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Tell me about your lunch: lunchbox, sandwich, share, delicious...',
-        promptTr: 'Yeme\u011fin hakk\u0131nda anlat: beslenme \u00e7antas\u0131, sandvi\u00e7, payla\u015f, lezzetli...',
+        promptTr:
+          'Yeme\u011fin hakk\u0131nda anlat: beslenme \u00e7antas\u0131, sandvi\u00e7, payla\u015f, lezzetli...',
         maxRetries: 2,
       },
       responses: [

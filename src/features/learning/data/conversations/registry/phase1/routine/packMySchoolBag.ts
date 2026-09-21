@@ -43,7 +43,7 @@ export const packMySchoolBagScenario: ConversationScenario = {
       id: 'n1',
       speaker: 'nova',
       role: 'guide',
-      text: 'Let\'s pack my school bag! What should we put in first?',
+      text: "Let's pack my school bag! What should we put in first?",
       textTr: 'Hadi okul cantami hazirlayelim! Once ne koyalim?',
       goalType: 'answer',
       targetPattern: 'Put in...',

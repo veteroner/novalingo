@@ -40,7 +40,9 @@ export const atTheLibraryScenario: ConversationScenario = {
     preferredIfTagsSeen: ['city', 'books'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -181,8 +183,7 @@ export const atTheLibraryScenario: ConversationScenario = {
       hint: {
         delayMs: 8000,
         text: 'Say: My book is on the shelf  OR  The books are on the shelf',
-        textTr:
-          'S\u00f6yle: My book is on the shelf  Veya  The books are on the shelf',
+        textTr: 'S\u00f6yle: My book is on the shelf  Veya  The books are on the shelf',
         revealPattern: false,
       },
       repair: {
@@ -441,8 +442,7 @@ export const atTheLibraryScenario: ConversationScenario = {
       hint: {
         delayMs: 9000,
         text: 'Try: I went to the library. I borrowed a book from the shelf. I was quiet.',
-        textTr:
-          'Dene: I went to the library. I borrowed a book from the shelf. I was quiet.',
+        textTr: 'Dene: I went to the library. I borrowed a book from the shelf. I was quiet.',
         revealPattern: false,
       },
       repair: {

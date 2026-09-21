@@ -35,7 +35,9 @@ export const joinTheTeamScenario: ConversationScenario = {
     preferredIfTagsSeen: ['sports', 'team'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -102,7 +104,8 @@ export const joinTheTeamScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'Welcome to the tryout! The team needs strong players. Say: I am strong!',
-      textTr: 'Se\u00e7melere ho\u015f geldin! Tak\u0131m\u0131n g\u00fc\u00e7l\u00fc oyunculara ihtiyac\u0131 var. S\u00f6yle: I am strong!',
+      textTr:
+        'Se\u00e7melere ho\u015f geldin! Tak\u0131m\u0131n g\u00fc\u00e7l\u00fc oyunculara ihtiyac\u0131 var. S\u00f6yle: I am strong!',
       emoji: '\ud83d\udcaa',
       goalType: 'answer',
       targetPattern: 'I am strong',
@@ -136,7 +139,8 @@ export const joinTheTeamScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'Great! The team also needs fast players! Say: I can run very fast!',
-      textTr: 'Harika! Tak\u0131m\u0131n h\u0131zl\u0131 oyunculara da ihtiyac\u0131 var! S\u00f6yle: I can run very fast!',
+      textTr:
+        'Harika! Tak\u0131m\u0131n h\u0131zl\u0131 oyunculara da ihtiyac\u0131 var! S\u00f6yle: I can run very fast!',
       emoji: '\ud83d\udca8',
       goalType: 'answer',
       targetPattern: 'I can ___ very well',
@@ -157,12 +161,7 @@ export const joinTheTeamScenario: ConversationScenario = {
           id: 'r3_fast',
           expectedText: 'I can run very fast!',
           expectedTextTr: 'Çok h\u0131zl\u0131 ko\u015fabilirim!',
-          acceptedVariants: [
-            'i can run very fast',
-            'i am fast',
-            'i run fast',
-            'very fast',
-          ],
+          acceptedVariants: ['i can run very fast', 'i am fast', 'i run fast', 'very fast'],
           nextNodeId: 'n4',
           emoji: '\ud83d\udca8',
           marksTargetWord: ['fast'],
@@ -250,7 +249,8 @@ export const joinTheTeamScenario: ConversationScenario = {
         {
           id: 'r5_describe',
           expectedText: 'I see a big team on a green field. The players are fast and strong!',
-          expectedTextTr: 'Ye\u015fil bir sahada b\u00fcy\u00fck bir tak\u0131m g\u00f6r\u00fcyorum. Oyuncular h\u0131zl\u0131 ve g\u00fc\u00e7l\u00fc!',
+          expectedTextTr:
+            'Ye\u015fil bir sahada b\u00fcy\u00fck bir tak\u0131m g\u00f6r\u00fcyorum. Oyuncular h\u0131zl\u0131 ve g\u00fc\u00e7l\u00fc!',
           acceptedVariants: [
             'i see the team',
             'the team is on the field',
@@ -350,7 +350,8 @@ export const joinTheTeamScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'teammate',
       text: 'The whole team practices every day! Say: The team practices every day!',
-      textTr: 'T\u00fcm tak\u0131m her g\u00fcn pratik yap\u0131yor! S\u00f6yle: The team practices every day!',
+      textTr:
+        'T\u00fcm tak\u0131m her g\u00fcn pratik yap\u0131yor! S\u00f6yle: The team practices every day!',
       emoji: '\ud83d\udcaa',
       goalType: 'answer',
       targetPattern: 'The team practices',
@@ -396,15 +397,16 @@ export const joinTheTeamScenario: ConversationScenario = {
       targetPattern: '',
       hint: {
         delayMs: 9000,
-        text: "Try: I joined the team! I am fast and strong. I want to be the captain. My position is striker. We practice together every day!",
+        text: 'Try: I joined the team! I am fast and strong. I want to be the captain. My position is striker. We practice together every day!',
         textTr:
-          "Dene: I joined the team! I am fast and strong. I want to be the captain. My position is striker. We practice together every day!",
+          'Dene: I joined the team! I am fast and strong. I want to be the captain. My position is striker. We practice together every day!',
         revealPattern: false,
       },
       repair: {
         enabled: true,
         prompt: 'Tell me about the team: fast, strong, position, captain, practice...',
-        promptTr: 'Tak\u0131m hakk\u0131nda anlat: h\u0131zl\u0131, g\u00fc\u00e7l\u00fc, pozisyon, kaptan, pratik...',
+        promptTr:
+          'Tak\u0131m hakk\u0131nda anlat: h\u0131zl\u0131, g\u00fc\u00e7l\u00fc, pozisyon, kaptan, pratik...',
         maxRetries: 2,
       },
       responses: [
@@ -435,7 +437,7 @@ export const joinTheTeamScenario: ConversationScenario = {
       role: 'teammate',
       text: "Team legend! You are fast, strong, and ready to be captain. Let's win together! \ud83c\udfc5",
       textTr:
-        "Tak\u0131m efsanesi! H\u0131zl\u0131, g\u00fc\u00e7l\u00fc ve kaptan olmaya haz\u0131rs\u0131n. Birlikte kazanal\u0131m! \ud83c\udfc5",
+        'Tak\u0131m efsanesi! H\u0131zl\u0131, g\u00fc\u00e7l\u00fc ve kaptan olmaya haz\u0131rs\u0131n. Birlikte kazanal\u0131m! \ud83c\udfc5',
       emoji: '\ud83c\udfc6',
     },
   ],

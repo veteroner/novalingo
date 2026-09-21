@@ -138,7 +138,7 @@ export const howDoYouFeelScenario: ConversationScenario = {
       id: 'n2_sleepy',
       speaker: 'nova',
       role: 'friend',
-      text: 'Sleepy. Let\'s wake up together!',
+      text: "Sleepy. Let's wake up together!",
       textTr: 'Uykulu. Hadi birlikte uyanalim!',
       next: 'n3',
       emoji: '☀️',

@@ -6,8 +6,10 @@ export const canYouScenario: ConversationScenario = {
   phase: 'phase2',
   title: 'Can You Do It?',
   titleTr: 'Yapabilir misin?',
-  summary: "Nova gives you challenges. Practice 'Can you ___?', 'Yes, I can ___!', 'No, I cannot ___'.",
-  summaryTr: "Nova sana meydan okuyor. 'Can you ___?', 'Yes, I can ___!', 'No, I cannot ___' pratik yap.",
+  summary:
+    "Nova gives you challenges. Practice 'Can you ___?', 'Yes, I can ___!', 'No, I cannot ___'.",
+  summaryTr:
+    "Nova sana meydan okuyor. 'Can you ___?', 'Yes, I can ___!', 'No, I cannot ___' pratik yap.",
   theme: 'helpers',
   subTheme: 'can-modal',
   tags: ['helpers', 'can', 'actions', 'core'],

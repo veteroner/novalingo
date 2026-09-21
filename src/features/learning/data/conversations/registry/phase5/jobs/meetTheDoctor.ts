@@ -35,14 +35,16 @@ export const meetTheDoctorScenario: ConversationScenario = {
     preferredIfTagsSeen: ['jobs', 'health'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
       id: 'n1',
       speaker: 'nova',
       role: 'guide',
-      text: "Nova is at the hospital! The doctor asks: What is wrong? Tell the doctor: I have a headache.",
+      text: 'Nova is at the hospital! The doctor asks: What is wrong? Tell the doctor: I have a headache.',
       textTr: 'Nova hastanede! Doktor soruyor: Ne oldu? Doktora s\u00f6yle: I have a headache.',
       emoji: '\ud83e\ude7a',
       goalType: 'answer',
@@ -56,7 +58,8 @@ export const meetTheDoctorScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: I have a ___ache  (headache, stomachache)',
-        promptTr: 'S\u00f6yle: I have a ___ache  (ba\u015f a\u011fr\u0131s\u0131, kar\u0131n a\u011fr\u0131s\u0131)',
+        promptTr:
+          'S\u00f6yle: I have a ___ache  (ba\u015f a\u011fr\u0131s\u0131, kar\u0131n a\u011fr\u0131s\u0131)',
         maxRetries: 2,
       },
       responses: [
@@ -141,7 +144,8 @@ export const meetTheDoctorScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'You feel hot! Do you have a fever? Tell the doctor: I have a fever.',
-      textTr: '\u00c7ok s\u0131cak\u015f\u0131n! Ate\u015fin var m\u0131? Doktora s\u00f6yle: I have a fever.',
+      textTr:
+        '\u00c7ok s\u0131cak\u015f\u0131n! Ate\u015fin var m\u0131? Doktora s\u00f6yle: I have a fever.',
       emoji: '\ud83c\udf21\ufe0f',
       goalType: 'answer',
       targetPattern: 'I have a ___',
@@ -310,8 +314,7 @@ export const meetTheDoctorScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: The doctor says I should ___  (rest, take medicine, drink water)',
-        promptTr:
-          'S\u00f6yle: The doctor says I should ___  (dinlen, ila\u00e7 al, su i\u00e7)',
+        promptTr: 'S\u00f6yle: The doctor says I should ___  (dinlen, ila\u00e7 al, su i\u00e7)',
         maxRetries: 2,
       },
       responses: [
@@ -319,11 +322,7 @@ export const meetTheDoctorScenario: ConversationScenario = {
           id: 'r7_rest',
           expectedText: 'The doctor says I should rest.',
           expectedTextTr: 'Doktor dinlenmem gerekti\u011fini s\u00f6yl\u00fcyor.',
-          acceptedVariants: [
-            'the doctor says i should rest',
-            'doctor says rest',
-            'i should rest',
-          ],
+          acceptedVariants: ['the doctor says i should rest', 'doctor says rest', 'i should rest'],
           nextNodeId: 'n8',
           emoji: '\ud83d\udecc',
           marksTargetWord: ['rest'],
@@ -404,13 +403,15 @@ export const meetTheDoctorScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Tell me what happened: doctor, headache, fever, medicine, rest...',
-        promptTr: 'Ne oldu\u011funu s\u00f6yle: doktor, ba\u015f a\u011fr\u0131s\u0131, ate\u015f, ila\u00e7, dinlenme...',
+        promptTr:
+          'Ne oldu\u011funu s\u00f6yle: doktor, ba\u015f a\u011fr\u0131s\u0131, ate\u015f, ila\u00e7, dinlenme...',
         maxRetries: 2,
       },
       responses: [
         {
           id: 'r9_summary',
-          expectedText: 'I went to the doctor. I have a headache and fever. I need medicine and rest.',
+          expectedText:
+            'I went to the doctor. I have a headache and fever. I need medicine and rest.',
           expectedTextTr:
             'Doktora gittim. Ba\u015f a\u011fr\u0131m ve ate\u015fim var. \u0130la\u00e7 ve dinlenmeye ihtiyac\u0131m var.',
           acceptedVariants: [

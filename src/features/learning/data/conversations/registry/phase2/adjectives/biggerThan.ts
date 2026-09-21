@@ -6,8 +6,10 @@ export const biggerThanScenario: ConversationScenario = {
   phase: 'phase2',
   title: 'Bigger Than!',
   titleTr: 'Daha Buyuk!',
-  summary: "Nova and her friend compare things. Practice 'It is bigger / smaller / faster than ___.'",
-  summaryTr: "Nova ve arkadasi esyalari karsilastiriyor. 'It is bigger / smaller / faster than ___.' pratik yap.",
+  summary:
+    "Nova and her friend compare things. Practice 'It is bigger / smaller / faster than ___.'",
+  summaryTr:
+    "Nova ve arkadasi esyalari karsilastiriyor. 'It is bigger / smaller / faster than ___.' pratik yap.",
   theme: 'adjectives',
   subTheme: 'comparisons',
   tags: ['adjectives', 'compare', 'core'],
@@ -44,7 +46,8 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Look! An elephant and a mouse. Which is bigger? Say: The elephant is bigger than the mouse!',
-      textTr: 'Bak! Bir fil ve bir fare. Hangisi daha buyuk? Soyle: The elephant is bigger than the mouse!',
+      textTr:
+        'Bak! Bir fil ve bir fare. Hangisi daha buyuk? Soyle: The elephant is bigger than the mouse!',
       emoji: '\u{1F418}',
       goalType: 'answer',
       targetPattern: 'It is ___ than ___',
@@ -251,7 +254,8 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Amazing! You know bigger, smaller, faster, slower and taller. You are a comparison champion!',
-      textTr: 'Inanilmaz! Bigger, smaller, faster, slower ve taller biliyorsun. Karsilastirma sampiyonusun!',
+      textTr:
+        'Inanilmaz! Bigger, smaller, faster, slower ve taller biliyorsun. Karsilastirma sampiyonusun!',
       emoji: '\u{1F3C6}',
     },
   ],

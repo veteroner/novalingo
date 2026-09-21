@@ -7,7 +7,8 @@ export const toyShopChoiceScenario: ConversationScenario = {
   title: 'Toy Shop Choice',
   titleTr: 'Oyuncak Dukkanindan Secim',
   summary: 'Nova helps the child choose a toy and say why it is fun.',
-  summaryTr: 'Nova cocugun bir oyuncak secmesine ve neden eglenceli oldugunu soylemesine yardim eder.',
+  summaryTr:
+    'Nova cocugun bir oyuncak secmesine ve neden eglenceli oldugunu soylemesine yardim eder.',
   theme: 'toys',
   subTheme: 'toy_shop',
   tags: ['toys', 'choose', 'react'],

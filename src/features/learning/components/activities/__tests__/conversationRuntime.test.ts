@@ -23,7 +23,8 @@ describe('matchConversationResponse', () => {
       options,
       targetWords: ['dog', 'cat'],
       acceptThreshold: 0.65,
-      pronunciationScorer: (input, expected) => (input === expected.toLowerCase().replace('!', '') ? 0.9 : 0.1),
+      pronunciationScorer: (input, expected) =>
+        input === expected.toLowerCase().replace('!', '') ? 0.9 : 0.1,
     });
 
     expect(result.matchType).toBe('pronunciation');

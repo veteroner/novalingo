@@ -6,8 +6,10 @@ export const whatDoYouDoScenario: ConversationScenario = {
   phase: 'phase2',
   title: 'My Day',
   titleTr: 'Benim Gunum',
-  summary: "Nova asks about your day. Practice 'What do you do?', 'I ___ every day', 'First..., then...'.",
-  summaryTr: "Nova gunun nasil gectigini soruyor. Practice: 'I ___ every day', 'First..., then...'.",
+  summary:
+    "Nova asks about your day. Practice 'What do you do?', 'I ___ every day', 'First..., then...'.",
+  summaryTr:
+    "Nova gunun nasil gectigini soruyor. Practice: 'I ___ every day', 'First..., then...'.",
   theme: 'actions',
   subTheme: 'daily-routine',
   tags: ['actions', 'daily-routine', 'sequence', 'core'],
@@ -162,7 +164,8 @@ export const whatDoYouDoScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Great question! I teach English every day. First, I say hello. Then, I teach new words!',
-      textTr: 'Harika soru! Ben her gun Ingilizce ogretiyorum. Once merhaba derim. Sonra yeni kelimeler.',
+      textTr:
+        'Harika soru! Ben her gun Ingilizce ogretiyorum. Once merhaba derim. Sonra yeni kelimeler.',
       emoji: '\u{1F4DA}',
       next: 'n7',
     },

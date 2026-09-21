@@ -44,7 +44,7 @@ export const letsGoShoppingScenario: ConversationScenario = {
       role: 'shopkeeper',
       text: "Welcome to Nova's City Shop! We have toys, books, and snacks. What do you want to buy?",
       textTr:
-        "Nova\u2019n\u0131n \u015eehir Ma\u011fazas\u0131\u2019na ho\u015f geldiniz! Oyuncaklar, kitaplar ve at\u0131\u015ft\u0131rmal\u0131klar var. Ne sat\u0131n almak istiyorsun?",
+        'Nova\u2019n\u0131n \u015eehir Ma\u011fazas\u0131\u2019na ho\u015f geldiniz! Oyuncaklar, kitaplar ve at\u0131\u015ft\u0131rmal\u0131klar var. Ne sat\u0131n almak istiyorsun?',
       emoji: '🏪',
       goalType: 'answer',
       targetPattern: 'I want to buy a ___',
@@ -180,7 +180,8 @@ export const letsGoShoppingScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'We also sell hats and shoes here. Do you want to buy something else?',
-      textTr: 'Ayr\u0131ca \u015fapka ve ayakkab\u0131 da sat\u0131yoruz. Baka bir \u015fey almak istiyor musun?',
+      textTr:
+        'Ayr\u0131ca \u015fapka ve ayakkab\u0131 da sat\u0131yoruz. Baka bir \u015fey almak istiyor musun?',
       emoji: '👒',
       goalType: 'answer',
       targetPattern: 'I want to buy a ___',
@@ -279,7 +280,8 @@ export const letsGoShoppingScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'You need money to pay. How much money do you have with you today?',
-      textTr: '\u00d6demek i\u00e7in paraya ihtiyac\u0131n var. Bug\u00fcn yan\u0131nda ne kadar paran var?',
+      textTr:
+        '\u00d6demek i\u00e7in paraya ihtiyac\u0131n var. Bug\u00fcn yan\u0131nda ne kadar paran var?',
       emoji: '💵',
       goalType: 'describe',
       hint: {
@@ -321,7 +323,8 @@ export const letsGoShoppingScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Perfect! Now let me sell you the hat. Do you want to buy it or sell it?',
-      textTr: 'M\u00fckemmel! \u015eimdi sana \u015fapkay\u0131 satay\u0131m. Sat\u0131n m\u0131 almak yoksa satmak m\u0131 istiyorsun?',
+      textTr:
+        'M\u00fckemmel! \u015eimdi sana \u015fapkay\u0131 satay\u0131m. Sat\u0131n m\u0131 almak yoksa satmak m\u0131 istiyorsun?',
       emoji: '🤝',
       goalType: 'answer',
       hint: {
@@ -392,7 +395,12 @@ export const letsGoShoppingScenario: ConversationScenario = {
           id: 'r8_expensive',
           expectedText: 'The price was expensive!',
           expectedTextTr: 'Fiyat pahal\u0131yd\u0131!',
-          acceptedVariants: ['expensive', 'it was expensive', 'price was expensive', 'too expensive'],
+          acceptedVariants: [
+            'expensive',
+            'it was expensive',
+            'price was expensive',
+            'too expensive',
+          ],
           acceptedWords: ['expensive'],
           nextNodeId: 'n9',
           emoji: '😮',
@@ -405,7 +413,8 @@ export const letsGoShoppingScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'You are a great shopper! Name one thing you like to buy at a store.',
-      textTr: 'Harika bir al\u0131\u015fveri\u015f\u00e7isin! Bir ma\u011fazadan almay\u0131 sevdi\u011fin bir \u015feyi s\u00f6yle.',
+      textTr:
+        'Harika bir al\u0131\u015fveri\u015f\u00e7isin! Bir ma\u011fazadan almay\u0131 sevdi\u011fin bir \u015feyi s\u00f6yle.',
       emoji: '🛒',
       goalType: 'describe',
       hint: {

@@ -36,7 +36,9 @@ export const orderAtTheCafeScenario: ConversationScenario = {
     preferredIfTagsSeen: ['city', 'food'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Varsay\u0131lan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -44,7 +46,8 @@ export const orderAtTheCafeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Welcome to the caf\u00e9! Order a drink politely: Can I have a juice, please?',
-      textTr: 'Kafeye ho\u015f geldin! Kibarca bir i\u00e7ecek sipari\u015f et: Can I have a juice, please?',
+      textTr:
+        'Kafeye ho\u015f geldin! Kibarca bir i\u00e7ecek sipari\u015f et: Can I have a juice, please?',
       emoji: '\ud83e\uddc3',
       goalType: 'answer',
       targetPattern: 'Can I have a ___, please?',
@@ -152,7 +155,8 @@ export const orderAtTheCafeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Look at the menu! What do you see on the menu? Tell me: I see sandwiches and cakes on the menu.',
-      textTr: 'Men\u00fcye bak! Men\u00fcde ne g\u00f6r\u00fcyorsun? S\u00f6yle: I see sandwiches and cakes on the menu.',
+      textTr:
+        'Men\u00fcye bak! Men\u00fcde ne g\u00f6r\u00fcyorsun? S\u00f6yle: I see sandwiches and cakes on the menu.',
       emoji: '\ud83d\udccb',
       goalType: 'answer',
       targetPattern: 'I see ___ on the menu',
@@ -252,7 +256,8 @@ export const orderAtTheCafeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'It is three euros. Describe the caf\u00e9 for me! What do you see here?',
-      textTr: '\u00dc\u00e7 euro. Kafey\u00ec benim i\u00e7in anlat! Burada ne g\u00f6r\u00fcyorsun?',
+      textTr:
+        '\u00dc\u00e7 euro. Kafey\u00ec benim i\u00e7in anlat! Burada ne g\u00f6r\u00fcyorsun?',
       emoji: '\u2615',
       goalType: 'describe',
       targetPattern: '',
@@ -334,7 +339,8 @@ export const orderAtTheCafeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Order one more thing! Remember to say please: Can I have a cake, please?',
-      textTr: 'Bir \u015fey daha sipari\u015f et! L\u00fctfen demeyi unutma: Can I have a cake, please?',
+      textTr:
+        'Bir \u015fey daha sipari\u015f et! L\u00fctfen demeyi unutma: Can I have a cake, please?',
       emoji: '\ud83c\udf70',
       goalType: 'answer',
       targetPattern: 'Can I have a ___, please?',
@@ -373,7 +379,8 @@ export const orderAtTheCafeScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'shopkeeper',
       text: 'Let me take your order! Say: I want to order a juice and a sandwich.',
-      textTr: 'Sipari\u015finizi al\u0131yorum! S\u00f6yle: I want to order a juice and a sandwich.',
+      textTr:
+        'Sipari\u015finizi al\u0131yorum! S\u00f6yle: I want to order a juice and a sandwich.',
       emoji: '\ud83d\udcdd',
       goalType: 'answer',
       targetPattern: 'I want to order a ___',
@@ -427,7 +434,8 @@ export const orderAtTheCafeScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Tell me what you ordered: menu, juice, sandwich, cake, please...',
-        promptTr: 'Ne sipari\u015f etti\u011fini s\u00f6yle: men\u00fc, meyve suyu, sandvi\u00e7, kek, l\u00fctfen...',
+        promptTr:
+          'Ne sipari\u015f etti\u011fini s\u00f6yle: men\u00fc, meyve suyu, sandvi\u00e7, kek, l\u00fctfen...',
         maxRetries: 2,
       },
       responses: [

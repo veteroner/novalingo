@@ -7,7 +7,8 @@ export const whoIsThisScenario: ConversationScenario = {
   title: 'Who Is This?',
   titleTr: 'Bu Kim?',
   summary: 'Nova shows family photos. Practice "Who is this?" and "This is my ___."',
-  summaryTr: "Nova aile fotograflari gosteriyor. 'Who is this?' ve 'This is my ___.' kaliplarini pratik yap.",
+  summaryTr:
+    "Nova aile fotograflari gosteriyor. 'Who is this?' ve 'This is my ___.' kaliplarini pratik yap.",
   theme: 'family',
   subTheme: 'family members',
   tags: ['family', 'questions', 'identity'],

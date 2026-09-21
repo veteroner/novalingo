@@ -36,7 +36,9 @@ export const canIBorrowScenario: ConversationScenario = {
     preferredIfTagsSeen: ['school', 'classroom'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -81,7 +83,8 @@ export const canIBorrowScenario: ConversationScenario = {
         {
           id: 'r1_pen',
           expectedText: 'Can I borrow a pen please?',
-          expectedTextTr: 'L\u00fctfen bir t\u00fckenmez kalem \u00f6d\u00fcn\u00e7 alabilir miyim?',
+          expectedTextTr:
+            'L\u00fctfen bir t\u00fckenmez kalem \u00f6d\u00fcn\u00e7 alabilir miyim?',
           acceptedVariants: ['can i borrow a pen', 'borrow a pen', 'pen please', 'borrow pen'],
           acceptedWords: ['borrow', 'pen'],
           nextNodeId: 'n2',
@@ -107,7 +110,8 @@ export const canIBorrowScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Now respond like a kind classmate \u2014 say: Of course! Here you go!',
-      textTr: '\u015eimdi nazik bir s\u0131n\u0131f arkada\u015f\u0131 gibi cevapla \u2014 s\u00f6yle: Of course! Here you go!',
+      textTr:
+        '\u015eimdi nazik bir s\u0131n\u0131f arkada\u015f\u0131 gibi cevapla \u2014 s\u00f6yle: Of course! Here you go!',
       emoji: '\u{1F91D}',
       goalType: 'answer',
       targetPattern: 'Of course! Here you go.',
@@ -157,7 +161,8 @@ export const canIBorrowScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Now thank your classmate! Say: Thank you so much!',
-      textTr: '\u015eimdi s\u0131n\u0131f arkada\u015f\u0131na te\u015fekk\u00fcr et! S\u00f6yle: Thank you so much!',
+      textTr:
+        '\u015eimdi s\u0131n\u0131f arkada\u015f\u0131na te\u015fekk\u00fcr et! S\u00f6yle: Thank you so much!',
       emoji: '\u{1F60A}',
       goalType: 'answer',
       targetPattern: 'Thank you so much!',
@@ -197,7 +202,8 @@ export const canIBorrowScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Excellent! Now I need a ruler. How do I ask? Say: Can I borrow a ruler?',
-      textTr: 'M\u00fCkemmel! \u015eimdi bir cetvel laz\u0131m. Nas\u0131l sorar\u0131m? S\u00f6yle: Can I borrow a ruler?',
+      textTr:
+        'M\u00fCkemmel! \u015eimdi bir cetvel laz\u0131m. Nas\u0131l sorar\u0131m? S\u00f6yle: Can I borrow a ruler?',
       emoji: '\u{1F4CF}',
       goalType: 'answer',
       targetPattern: 'Can I borrow a ___?',
@@ -283,7 +289,8 @@ export const canIBorrowScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Do you like to share your school supplies with classmates?',
-      textTr: 'Okul malzemelerini s\u0131n\u0131f arkada\u015flar\u0131nla payla\u015fmay\u0131 sever misin?',
+      textTr:
+        'Okul malzemelerini s\u0131n\u0131f arkada\u015flar\u0131nla payla\u015fmay\u0131 sever misin?',
       emoji: '\u{1F91D}',
       goalType: 'answer',
       hint: {
@@ -301,7 +308,8 @@ export const canIBorrowScenario: ConversationScenario = {
         {
           id: 'r6_yes',
           expectedText: 'Yes, I like to share with my classmates.',
-          expectedTextTr: 'Evet, s\u0131n\u0131f arkada\u015flar\u0131mla payla\u015fmay\u0131 seviyorum.',
+          expectedTextTr:
+            'Evet, s\u0131n\u0131f arkada\u015flar\u0131mla payla\u015fmay\u0131 seviyorum.',
           acceptedVariants: ['yes i like to share', 'i like to share', 'yes share', 'yes'],
           acceptedWords: ['share'],
           nextNodeId: 'n7',
@@ -397,7 +405,8 @@ export const canIBorrowScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Last one! I need a book. Ask me nicely: Can I borrow your book?',
-      textTr: 'Son bir tane! Bir kitaba ihtiyac\u0131m var. Nazik\u00e7e sor: Can I borrow your book?',
+      textTr:
+        'Son bir tane! Bir kitaba ihtiyac\u0131m var. Nazik\u00e7e sor: Can I borrow your book?',
       emoji: '\u{1F4DA}',
       goalType: 'answer',
       targetPattern: 'Can I borrow a ___?',
@@ -418,7 +427,12 @@ export const canIBorrowScenario: ConversationScenario = {
           id: 'r9_book',
           expectedText: 'Can I borrow your book please?',
           expectedTextTr: 'L\u00fctfen kitab\u0131n\u0131 \u00f6d\u00fcn\u00e7 alabilir miyim?',
-          acceptedVariants: ['can i borrow your book', 'borrow your book', 'borrow book', 'book please'],
+          acceptedVariants: [
+            'can i borrow your book',
+            'borrow your book',
+            'borrow book',
+            'book please',
+          ],
           acceptedWords: ['borrow'],
           nextNodeId: 'n10',
           emoji: '\u{1F4DA}',
@@ -431,7 +445,7 @@ export const canIBorrowScenario: ConversationScenario = {
       id: 'n10',
       speaker: 'nova',
       role: 'guide',
-      text: "What a kind classmate! You asked, shared, and thanked perfectly. That\u2019s how real friends act!",
+      text: 'What a kind classmate! You asked, shared, and thanked perfectly. That\u2019s how real friends act!',
       textTr:
         'Ne kadar nazik bir s\u0131n\u0131f arkada\u015f\u0131! M\u00fCkemmelce sordun, payla\u015ft\u0131n ve te\u015fekk\u00fcr ettin. Ger\u00e7ek arkada\u015flar b\u00f6yle davran\u0131r!',
       emoji: '\u{1F31F}',

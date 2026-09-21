@@ -7,7 +7,8 @@ export const whereIsTheParkScenario: ConversationScenario = {
   title: 'Where Is the Park?',
   titleTr: 'Park Nerede?',
   summary: 'Find the park with Nova. Practice asking about nearby places and giving directions.',
-  summaryTr: 'Nova ile park\u0131 bul. Yak\u0131n yerleri sormay\u0131 ve yol tarifi vermeyi pratik yap.',
+  summaryTr:
+    'Nova ile park\u0131 bul. Yak\u0131n yerleri sormay\u0131 ve yol tarifi vermeyi pratik yap.',
   theme: 'city',
   subTheme: 'finding places',
   tags: ['city', 'directions', 'places', 'mission', 'stretch'],
@@ -34,7 +35,9 @@ export const whereIsTheParkScenario: ConversationScenario = {
     preferredIfTagsSeen: ['city', 'directions'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' }],
+  variants: [
+    { id: 'default', label: 'Default', labelTr: 'Vars\u0131yilan', promptStyle: 'default' },
+  ],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -88,7 +91,8 @@ export const whereIsTheParkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes! The park is behind the supermarket. Can you say: It is behind the supermarket?',
-      textTr: 'Evet! Park s\u00fcpermarketin arkas\u0131nda. S\u00f6yleyebilir misin: It is behind the supermarket?',
+      textTr:
+        'Evet! Park s\u00fcpermarketin arkas\u0131nda. S\u00f6yleyebilir misin: It is behind the supermarket?',
       emoji: '🏪',
       goalType: 'answer',
       targetPattern: 'It is behind the ___',
@@ -189,7 +193,12 @@ export const whereIsTheParkScenario: ConversationScenario = {
           id: 'r4_library',
           expectedText: 'Is there a library near here?',
           expectedTextTr: 'Buralarda k\u00fct\u00fcphane var m\u0131?',
-          acceptedVariants: ['is there a library', 'library near here', 'find library', 'library nearby'],
+          acceptedVariants: [
+            'is there a library',
+            'library near here',
+            'find library',
+            'library nearby',
+          ],
           acceptedWords: ['library'],
           nextNodeId: 'n5',
           emoji: '📚',
@@ -203,7 +212,8 @@ export const whereIsTheParkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes! The library is on the corner of the street. Tell me: It is on the corner of the street.',
-      textTr: 'Evet! K\u00fct\u00fcphane caddenin k\u00f6\u015fesinde. S\u00f6yle: It is on the corner of the street.',
+      textTr:
+        'Evet! K\u00fct\u00fcphane caddenin k\u00f6\u015fesinde. S\u00f6yle: It is on the corner of the street.',
       emoji: '📖',
       goalType: 'answer',
       hint: {
@@ -240,7 +250,8 @@ export const whereIsTheParkScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'We are getting close! Is the park in front of us or behind us?',
-      textTr: 'Yakla\u015f\u0131yoruz! Park \u00f6n\u00fcm\u00fczde mi yoksa ardam\u0131zda m\u0131?',
+      textTr:
+        'Yakla\u015f\u0131yoruz! Park \u00f6n\u00fcm\u00fczde mi yoksa ardam\u0131zda m\u0131?',
       emoji: '🧭',
       goalType: 'describe',
       hint: {
