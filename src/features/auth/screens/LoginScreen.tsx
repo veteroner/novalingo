@@ -9,7 +9,13 @@ import novaMascot from '@assets/images/nova-mascot.svg';
 import { Button } from '@components/atoms/Button';
 import { Spinner } from '@components/atoms/Spinner';
 import { Text } from '@components/atoms/Text';
-import { signInAnonymousUser, signInWithApple, signInWithGoogle } from '@services/firebase/auth';
+import {
+  isAppleSignInAvailable,
+  isSignInCancelled,
+  signInAnonymousUser,
+  signInWithApple,
+  signInWithGoogle,
+} from '@services/firebase/auth';
 import { useAuthStore } from '@stores/authStore';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
@@ -31,6 +37,8 @@ export default function LoginScreen() {
       await signInWithGoogle();
       void navigate('/onboarding');
     } catch (err) {
+      // Kullanıcı hesap seçiciyi kapattıysa hata gösterme.
+      if (isSignInCancelled(err)) return;
       setError(err instanceof Error ? err.message : t('login.error'));
     } finally {
       setIsLoggingIn(false);
@@ -45,6 +53,8 @@ export default function LoginScreen() {
       await signInWithApple();
       void navigate('/onboarding');
     } catch (err) {
+      // Kullanıcı hesap seçiciyi kapattıysa hata gösterme.
+      if (isSignInCancelled(err)) return;
       setError(err instanceof Error ? err.message : t('login.error'));
     } finally {
       setIsLoggingIn(false);
@@ -114,16 +124,19 @@ export default function LoginScreen() {
               {t('login.withGoogle')}
             </Button>
 
-            <Button
-              variant="ghost"
-              size="xl"
-              fullWidth
-              onClick={handleAppleLogin}
-              icon={<span>🍎</span>}
-              disabled={!kvkkAccepted}
-            >
-              {t('login.withApple')}
-            </Button>
+            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable) */}
+            {isAppleSignInAvailable() && (
+              <Button
+                variant="ghost"
+                size="xl"
+                fullWidth
+                onClick={handleAppleLogin}
+                icon={<span>🍎</span>}
+                disabled={!kvkkAccepted}
+              >
+                {t('login.withApple')}
+              </Button>
+            )}
 
             <div className="relative py-4">
               <div className="absolute inset-0 flex items-center">

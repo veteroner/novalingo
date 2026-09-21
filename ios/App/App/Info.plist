@@ -84,6 +84,13 @@
 				<string>novalingo</string>
 			</array>
 		</dict>
+		<!-- Google Sign-In dönüşü: GoogleService-Info.plist içindeki REVERSED_CLIENT_ID -->
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.876102273243-lhok8aj81eumkba576th6122c0ol6clj</string>
+			</array>
+		</dict>
 	</array>
 
 	<!-- App Transport Security — yalnızca HTTPS.

@@ -39,6 +39,12 @@ const config: CapacitorConfig = {
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
+    // Native Google/Apple girişi: kimlik bilgisi native hesap seçiciden alınır,
+    // oturum Firebase JS SDK'sında açılır (src/services/firebase/auth.ts).
+    FirebaseAuthentication: {
+      skipNativeAuth: true,
+      providers: ['google.com', 'apple.com'],
+    },
   },
 };
 

@@ -55,6 +55,19 @@
 - ⬜ iOS için APNs anahtarı + Firebase Messaging entegrasyonu (bkz. [PUSH_SETUP.md](PUSH_SETUP.md))
 - ⬜ Gerçek cihazda test bildirimi al (Actions → Run workflow → `dry_run: false`)
 
+## 3b. Giriş (Google / Apple)
+
+- ✅ Native Google girişi (`@capacitor-firebase/authentication`, popup yerine hesap seçici)
+- ✅ Firebase: Google ve **Apple** sağlayıcıları açık; Android uygulamasına debug SHA-1 eklendi,
+  güncel `google-services.json` yerleştirildi
+- ✅ iOS: `REVERSED_CLIENT_ID` URL şeması, Sign in with Apple yetkisi, `GoogleService-Info.plist` hedefte
+- ✅ Apple ile Giriş yalnızca iOS'ta görünür (App Store 4.8)
+- ⬜ GitHub secret'larını güncelle: `GOOGLE_SERVICES_JSON` (yeni dosya — OAuth istemcileri eklendi) ve
+  yeni `GOOGLE_SERVICE_INFO_PLIST`
+- ⬜ Play Console → App signing → **uygulama imzalama anahtarı SHA-1**'ini Firebase'e ekle
+  (yoksa Play'den indirilen sürümde Google girişi çalışmaz)
+- ⬜ Xcode'da "Sign in with Apple" capability'sini etkinleştir (Developer portal'a da yazar)
+
 ## 4. Android build
 
 - ✅ Capacitor 8.5.2 + AGP 8.13 + Gradle 8.13 + JDK 21 → **targetSdk 36**

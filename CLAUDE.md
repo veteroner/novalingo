@@ -79,6 +79,19 @@ Yetki otoritesi **sunucudur** (`users/{uid}/subscriptions/*`); `users.isPremium`
 - `/subscription`, `/parent`, `/parent/settings` rotaları **ebeveyn kapısı** arkasındadır
   (`src/app/Router.tsx` → `ParentGateRoute`, `src/services/parentGate/parentGateSession.ts`).
 
+## Giriş (Google / Apple)
+
+`signInWithPopup` Capacitor WebView'inde **çalışmaz**. Native'de kimlik bilgisi
+`@capacitor-firebase/authentication` ile (`skipNativeAuth: true`) telefonun hesap seçicisinden alınır ve
+`signInWithCredential` ile Firebase JS SDK'sına verilir (`src/services/firebase/auth.ts`); web'de popup kalır.
+
+- Android: Firebase'deki Android uygulamasına imzalama anahtarının **SHA-1**'i eklenmeli ve
+  `google-services.json` yeniden indirilmeli (debug anahtarı eklendi; Play App Signing anahtarı yayından önce).
+- iOS: `GoogleService-Info.plist` (gitignored; CI'da `GOOGLE_SERVICE_INFO_PLIST` secret'ı) +
+  `Info.plist`'te `REVERSED_CLIENT_ID` URL şeması + Podfile'da `CapacitorFirebaseAuthentication/Google`.
+- Apple ile Giriş yalnızca **iOS**'ta gösterilir (`isAppleSignInAvailable`); App Store 4.8 bunu Google
+  girişi olan iOS uygulamasında zorunlu tutar. Web/Android için Apple Services ID + anahtar gerekirdi.
+
 ## Çocuk Gizliliği (COPPA / Play Families)
 
 - Bildirimler **ebeveyne** gider, çocuğa değil (`functions/src/services/notificationService.ts`).

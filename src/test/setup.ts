@@ -114,11 +114,23 @@ vi.mock('firebase/app-check', () => ({
   ReCaptchaV3Provider: vi.fn(),
 }));
 
+vi.mock('@capacitor-firebase/authentication', () => ({
+  FirebaseAuthentication: {
+    signInWithGoogle: vi.fn(),
+    signInWithApple: vi.fn(),
+    signOut: vi.fn(() => Promise.resolve()),
+  },
+}));
+
 vi.mock('firebase/auth', () => ({
   getAuth: vi.fn(),
   initializeAuth: vi.fn(() => ({})),
   inMemoryPersistence: {},
+  indexedDBLocalPersistence: {},
   signInWithPopup: vi.fn(),
+  signInWithCredential: vi.fn(),
+  linkWithPopup: vi.fn(),
+  linkWithCredential: vi.fn(),
   signInAnonymously: vi.fn(),
   signOut: vi.fn(),
   onAuthStateChanged: vi.fn(),

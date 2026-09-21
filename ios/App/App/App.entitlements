@@ -6,5 +6,10 @@
 	     Release arşivinde otomatik olarak "production" değerine yükseltilir. -->
 	<key>aps-environment</key>
 	<string>development</string>
+	<!-- Sign in with Apple — App Store 4.8 (Google girişi sunan iOS uygulamasında zorunlu) -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>
