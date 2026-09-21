@@ -4,17 +4,14 @@
       "allWorlds": "Tüm dünyalara erişim (6+ dünya)",
       "unlimited": "Sınırsız ders",
       "noAds": "Reklam yok",
-      "offline": "Offline öğrenme",
       "report": "Detaylı ebeveyn raporu",
-      "evolutions": "Nova'nın tüm evrimleri",
-      "profiles": "5 çocuk profili",
-      "boost": "Günde 1 saat 2x XP"
+      "profiles": "5 çocuk profili"
     },
     "planMonthly": "Aylık",
     "planYearly": "Yıllık",
     "perMonth": "/ay",
     "perYear": "/yıl",
-    "saveBadge": "%50 Tasarruf",
+    "saveBadge": "%{{percent}} Tasarruf",
     "successTitle": "Abonelik Aktif!",
     "successMessage": "NovaLingo Plus başladı.",
     "restoreSuccessTitle": "Abonelik Bulundu!",
@@ -28,12 +25,9 @@
     "freePlan": "Ücretsiz Plan",
     "plusName": "NovaLingo Plus",
     "premiumDesc": "Tüm özelliklere erişiminiz var",
-    "freeDesc": "İlk 2 dünya, günde 5 ders, reklamlı",
+    "freeDesc": "İlk 2 dünya, günde 3 ders, 1 çocuk profili — reklamsız",
     "selected": "✔ Seçildi",
     "processing": "İşleniyor…",
-    "trial": "7 Gün Ücretsiz Dene",
-    "trialNote1": "7 günlük deneme süresi sonunda seçtiğiniz plan üzerinden ücretlendirilirsiniz.",
-    "trialNote2": "İstediğiniz zaman iptal edebilirsiniz.",
     "checking": "Kontrol ediliyor…",
     "restoreCta": "Satın alma geçmişini geri yükle",
     "title": "💳 Abonelik",
@@ -52,9 +46,15 @@
     "manageAppStore": "App Store Aboneliklerini Yönet",
     "manageGooglePlay": "Google Play Aboneliklerini Yönet",
     "privacy": "Gizlilik Politikası",
-    "terms": "Kullanım Koşulları"
+    "terms": "Kullanım Koşulları",
+    "perMonthEquivalent": "Ayda {{price}}",
+    "periodMonth": "ay",
+    "periodYear": "yıl",
+    "trialCta": "{{days}} Gün Ücretsiz Dene",
+    "subscribeCta": "Aboneliği Başlat",
+    "renewalNotice": "Abonelik {{price}}/{{period}} olarak otomatik yenilenir. Yenilemeden en az 24 saat önce iptal etmezseniz dönem sonunda ücretlendirilirsiniz. İptali mağaza hesap ayarlarınızdan istediğiniz zaman yapabilirsiniz.",
+    "renewalNoticeTrial": "{{days}} günlük ücretsiz deneme sonunda abonelik {{price}}/{{period}} olarak otomatik yenilenir. Deneme bitmeden en az 24 saat önce iptal etmezseniz ücretlendirilirsiniz. İptali mağaza hesap ayarlarınızdan istediğiniz zaman yapabilirsiniz."
   },
-
   "settings": {
     "title": "⚙️ Ayarlar",
     "titleFor": "{{name}} için ayarlar",
@@ -65,7 +65,7 @@
     "dailyReminder": "Günlük Hatırlatma",
     "dailyReminderDesc": "Her gün öğrenme zamanı bildirimi",
     "weeklyReport": "Haftalık Rapor",
-    "weeklyReportDesc": "İlerleme raporunu e-posta ile al",
+    "weeklyReportDesc": "Haftalık ilerleme özetini bildirim olarak al",
     "achievementAlert": "Başarı Bildirimleri",
     "achievementAlertDesc": "Yeni başarı kazanıldığında bilgilendir",
     "inactivityAlert": "Hareketsizlik Uyarısı",
@@ -118,7 +118,6 @@
     "privacy": "Gizlilik Politikası",
     "terms": "Kullanım Koşulları"
   },
-
   "dashboard": {
     "gateTitle": "🔒 Ebeveyn Paneli",
     "gatePrompt": "Devam etmek için PIN kodunuzu girin",

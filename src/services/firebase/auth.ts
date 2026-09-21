@@ -16,6 +16,7 @@ import {
   type User as FirebaseUser,
   type Unsubscribe,
 } from 'firebase/auth';
+import { resetParentGate } from '@services/parentGate/parentGateSession';
 import { auth } from './app';
 
 const googleProvider = new GoogleAuthProvider();
@@ -65,6 +66,8 @@ export async function linkAnonymousAccount(provider: 'google' | 'apple'): Promis
  * Çıkış yap
  */
 export async function signOut(): Promise<void> {
+  // Ebeveyn kapısı doğrulaması oturuma bağlıdır; çıkışta sıfırlanmalı.
+  resetParentGate();
   await firebaseSignOut(auth);
 }
 

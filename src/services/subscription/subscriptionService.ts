@@ -46,7 +46,20 @@ interface PurchaseAdditionalData {
   applicationUsername?: string;
 }
 
-type PurchaseOffer = object;
+interface PurchasePricingPhase {
+  /** Mağazadan gelen yerelleştirilmiş fiyat metni (ör. "₺149,99"). */
+  price?: string;
+  priceMicros?: number;
+  currency?: string;
+  /** ISO 8601 periyot (ör. "P1M", "P1Y", "P1W"). */
+  billingPeriod?: string;
+  /** "FreeTrial" | "PayAsYouGo" | "UpFront" */
+  paymentMode?: string;
+}
+
+interface PurchaseOffer {
+  pricingPhases?: PurchasePricingPhase[];
+}
 
 interface PurchaseOrderError {
   code: PurchaseErrorCode;
@@ -74,6 +87,7 @@ interface PurchaseLoadedProduct {
 interface PurchaseStoreEvents {
   approved(callback: (transaction: PurchaseTransaction) => void): void;
   finished(callback: (transaction: PurchaseTransaction) => void): void;
+  productUpdated(callback: () => void): void;
 }
 
 interface PurchaseStore {
@@ -293,6 +307,86 @@ export async function restorePurchases(): Promise<PurchaseResult> {
 
   // Restored transactions can take a moment to reach verified entitlement projection.
   return waitForVerifiedEntitlement();
+}
+
+/**
+ * Mağazadan gelen ürün fiyatlandırması.
+ *
+ * App Store Connect / Play Console'da tanımlı gerçek (yerelleştirilmiş) fiyat ve
+ * varsa ücretsiz deneme süresi buradan okunur. Paywall'da asla sabit fiyat
+ * gösterilmez — Apple 3.1.2 ve Play abonelik politikası bunu şart koşar.
+ */
+export interface ProductPricing {
+  /** Yerelleştirilmiş fiyat metni (ör. "₺149,99"). */
+  price: string;
+  /** Mikro birim cinsinden fiyat (1.000.000 = 1 birim) — hesaplamalar için. */
+  priceMicros: number | null;
+  /** ISO 4217 para birimi (ör. "TRY"). */
+  currency: string | null;
+  /** ISO 8601 fatura periyodu (ör. "P1M", "P1Y"). */
+  billingPeriod: string | null;
+  /** Mağazada tanımlı ücretsiz deneme gün sayısı; yoksa null. */
+  trialDays: number | null;
+}
+
+/** "P7D" / "P1W" / "P1M" / "P1Y" → gün sayısı. */
+function isoPeriodToDays(period: string | undefined): number | null {
+  if (!period) return null;
+  const match = /^P(\d+)([DWMY])$/.exec(period);
+  if (!match) return null;
+  const amount = Number(match[1]);
+  switch (match[2]) {
+    case 'D':
+      return amount;
+    case 'W':
+      return amount * 7;
+    case 'M':
+      return amount * 30;
+    case 'Y':
+      return amount * 365;
+    default:
+      return null;
+  }
+}
+
+function isFreePhase(phase: PurchasePricingPhase): boolean {
+  return phase.paymentMode === 'FreeTrial' || phase.priceMicros === 0;
+}
+
+/**
+ * Seçili ürünün mağaza fiyatını döndürür.
+ * Ürün henüz yüklenmediyse (veya web'deysek) `null` döner.
+ */
+export function getProductPricing(productId: IAPProductId): ProductPricing | null {
+  const purchaseSdk = getPurchaseSdk();
+  if (!purchaseSdk) return null;
+
+  const offer = purchaseSdk.store.get(productId)?.getOffer();
+  const phases = offer?.pricingPhases ?? [];
+  if (phases.length === 0) return null;
+
+  const trialPhase = phases.find(isFreePhase);
+  const paidPhase = phases.find((phase) => !isFreePhase(phase)) ?? phases[phases.length - 1];
+  if (!paidPhase?.price) return null;
+
+  return {
+    price: paidPhase.price,
+    priceMicros: paidPhase.priceMicros ?? null,
+    currency: paidPhase.currency ?? null,
+    billingPeriod: paidPhase.billingPeriod ?? null,
+    trialDays: trialPhase ? isoPeriodToDays(trialPhase.billingPeriod) : null,
+  };
+}
+
+/**
+ * Mağaza ürün bilgisi güncellendiğinde çağrılır (fiyatlar asenkron yüklenir).
+ * cordova-plugin-purchase dinleyici kaldırmayı desteklemediği için callback
+ * çağıranın kendisi tarafından güvenli (mounted kontrollü) yazılmalıdır.
+ */
+export function onProductsUpdated(callback: () => void): void {
+  const purchaseSdk = getPurchaseSdk();
+  if (!purchaseSdk) return;
+  purchaseSdk.store.when().productUpdated(callback);
 }
 
 /** Dev-only: grant premium manually for testing without a real transaction. */

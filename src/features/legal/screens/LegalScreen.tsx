@@ -1,20 +1,24 @@
 /**
  * LegalScreen
  *
- * Privacy Policy ve Terms of Service ekranı.
+ * Privacy Policy, Terms of Service ve Hesap Silme ekranı.
  * Herkese açık route — giriş gerekmez.
  * App Store & Google Play zorunlu gereksinim.
+ *
+ * `/legal/delete-account` Google Play'in "web tabanlı hesap silme talebi"
+ * şartını karşılar; bu URL Play Console'daki Data safety formuna girilir.
  */
 
 import {
   ArrowLeftIcon as ArrowLeft,
   BookOpenIcon as BookOpen,
   ShieldCheckIcon as ShieldCheck,
+  TrashIcon as Trash,
 } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-type LegalType = 'privacy' | 'terms';
+type LegalType = 'privacy' | 'terms' | 'delete-account';
 
 const LAST_UPDATED = '8 Nisan 2026';
 const APP_NAME = 'NovaLingo';
@@ -282,13 +286,70 @@ function TermsOfService() {
   );
 }
 
+function AccountDeletion() {
+  return (
+    <div className="space-y-6 text-sm leading-relaxed text-gray-700">
+      <p className="text-xs text-gray-500">Son güncelleme: {LAST_UPDATED}</p>
+
+      <section>
+        <h2 className="mb-2 text-base font-bold text-gray-900">Hesabınızı Silme</h2>
+        <p>
+          {APP_NAME} hesabınızı ve hesaba bağlı tüm çocuk profillerini istediğiniz zaman
+          silebilirsiniz. Silme işlemi geri alınamaz.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-base font-bold text-gray-900">Uygulama İçinden</h2>
+        <p>
+          Uygulamada <strong>Ebeveyn Paneli → Ayarlar → Hesabı Sil</strong> adımlarını izleyin.
+          Ebeveyn kapısını geçtikten sonra silme işlemi anında başlatılır.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-base font-bold text-gray-900">Uygulamayı Kurmadan</h2>
+        <p>
+          Uygulamaya erişiminiz yoksa hesabınızın kayıtlı e-posta adresinden{' '}
+          <strong>{CONTACT_EMAIL}</strong> adresine &quot;Hesap silme talebi&quot; konulu bir
+          e-posta gönderin. Talebi 30 gün içinde sonuçlandırır ve tamamlandığında sizi
+          bilgilendiririz.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-base font-bold text-gray-900">Silinen Veriler</h2>
+        <ul className="list-inside list-disc space-y-1">
+          <li>Ebeveyn hesabı ve kimlik doğrulama kaydı</li>
+          <li>Tüm çocuk profilleri, ilerleme, kelime ve konuşma kayıtları</li>
+          <li>Oyunlaştırma verileri (XP, seri, rozetler, envanter)</li>
+          <li>Bildirim tercihleri ve cihaz bildirim anahtarı</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-base font-bold text-gray-900">Saklanan Veriler</h2>
+        <p>
+          Yasal yükümlülükler gereği satın alma ve fatura kayıtları, kimliğinizle
+          ilişkilendirilmeden, ilgili mevzuatın öngördüğü süre boyunca saklanır. Aboneliğiniz varsa
+          hesabınızı silmek aboneliği iptal etmez — iptali App Store veya Google Play hesap
+          ayarlarınızdan yapmanız gerekir.
+        </p>
+      </section>
+    </div>
+  );
+}
+
 export default function LegalScreen() {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const { type } = useParams<{ type: LegalType }>();
-  const legalType: LegalType = type === 'terms' ? 'terms' : 'privacy';
+  const legalType: LegalType =
+    type === 'terms' ? 'terms' : type === 'delete-account' ? 'delete-account' : 'privacy';
 
   const isPrivacy = legalType === 'privacy';
+  const isTerms = legalType === 'terms';
+  const isDeleteAccount = legalType === 'delete-account';
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -302,13 +363,13 @@ export default function LegalScreen() {
           <ArrowLeft size={20} weight="bold" className="text-gray-700" />
         </button>
         <div className="flex items-center gap-2">
-          {isPrivacy ? (
-            <ShieldCheck size={20} className="text-nova-blue" />
-          ) : (
-            <BookOpen size={20} className="text-nova-blue" />
-          )}
+          {isPrivacy && <ShieldCheck size={20} className="text-nova-blue" />}
+          {isTerms && <BookOpen size={20} className="text-nova-blue" />}
+          {isDeleteAccount && <Trash size={20} className="text-nova-blue" />}
           <h1 className="text-base font-bold text-gray-900">
-            {isPrivacy ? t('legal.privacy') : t('legal.terms')}
+            {isPrivacy && t('legal.privacy')}
+            {isTerms && t('legal.terms')}
+            {isDeleteAccount && t('legal.deleteAccount')}
           </h1>
         </div>
       </div>
@@ -328,18 +389,30 @@ export default function LegalScreen() {
         <button
           onClick={() => navigate('/legal/terms', { replace: true })}
           className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-            !isPrivacy
+            isTerms
               ? 'text-nova-blue border-nova-blue border-b-2'
               : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           {t('legal.terms')}
         </button>
+        <button
+          onClick={() => navigate('/legal/delete-account', { replace: true })}
+          className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+            isDeleteAccount
+              ? 'text-nova-blue border-nova-blue border-b-2'
+              : 'text-gray-400 hover:text-gray-600'
+          }`}
+        >
+          {t('legal.deleteAccount')}
+        </button>
       </div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-5 py-6">
-        {isPrivacy ? <PrivacyPolicy /> : <TermsOfService />}
+        {isPrivacy && <PrivacyPolicy />}
+        {isTerms && <TermsOfService />}
+        {isDeleteAccount && <AccountDeletion />}
       </div>
 
       {/* Footer */}
