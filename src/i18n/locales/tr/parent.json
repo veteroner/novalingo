@@ -1,11 +1,9 @@
 {
   "subscription": {
     "features": {
-      "allWorlds": "Tüm dünyalara erişim (6+ dünya)",
+      "allWorlds": "Tüm dünyalara erişim (9 dünya)",
       "unlimited": "Sınırsız ders",
-      "noAds": "Reklam yok",
-      "report": "Detaylı ebeveyn raporu",
-      "profiles": "5 çocuk profili"
+      "report": "Detaylı ebeveyn raporu"
     },
     "planMonthly": "Aylık",
     "planYearly": "Yıllık",

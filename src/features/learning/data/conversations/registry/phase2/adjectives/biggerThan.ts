@@ -5,7 +5,7 @@ export const biggerThanScenario: ConversationScenario = {
   version: 2,
   phase: 'phase2',
   title: 'Bigger Than!',
-  titleTr: 'Daha Buyuk!',
+  titleTr: 'Daha Büyük!',
   summary:
     "Nova and her friend compare things. Practice 'It is bigger / smaller / faster than ___.'",
   summaryTr:
@@ -36,8 +36,8 @@ export const biggerThanScenario: ConversationScenario = {
     avoidIfCompletedRecently: true,
   },
   variants: [
-    { id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' },
-    { id: 'playful', label: 'Playful', labelTr: 'Eglenceli', promptStyle: 'playful' },
+    { id: 'default', label: 'Default', labelTr: 'Varsayılan', promptStyle: 'default' },
+    { id: 'playful', label: 'Playful', labelTr: 'Eğlenceli', promptStyle: 'playful' },
   ],
   entryNodeId: 'n1',
   nodes: [
@@ -47,14 +47,14 @@ export const biggerThanScenario: ConversationScenario = {
       role: 'guide',
       text: 'Look! An elephant and a mouse. Which is bigger? Say: The elephant is bigger than the mouse!',
       textTr:
-        'Bak! Bir fil ve bir fare. Hangisi daha buyuk? Soyle: The elephant is bigger than the mouse!',
+        'Bak! Bir fil ve bir fare. Hangisi daha büyük? Söyle: The elephant is bigger than the mouse!',
       emoji: '\u{1F418}',
       goalType: 'answer',
       targetPattern: 'It is ___ than ___',
       hint: {
         delayMs: 8000,
         text: 'Say: The elephant is bigger than the mouse.',
-        textTr: 'Soyle: The elephant is bigger than the mouse.',
+        textTr: 'Söyle: The elephant is bigger than the mouse.',
         revealPattern: true,
       },
       repair: {
@@ -67,7 +67,7 @@ export const biggerThanScenario: ConversationScenario = {
         {
           id: 'r1_bigger',
           expectedText: 'The elephant is bigger than the mouse.',
-          expectedTextTr: 'Fil fareden daha buyuk.',
+          expectedTextTr: 'Fil fareden daha büyük.',
           acceptedVariants: ['bigger than', 'elephant is bigger', 'elephant bigger'],
           acceptedWords: ['bigger'],
           nextNodeId: 'n2_bridge',
@@ -82,7 +82,7 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Excellent! Now the opposite.',
-      textTr: 'Mukemmel! Simdi tersi.',
+      textTr: 'Mükemmel! Şimdi tersi.',
       emoji: '\u{1F401}',
       next: 'n3',
     },
@@ -91,14 +91,14 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'The mouse is... what? Say: The mouse is smaller than the elephant!',
-      textTr: 'Fare... nedir? Soyle: The mouse is smaller than the elephant!',
+      textTr: 'Fare... nedir? Söyle: The mouse is smaller than the elephant!',
       emoji: '\u{1F401}',
       goalType: 'answer',
       targetPattern: 'It is ___ than ___',
       hint: {
         delayMs: 7000,
         text: 'Say: The mouse is smaller than the elephant.',
-        textTr: 'Soyle: The mouse is smaller than the elephant.',
+        textTr: 'Söyle: The mouse is smaller than the elephant.',
       },
       repair: {
         enabled: true,
@@ -110,7 +110,7 @@ export const biggerThanScenario: ConversationScenario = {
         {
           id: 'r3_smaller',
           expectedText: 'The mouse is smaller than the elephant.',
-          expectedTextTr: 'Fare fildden daha kucuk.',
+          expectedTextTr: 'Fare filden daha küçük.',
           acceptedVariants: ['smaller than', 'mouse is smaller', 'mouse smaller'],
           acceptedWords: ['smaller'],
           nextNodeId: 'n4_bridge',
@@ -125,7 +125,7 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Perfect! Bigger and smaller. Now speed!',
-      textTr: 'Mukemmel! Buyuk ve kucuk. Simdi hiz!',
+      textTr: 'Mükemmel! Büyük ve küçük. Şimdi hız!',
       emoji: '\u{1F4A8}',
       next: 'n5',
     },
@@ -134,14 +134,14 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'A cheetah and a turtle. The cheetah is faster. Can you say it?',
-      textTr: 'Bir cita ve bir kaplumbaga. Cita daha hizli. Soyleyebilir misin?',
+      textTr: 'Bir çita ve bir kaplumbağa. Çita daha hızlı. Söyleyebilir misin?',
       emoji: '\u{1F406}',
       goalType: 'answer',
       targetPattern: 'It is ___ than ___',
       hint: {
         delayMs: 7000,
         text: 'Say: The cheetah is faster than the turtle.',
-        textTr: 'Soyle: The cheetah is faster than the turtle.',
+        textTr: 'Söyle: The cheetah is faster than the turtle.',
       },
       repair: {
         enabled: true,
@@ -153,7 +153,7 @@ export const biggerThanScenario: ConversationScenario = {
         {
           id: 'r5_faster',
           expectedText: 'The cheetah is faster than the turtle.',
-          expectedTextTr: 'Cita kaplumbagadan daha hizli.',
+          expectedTextTr: 'Çita kaplumbağadan daha hızlı.',
           acceptedVariants: ['faster than', 'cheetah is faster', 'faster'],
           acceptedWords: ['faster'],
           nextNodeId: 'n6_bridge',
@@ -168,7 +168,7 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Great speed comparison! Now try the opposite for turtle.',
-      textTr: 'Harika hiz karsilastirmasi! Simdi kaplumbaga icin tersini dene.',
+      textTr: 'Harika hız karşılaştırması! Şimdi kaplumbağa için tersini dene.',
       emoji: '\u{1F422}',
       next: 'n7',
     },
@@ -177,14 +177,14 @@ export const biggerThanScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'The turtle is... slower! Say: The turtle is slower than the cheetah.',
-      textTr: 'Kaplumbaga... daha yavas! Soyle: The turtle is slower than the cheetah.',
+      textTr: 'Kaplumbağa... daha yavaş! Söyle: The turtle is slower than the cheetah.',
       emoji: '\u{1F422}',
       goalType: 'answer',
       targetPattern: 'It is ___ than ___',
       hint: {
         delayMs: 7000,
         text: 'Say: The turtle is slower than the cheetah.',
-        textTr: 'Soyle: The turtle is slower than the cheetah.',
+        textTr: 'Söyle: The turtle is slower than the cheetah.',
       },
       repair: {
         enabled: true,
@@ -196,7 +196,7 @@ export const biggerThanScenario: ConversationScenario = {
         {
           id: 'r7_slower',
           expectedText: 'The turtle is slower than the cheetah.',
-          expectedTextTr: 'Kaplumbaga citadan daha yavas.',
+          expectedTextTr: 'Kaplumbağa çitadan daha yavaş.',
           acceptedVariants: ['slower than', 'turtle is slower', 'slower'],
           acceptedWords: ['slower'],
           nextNodeId: 'n8_bridge',
@@ -227,7 +227,7 @@ export const biggerThanScenario: ConversationScenario = {
       hint: {
         delayMs: 7000,
         text: 'Say: The giraffe is taller than the cat.',
-        textTr: 'Soyle: The giraffe is taller than the cat.',
+        textTr: 'Söyle: The giraffe is taller than the cat.',
       },
       repair: {
         enabled: true,
@@ -255,7 +255,7 @@ export const biggerThanScenario: ConversationScenario = {
       role: 'friend',
       text: 'Amazing! You know bigger, smaller, faster, slower and taller. You are a comparison champion!',
       textTr:
-        'Inanilmaz! Bigger, smaller, faster, slower ve taller biliyorsun. Karsilastirma sampiyonusun!',
+        'İnanılmaz! Bigger, smaller, faster, slower ve taller biliyorsun. Karşılaştırma şampiyonusun!',
       emoji: '\u{1F3C6}',
     },
   ],

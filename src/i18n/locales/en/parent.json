@@ -1,11 +1,9 @@
 {
   "subscription": {
     "features": {
-      "allWorlds": "Access to all worlds (6+ worlds)",
+      "allWorlds": "Access to all worlds (9 worlds)",
       "unlimited": "Unlimited lessons",
-      "noAds": "No ads",
-      "report": "Detailed parent report",
-      "profiles": "5 child profiles"
+      "report": "Detailed parent report"
     },
     "planMonthly": "Monthly",
     "planYearly": "Yearly",

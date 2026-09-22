@@ -5,9 +5,9 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
   version: 2,
   phase: 'phase1',
   title: 'My Favorite Animal',
-  titleTr: 'En Sevdigim Hayvan',
+  titleTr: 'En Sevdiğim Hayvan',
   summary: 'Nova and the child talk about their favorite animals and give reasons.',
-  summaryTr: 'Nova ve cocuk favori hayvanlarini konusur ve neden sevdiklerini soyler.',
+  summaryTr: 'Nova ve çocuk favori hayvanlarını konuşur ve neden sevdiklerini söyler.',
   theme: 'animals',
   subTheme: 'favorite_animal',
   tags: ['animals', 'favorites', 'because'],
@@ -35,8 +35,8 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
     avoidIfCompletedRecently: true,
   },
   variants: [
-    { id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' },
-    { id: 'short', label: 'Short', labelTr: 'Kisa', promptStyle: 'short' },
+    { id: 'default', label: 'Default', labelTr: 'Varsayılan', promptStyle: 'default' },
+    { id: 'short', label: 'Short', labelTr: 'Kısa', promptStyle: 'short' },
   ],
   entryNodeId: 'n1',
   nodes: [
@@ -45,19 +45,19 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'I love animals! Do you have a favorite animal?',
-      textTr: 'Hayvanlari cok severim! Favori bir hayvanin var mi?',
+      textTr: 'Hayvanları çok severim! Favori bir hayvanın var mı?',
       goalType: 'answer',
       targetPattern: 'My favorite ... is ...',
       hint: {
         delayMs: 9000,
         text: 'Try saying: My favorite animal is a rabbit.',
-        textTr: 'Soylemeyi dene: My favorite animal is a rabbit.',
+        textTr: 'Söylemeyi dene: My favorite animal is a rabbit.',
         revealPattern: true,
       },
       repair: {
         enabled: true,
         prompt: 'Say: My favorite animal is a rabbit.',
-        promptTr: 'Soyle: My favorite animal is a rabbit.',
+        promptTr: 'Söyle: My favorite animal is a rabbit.',
         maxRetries: 2,
       },
       openEnded: {
@@ -73,7 +73,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r1_lion',
           expectedText: 'My favorite animal is a lion.',
-          expectedTextTr: 'En sevdigim hayvan aslan.',
+          expectedTextTr: 'En sevdiğim hayvan aslan.',
           acceptedVariants: [
             'lion',
             'favorite lion',
@@ -89,7 +89,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r1_rabbit',
           expectedText: 'My favorite animal is a rabbit.',
-          expectedTextTr: 'En sevdigim hayvan tavsan.',
+          expectedTextTr: 'En sevdiğim hayvan tavşan.',
           acceptedVariants: [
             'rabbit',
             'favorite rabbit',
@@ -105,7 +105,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r1_bird',
           expectedText: 'My favorite animal is a bird.',
-          expectedTextTr: 'En sevdigim hayvan kus.',
+          expectedTextTr: 'En sevdiğim hayvan kuş.',
           acceptedVariants: [
             'bird',
             'favorite bird',
@@ -125,7 +125,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'A lion! Wow! Lions are so strong.',
-      textTr: 'Bir aslan! Vay! Aslanlar cok guclu.',
+      textTr: 'Bir aslan! Vay! Aslanlar çok güçlü.',
       next: 'n3',
       emoji: '🦁',
     },
@@ -134,7 +134,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'A rabbit! So cute! I love rabbits too.',
-      textTr: 'Bir tavsan! Cok sirin! Ben de tavsanlari severim.',
+      textTr: 'Bir tavşan! Çok şirin! Ben de tavşanları severim.',
       next: 'n3',
       emoji: '🐰',
     },
@@ -143,7 +143,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'A bird! Birds can fly. That is amazing!',
-      textTr: 'Bir kus! Kuslar ucabilir. Bu muhtesem!',
+      textTr: 'Bir kuş! Kuşlar uçabilir. Bu muhteşem!',
       next: 'n3',
       emoji: '🐦',
     },
@@ -152,7 +152,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: '{{favoriteAnimalWithArticleCapitalized}}! Nice choice. That sounds interesting!',
-      textTr: 'Ne guzel bir secim! Bu cok ilginc duruyor.',
+      textTr: 'Ne güzel bir seçim! Bu çok ilginç duruyor.',
       next: 'n3',
       emoji: '🐾',
     },
@@ -161,19 +161,19 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Can you say it with me? Say: My favorite animal is...',
-      textTr: 'Benimle soyle bilir misin? Soyle: My favorite animal is...',
+      textTr: 'Benimle söyle bilir misin? Söyle: My favorite animal is...',
       goalType: 'answer',
       targetPattern: 'My favorite ... is ...',
       hint: {
         delayMs: 7000,
         text: 'Try saying: My favorite animal is a lion.',
-        textTr: 'Soylemeyi dene: My favorite animal is a lion.',
+        textTr: 'Söylemeyi dene: My favorite animal is a lion.',
         revealPattern: true,
       },
       repair: {
         enabled: true,
         prompt: 'Say: My favorite animal is a lion.',
-        promptTr: 'Soyle: My favorite animal is a lion.',
+        promptTr: 'Söyle: My favorite animal is a lion.',
         maxRetries: 2,
       },
       openEnded: {
@@ -189,7 +189,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r3_lion',
           expectedText: 'My favorite animal is a lion.',
-          expectedTextTr: 'En sevdigim hayvan aslan.',
+          expectedTextTr: 'En sevdiğim hayvan aslan.',
           acceptedVariants: [
             'lion',
             'my favorite animal is lion',
@@ -205,7 +205,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r3_rabbit',
           expectedText: 'My favorite animal is a rabbit.',
-          expectedTextTr: 'En sevdigim hayvan tavsan.',
+          expectedTextTr: 'En sevdiğim hayvan tavşan.',
           acceptedVariants: [
             'rabbit',
             'my favorite animal is rabbit',
@@ -221,7 +221,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r3_bird',
           expectedText: 'My favorite animal is a bird.',
-          expectedTextTr: 'En sevdigim hayvan kus.',
+          expectedTextTr: 'En sevdiğim hayvan kuş.',
           acceptedVariants: [
             'bird',
             'my favorite animal is bird',
@@ -250,19 +250,19 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Say: I like it because it is cute. Or: I like it because it is fast.',
-      textTr: 'Soyle: I like it because it is cute. Ya da: I like it because it is fast.',
+      textTr: 'Söyle: I like it because it is cute. Ya da: I like it because it is fast.',
       goalType: 'answer',
       targetPattern: 'I like ... because ...',
       hint: {
         delayMs: 7000,
         text: 'Try saying: I like it because it is cute.',
-        textTr: 'Soylemeyi dene: I like it because it is cute.',
+        textTr: 'Söylemeyi dene: I like it because it is cute.',
         revealPattern: true,
       },
       repair: {
         enabled: true,
         prompt: 'Say: I like it because it is cute.',
-        promptTr: 'Soyle: I like it because it is cute.',
+        promptTr: 'Söyle: I like it because it is cute.',
         maxRetries: 2,
       },
       openEnded: {
@@ -278,7 +278,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r5_cute',
           expectedText: 'I like it because it is cute.',
-          expectedTextTr: 'Onu seviyorum cunku cok tatli.',
+          expectedTextTr: 'Onu seviyorum çünkü çok tatlı.',
           acceptedVariants: [
             'cute',
             'because it is cute',
@@ -294,7 +294,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r5_fast',
           expectedText: 'I like it because it is fast.',
-          expectedTextTr: 'Onu seviyorum cunku hizli.',
+          expectedTextTr: 'Onu seviyorum çünkü hızlı.',
           acceptedVariants: [
             'fast',
             'because it is fast',
@@ -310,7 +310,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r5_big',
           expectedText: 'I like it because it is big.',
-          expectedTextTr: 'Onu seviyorum cunku buyuk.',
+          expectedTextTr: 'Onu seviyorum çünkü büyük.',
           acceptedVariants: [
             'big',
             'because it is big',
@@ -326,7 +326,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r5_fun',
           expectedText: 'I like it because it is fun.',
-          expectedTextTr: 'Onu seviyorum cunku eglenceli.',
+          expectedTextTr: 'Onu seviyorum çünkü eğlenceli.',
           acceptedVariants: [
             'fun',
             'because it is fun',
@@ -346,7 +346,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'That is a great reason! Let me think about my favorite animal...',
-      textTr: 'Bu cok guzel bir neden! Ben de favori hayvanimi dusuneyim...',
+      textTr: 'Bu çok güzel bir neden! Ben de favori hayvanımı düşüneyim...',
       next: 'n7',
       emoji: '🤔',
     },
@@ -355,26 +355,26 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'My favorite animal is a dog! Tell me: Is a dog big or small?',
-      textTr: 'Benim favori hayvanim kopek! Soyle bana: Bir kopek buyuk mu kucuk mu?',
+      textTr: 'Benim favori hayvanım köpek! Söyle bana: Bir köpek büyük mü küçük mü?',
       goalType: 'answer',
       targetPattern: 'It is...',
       hint: {
         delayMs: 7000,
         text: 'Try saying: It is big.',
-        textTr: 'Soylemeyi dene: It is big.',
+        textTr: 'Söylemeyi dene: It is big.',
         revealPattern: true,
       },
       repair: {
         enabled: true,
         prompt: 'Say: It is big.',
-        promptTr: 'Soyle: It is big.',
+        promptTr: 'Söyle: It is big.',
         maxRetries: 2,
       },
       responses: [
         {
           id: 'r7_big',
           expectedText: 'It is big.',
-          expectedTextTr: 'Buyuk.',
+          expectedTextTr: 'Büyük.',
           acceptedVariants: ['big', 'it is big', 'its big'],
           acceptedWords: ['big'],
           nextNodeId: 'n8',
@@ -385,7 +385,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
         {
           id: 'r7_small',
           expectedText: 'It is small.',
-          expectedTextTr: 'Kucuk.',
+          expectedTextTr: 'Küçük.',
           acceptedVariants: ['small', 'it is small', 'its small'],
           acceptedWords: ['small'],
           nextNodeId: 'n8',
@@ -400,7 +400,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes! Dogs can be big or small. I love them all!',
-      textTr: 'Evet! Kopekler buyuk de kucuk de olabilir. Hepsini severim!',
+      textTr: 'Evet! Köpekler büyük de küçük de olabilir. Hepsini severim!',
       next: 'n9',
       emoji: '🐾',
     },
@@ -409,26 +409,26 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'One last thing! Say: I love animals!',
-      textTr: 'Son bir sey! Soyle: I love animals!',
+      textTr: 'Son bir şey! Söyle: I love animals!',
       goalType: 'answer',
       targetPattern: 'I love...',
       hint: {
         delayMs: 7000,
         text: 'Say: I love animals!',
-        textTr: 'Soyle: I love animals!',
+        textTr: 'Söyle: I love animals!',
         revealPattern: true,
       },
       repair: {
         enabled: true,
         prompt: 'Say: I love animals!',
-        promptTr: 'Soyle: I love animals!',
+        promptTr: 'Söyle: I love animals!',
         maxRetries: 2,
       },
       responses: [
         {
           id: 'r9_love',
           expectedText: 'I love animals!',
-          expectedTextTr: 'Hayvanlari severim!',
+          expectedTextTr: 'Hayvanları severim!',
           acceptedVariants: ['i love animals', 'love animals', 'animals'],
           nextNodeId: 'n10',
           emoji: '❤️',
@@ -442,7 +442,7 @@ export const myFavoriteAnimalScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Me too! Animals are wonderful. You are a great animal expert!',
-      textTr: 'Ben de! Hayvanlar muhtesem. Sen gercekten iyi bir hayvan uzmanisin!',
+      textTr: 'Ben de! Hayvanlar muhteşem. Sen gerçekten iyi bir hayvan uzmanısın!',
       emoji: '🌟',
     },
   ],
