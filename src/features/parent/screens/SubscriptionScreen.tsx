@@ -53,9 +53,7 @@ import { useNavigate } from 'react-router-dom';
 const PREMIUM_FEATURES = [
   { emoji: '🌍', key: 'allWorlds' },
   { emoji: '♾️', key: 'unlimited' },
-  { emoji: '🚫', key: 'noAds' },
   { emoji: '📊', key: 'report' },
-  { emoji: '👨‍👩‍👧‍👦', key: 'profiles' },
 ] as const;
 
 // Fiyatlar mağazadan (App Store Connect / Play Console) okunur.

@@ -1,140 +1,159 @@
 # NovaLingo — App Store and Google Play Metadata
 
-> Launch copy aligned with the actual product: ad-free freemium, subscription upsell, verified entitlement backend.
-> Last updated: March 2026
+> Launch copy aligned with what the app actually enforces (see `docs/MONETIZATION.md`).
+> Last updated: 22 September 2026. Character counts were checked against each store's limits.
 
 ## Product Positioning
 
 - Category: Education
-- Audience: Parents of children ages 4-9
-- Commercial model: Ad-free freemium with NovaLingo Plus subscription
-- Free promise: First 2 worlds, 3 lessons per day, 1 child profile, basic parent summary
-- Paid promise: All worlds, unlimited lessons, up to 5 child profiles, detailed reports
+- Audience: Turkish-speaking children ages 4–12 and their parents
+- Commercial model: Ad-free freemium with an optional NovaLingo Plus subscription
+- Free: first 4 of 9 worlds, 3 lessons per day
+- Plus: all 9 worlds, unlimited lessons, detailed parent report
+
+### Claims we must NOT make
+
+| Claim                       | Why                                                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| "No ads" as a Plus benefit  | The app has no ads on any tier. "Ad-free" is fine; selling it as an upgrade is not.                     |
+| "Up to 5 child profiles"    | The limit exists in code, but there is no UI to add or switch profiles yet.                             |
+| "Checks your pronunciation" | STT uses the Web Speech API: missing in iOS WKWebView, unreliable in Android WebView.                   |
+| Free trial                  | Only mention one if the store has an introductory offer configured (the paywall follows the same rule). |
+| Offline premium access      | Not implemented.                                                                                        |
+
+## ASO keywords
+
+Primary TR intent: _çocuklar için ingilizce_, _ingilizce öğren_, _ingilizce kelime oyunu_,
+_okul öncesi ingilizce_, _ilkokul ingilizce_. The title carries the strongest term
+("Çocuklara İngilizce"); the subtitle, short description and first description line repeat
+the secondary terms naturally. No keyword stuffing, no competitor names.
 
 ## App Store Connect
 
-### App Info
+| Field         | TR                                                                                                | EN                               |
+| ------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Name (30)     | NovaLingo: Çocuklara İngilizce (30)                                                               | NovaLingo: English for Kids (27) |
+| Subtitle (30) | Oyunla kelime ve konuşma (24)                                                                     | Learn words through play (24)    |
+| Category      | Education (secondary: Games → Educational)                                                        | same                             |
+| Age rating    | 4+                                                                                                | 4+                               |
+| Kids Category | **No** — guideline 1.3 restricts third-party analytics; the app ships Firebase Analytics + Sentry | same                             |
 
-| Field         | Value                              |
-| ------------- | ---------------------------------- |
-| App Name (TR) | NovaLingo: Çocuklar için İngilizce |
-| App Name (EN) | NovaLingo: English for Kids        |
-| Subtitle (TR) | Konuş, Öğren, Keşfet               |
-| Subtitle (EN) | Speak, Learn, Discover             |
-| Category      | Education                          |
-| Age Rating    | 4+                                 |
-
-### Turkish Description
+Keywords (100, comma separated, no spaces after commas, don't repeat title words):
 
 ```text
-NovaLingo ile çocuklar İngilizceyi sadece izleyerek değil, konuşarak öğrenir.
-
-Nova isimli rehber karakterle çocuklar eğlenceli dünyalarda kelimeleri, cümleleri ve günlük konuşma kalıplarını keşfeder.
-
-Ücretsiz planda:
-- İlk 2 dünya erişimi
-- Günde 3 ders
-- 1 çocuk profili
-- Temel ebeveyn özeti
-
-NovaLingo Plus ile:
-- Tüm dünyalar açılır
-- Günlük ders limiti kalkar
-- 5 çocuğa kadar profil desteği gelir
-- Detaylı ebeveyn raporları açılır
-
-Öne çıkanlar:
-- Konuşma ve telaffuz odaklı aktiviteler
-- Oyunlaştırılmış ilerleme sistemi
-- Çocuklar için güvenli, reklamsız deneyim
-- Ebeveynler için net ilerleme görünürlüğü
-
-NovaLingo ücretli indirme değildir. Uygulama ücretsiz başlanır, Plus aboneliği uygulama içinden sunulur.
+TR: ingilizce öğren,kelime,çocuk,oyun,ilkokul,okul öncesi,yabancı dil,dinleme,hikaye,eğitici,ders,kids
+EN: english,kids,learn,vocabulary,words,turkish,esl,preschool,games,listening,stories,education,flashcards
 ```
 
-### English Description
+Promotional text (170):
 
 ```text
-NovaLingo helps children learn English by speaking, not just tapping.
-
-With Nova as their guide, children explore playful worlds filled with vocabulary, listening practice, and beginner speaking routines.
-
-Free plan includes:
-- Access to the first 2 worlds
-- 3 lessons per day
-- 1 child profile
-- Basic parent summary
-
-NovaLingo Plus unlocks:
-- All worlds
-- Unlimited daily lessons
-- Up to 5 child profiles
-- Detailed parent reports
-
-Highlights:
-- Speech-focused learning activities
-- Gamified progress and motivation
-- Safe, ad-free experience for children
-- Clear progress visibility for parents
-
-NovaLingo is not a paid download. The app starts free and offers an optional subscription inside the app.
+TR: Nova ile her gün birkaç dakikada İngilizce kelimeler, kısa cümleler ve hikâyeler. Reklamsız, çocuklar için güvenli.
+EN: A few minutes a day with Nova: English words, short sentences and stories. Ad-free and safe for kids.
 ```
+
+Description (TR) — same text as the Play full description below.
 
 ### Review Notes
 
 ```text
-The app includes optional auto-renewable subscriptions for NovaLingo Plus.
-Premium access is unlocked only after backend verification of the store transaction.
-If a sandbox purchase appears delayed, use Restore Purchases and allow webhook sync to complete.
+NovaLingo is a children's app. Parent-only areas (subscription, parent dashboard, settings)
+are behind a parental gate (a multiplication question).
 
-Free users can complete the first 2 worlds with a limit of 3 lessons per day.
-Detailed parent reports are available only to Plus subscribers.
+The app offers optional auto-renewable NovaLingo Plus subscriptions. Premium access is
+unlocked only after backend verification of the store transaction. If a sandbox purchase
+appears delayed, use Restore Purchases.
+
+Free users get the first 4 worlds with a limit of 3 lessons per day. The detailed parent
+report is Plus-only. No account is required: "Hemen Başla (Kayıtsız)" starts a guest session.
 ```
 
 ## Google Play Console
 
-### Short Description (TR)
+| Field                  | TR                                                                                 | EN                                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| App name (30)          | NovaLingo: Çocuklara İngilizce (30)                                                | NovaLingo: English for Kids (27)                                                   |
+| Short description (80) | Çocuklar için reklamsız, oyunlu İngilizce. Ücretsiz başla, Plus ile genişlet. (77) | Ad-free English for Turkish-speaking kids. Start free, unlock more with Plus. (77) |
+
+### Full description (TR)
 
 ```text
-Çocuklar için reklamsız İngilizce öğrenme. Ücretsiz başla, Plus ile genişlet.
+NovaLingo, Türkçe konuşan çocukların İngilizceyi oyun oynayarak öğrendiği, reklamsız bir öğrenme uygulamasıdır. Okul öncesi ve ilkokul çağındaki çocuklar için İngilizce kelime oyunları, dinleme etkinlikleri ve kısa hikâyeler bir arada.
+
+Rehber karakter Nova ile çocuklar renkli dünyaları keşfeder; kelimeleri, kısa cümleleri ve günlük konuşma kalıplarını eşleştirme, dinleme, hikâye ve konuşma pratiği etkinlikleriyle öğrenir.
+
+Neler var?
+• 9 tematik dünya: Başlangıç Bahçesi, Gramer Kalesi, Hikâye Ormanı, Şehir Meydanı ve daha fazlası
+• Resimli İngilizce kelime kartları, dinle-seç, eşleştirme ve hikâye etkinlikleri
+• Nova ile konuşma pratiği
+• Akıllı tekrar sistemi: unutulmaya başlayan kelimeler doğru zamanda tekrar gelir
+• Yıldızlar, rozetler ve seri takibiyle motive eden ilerleme sistemi
+• Ebeveyn paneli: çocuğunuzun ilerlemesini tek ekrandan görün
+
+Ücretsiz planda:
+• İlk 4 dünya
+• Günde 3 ders
+
+NovaLingo Plus ile:
+• 9 dünyanın tamamı
+• Sınırsız günlük ders
+• Detaylı ebeveyn raporu
+
+Çocuklar için güvenli:
+• Reklam yok
+• Satın alma ve ebeveyn ayarları ebeveyn doğrulamasının arkasındadır
+• Liderlik tablosunda diğer çocukların adları gösterilmez
+• Bildirimler ebeveyne gider
+
+NovaLingo ücretsiz indirilir. Plus, uygulama içinden isteğe bağlı otomatik yenilenen abonelik olarak sunulur; mağaza hesabınızdan istediğiniz zaman iptal edebilirsiniz.
 ```
 
-### Short Description (EN)
+### Full description (EN)
 
 ```text
-Ad-free English learning for kids. Start free, unlock more with Plus.
+NovaLingo is an ad-free app where Turkish-speaking children learn English through play. English vocabulary games, listening activities and short stories for preschool and primary school kids.
+
+With Nova as their guide, children explore colourful worlds and learn words, short sentences and everyday phrases through matching, listening, story and speaking-practice activities.
+
+What's inside
+• 9 themed worlds: Beginner Garden, Grammar Castle, Story Forest, City Square and more
+• Picture flashcards, listen-and-choose, matching and story activities
+• Speaking practice with Nova
+• Smart review: words come back right before they are forgotten
+• Stars, badges and streaks that keep kids motivated
+• Parent dashboard: see your child's progress on one screen
+
+Free plan
+• First 4 worlds
+• 3 lessons per day
+
+NovaLingo Plus
+• All 9 worlds
+• Unlimited daily lessons
+• Detailed parent report
+
+Safe for kids
+• No ads
+• Purchases and parent settings sit behind a parental gate
+• Other children's names are never shown on the leaderboard
+• Notifications go to the parent
+
+NovaLingo is free to download. Plus is an optional auto-renewing subscription offered in the app; you can cancel any time from your store account.
 ```
 
-### Full Description Guidance
+### Graphics
 
-Use the same promise structure as App Store copy:
-
-- free tier clearly described
-- Plus benefits clearly described
-- no claim that the app has no in-app purchases
-- no claim that offline premium access exists
-- no ad-driven monetization language
+Generated from the running app (emulator, Turkish UI) with a caption band:
+`phone1–5.png` (1080×1920), `feature.png` (1024×500), icon `public/icon-512x512.png`.
+Regenerate after visible UI changes so screenshots never show features the build lacks.
 
 ### Families and Policy Notes
 
-- No ads
-- No behavioral advertising
-- Digital purchases: Yes, subscription only
-- Social features for children: No
-- Parent-facing upgrade path only
-
-## Copy Risks To Resolve Before Submission
-
-1. **Speech claims vs. iOS reality.** Speech recognition uses the Web Speech API, which does
-   not exist in iOS WKWebView; activities fall back to tap/manual input there. Either ship a
-   native/cloud STT path or soften the speaking claims ("speaking practice with Nova" instead
-   of "checks your pronunciation") until it is proven on device.
-2. ~~**Leaderboard vs. "no social features".**~~ Resolved (September 2026): the leaderboard is
-   pseudonymous. Children's names are no longer written to or read from
-   `leaderboards/*/entries/*`; other children appear as "Explorer 4821". The
-   "no child-to-child social features" declaration is therefore accurate.
-3. **Trial wording.** The in-app paywall now only mentions a free trial when the store actually
-   has an introductory offer configured. Store copy must follow the same rule.
+- No ads, no behavioural advertising
+- Digital purchases: subscription only, behind the parental gate
+- Social features for children: none (pseudonymous leaderboard, no child-to-child contact)
+- Open-ended answers are evaluated on device (`VITE_OPEN_ENDED_EVALUATOR=local`); Gemini API
+  is not used because its terms forbid apps directed at under-18s
 
 ## Launch Checklist
 
@@ -142,4 +161,4 @@ Use the same promise structure as App Store copy:
 - Restore purchases flow verified on both platforms
 - Cancellation and renewal scenarios verified in sandbox
 - Store listing copy checked against actual enforced free and Plus limits
-- Review notes mention subscription verification delay behavior
+- Play App Signing SHA-1 added to Firebase (Google sign-in on Android)

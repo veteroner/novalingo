@@ -103,7 +103,7 @@ export function SeasonalEventBanner() {
           <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
             {t('event.upcoming', { name: nextEvent.name })}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{nextEvent.descriptionEn}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{nextEvent.description}</p>
         </div>
         <CalendarDots className="h-4 w-4 text-gray-400" />
       </motion.div>

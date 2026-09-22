@@ -5,7 +5,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
   version: 2,
   phase: 'phase2',
   title: 'My Day',
-  titleTr: 'Benim Gunum',
+  titleTr: 'Benim Günüm',
   summary:
     "Nova asks about your day. Practice 'What do you do?', 'I ___ every day', 'First..., then...'.",
   summaryTr:
@@ -35,7 +35,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
     preferredIfTagsSeen: ['actions', 'daily-routine'],
     avoidIfCompletedRecently: true,
   },
-  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' }],
+  variants: [{ id: 'default', label: 'Default', labelTr: 'Varsayılan', promptStyle: 'default' }],
   entryNodeId: 'n1',
   nodes: [
     {
@@ -50,7 +50,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       hint: {
         delayMs: 8000,
         text: 'Say: I eat breakfast every morning.',
-        textTr: 'Soyle: I eat breakfast every morning.',
+        textTr: 'Söyle: I eat breakfast every morning.',
         revealPattern: true,
       },
       repair: {
@@ -63,7 +63,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
         {
           id: 'r1_eat',
           expectedText: 'I eat breakfast every morning.',
-          expectedTextTr: 'Her sabah kahvalti yaparim.',
+          expectedTextTr: 'Her sabah kahvaltı yaparım.',
           acceptedVariants: ['every day', 'every morning', 'i eat', 'i brush', 'i wake up'],
           acceptedWords: ['every'],
           nextNodeId: 'n2_bridge',
@@ -78,7 +78,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Nice! I know your morning routine now.',
-      textTr: 'Guzel! Artik sabah rutinini biliyorum.',
+      textTr: 'Güzel! Artık sabah rutinini biliyorum.',
       emoji: '\u{1F31E}',
       next: 'n3',
     },
@@ -94,7 +94,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       hint: {
         delayMs: 9000,
         text: 'Say: First, I wake up. Then, I eat breakfast.',
-        textTr: 'Soyle: First, I wake up. Then, I eat breakfast.',
+        textTr: 'Söyle: First, I wake up. Then, I eat breakfast.',
       },
       repair: {
         enabled: true,
@@ -106,7 +106,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
         {
           id: 'r3_first_then',
           expectedText: 'First, I wake up. Then, I eat breakfast.',
-          expectedTextTr: 'Once uyanirim. Sonra kahvalti yaparim.',
+          expectedTextTr: 'Önce uyanırım. Sonra kahvaltı yaparım.',
           acceptedVariants: ['first', 'then'],
           acceptedWords: ['first', 'then'],
           nextNodeId: 'n4_bridge',
@@ -121,7 +121,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'My turn! Ask me what I do every day.',
-      textTr: 'Benim siram! Her gun ne yaptigimi bana sor.',
+      textTr: 'Benim sıram! Her gün ne yaptığımı bana sor.',
       emoji: '\u{1F929}',
       next: 'n5',
     },
@@ -165,7 +165,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       role: 'friend',
       text: 'Great question! I teach English every day. First, I say hello. Then, I teach new words!',
       textTr:
-        'Harika soru! Ben her gun Ingilizce ogretiyorum. Once merhaba derim. Sonra yeni kelimeler.',
+        'Harika soru! Ben her gün İngilizce öğretiyorum. Önce merhaba derim. Sonra yeni kelimeler.',
       emoji: '\u{1F4DA}',
       next: 'n7',
     },
@@ -181,7 +181,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       hint: {
         delayMs: 8000,
         text: 'Say: I play every day. or I eat lunch every day.',
-        textTr: 'Soyle: I play every day. veya I eat lunch every day.',
+        textTr: 'Söyle: I play every day. veya I eat lunch every day.',
         revealPattern: true,
       },
       repair: {
@@ -194,7 +194,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
         {
           id: 'r7_play',
           expectedText: 'I play every day.',
-          expectedTextTr: 'Her gun oynarim.',
+          expectedTextTr: 'Her gün oynarım.',
           acceptedVariants: ['every day', 'i play', 'i eat', 'i sleep', 'i watch'],
           acceptedWords: ['every'],
           nextNodeId: 'n8_bridge',
@@ -225,7 +225,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       hint: {
         delayMs: 9000,
         text: 'Say: First, I brush my teeth. Then, I sleep.',
-        textTr: 'Soyle: First, I brush my teeth. Then, I sleep.',
+        textTr: 'Söyle: First, I brush my teeth. Then, I sleep.',
       },
       repair: {
         enabled: true,
@@ -252,7 +252,7 @@ export const whatDoYouDoScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Now I know YOUR routine and you know MINE! We are learning together every day!',
-      textTr: 'Simdi senin rutinini biliyorum ve sen benimkini! Her gun birlikte ogreniyoruz!',
+      textTr: 'Şimdi senin rutinini biliyorum ve sen benimkini! Her gün birlikte öğreniyoruz!',
       emoji: '\u{1F31F}',
     },
   ],

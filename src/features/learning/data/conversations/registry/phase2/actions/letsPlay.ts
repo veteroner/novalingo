@@ -5,7 +5,7 @@ export const letsPlayScenario: ConversationScenario = {
   version: 2,
   phase: 'phase2',
   title: "Let's Play!",
-  titleTr: 'Hadi Oynayalim!',
+  titleTr: 'Hadi Oynayalım!',
   summary:
     "Nova wants to play with you. Practice 'Let's ___!', 'Do you want to ___?', 'I want to ___'.",
   summaryTr:
@@ -36,8 +36,8 @@ export const letsPlayScenario: ConversationScenario = {
     avoidIfCompletedRecently: true,
   },
   variants: [
-    { id: 'default', label: 'Default', labelTr: 'Varsayilan', promptStyle: 'default' },
-    { id: 'playful', label: 'Playful', labelTr: 'Eglenceli', promptStyle: 'playful' },
+    { id: 'default', label: 'Default', labelTr: 'Varsayılan', promptStyle: 'default' },
+    { id: 'playful', label: 'Playful', labelTr: 'Eğlenceli', promptStyle: 'playful' },
   ],
   entryNodeId: 'n1',
   nodes: [
@@ -46,20 +46,20 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'I am bored. I want to play. Do you want to play with me?',
-      textTr: 'Sikildim. Oynamak istiyorum. Benimle oynamak ister misin?',
+      textTr: 'Sıkıldım. Oynamak istiyorum. Benimle oynamak ister misin?',
       emoji: '\u{1F3AE}',
       goalType: 'answer',
       targetPattern: 'I want to ___',
       hint: {
         delayMs: 6000,
         text: 'Say: Yes, I want to play!',
-        textTr: 'Soyle: Yes, I want to play!',
+        textTr: 'Söyle: Yes, I want to play!',
         revealPattern: true,
       },
       repair: {
         enabled: true,
         prompt: 'Say: I want to play!',
-        promptTr: 'Soyle: I want to play!',
+        promptTr: 'Söyle: I want to play!',
         maxRetries: 2,
       },
       responses: [
@@ -81,7 +81,7 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: "Yay! Let's dance together!",
-      textTr: 'Yasaa! Birlikte dans edelim!',
+      textTr: 'Yaşasın! Birlikte dans edelim!',
       emoji: '\u{1F483}',
       next: 'n3',
     },
@@ -110,7 +110,7 @@ export const letsPlayScenario: ConversationScenario = {
         {
           id: 'r3_run',
           expectedText: "Let's run!",
-          expectedTextTr: 'Kos!',
+          expectedTextTr: 'Koş!',
           acceptedVariants: ["let's run", 'lets run'],
           acceptedWords: ['run'],
           nextNodeId: 'n4_bridge',
@@ -121,7 +121,7 @@ export const letsPlayScenario: ConversationScenario = {
         {
           id: 'r3_draw',
           expectedText: "Let's draw!",
-          expectedTextTr: 'Resim ciz!',
+          expectedTextTr: 'Resim çiz!',
           acceptedVariants: ["let's draw", 'lets draw'],
           acceptedWords: ['draw'],
           nextNodeId: 'n4_bridge',
@@ -132,7 +132,7 @@ export const letsPlayScenario: ConversationScenario = {
         {
           id: 'r3_sing',
           expectedText: "Let's sing!",
-          expectedTextTr: 'Sarki soyle!',
+          expectedTextTr: 'Şarkı söyle!',
           acceptedVariants: ["let's sing", 'lets sing'],
           acceptedWords: ['sing'],
           nextNodeId: 'n4_bridge',
@@ -147,7 +147,7 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'I love that idea! You are so fun!',
-      textTr: 'Bu fikri cok seviyorum! Sen cok eglencelisin!',
+      textTr: 'Bu fikri çok seviyorum! Sen çok eğlencelisin!',
       emoji: '\u{1F389}',
       next: 'n5',
     },
@@ -156,7 +156,7 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Now ask me! Do you want to run? Use: Do you want to ___?',
-      textTr: 'Simdi bana sor! Kos istiyorum mu? Kullan: Do you want to ___?',
+      textTr: 'Şimdi bana sor! Koş istiyorum mu? Kullan: Do you want to ___?',
       emoji: '\u2753',
       goalType: 'describe',
       targetPattern: 'Do you want to ___?',
@@ -168,7 +168,7 @@ export const letsPlayScenario: ConversationScenario = {
       repair: {
         enabled: true,
         prompt: 'Say: Do you want to ___?',
-        promptTr: 'Soyle: Do you want to ___?',
+        promptTr: 'Söyle: Do you want to ___?',
         maxRetries: 2,
       },
       responses: [
@@ -190,7 +190,7 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Yes, I want to! Great question. I also want to run.',
-      textTr: 'Evet, istiyorum! Harika soru. Ben de kosmak istiyorum.',
+      textTr: 'Evet, istiyorum! Harika soru. Ben de koşmak istiyorum.',
       emoji: '\u{1F3C3}',
       next: 'n7',
     },
@@ -199,14 +199,14 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'guide',
       text: 'Your turn again. Tell me something you want to do today. Use: I want to ___.',
-      textTr: 'Tekrar sira sende. Bugun yapmak istedigin bir seyi soyle. Kullan: I want to ___.',
+      textTr: 'Tekrar sıra sende. Bugün yapmak istediğin bir şeyi söyle. Kullan: I want to ___.',
       emoji: '\u{1F4AC}',
       goalType: 'answer',
       targetPattern: 'I want to ___',
       hint: {
         delayMs: 8000,
         text: 'Say: I want to eat. or I want to draw.',
-        textTr: 'Soyle: I want to eat. veya I want to draw.',
+        textTr: 'Söyle: I want to eat. veya I want to draw.',
         revealPattern: true,
       },
       repair: {
@@ -230,7 +230,7 @@ export const letsPlayScenario: ConversationScenario = {
         {
           id: 'r7_draw',
           expectedText: 'I want to draw.',
-          expectedTextTr: 'Resim cizmek istiyorum.',
+          expectedTextTr: 'Resim çizmek istiyorum.',
           acceptedVariants: ['i want to draw', 'want to draw'],
           acceptedWords: ['draw'],
           nextNodeId: 'n8_bridge',
@@ -256,7 +256,7 @@ export const letsPlayScenario: ConversationScenario = {
       speaker: 'nova',
       role: 'friend',
       text: 'Me too! We want the same things. Best friends!',
-      textTr: 'Ben de! Ayni seyleri istiyoruz. En iyi arkadaslar!',
+      textTr: 'Ben de! Aynı şeyleri istiyoruz. En iyi arkadaşlar!',
       emoji: '\u{1F91D}',
       next: 'n9',
     },
@@ -296,7 +296,7 @@ export const letsPlayScenario: ConversationScenario = {
         {
           id: 'r9_jump',
           expectedText: "Let's jump!",
-          expectedTextTr: 'Hadi ziplayalim!',
+          expectedTextTr: 'Hadi zıplayalım!',
           acceptedVariants: ["let's jump", 'lets jump'],
           acceptedWords: ['jump'],
           nextNodeId: 'n10_end',
@@ -307,7 +307,7 @@ export const letsPlayScenario: ConversationScenario = {
         {
           id: 'r9_run',
           expectedText: "Let's run!",
-          expectedTextTr: 'Hadi kosalim!',
+          expectedTextTr: 'Hadi koşalım!',
           acceptedVariants: ["let's run", 'lets run'],
           acceptedWords: ['run'],
           nextNodeId: 'n10_end',
@@ -323,7 +323,7 @@ export const letsPlayScenario: ConversationScenario = {
       role: 'friend',
       text: 'Yes, yes, YES! I always want to play with you! You are my best talking buddy!',
       textTr:
-        'Evet, evet, EVET! Seninle her zaman oynamak istiyorum! Sen benim en iyi konusma arkadasimsin!',
+        'Evet, evet, EVET! Seninle her zaman oynamak istiyorum! Sen benim en iyi konuşma arkadaşımsın!',
       emoji: '\u{1F973}',
     },
   ],

@@ -20,7 +20,7 @@ Free is intentionally useful but bounded.
 
 | Area                    | Free               |
 | ----------------------- | ------------------ |
-| Worlds                  | First 2 worlds     |
+| Worlds                  | First 4 of 9       |
 | Daily lesson access     | 3 lessons per day  |
 | Child profiles          | 1 child            |
 | Parent reports          | Basic summary only |
@@ -35,7 +35,9 @@ These limits are aligned with the current app constants and runtime enforcement:
   `dailyLessonDate` / `dailyLessonCount` counters on the child document, not only in the UI.
   The limit counts **lesson sessions**, so replaying a finished lesson also consumes one of
   the three; the in-app message says so explicitly.
-- `FREE_TIER.MAX_CHILD_PROFILES = 1`
+- `FREE_TIER.MAX_CHILD_PROFILES = 1` — enforced in `createChildProfile`. **There is no UI to add
+  or switch to a second profile yet**, so multiple profiles are NOT advertised as a Plus benefit
+  (paywall or store copy) until that flow ships.
 - premium world gating enforced in Home, World Map, and Lesson flows
 - detailed reporting gated in Parent Dashboard
 - `users.isPremium` and every `subscription*` field are rejected by security rules
@@ -45,16 +47,16 @@ These limits are aligned with the current app constants and runtime enforcement:
 
 Plus is the only paid product line.
 
-| Area                  | NovaLingo Plus                                  |
-| --------------------- | ----------------------------------------------- |
-| Worlds                | All current and future premium worlds           |
-| Daily lesson access   | Unlimited                                       |
-| Child profiles        | Up to 5 children                                |
-| Parent reports        | Detailed weekly insights                        |
-| Skill evidence        | Enabled                                         |
-| Purchase verification | Apple signed JWS + Google Play API verification |
-| Restore flow          | Supported                                       |
-| Ads                   | None                                            |
+| Area                  | NovaLingo Plus                                                                |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Worlds                | All current and future premium worlds                                         |
+| Daily lesson access   | Unlimited                                                                     |
+| Child profiles        | Up to 5 (limit only — no add/switch UI yet; not advertised)                   |
+| Parent reports        | Detailed weekly insights                                                      |
+| Skill evidence        | Enabled                                                                       |
+| Purchase verification | Apple signed JWS + Google Play API verification                               |
+| Restore flow          | Supported                                                                     |
+| Ads                   | None (the app has no ads on any tier — never sell "no ads" as a Plus benefit) |
 
 ## Entitlement Rules
 

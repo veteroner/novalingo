@@ -55,7 +55,7 @@ export default function SeasonalEventScreen() {
           <span className="text-4xl">{event.emoji}</span>
           <div>
             <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-            <p className="text-sm text-white/80">{event.descriptionEn}</p>
+            <p className="text-sm text-white/80">{event.description}</p>
           </div>
         </div>
 
