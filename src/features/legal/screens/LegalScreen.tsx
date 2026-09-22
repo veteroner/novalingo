@@ -20,7 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 type LegalType = 'privacy' | 'terms' | 'delete-account';
 
-const LAST_UPDATED = '8 Nisan 2026';
+const LAST_UPDATED = '22 Eylül 2026';
 const APP_NAME = 'NovaLingo';
 const COMPANY = 'NovaLingo';
 const CONTACT_EMAIL = 'privacy@novalingo.app';
@@ -77,7 +77,10 @@ function PrivacyPolicy() {
               <li>Yaş (seviye kişiselleştirme için)</li>
               <li>Öğrenme ilerlemesi, tamamlanan dersler, puan geçmişi</li>
               <li>
-                Konuşma pratiği ses kayıtları — yalnızca cihazda işlenir, sunucuya gönderilmez
+                Konuşma pratiği: çocuğun sesi, cihazın konuşma tanıma hizmeti (Android&apos;de
+                Google) tarafından anlık olarak metne çevrilir. {APP_NAME} ses kaydı saklamaz ve
+                kendi sunucularına ses göndermez; metne çevrilen cevap yalnızca cihazda
+                değerlendirilir.
               </li>
             </ul>
           </div>
@@ -125,7 +128,15 @@ function PrivacyPolicy() {
             Gizlilik Politikası geçerlidir.
           </li>
           <li>
-            <strong>Sentry:</strong> Anonim hata raporlama. Kişisel veri içermeyen teknik bilgiler.
+            <strong>Sentry:</strong> Anonim hata raporlama. Kişisel veri içermeyen teknik bilgiler;
+            ekran metinleri maskelenir.
+          </li>
+          <li>
+            <strong>Cihaz konuşma tanıma hizmeti (Google):</strong> Konuşma pratiğinde sesin metne
+            çevrilmesi. Ses, işletim sisteminin hizmeti tarafından işlenir; {APP_NAME} saklamaz.
+          </li>
+          <li>
+            <strong>Firebase Cloud Messaging:</strong> Ebeveyne gönderilen hatırlatma bildirimleri.
           </li>
           <li>
             <strong>Apple App Store / Google Play:</strong> Ödeme işlemleri. Ödeme bilgileri
@@ -208,8 +219,9 @@ function TermsOfService() {
       <section>
         <h2 className="mb-2 text-base font-bold text-gray-900">3. Ücretlendirme</h2>
         <p>
-          {APP_NAME} ücretli bir uygulamadır. Satın alma işlemleri Apple App Store veya Google Play
-          Store aracılığıyla gerçekleştirilir.
+          {APP_NAME} ücretsiz indirilebilir; ek özellikler isteğe bağlı Premium abonelikle sunulur.
+          Satın alma işlemleri Apple App Store veya Google Play Store aracılığıyla gerçekleştirilir
+          ve yalnızca ebeveyn doğrulamasından sonra yapılabilir.
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>Tüm satın almalar platform mağazasının iade politikasına tabidir.</li>

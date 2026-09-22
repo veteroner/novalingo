@@ -5,7 +5,7 @@
 [build.environment]
   NODE_VERSION = "20"
   PNPM_VERSION = "10"
-  VITE_OPEN_ENDED_EVALUATOR = "hybrid"
+  VITE_OPEN_ENDED_EVALUATOR = "local"
 
 # SPA routing — tüm istekleri index.html'e yönlendir
 [[redirects]]
