@@ -26,8 +26,8 @@ export function initSentry(): void {
     // Performance monitoring — sample 20% in production, 100% in dev
     tracesSampleRate: appEnv === 'production' ? 0.2 : 1.0,
 
-    // Session replay — capture 10% of sessions, 100% on error
-    replaysSessionSampleRate: appEnv === 'production' ? 0.1 : 0,
+    // Session replay — yalnızca hata anında (maskeli); çocuk uygulamasında rutin kayıt yok
+    replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
 
     integrations: [
