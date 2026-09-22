@@ -26,9 +26,17 @@ allprojects {
 
 // exFAT sürücülerde macOS her yazılan dosya için `._*` AppleDouble ikizi üretir;
 // R8 bunları sınıf dosyası sanıp `Invalid classfile header` ile düşer.
-// NOVALINGO_ANDROID_BUILD_DIR verildiğinde build çıktısı APFS'teki bu dizine alınır.
-// (CI/Linux'ta değişken tanımsızdır, davranış değişmez.)
-def externalBuildDir = System.getenv("NOVALINGO_ANDROID_BUILD_DIR")
+// Build çıktısı APFS'teki bir dizine alınabilir:
+//   - terminal: NOVALINGO_ANDROID_BUILD_DIR ortam değişkeni
+//   - Android Studio (terminal ortamını görmez): android/local.properties içinde
+//     novalingo.androidBuildDir=/Users/<kullanıcı>/.novalingo-android-build
+// İkisi de tanımsızsa (CI/Linux) davranış değişmez.
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+def externalBuildDir = System.getenv("NOVALINGO_ANDROID_BUILD_DIR") ?: localProperties.getProperty("novalingo.androidBuildDir")
 if (externalBuildDir != null && !externalBuildDir.isEmpty()) {
     allprojects {
         layout.buildDirectory.set(new File(externalBuildDir, project.path.replace(':', '_')))
