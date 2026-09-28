@@ -9,6 +9,7 @@ import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { useCreateChild } from '@hooks/queries';
+import { useAuthStore } from '@stores/authStore';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,11 +52,21 @@ const avatars: AvatarOption[] = [
 // Allow Unicode letters, spaces, and emoji only
 const NAME_PATTERN = /^[\p{L}\p{Extended_Pictographic}\s]+$/u;
 
+/** Sağlayıcıdan gelen adı ilk ada indirger; kurallara uymuyorsa boş döner. */
+function sanitizeSuggestedName(value: string): string {
+  const first = value.trim().split(/\s+/)[0] ?? '';
+  if (first.length < 2 || first.length > 20 || !NAME_PATTERN.test(first)) return '';
+  return first;
+}
+
 export default function CreateProfileScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation('auth');
   const createChildMutation = useCreateChild();
-  const [name, setName] = useState('');
+  // Apple/Google girişinde sağlayıcı zaten adı veriyor; kullanıcıdan tekrar
+  // istememek için ilk profil adını onunla dolduruyoruz (App Store Yönerge 4).
+  const accountName = useAuthStore((s) => s.user?.displayName ?? s.firebaseUser?.displayName ?? '');
+  const [name, setName] = useState(() => sanitizeSuggestedName(accountName));
   const [selectedAge, setSelectedAge] = useState<AgeGroup | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [step, setStep] = useState<'name' | 'age' | 'avatar'>('name');

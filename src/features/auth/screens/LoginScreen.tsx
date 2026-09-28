@@ -6,6 +6,7 @@
  */
 
 import novaMascot from '@assets/images/nova-mascot.svg';
+import { AppleSignInButton } from '@components/atoms/AppleSignInButton';
 import { Button } from '@components/atoms/Button';
 import { Spinner } from '@components/atoms/Spinner';
 import { Text } from '@components/atoms/Text';
@@ -124,18 +125,16 @@ export default function LoginScreen() {
               {t('login.withGoogle')}
             </Button>
 
-            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable) */}
+            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable).
+                Düğme Apple HIG'e uyar; emoji/üçüncü taraf logo kullanılmaz. */}
             {isAppleSignInAvailable() && (
-              <Button
-                variant="ghost"
-                size="xl"
-                fullWidth
-                onClick={handleAppleLogin}
-                icon={<span>🍎</span>}
+              <AppleSignInButton
+                label={t('login.withApple')}
+                onClick={() => {
+                  void handleAppleLogin();
+                }}
                 disabled={!kvkkAccepted}
-              >
-                {t('login.withApple')}
-              </Button>
+              />
             )}
 
             <div className="relative py-4">
