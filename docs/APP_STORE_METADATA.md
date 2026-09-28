@@ -1,7 +1,7 @@
 # NovaLingo — App Store and Google Play Metadata
 
 > Launch copy aligned with what the app actually enforces (see `docs/MONETIZATION.md`).
-> Last updated: 22 September 2026. Character counts were checked against each store's limits.
+> Last updated: 25 September 2026. Character counts were checked against each store's limits.
 
 ## Product Positioning
 
@@ -25,18 +25,30 @@
 
 Primary TR intent: _çocuklar için ingilizce_, _ingilizce öğren_, _ingilizce kelime oyunu_,
 _okul öncesi ingilizce_, _ilkokul ingilizce_. The title carries the strongest term
-("Çocuklara İngilizce"); the subtitle, short description and first description line repeat
+("İngilizce Öğren" on iOS, "Çocuklara İngilizce" on Play); the subtitle, short description and first description line repeat
 the secondary terms naturally. No keyword stuffing, no competitor names.
 
 ## App Store Connect
 
 | Field         | TR                                                                                                | EN                               |
 | ------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- |
-| Name (30)     | NovaLingo: Çocuklara İngilizce (30)                                                               | NovaLingo: English for Kids (27) |
+| Name (30)     | NovaLingo: İngilizce Öğren (26)                                                                   | NovaLingo: English for Kids (27) |
 | Subtitle (30) | Oyunla kelime ve konuşma (24)                                                                     | Learn words through play (24)    |
 | Category      | Education (secondary: Games → Educational)                                                        | same                             |
 | Age rating    | 4+                                                                                                | 4+                               |
 | Kids Category | **No** — guideline 1.3 restricts third-party analytics; the app ships Firebase Analytics + Sentry | same                             |
+
+### Guideline 2.3.8 — rejection on 25 September 2026
+
+Version 1.0 (1) was rejected because the **App Store name** said "Çocuklara İngilizce" while the app is
+not in the Kids Category. Apple's rule: if the name, subtitle, icon or screenshots imply the app is made
+for children, it must be submitted in the Kids Category.
+
+- The iOS name is now **NovaLingo: İngilizce Öğren**, and the promotional text no longer says "çocuklar".
+- Google Play has no equivalent rule, so the Play title keeps "Çocuklara İngilizce".
+- Keywords still contain çocuk/ilkokul/kids. They are not shown on the product page and Apple's notice
+  named only the displayed assets — but drop them first if 2.3.8 comes back.
+- The durable fix is the Kids Category, which requires removing Firebase Analytics and Sentry (1.3).
 
 Keywords (100, comma separated, no spaces after commas, don't repeat title words):
 
@@ -72,7 +84,7 @@ report is Plus-only. No account is required: "Hemen Başla (Kayıtsız)" starts 
 
 | Field                  | TR                                                                                 | EN                                                                                 |
 | ---------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| App name (30)          | NovaLingo: Çocuklara İngilizce (30)                                                | NovaLingo: English for Kids (27)                                                   |
+| App name (30)          | NovaLingo: Çocuklara İngilizce (30) — Play only                                    | NovaLingo: English for Kids (27)                                                   |
 | Short description (80) | Çocuklar için reklamsız, oyunlu İngilizce. Ücretsiz başla, Plus ile genişlet. (77) | Ad-free English for Turkish-speaking kids. Start free, unlock more with Plus. (77) |
 
 ### Full description (TR)
