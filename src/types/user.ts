@@ -72,6 +72,26 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   parentPin: null,
 };
 
+/**
+ * Firestore'dan **ham** okunan kullanıcı dokümanı.
+ *
+ * `User` uygulamanın normalize edilmiş iç modelidir; depodaki doküman ise eski
+ * hesaplarda `settings`'i hiç taşımayabilir veya eksik taşıyabilir. Okuma sınırında
+ * bu tipi kullan, `normalizeStoredUser()` ile `User`'a çevir — böylece `User`
+ * kullanan hiçbir ekranın savunmacı kontrol yapması gerekmez.
+ */
+export type StoredUser = Omit<User, 'settings'> & {
+  settings?: Partial<UserSettings>;
+};
+
+/** Ham Firestore dokümanını, eksik alanları varsayılanlarla doldurarak `User`'a çevirir. */
+export function normalizeStoredUser(stored: StoredUser): User {
+  return {
+    ...stored,
+    settings: { ...DEFAULT_USER_SETTINGS, ...stored.settings },
+  };
+}
+
 // ===== CHILD PROFILE =====
 export interface ChildProfile {
   id: string;
