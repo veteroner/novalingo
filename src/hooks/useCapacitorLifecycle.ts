@@ -10,7 +10,7 @@
  */
 
 import { stopSpeaking } from '@/services/speech/speechService';
-import { isNative } from '@/utils/platform';
+import { isAndroid, isNative } from '@/utils/platform';
 import { App } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { useEffect } from 'react';
@@ -24,8 +24,16 @@ export function useCapacitorLifecycle(): void {
     if (!isNative()) return;
 
     // ─── StatusBar: başlangıç stili ───
-    void StatusBar.setStyle({ style: Style.Light });
-    void StatusBar.setBackgroundColor({ color: '#6c5ce7' });
+    StatusBar.setStyle({ style: Style.Light }).catch(() => {
+      // Stil ayarlanamazsa varsayılan kalır; kullanıcıya etkisi yok.
+    });
+    // setBackgroundColor yalnızca Android'de var; iOS'ta UNIMPLEMENTED ile reddeder ve
+    // yakalanmadığında her rota değişiminde unhandledrejection üretip gerçek hataları gizler.
+    if (isAndroid()) {
+      StatusBar.setBackgroundColor({ color: '#6c5ce7' }).catch(() => {
+        // Eski Android sürümlerinde desteklenmeyebilir.
+      });
+    }
 
     // ─── Android Back Button ───
     const backHandler = App.addListener('backButton', ({ canGoBack }) => {
