@@ -9,11 +9,14 @@
  * ile audio context açılır; speak() blocked durumda false döner.
  */
 
+import { createLogger } from '@/utils/logger';
 import { resolveTtsAudioUrl } from './audioAssetUrl';
 import { getPreRecordedUrl } from './audioManifest';
 import { normalizeSpeechText } from './normalizeSpeechText';
 
 export { normalizeSpeechText } from './normalizeSpeechText';
+
+const log = createLogger('speech');
 
 // ===== FEATURE DETECTION =====
 
@@ -122,10 +125,28 @@ export async function unlockAudioPlayback(): Promise<void> {
   }
 }
 
+/**
+ * Bir `Audio` nesnesini gerçekten serbest bırakır.
+ *
+ * Referansı `null`'lamak yetmiyor: iOS'ta hâlâ kaynağa bağlı bir eleman
+ * AVAudioSession'ı playback kategorisinde tutabiliyor ve hemen ardından açılan
+ * `webkitSpeechRecognition` mikrofonu alamıyor — konuşma tanımanın "bir duyuyor
+ * bir duymuyor" davranışının muhtemel sebebi bu. `src`'yi boşaltıp `load()`
+ * çağırmak elemanı kaynaktan koparır ve oturumun bırakılmasına izin verir.
+ */
+function releaseAudio(audio: HTMLAudioElement): void {
+  try {
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+  } catch {
+    // Serbest bırakma en iyi çaba — başarısız olması akışı durdurmamalı.
+  }
+}
+
 function stopCurrentAudio(): void {
   if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
+    releaseAudio(currentAudio);
     currentAudio = null;
   }
 }
@@ -137,22 +158,35 @@ function playAudio(src: string): Promise<boolean> {
     if (synthAvailable) window.speechSynthesis.cancel();
     const audio = new Audio(src);
     currentAudio = audio;
+
+    // `releaseAudio` içindeki load() yeni bir error olayı tetikleyebilir; tek sefer çözülsün.
+    let settled = false;
+    const finish = (played: boolean) => {
+      if (settled) return;
+      settled = true;
+      releaseAudio(audio);
+      if (currentAudio === audio) currentAudio = null;
+      resolve(played);
+    };
+
     audio.onended = () => {
-      currentAudio = null;
-      resolve(true);
+      finish(true);
     };
     audio.onerror = () => {
-      currentAudio = null;
-      resolve(false);
+      if (settled) return;
+      // En sık sebep: dosya TTS host'unda yok (404). Kayıt sesi çocuk sesi olduğu için
+      // bu durum sessizliğe düşerse çocuk repliği hiç duyulmaz — çağıran taraf fallback yapar.
+      log.warn('önceden kayıtlı ses çalınamadı', { src });
+      finish(false);
     };
     audio.play().catch((error: unknown) => {
-      currentAudio = null;
       if (isPlaybackBlockedError(error)) {
-        console.warn('[Speech] Audio playback blocked — requires user interaction.');
-        resolve(false);
+        log.warn('ses çalma engellendi — kullanıcı etkileşimi gerekiyor', { src });
+        finish(false);
         return;
       }
-      resolve(false);
+      log.warn('ses çalma hatası', { src, error });
+      finish(false);
     });
   });
 }
@@ -198,9 +232,19 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
       return notifyDone(await playAudio(manifestUrl));
     }
 
-    // Kayıt yok → sessiz kal (tarayıcı TTS'ine asla düşme — sadece çocuk sesi)
+    // Kayıt yok → sessiz kal. Cihaz/tarayıcı sesine ASLA düşülmez:
+    //   1. Nova'nın sesi çocuk sesi olmalı; sistem sesleri yetişkin.
+    //   2. iOS'ta speechSynthesis çağrısı ses oturumunu bozuyor ("SSMLParserError",
+    //      "AVAudioBuffer mDataByteSize (0)") ve hemen ardından açılan mikrofon
+    //      `audio-capture` hatasıyla ~40 sn asılı kalıyor (cihazda ölçüldü).
+    // Metin ekranda zaten yazılı duruyor.
+    log.warn('çocuk sesi kaydı kullanılamadı — sessiz geçildi', {
+      reason: manifestUrl ? 'kayit-calinamadi' : 'manifest-kaydi-yok',
+      text: normalizedSpeechText.slice(0, 120),
+    });
     return notifyDone(false);
-  } catch {
+  } catch (error) {
+    log.warn('seslendirme başarısız', { error, text: text.slice(0, 120) });
     return notifyDone(false);
   }
 }
