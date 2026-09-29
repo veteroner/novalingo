@@ -531,6 +531,14 @@ export default function ConversationActivity({
 
   // Pending action to execute after TTS finishes (for intermediate/terminal nodes)
   const pendingAfterSpeechRef = useRef<(() => void) | null>(null);
+  /**
+   * Bekleyen "konuşma bitince" eylemi, repliğin seslendirmesi *başladıktan* sonra
+   * tetiklenmeli. `advanceToNode` eylemi hemen kaydeder ama TTS 500 ms sonra başlar;
+   * bu aradaki bir `isSpeaking=false` olayı (önceki repliğin bitişi veya stopSpeaking)
+   * eylemi erken çalıştırıp repliği tamamen atlatıyordu — diyalogların sonunun
+   * yarıda kalmasının sebeplerinden biri buydu.
+   */
+  const pendingSpeechStartedRef = useRef(false);
 
   // Scenario intro card (dismissed once dialogue begins)
   const [showIntro, setShowIntro] = useState(!!data.scenarioSummary);
@@ -551,7 +559,12 @@ export default function ConversationActivity({
         // If there's a pending post-TTS action (intermediate/terminal node), execute it
         const pendingAction = pendingAfterSpeechRef.current;
         if (pendingAction) {
+          // Seslendirme henüz başlamadıysa bu olay önceki repliğe ait — yoksay,
+          // aksi hâlde bu düğümün repliği hiç duyulmadan ilerlenir.
+          if (!pendingSpeechStartedRef.current) return;
+
           pendingAfterSpeechRef.current = null;
+          pendingSpeechStartedRef.current = false;
           pushTimer(pendingAction, 600);
           setNovaMood('idle');
           return;
@@ -790,8 +803,10 @@ export default function ConversationActivity({
         setCurrentAudioUrl(resolvedNode.audioUrl ?? null);
         // Brief thinking state before speaking starts
         setNovaMood('thinking');
+        pendingSpeechStartedRef.current = false;
         pushTimer(() => {
           setNovaMood('speaking');
+          pendingSpeechStartedRef.current = true;
           void ttsSpeak(resolvedNode.text, {
             rate: SPEECH_RATES[speechRateRef.current],
             audioUrl: resolvedNode.audioUrl,
@@ -850,6 +865,7 @@ export default function ConversationActivity({
             if (pendingAfterSpeechRef.current) {
               const action = pendingAfterSpeechRef.current;
               pendingAfterSpeechRef.current = null;
+              pendingSpeechStartedRef.current = false;
               action();
             }
           }, 8000);
@@ -873,6 +889,7 @@ export default function ConversationActivity({
           pushTimer(() => {
             if (pendingAfterSpeechRef.current) {
               pendingAfterSpeechRef.current = null;
+              pendingSpeechStartedRef.current = false;
               finishConversation();
             }
           }, 8000);

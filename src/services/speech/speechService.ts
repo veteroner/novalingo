@@ -216,7 +216,6 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
 
   try {
     const normalizedSpeechText = normalizeSpeechText(text);
-    const shouldBypassManifest = normalizedSpeechText !== text;
 
     // Priority 1: Explicit pre-recorded audio URL from activity data
     if (options.audioUrl) {
@@ -226,8 +225,11 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
       }
     }
 
-    // Priority 2: Auto-lookup from pre-generated audio manifest
-    const manifestUrl = shouldBypassManifest ? undefined : getPreRecordedUrl(text);
+    // Priority 2: Önceden üretilmiş ses manifesti.
+    // getPreRecordedUrl hem ham hem normalize anahtarı dener. Eskiden normalizasyon
+    // metni değiştirdiğinde (ör. "___" → "...") arama tamamen atlanıyordu; manifestte
+    // kaydı olan bu replikler hiç çalınmıyor ve sessiz kalıyordu.
+    const manifestUrl = getPreRecordedUrl(text);
     if (manifestUrl) {
       return notifyDone(await playAudio(manifestUrl));
     }
