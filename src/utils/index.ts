@@ -9,3 +9,14 @@ export { formatTime, formatDuration, getTodayString, daysBetween, timeAgo } from
 export { formatNumber, formatPercent, formatCurrency, randomBetween, clamp } from './number';
 export { shuffle, pickRandom, chunk, unique } from './array';
 export { eventBus } from './eventBus';
+export {
+  clearLogBuffer,
+  createLogger,
+  formatLogBuffer,
+  getLogBuffer,
+  installGlobalErrorHandlers,
+  setLogLevel,
+  type LogEntry,
+  type LogLevel,
+  type ScopedLogger,
+} from './logger';

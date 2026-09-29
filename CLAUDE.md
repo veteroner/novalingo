@@ -56,11 +56,25 @@ Konuşma senaryoları `conversations/registry/` altında; ekledikten sonra `vali
 
 ## Konuşma Tanıma (STT) — dikkat
 
-STT yalnızca Web Speech API (`webkitSpeechRecognition`) ile yapılır
-([SpeakItActivity](src/features/learning/components/activities/SpeakItActivity.tsx),
-[ConversationActivity](src/features/learning/components/activities/ConversationActivity.tsx)).
-**Bu API iOS WKWebView'de yoktur, Android System WebView'de güvenilmezdir** — yani native Capacitor
-build'lerinde "konuş" özelliği çalışmayabilir. Native plugin/bulut STT eklenmeden cihazda doğrulanmalı.
+STT motoru platforma göre [speechRecognitionApi.ts](src/services/speech/speechRecognitionApi.ts)
+tarafından seçilir; tüketiciler ([SpeakItActivity](src/features/learning/components/activities/SpeakItActivity.tsx),
+[ConversationActivity](src/features/learning/components/activities/ConversationActivity.tsx)) tek bir
+`SpeechRecognitionAPI` kullanır:
+
+- **Web:** `webkitSpeechRecognition`.
+- **Native (iOS/Android):** `@capacitor-community/speech-recognition` (iOS `SFSpeechRecognizer`).
+  Web Speech API bu kabuklarda **çalışmaz** — mikrofon açılır ama hiç sonuç dönmez.
+
+Native yol **kısmi sonuç (partialResults) modunda** çalışır. Sebebi: `partialResults: false` modunda
+mikrofona ses akmazsa plugin'in `start()` promise'i hiç çözülmez ve ekran sessizce asılır. Kısmi
+sonuçlarla ses akışı ölçülebilir; `NO_AUDIO_TIMEOUT_MS` içinde hiç sonuç gelmezse oturum bir kez
+otomatik yeniden başlatılır, yine ölüyse gerçek bir hata yayınlanır. Sessizlik (`SILENCE_END_MS`)
+konuşmanın bittiğine karar verir.
+
+> iOS'ta bilinen kırılganlık: WKWebView'in TTS oynatımı `AVAudioSession`'ı tutabilir ve sonraki
+> tanıma oturumuna ses akmayabilir. Plugin bu ses oturumu hatasını Swift tarafında **sessizce yutar**;
+> yukarıdaki yeniden başlatma bunun için vardır. Değişikliklerin cihazda doğrulanması şart.
+
 Serbest konuşma değerlendirmesi backend'de **Gemini** ile yapılır (`evaluateOpenEndedConversation`).
 
 ## Abonelik / Premium

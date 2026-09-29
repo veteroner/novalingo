@@ -23,6 +23,7 @@ import {
   trackConversationStarted,
   trackConversationTurnCompleted,
 } from '@services/analytics/analyticsService';
+import { SpeechRecognitionAPI } from '@services/speech/speechRecognitionApi';
 import {
   comparePronunciation,
   onSpeakingStateChange,
@@ -132,14 +133,8 @@ interface AcceptedConversationResponse {
   matchSource: 'rule' | 'open_ended_local' | 'open_ended_llm';
 }
 
-// Feature detection for SpeechRecognition
-const SpeechRecognitionAPI =
-  typeof window !== 'undefined'
-    ? (((window as unknown as Record<string, unknown>).SpeechRecognition ??
-        (window as unknown as Record<string, unknown>).webkitSpeechRecognition) as
-        | (new () => SpeechRecognition)
-        | undefined)
-    : undefined;
+// SpeechRecognition — platforma göre native plugin ya da web API'sine çözülür.
+// (iOS/Android WebView'de webkitSpeechRecognition çalışmaz; bkz. speechRecognitionApi.)
 
 interface ChatBubble {
   id: string;

@@ -17,6 +17,8 @@ PODS:
     - Capacitor
   - CapacitorCommunityInAppReview (8.0.0):
     - Capacitor
+  - CapacitorCommunitySpeechRecognition (7.0.1):
+    - Capacitor
   - CapacitorCordova (8.5.2)
   - CapacitorFirebaseAuthentication (8.5.2):
     - Capacitor
@@ -104,6 +106,7 @@ DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCommunityInAppReview (from `../../node_modules/@capacitor-community/in-app-review`)"
+  - "CapacitorCommunitySpeechRecognition (from `../../node_modules/@capacitor-community/speech-recognition`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFirebaseAuthentication (from `../../node_modules/@capacitor-firebase/authentication`)"
   - "CapacitorFirebaseAuthentication/Google (from `../../node_modules/@capacitor-firebase/authentication`)"
@@ -140,6 +143,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/app"
   CapacitorCommunityInAppReview:
     :path: "../../node_modules/@capacitor-community/in-app-review"
+  CapacitorCommunitySpeechRecognition:
+    :path: "../../node_modules/@capacitor-community/speech-recognition"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorFirebaseAuthentication:
@@ -165,6 +170,7 @@ SPEC CHECKSUMS:
   Capacitor: 89067779e14fb7ea56af07b4817f45d1f0c2a269
   CapacitorApp: 305bd13c44f6f9d164e2ee66a4faa956ed8c0e06
   CapacitorCommunityInAppReview: 4492bdd34aad4d27ed87949376022cc93b294ea1
+  CapacitorCommunitySpeechRecognition: 3e03566c44c2bb3b52391a33d4518b1adbdeb38f
   CapacitorCordova: 5bec5648cbd09a176ce34ce5e7b6cdabb2c8a327
   CapacitorFirebaseAuthentication: 826e1dae433819492daff947f3d674d1579a6ee7
   CapacitorHaptics: 296f771ecd89c7a1bd92a7b6826a7d268e2e70f5
@@ -188,6 +194,6 @@ SPEC CHECKSUMS:
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
 
-PODFILE CHECKSUM: a0b2b397702726da3ff85d36dceb1fe772ddfaec
+PODFILE CHECKSUM: df7b942f94402aee79d24d179c7cd2749a8e7c1d
 
 COCOAPODS: 1.16.2
