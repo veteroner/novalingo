@@ -30,7 +30,10 @@ import { connectStorageEmulator, getStorage, type FirebaseStorage } from 'fireba
 
 const env = import.meta.env as Record<string, string | undefined>;
 const useEmulators = env.VITE_USE_EMULATORS === 'true';
-const recaptchaSiteKey = env.VITE_RECAPTCHA_SITE_KEY?.trim() ?? '';
+const rawRecaptchaSiteKey = env.VITE_RECAPTCHA_SITE_KEY?.trim() ?? '';
+// `.env.example`'daki REPLACE_ME yer tutucusu gerçek anahtar sanılmasın — geçersiz
+// anahtarla başlatılan App Check her token isteğinde hata üretir.
+const recaptchaSiteKey = rawRecaptchaSiteKey.startsWith('REPLACE_ME') ? '' : rawRecaptchaSiteKey;
 
 // Firebase config — environment variables'dan
 const firebaseConfig = {
@@ -81,8 +84,18 @@ function initializeFirebase() {
 
   app = initializeApp(firebaseConfig);
 
-  // App Check — emülatörde devre dışı, geliştirmede debug token, üretimde reCAPTCHA v3
-  if (!useEmulators && recaptchaSiteKey) {
+  // App Check — emülatörde devre dışı, geliştirmede debug token, üretimde reCAPTCHA v3.
+  //
+  // Native kabukta reCAPTCHA v3 çalışmaz: sayfa `capacitor://localhost` origin'inden
+  // servis edildiği için domain doğrulaması başarısız olur ve her token isteği
+  // `appCheck/recaptcha-error` ile döner. Doğru sağlayıcılar iOS'ta App Attest,
+  // Android'de Play Integrity; ikisi de Firebase konsolunda ayrıca kaydedilmeli.
+  // O yapılana kadar native'de App Check başlatılmaz.
+  if (!useEmulators && isNative()) {
+    if (import.meta.env.DEV) {
+      console.warn('[Firebase] App Check native kabukta atlandı (reCAPTCHA capacitor:// ile çalışmaz).');
+    }
+  } else if (!useEmulators && recaptchaSiteKey) {
     if (import.meta.env.DEV) {
       (self as unknown as Record<string, unknown>).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
     }

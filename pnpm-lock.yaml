@@ -11,6 +11,9 @@ importers:
       '@capacitor-community/in-app-review':
         specifier: ^8.0.0
         version: 8.0.0(@capacitor/core@8.5.2)
+      '@capacitor-community/speech-recognition':
+        specifier: ^7.0.1
+        version: 7.0.1(@capacitor/core@8.5.2)
       '@capacitor-firebase/authentication':
         specifier: ^8.5.2
         version: 8.5.2(@capacitor/core@8.5.2)(firebase@11.10.0)
@@ -307,6 +310,11 @@ packages:
     resolution: {integrity: sha512-AYpEkIjdv27WGS3hnlc7xAQ1BhaBvD2svgQBfHF4P2Olw1N6a7MSCOQC6O4SuxmdBdJ2fM6uFeo1jyNjKLtIPw==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
+
+  '@capacitor-community/speech-recognition@7.0.1':
+    resolution: {integrity: sha512-ykpBZziR575X0eURO5vXaD9gVrXXC/7Ra2qql/2KP6/jxWOqAFuw4eKjSPjwdAgGE6a/Z+v8FJm4SVh57MVwDA==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@capacitor-firebase/authentication@8.5.2':
     resolution: {integrity: sha512-URpL6nxrCS9E/3OfpJDUJx5Kxbhi1KqnzY5bvpt1B3va48o7aaksz7RTggjNGW5J4EsG+Q5U2vSZ/ycJkcODQw==}
@@ -4139,6 +4147,10 @@ snapshots:
   '@bcoe/v8-coverage@0.2.3': {}
 
   '@capacitor-community/in-app-review@8.0.0(@capacitor/core@8.5.2)':
+    dependencies:
+      '@capacitor/core': 8.5.2
+
+  '@capacitor-community/speech-recognition@7.0.1(@capacitor/core@8.5.2)':
     dependencies:
       '@capacitor/core': 8.5.2
 

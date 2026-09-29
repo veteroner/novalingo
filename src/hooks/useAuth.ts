@@ -6,7 +6,8 @@
  * (bu, onUserCreated trigger'ını tetikler → preferences + welcome quest).
  */
 
-import { type User, DEFAULT_USER_SETTINGS } from '@/types/user';
+import { DEFAULT_USER_SETTINGS, normalizeStoredUser, type StoredUser } from '@/types/user';
+import { createLogger } from '@/utils/logger';
 import { onAuthChanged } from '@services/firebase/auth';
 import {
   docs,
@@ -16,6 +17,8 @@ import {
 } from '@services/firebase/firestore';
 import { useAuthStore } from '@stores/authStore';
 import { useEffect, useRef } from 'react';
+
+const log = createLogger('auth');
 
 /** Map Firebase providerId to our union type */
 function mapProvider(providerId: string | undefined): 'google' | 'apple' | 'anonymous' {
@@ -53,15 +56,22 @@ export function useAuth() {
 
       if (fbUser) {
         const uid = fbUser.uid;
-        unsubsDoc = subscribeToDocument<User>(docs.user(uid), (userData) => {
-          if (latestUidRef.current !== uid) return;
+        unsubsDoc = subscribeToDocument<StoredUser>(docs.user(uid), (userData) => {
+          if (latestUidRef.current !== uid) {
+            log.debug('bayat kullanıcı anlık görüntüsü yok sayıldı', { uid });
+            return;
+          }
 
           if (userData) {
-            // Merge defaults so legacy docs missing `settings` don't crash the UI
-            setUser({
-              ...userData,
-              settings: { ...DEFAULT_USER_SETTINGS, ...userData.settings },
+            log.debug('kullanıcı dokümanı yüklendi', {
+              uid,
+              isPremium: userData.isPremium,
+              provider: userData.provider,
+              hasSettings: Boolean(userData.settings),
             });
+            // Eksik alanları varsayılanlarla doldur — `settings`'i olmayan eski dokümanlar
+            // aksi halde `user.settings[key]` erişiminde uygulamayı çökertir.
+            setUser(normalizeStoredUser(userData));
           } else {
             // New user — create Firestore document (triggers onUserCreated)
             const newUser = {

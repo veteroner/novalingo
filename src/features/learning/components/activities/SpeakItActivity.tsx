@@ -2,14 +2,16 @@
  * SpeakItActivity
  *
  * Konuşma becerisi — kelimeyi doğru telaffuz et.
- * Web Speech API (SpeechRecognition) kullanır.
- * Fallback: tarayıcı desteklemiyorsa "Manuel Onayla" butonu gösterilir.
+ * Konuşma tanıma platforma göre native plugin ya da Web Speech API'sine çözülür
+ * (bkz. speechRecognitionApi).
+ * Fallback: hiçbiri yoksa "Manuel Onayla" butonu gösterilir.
  */
 
 import { getWordEmoji } from '@/features/learning/data/wordEmojiMap';
 import type { SpeakItData } from '@/types/content';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
+import { SpeechRecognitionAPI } from '@services/speech/speechRecognitionApi';
 import {
   isPronunciationAcceptable,
   stopSpeaking,
@@ -23,15 +25,6 @@ import type { ActivityCallbacks, FeedbackState } from './types';
 interface SpeakItActivityProps extends ActivityCallbacks {
   data: SpeakItData;
 }
-
-// Feature detection for SpeechRecognition
-const SpeechRecognitionAPI =
-  typeof window !== 'undefined'
-    ? (((window as unknown as Record<string, unknown>).SpeechRecognition ??
-        (window as unknown as Record<string, unknown>).webkitSpeechRecognition) as
-        | (new () => SpeechRecognition)
-        | undefined)
-    : undefined;
 
 export default function SpeakItActivity({ data, onComplete }: SpeakItActivityProps) {
   const { t } = useTranslation('lesson');

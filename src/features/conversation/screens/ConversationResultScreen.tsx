@@ -95,34 +95,15 @@ export default function ConversationResultScreen() {
     nextScenario.series.seriesId === scenario.series.seriesId
   );
 
-  // Auto-advance countdown: after a successful run (accuracy >= 0.6), give the child
-  // a few seconds to celebrate before jumping to the next scenario. Cancellable.
-  const AUTO_NEXT_SECONDS = 8;
-  const shouldAutoAdvance = !!(result && nextScenarioId && result.accuracy >= 0.6);
-  const [autoNextCancelled, setAutoNextCancelled] = useState(false);
-  const [autoNextRemaining, setAutoNextRemaining] = useState<number>(AUTO_NEXT_SECONDS);
-
+  // Sonraki senaryoya geçiş bilinçli olarak **otomatik değildir**: oturumu sürdürmek
+  // ya da bitirmek çocuğun (ve velinin) kararıdır. Devam etmek yine tek dokunuş —
+  // "Sonraki Bölüm" birincil düğme olarak duruyor.
   const goToNextScenario = () => {
     if (!nextScenarioId) return;
     void navigate(`/conversation?scenarioId=${encodeURIComponent(nextScenarioId)}`, {
       replace: true,
     });
   };
-
-  useEffect(() => {
-    if (!shouldAutoAdvance || autoNextCancelled) return;
-    if (autoNextRemaining <= 0) {
-      goToNextScenario();
-      return;
-    }
-    const tid = setTimeout(() => {
-      setAutoNextRemaining((s) => s - 1);
-    }, 1000);
-    return () => {
-      clearTimeout(tid);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldAutoAdvance, autoNextCancelled, autoNextRemaining]);
 
   if (!result || !scenario) {
     return (
@@ -484,24 +465,6 @@ export default function ConversationResultScreen() {
                 ? t('conversationResult.nextEpisodeButton')
                 : t('conversationResult.nextScenario')}
             </Button>
-            {shouldAutoAdvance && !autoNextCancelled && (
-              <div className="flex items-center justify-center gap-3 text-xs text-gray-500">
-                <span>
-                  {t('conversationResult.autoNextHint', {
-                    seconds: Math.max(0, autoNextRemaining),
-                  })}
-                </span>
-                <button
-                  type="button"
-                  className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 active:bg-gray-200"
-                  onClick={() => {
-                    setAutoNextCancelled(true);
-                  }}
-                >
-                  {t('conversationResult.autoNextCancel')}
-                </button>
-              </div>
-            )}
             <Button
               variant="secondary"
               size="lg"

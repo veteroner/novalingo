@@ -14,6 +14,7 @@ import {
 } from '@/features/learning/data/conversations';
 import type { ConversationScenario } from '@/features/learning/data/conversations/types/conversationScenario';
 import type { ConversationSuccessCriteriaData } from '@/types/content';
+import { createLogger } from '@/utils/logger';
 import novaMascot from '@assets/images/nova-mascot.svg';
 import { Text } from '@components/atoms/Text';
 import { useHaptic } from '@hooks/useHaptic';
@@ -23,8 +24,10 @@ import {
   trackConversationStarted,
   trackConversationTurnCompleted,
 } from '@services/analytics/analyticsService';
+import { SpeechRecognitionAPI } from '@services/speech/speechRecognitionApi';
 import {
   comparePronunciation,
+  isSpeakingNow,
   onSpeakingStateChange,
   stopSpeaking,
   speak as ttsSpeak,
@@ -57,6 +60,33 @@ interface ConversationActivityOption {
   marksTargetWords?: string[];
   marksPatterns?: string[];
 }
+
+/** Mikrofon/tanıma akışı — "bir duyuyor bir duymuyor" şikâyetini teşhis etmek için. */
+const sttLog = createLogger('stt');
+
+/**
+ * Nova'nın konuşması bittikten sonra mikrofonun açılması için beklenen süre.
+ * iOS'ta AVAudioSession'ın playback'ten kayda geçmesi ölçülebilir zaman alıyor;
+ * çok kısa tutulursa tanıma oturumu açılır ama hiç ses yakalamaz.
+ */
+const MIC_START_DELAY_MS = 700;
+
+/**
+ * Bir tanıma oturumunun sonuç vermeden sürebileceği azami süre.
+ * iOS'ta ses oturumu bozulduğunda mikrofon `audio-capture` hatasını ~40 sn sonra
+ * veriyor ve o süre boyunca çocuk ekranda kilitli kalıyor.
+ */
+const MIC_SESSION_TIMEOUT_MS = 12_000;
+
+/**
+ * TTS bitiş geri çağrısı hiç gelmezse akışın kilitlenmemesi için güvenlik süresi.
+ * Süre dolduğunda Nova hâlâ konuşuyorsa replik kesilmez — `AFTER_SPEECH_RECHECK_MS`
+ * aralığıyla yeniden bakılır (uzun kapanış replikleri 8 sn'yi aşabiliyor).
+ */
+const AFTER_SPEECH_FALLBACK_MS = 8000;
+const AFTER_SPEECH_RECHECK_MS = 1000;
+/** Konuşma durumu takılı kalırsa sonsuz beklememek için mutlak üst sınır. */
+const AFTER_SPEECH_MAX_WAIT_MS = 30_000;
 
 interface ConversationActivityNode {
   id: string;
@@ -132,14 +162,8 @@ interface AcceptedConversationResponse {
   matchSource: 'rule' | 'open_ended_local' | 'open_ended_llm';
 }
 
-// Feature detection for SpeechRecognition
-const SpeechRecognitionAPI =
-  typeof window !== 'undefined'
-    ? (((window as unknown as Record<string, unknown>).SpeechRecognition ??
-        (window as unknown as Record<string, unknown>).webkitSpeechRecognition) as
-        | (new () => SpeechRecognition)
-        | undefined)
-    : undefined;
+// SpeechRecognition — platforma göre native plugin ya da web API'sine çözülür.
+// (iOS/Android WebView'de webkitSpeechRecognition çalışmaz; bkz. speechRecognitionApi.)
 
 interface ChatBubble {
   id: string;
@@ -501,6 +525,12 @@ export default function ConversationActivity({
 
   // Ref for auto-listen callback (avoids stale closure in the speaking-state effect)
   const startListeningRef = useRef<() => void>(() => {});
+  /** Bu tanıma oturumunda hiç sonuç geldi mi — sessiz biten oturumları ayırt etmek için */
+  const gotResultRef = useRef(false);
+  /** Ölü mikrofon oturumunu kapatan zamanlayıcı */
+  const micWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Nova'nın konuşmasının bittiği an — mikrofonun ne kadar sonra açıldığını ölçmek için */
+  const lastSpeechEndAtRef = useRef<number | null>(null);
 
   // Ref for auto-advance callback when child doesn't respond
   const autoAdvanceRef = useRef<() => void>(() => {});
@@ -512,6 +542,14 @@ export default function ConversationActivity({
 
   // Pending action to execute after TTS finishes (for intermediate/terminal nodes)
   const pendingAfterSpeechRef = useRef<(() => void) | null>(null);
+  /**
+   * Bekleyen "konuşma bitince" eylemi, repliğin seslendirmesi *başladıktan* sonra
+   * tetiklenmeli. `advanceToNode` eylemi hemen kaydeder ama TTS 500 ms sonra başlar;
+   * bu aradaki bir `isSpeaking=false` olayı (önceki repliğin bitişi veya stopSpeaking)
+   * eylemi erken çalıştırıp repliği tamamen atlatıyordu — diyalogların sonunun
+   * yarıda kalmasının sebeplerinden biri buydu.
+   */
+  const pendingSpeechStartedRef = useRef(false);
 
   // Scenario intro card (dismissed once dialogue begins)
   const [showIntro, setShowIntro] = useState(!!data.scenarioSummary);
@@ -527,10 +565,17 @@ export default function ConversationActivity({
   useEffect(() => {
     return onSpeakingStateChange((speaking) => {
       if (!speaking) {
+        lastSpeechEndAtRef.current = Date.now();
+
         // If there's a pending post-TTS action (intermediate/terminal node), execute it
         const pendingAction = pendingAfterSpeechRef.current;
         if (pendingAction) {
+          // Seslendirme henüz başlamadıysa bu olay önceki repliğe ait — yoksay,
+          // aksi hâlde bu düğümün repliği hiç duyulmadan ilerlenir.
+          if (!pendingSpeechStartedRef.current) return;
+
           pendingAfterSpeechRef.current = null;
+          pendingSpeechStartedRef.current = false;
           pushTimer(pendingAction, 600);
           setNovaMood('idle');
           return;
@@ -540,10 +585,12 @@ export default function ConversationActivity({
           if (prev === 'speaking') {
             // Only start listening if there are still options for the child to respond to
             if (SpeechRecognitionAPI && optionsRef.current.length > 0) {
-              // Small delay so the mic doesn't pick up the tail of TTS
+              // Mikrofonun TTS'in kuyruğunu kapmaması *ve* iOS'ta ses oturumunun
+              // playback'ten kayda geçebilmesi için bekleme. 400 ms, kayıt çalındıktan
+              // hemen sonra mikrofonun boş dönmesine yol açıyordu.
               pushTimer(() => {
                 startListeningRef.current();
-              }, 400);
+              }, MIC_START_DELAY_MS);
             }
             return optionsRef.current.length > 0 ? 'listening' : 'idle';
           }
@@ -740,6 +787,30 @@ export default function ConversationActivity({
     });
   }, [data.scenarioId, data.scenarioTheme, getConversationOutcome, onComplete]);
 
+  /**
+   * TTS bitiş geri çağrısı gelmezse bekleyen eylemi yine de yürütecek güvenlik
+   * zamanlayıcısını kurar.
+   *
+   * Süre dolduğunda Nova hâlâ konuşuyorsa eylem **ertelenir** — aksi hâlde 8 sn'yi
+   * aşan kapanış replikleri yarıda kesilip sonuç ekranı erken açılıyordu.
+   * `AFTER_SPEECH_MAX_WAIT_MS`, konuşma durumu takılırsa sonsuz beklemeyi önler.
+   */
+  const armAfterSpeechFallback = useCallback(() => {
+    const deadline = Date.now() + AFTER_SPEECH_MAX_WAIT_MS;
+    const fire = () => {
+      const action = pendingAfterSpeechRef.current;
+      if (!action) return;
+      if (isSpeakingNow() && Date.now() < deadline) {
+        pushTimer(fire, AFTER_SPEECH_RECHECK_MS);
+        return;
+      }
+      pendingAfterSpeechRef.current = null;
+      pendingSpeechStartedRef.current = false;
+      action();
+    };
+    pushTimer(fire, AFTER_SPEECH_FALLBACK_MS);
+  }, [pushTimer]);
+
   const advanceToNode = useCallback(
     (node: ConversationActivityNode) => {
       nodeRejectionsRef.current = 0;
@@ -767,8 +838,10 @@ export default function ConversationActivity({
         setCurrentAudioUrl(resolvedNode.audioUrl ?? null);
         // Brief thinking state before speaking starts
         setNovaMood('thinking');
+        pendingSpeechStartedRef.current = false;
         pushTimer(() => {
           setNovaMood('speaking');
+          pendingSpeechStartedRef.current = true;
           void ttsSpeak(resolvedNode.text, {
             rate: SPEECH_RATES[speechRateRef.current],
             audioUrl: resolvedNode.audioUrl,
@@ -823,13 +896,7 @@ export default function ConversationActivity({
             if (nextNode) advanceToNode(nextNode);
           };
           // Safety fallback in case TTS callback doesn't fire
-          pushTimer(() => {
-            if (pendingAfterSpeechRef.current) {
-              const action = pendingAfterSpeechRef.current;
-              pendingAfterSpeechRef.current = null;
-              action();
-            }
-          }, 8000);
+          armAfterSpeechFallback();
         } else {
           // Child bubble — advance after short delay (no TTS involved)
           pushTimer(() => {
@@ -847,12 +914,7 @@ export default function ConversationActivity({
             finishConversation();
           };
           // Safety fallback
-          pushTimer(() => {
-            if (pendingAfterSpeechRef.current) {
-              pendingAfterSpeechRef.current = null;
-              finishConversation();
-            }
-          }, 8000);
+          armAfterSpeechFallback();
         } else {
           pushTimer(() => {
             finishConversation();
@@ -860,7 +922,7 @@ export default function ConversationActivity({
         }
       }
     },
-    [finishConversation, pushTimer, data.scenarioId, resolveNodeContent],
+    [armAfterSpeechFallback, finishConversation, pushTimer, data.scenarioId, resolveNodeContent],
   );
 
   const acceptConversationResponse = useCallback(
@@ -1146,12 +1208,15 @@ export default function ConversationActivity({
         const fallback = options[0];
         if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && fallback) {
           const helpText = `Let's say: ${fallback.text}`;
+          // Kaydı olan metin yalnızca seçeneğin kendisi; "Let's say: " öneki kayıtlı değil
+          // ve seslendirilirse cihaz sesine düşer (bkz. speechService native kuralı).
+          const helpSpeechText = fallback.text;
           setBubbles((prev) => [
             ...prev,
             { id: `nova-help-${Date.now()}`, speaker: 'nova', text: helpText, textTr: '' },
           ]);
           setNovaMood('speaking');
-          void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
+          void ttsSpeak(helpSpeechText, { rate: SPEECH_RATES[speechRateRef.current] });
           pushTimer(() => {
             handleOptionSelect(fallback);
           }, 2500);
@@ -1228,12 +1293,15 @@ export default function ConversationActivity({
           const fallback = options[0];
           if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && fallback) {
             const helpText = `Let's say: ${fallback.text}`;
+            // Kaydı olan metin yalnızca seçeneğin kendisi; "Let's say: " öneki kayıtlı değil
+            // ve seslendirilirse cihaz sesine düşer (bkz. speechService native kuralı).
+            const helpSpeechText = fallback.text;
             setBubbles((prev) => [
               ...prev,
               { id: `nova-help-${Date.now()}`, speaker: 'nova', text: helpText, textTr: '' },
             ]);
             setNovaMood('speaking');
-            void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
+            void ttsSpeak(helpSpeechText, { rate: SPEECH_RATES[speechRateRef.current] });
             pushTimer(() => {
               handleOptionSelect(fallback);
             }, 2500);
@@ -1269,12 +1337,15 @@ export default function ConversationActivity({
       const fallback = options[0];
       if (nodeRejectionsRef.current >= MAX_NODE_REJECTIONS && fallback) {
         const helpText = `Let's say: ${fallback.text}`;
+        // Kaydı olan metin yalnızca seçeneğin kendisi; "Let's say: " öneki kayıtlı değil
+        // ve seslendirilirse cihaz sesine düşer (bkz. speechService native kuralı).
+        const helpSpeechText = fallback.text;
         setBubbles((prev) => [
           ...prev,
           { id: `nova-help-${Date.now()}`, speaker: 'nova', text: helpText, textTr: '' },
         ]);
         setNovaMood('speaking');
-        void ttsSpeak(helpText, { rate: SPEECH_RATES[speechRateRef.current] });
+        void ttsSpeak(helpSpeechText, { rate: SPEECH_RATES[speechRateRef.current] });
         pushTimer(() => {
           handleOptionSelect(fallback);
         }, 2500);
@@ -1316,6 +1387,10 @@ export default function ConversationActivity({
 
   // ===== STT =====
   const abortRecognition = () => {
+    if (micWatchdogRef.current) {
+      clearTimeout(micWatchdogRef.current);
+      micWatchdogRef.current = null;
+    }
     if (recognitionRef.current) {
       try {
         recognitionRef.current.abort();
@@ -1328,10 +1403,27 @@ export default function ConversationActivity({
   };
 
   const startListening = useCallback(() => {
-    if (!SpeechRecognitionAPI || options.length === 0) return;
+    if (!SpeechRecognitionAPI) {
+      sttLog.error('konuşma tanıma bu platformda yok — mikrofon hiç açılmayacak');
+      return;
+    }
+    if (options.length === 0) {
+      sttLog.debug('dinleme atlandı — bu düğümde seçenek yok');
+      return;
+    }
 
     // Abort any previous recognition session to prevent conflicts
+    const hadPreviousSession = recognitionRef.current !== null;
     abortRecognition();
+
+    const attemptStartedAt = Date.now();
+    sttLog.step('dinleme başlatılıyor', {
+      hadPreviousSession,
+      msSinceSpeechEnd: lastSpeechEndAtRef.current
+        ? attemptStartedAt - lastSpeechEndAtRef.current
+        : null,
+      optionCount: options.length,
+    });
 
     try {
       const recognition = new SpeechRecognitionAPI();
@@ -1341,15 +1433,40 @@ export default function ConversationActivity({
       recognitionRef.current = recognition;
 
       recognition.onstart = () => {
+        sttLog.step('mikrofon açıldı', { msToStart: Date.now() - attemptStartedAt });
+        gotResultRef.current = false;
         setIsListening(true);
         setMicError(null);
+        // Ölü oturum bekçisi: cihazda mikrofonun `audio-capture` ile 40 sn asılı
+        // kaldığı ölçüldü. Süre dolarsa oturumu biz kapatırız; onerror/onend
+        // normal akışı (uyarı + yeniden dinleme) zaten yürütüyor.
+        if (micWatchdogRef.current) clearTimeout(micWatchdogRef.current);
+        micWatchdogRef.current = setTimeout(() => {
+          if (!gotResultRef.current) {
+            sttLog.warn('mikrofon zaman aşımı — oturum kapatılıyor', {
+              durationMs: Date.now() - attemptStartedAt,
+            });
+            abortRecognition();
+          }
+        }, MIC_SESSION_TIMEOUT_MS);
       };
       recognition.onend = () => {
+        if (micWatchdogRef.current) clearTimeout(micWatchdogRef.current);
+        // Sonuçsuz ve hatasız biten oturum = "bir duyuyor bir duymuyor" tablosu
+        sttLog.step('mikrofon kapandı', {
+          gotResult: gotResultRef.current,
+          durationMs: Date.now() - attemptStartedAt,
+        });
         setIsListening(false);
       };
       recognition.onerror = (event: Event & { error?: string }) => {
         setIsListening(false);
         const errorType = event.error;
+        sttLog.warn('tanıma hatası', {
+          errorType: errorType ?? 'unknown',
+          gotResult: gotResultRef.current,
+          durationMs: Date.now() - attemptStartedAt,
+        });
         if (errorType === 'not-allowed') {
           // Sessiz görsel bildirim — dock'taki durum satırı mesajı gösterir
           setMicError(t('activities.conversationMicNotAllowed'));
@@ -1374,9 +1491,13 @@ export default function ConversationActivity({
       };
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
+        gotResultRef.current = true;
         setMicError(null);
         const results = event.results[0];
-        if (!results) return;
+        if (!results) {
+          sttLog.warn('sonuç olayı boş geldi');
+          return;
+        }
 
         // Collect all transcripts from alternatives
         const transcripts: string[] = [];
@@ -1387,11 +1508,18 @@ export default function ConversationActivity({
 
         // Pass all alternatives so handleFreeInput can try each before giving up
         const [best, ...rest] = transcripts;
+        sttLog.step('duyuldu', {
+          best,
+          alternatives: rest.length,
+          msToResult: Date.now() - attemptStartedAt,
+        });
         if (best) void handleFreeInputRef.current(best, rest);
       };
 
       recognition.start();
-    } catch {
+    } catch (error) {
+      // En sık sebep: önceki oturum tam kapanmadan yeni start() — WebKit InvalidStateError
+      sttLog.error('recognition.start() fırlattı', { error });
       setMicError(t('activities.conversationMicError'));
     }
   }, [options, haptic, t]);

@@ -17,6 +17,8 @@ interface ImportMetaEnv {
   readonly VITE_SENTRY_DSN: string;
   readonly VITE_FEATURE_PUSH_ENABLED: string;
   readonly VITE_TTS_AUDIO_BASE_URL?: string;
+  /** Tanılama günlüğü eşiği — bkz. `src/utils/logger.ts`. Tanımsızsa 'debug'. */
+  readonly VITE_LOG_LEVEL?: 'debug' | 'info' | 'warn' | 'error' | 'silent';
 }
 
 interface ImportMeta {
