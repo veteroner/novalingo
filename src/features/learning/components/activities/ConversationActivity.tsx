@@ -27,6 +27,7 @@ import {
 import { SpeechRecognitionAPI } from '@services/speech/speechRecognitionApi';
 import {
   comparePronunciation,
+  isSpeakingNow,
   onSpeakingStateChange,
   stopSpeaking,
   speak as ttsSpeak,
@@ -76,6 +77,16 @@ const MIC_START_DELAY_MS = 700;
  * veriyor ve o süre boyunca çocuk ekranda kilitli kalıyor.
  */
 const MIC_SESSION_TIMEOUT_MS = 12_000;
+
+/**
+ * TTS bitiş geri çağrısı hiç gelmezse akışın kilitlenmemesi için güvenlik süresi.
+ * Süre dolduğunda Nova hâlâ konuşuyorsa replik kesilmez — `AFTER_SPEECH_RECHECK_MS`
+ * aralığıyla yeniden bakılır (uzun kapanış replikleri 8 sn'yi aşabiliyor).
+ */
+const AFTER_SPEECH_FALLBACK_MS = 8000;
+const AFTER_SPEECH_RECHECK_MS = 1000;
+/** Konuşma durumu takılı kalırsa sonsuz beklememek için mutlak üst sınır. */
+const AFTER_SPEECH_MAX_WAIT_MS = 30_000;
 
 interface ConversationActivityNode {
   id: string;
@@ -776,6 +787,30 @@ export default function ConversationActivity({
     });
   }, [data.scenarioId, data.scenarioTheme, getConversationOutcome, onComplete]);
 
+  /**
+   * TTS bitiş geri çağrısı gelmezse bekleyen eylemi yine de yürütecek güvenlik
+   * zamanlayıcısını kurar.
+   *
+   * Süre dolduğunda Nova hâlâ konuşuyorsa eylem **ertelenir** — aksi hâlde 8 sn'yi
+   * aşan kapanış replikleri yarıda kesilip sonuç ekranı erken açılıyordu.
+   * `AFTER_SPEECH_MAX_WAIT_MS`, konuşma durumu takılırsa sonsuz beklemeyi önler.
+   */
+  const armAfterSpeechFallback = useCallback(() => {
+    const deadline = Date.now() + AFTER_SPEECH_MAX_WAIT_MS;
+    const fire = () => {
+      const action = pendingAfterSpeechRef.current;
+      if (!action) return;
+      if (isSpeakingNow() && Date.now() < deadline) {
+        pushTimer(fire, AFTER_SPEECH_RECHECK_MS);
+        return;
+      }
+      pendingAfterSpeechRef.current = null;
+      pendingSpeechStartedRef.current = false;
+      action();
+    };
+    pushTimer(fire, AFTER_SPEECH_FALLBACK_MS);
+  }, [pushTimer]);
+
   const advanceToNode = useCallback(
     (node: ConversationActivityNode) => {
       nodeRejectionsRef.current = 0;
@@ -861,14 +896,7 @@ export default function ConversationActivity({
             if (nextNode) advanceToNode(nextNode);
           };
           // Safety fallback in case TTS callback doesn't fire
-          pushTimer(() => {
-            if (pendingAfterSpeechRef.current) {
-              const action = pendingAfterSpeechRef.current;
-              pendingAfterSpeechRef.current = null;
-              pendingSpeechStartedRef.current = false;
-              action();
-            }
-          }, 8000);
+          armAfterSpeechFallback();
         } else {
           // Child bubble — advance after short delay (no TTS involved)
           pushTimer(() => {
@@ -886,13 +914,7 @@ export default function ConversationActivity({
             finishConversation();
           };
           // Safety fallback
-          pushTimer(() => {
-            if (pendingAfterSpeechRef.current) {
-              pendingAfterSpeechRef.current = null;
-              pendingSpeechStartedRef.current = false;
-              finishConversation();
-            }
-          }, 8000);
+          armAfterSpeechFallback();
         } else {
           pushTimer(() => {
             finishConversation();
@@ -900,7 +922,7 @@ export default function ConversationActivity({
         }
       }
     },
-    [finishConversation, pushTimer, data.scenarioId, resolveNodeContent],
+    [armAfterSpeechFallback, finishConversation, pushTimer, data.scenarioId, resolveNodeContent],
   );
 
   const acceptConversationResponse = useCallback(
