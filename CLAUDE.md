@@ -132,7 +132,8 @@ değişken tanımsızdır, davranış değişmez.
 ## i18n
 
 `src/i18n/locales/{en,tr}` namespace bazlı, `react-i18next` + `LanguageDetector` (`localStorage`
-anahtarı `novalingo_lang`), `fallbackLng: 'tr'`. Namespace'ler (`src/i18n/index.ts`'te kayıtlı):
+anahtarı `novalingo_lang`), `fallbackLng: 'tr'`. **Telefonun sistem diline bakılmaz** — dil yalnızca
+kullanıcının ayarlardan seçimiyle değişir, aksi hâlde arayüz Türkçedir (hedef kitle Türkçe konuşan çocuklar). Namespace'ler (`src/i18n/index.ts`'te kayıtlı):
 `common, auth, home, lesson, shop, profile, gamification, parent`.
 
 Tüm kullanıcıya dönük ekranlar i18n'e taşındı (tr+en eşitlenmiş). **Referans örnek:
