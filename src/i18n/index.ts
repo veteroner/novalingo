@@ -44,7 +44,11 @@ void i18n
       escapeValue: false, // React already escapes
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      // Yalnızca kullanıcının bilerek yaptığı seçim (Profil → ⚙️) okunur; telefonun
+      // sistem diline bakılmaz. Hedef kitle Türkçe konuşan çocuklar ve ebeveyn
+      // telefonları sıkça İngilizce ayarlı — sistem diline uyulursa çocuk,
+      // öğrenmeye çalıştığı dilde bir arayüzle karşılaşıyordu. Seçim yoksa fallbackLng: 'tr'.
+      order: ['localStorage'],
       caches: ['localStorage'],
       lookupLocalStorage: 'novalingo_lang',
     },
