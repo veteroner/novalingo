@@ -127,13 +127,18 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const { isLoading } = useAuth();
   const setFirebaseUser = useAuthStore((s) => s.setFirebaseUser);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialAuthResolvedRef = useRef(false);
 
-  // Safety timeout — if auth state never resolves, force-clear loading
+  // Safety timeout — yalnızca İLK auth çözümlemesi için. Giriş ekranı da
+  // `setLoading(true)` çağırır; yavaş ağda (iOS ilk açılış) süren bir girişi
+  // burada iptal etmek kullanıcıyı sessizce giriş ekranına geri atıyordu.
   useEffect(() => {
     if (!isLoading) {
+      initialAuthResolvedRef.current = true;
       if (timerRef.current) clearTimeout(timerRef.current);
       return;
     }
+    if (initialAuthResolvedRef.current) return;
     timerRef.current = setTimeout(() => {
       console.warn('[Auth] Auth state timed out — forcing unauthenticated state');
       setFirebaseUser(null);

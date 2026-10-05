@@ -128,6 +128,20 @@ export async function signInWithApple(): Promise<FirebaseUser> {
 }
 
 /**
+ * Hesap silme sürerken auth dinleyicisi silinen kullanıcı dokümanını "yeni
+ * kullanıcı" sanıp yeniden oluşturmamalı; aksi halde geride yetim bir doküman kalır.
+ */
+let accountDeletionInProgress = false;
+
+export function setAccountDeletionInProgress(value: boolean): void {
+  accountDeletionInProgress = value;
+}
+
+export function isAccountDeletionInProgress(): boolean {
+  return accountDeletionInProgress;
+}
+
+/**
  * Anonim giriş (hızlı başlangıç)
  */
 export async function signInAnonymousUser(): Promise<FirebaseUser> {
