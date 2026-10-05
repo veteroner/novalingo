@@ -24,6 +24,9 @@ import {
   OAuthProvider,
   linkWithPopup,
   linkWithCredential,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
+  revokeAccessToken,
   type AuthCredential,
   type User as FirebaseUser,
   type Unsubscribe,
@@ -76,15 +79,28 @@ async function getNativeGoogleCredential(): Promise<AuthCredential> {
   return GoogleAuthProvider.credential(idToken, result.credential?.accessToken);
 }
 
-/** Native Apple akışından kimlik bilgisini alır (nonce ile). */
-async function getNativeAppleCredential(): Promise<AuthCredential> {
+/**
+ * Native Apple akışından kimlik bilgisini alır (nonce ile). `authorizationCode`,
+ * hesap silinirken Apple token'ını iptal etmek için gerekir.
+ */
+async function getNativeAppleSignIn(): Promise<{
+  credential: AuthCredential;
+  authorizationCode: string | undefined;
+}> {
   const result = await FirebaseAuthentication.signInWithApple({ skipNativeAuth: true });
   const idToken = result.credential?.idToken;
   if (!idToken) throw new Error(SIGN_IN_CANCELLED_ERROR);
-  return new OAuthProvider('apple.com').credential({
-    idToken,
-    rawNonce: result.credential?.nonce,
-  });
+  return {
+    credential: new OAuthProvider('apple.com').credential({
+      idToken,
+      rawNonce: result.credential?.nonce,
+    }),
+    authorizationCode: result.credential?.authorizationCode,
+  };
+}
+
+async function getNativeAppleCredential(): Promise<AuthCredential> {
+  return (await getNativeAppleSignIn()).credential;
 }
 
 /**
@@ -137,6 +153,43 @@ export async function linkAnonymousAccount(provider: 'google' | 'apple'): Promis
   const authProvider = provider === 'google' ? googleProvider : appleProvider;
   const result = await linkWithPopup(currentUser, authProvider);
   return result.user;
+}
+
+/**
+ * Hesap silmeden önce kimliği tazeler.
+ *
+ * Firebase, hesabı silmek için yakın tarihli giriş ister (`auth/requires-recent-login`);
+ * birkaç dakika önce giriş yapmamış bir kullanıcıda veriler silinip giriş hesabı
+ * silinemeden kalırdı. Bu yüzden veriler silinmeden ÖNCE çağrılır: kullanıcı hesap
+ * seçicide onay verir, iptal ederse hiçbir şey silinmez (`SIGN_IN_CANCELLED_ERROR`).
+ *
+ * Apple ile giriş yapan hesaplarda Apple token'ı da iptal edilir (App Store 5.1.1(v)).
+ * İptal, Firebase konsolunda Apple sağlayıcısının OAuth kod akışı yapılandırmasını
+ * gerektirir; başarısız olursa silme yine de sürer.
+ *
+ * Misafir (anonim) hesaplar tazelenemez; onlar için bir şey yapılmaz.
+ */
+export async function reauthenticateForDeletion(): Promise<void> {
+  const user = auth.currentUser;
+  if (!user || user.isAnonymous) return;
+
+  const providerId = user.providerData[0]?.providerId;
+  const isApple = providerId === 'apple.com';
+
+  if (isNativePlatform()) {
+    if (isApple) {
+      const { credential, authorizationCode } = await getNativeAppleSignIn();
+      await reauthenticateWithCredential(user, credential);
+      if (authorizationCode) {
+        await revokeAccessToken(auth, authorizationCode).catch(() => undefined);
+      }
+      return;
+    }
+    await reauthenticateWithCredential(user, await getNativeGoogleCredential());
+    return;
+  }
+
+  await reauthenticateWithPopup(user, isApple ? appleProvider : googleProvider);
 }
 
 /**

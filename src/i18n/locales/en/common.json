@@ -126,7 +126,8 @@
     "wheelErrorMessage": "Please try again shortly.",
     "wheelNoProfile": "Select a profile first to spin the wheel.",
     "wheelAlreadySpun": "You got today's reward. Come back tomorrow.",
-    "wheelPrompt": "Spin once a day and win a surprise reward."
+    "wheelPrompt": "Spin once a day and win a surprise reward.",
+    "deleteAccountButton": "Delete Account"
   },
   "parentalGate": {
     "title": "🔒 Parent Verification",

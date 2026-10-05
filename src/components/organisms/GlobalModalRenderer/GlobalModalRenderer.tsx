@@ -297,6 +297,18 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         >
           {t('modals.signOutButton')}
         </button>
+        {/* Hesap silme — App Store 5.1.1(v) bunun kolay bulunmasını şart koşuyor.
+            Ebeveyn kapısından geçince silme onayı kendiliğinden açılır. */}
+        <button
+          type="button"
+          onClick={() => {
+            onClose();
+            void navigate('/parent/settings', { state: { openDeleteAccount: true } });
+          }}
+          className="w-full rounded-2xl px-4 py-3 text-sm font-semibold text-red-600"
+        >
+          {t('modals.deleteAccountButton')}
+        </button>
       </div>
     </ModalShell>
   );
