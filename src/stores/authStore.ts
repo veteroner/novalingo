@@ -55,7 +55,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ error, isLoading: false });
   },
 
+  // Çıkış/hesap silme sonrası çağrılır: auth durumu artık bilinir (oturum yok).
+  // isLoading'i yeniden true yapmak uygulamayı yükleme ekranında bırakıyordu.
   reset: () => {
-    set(initialState);
+    set({ ...initialState, isLoading: false });
   },
 }));

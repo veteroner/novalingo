@@ -10,7 +10,8 @@ import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectib
 import type { AgeGroup } from '@/types/user';
 import * as Sentry from '@sentry/react';
 import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
-import { reauthenticateForDeletion, signOut } from './auth';
+import { createLogger } from '@/utils/logger';
+import { reauthenticateForDeletion, setAccountDeletionInProgress, signOut } from './auth';
 import {
   collection,
   deleteDoc,
@@ -1208,6 +1209,8 @@ export interface DeleteAccountRes {
  */
 export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccountRes> {
   const uid = requireCurrentUserId();
+  const log = createLogger('account');
+  log.step('hesap silme başladı');
 
   const userSnap = await getDoc(doc(db, 'users', uid));
   const settings = (userSnap.data() as StoredUserProfile | undefined)?.settings;
@@ -1216,7 +1219,19 @@ export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccou
   }
 
   await reauthenticateForDeletion();
+  log.step('kimlik doğrulandı');
 
+  setAccountDeletionInProgress(true);
+  try {
+    await deleteAccountData(uid, log);
+  } finally {
+    setAccountDeletionInProgress(false);
+  }
+  return { deleted: true };
+}
+
+/** {@link deleteAccount}'un veri silme adımı; alt koleksiyonlar paralel okunur. */
+async function deleteAccountData(uid: string, log: ReturnType<typeof createLogger>): Promise<void> {
   // Çocuklar ve alt koleksiyonları (istemcinin yazabildiği her şey)
   const childrenSnap = await getDocs(
     query(collection(db, 'children'), where('parentUid', '==', uid)),
@@ -1233,20 +1248,26 @@ export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccou
     'conversationBestScores',
   ];
   const weekId = getWeekId();
+  log.step('çocuklar bulundu', { count: childrenSnap.size });
 
   for (const childDoc of childrenSnap.docs) {
-    for (const sub of subcollections) {
-      const subSnap = await getDocs(collection(db, 'children', childDoc.id, sub));
-      const batch = writeBatch(db);
-      subSnap.docs.forEach((d) => batch.delete(d.ref));
-      if (!subSnap.empty) await batch.commit();
-    }
+    await Promise.all(
+      subcollections.map(async (sub) => {
+        const subSnap = await getDocs(collection(db, 'children', childDoc.id, sub));
+        if (subSnap.empty) return;
+        const batch = writeBatch(db);
+        subSnap.docs.forEach((d) => batch.delete(d.ref));
+        await batch.commit();
+      }),
+    );
     // Bu haftanın liderlik kaydı (isim içermez ama çocuk aktif tablodan çıksın)
     await deleteDoc(doc(db, 'leaderboards', weekId, 'entries', childDoc.id)).catch(() => undefined);
     await deleteDoc(childDoc.ref);
   }
 
+  log.step('çocuk verileri silindi');
   await deleteDoc(doc(db, 'users', uid));
+  log.step('kullanıcı dokümanı silindi');
 
   const currentUser = auth.currentUser;
   if (currentUser) {
@@ -1260,8 +1281,9 @@ export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccou
     }
   }
 
+  log.step('giriş hesabı silindi');
   await signOut();
-  return { deleted: true };
+  log.step('oturum kapatıldı');
 }
 
 // ===== LAZY SCHEDULED FUNCTIONS =====

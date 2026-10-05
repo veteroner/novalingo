@@ -8,7 +8,7 @@
 
 import { DEFAULT_USER_SETTINGS, normalizeStoredUser, type StoredUser } from '@/types/user';
 import { createLogger } from '@/utils/logger';
-import { onAuthChanged } from '@services/firebase/auth';
+import { isAccountDeletionInProgress, onAuthChanged } from '@services/firebase/auth';
 import {
   docs,
   serverTimestamp,
@@ -72,6 +72,8 @@ export function useAuth() {
             // Eksik alanları varsayılanlarla doldur — `settings`'i olmayan eski dokümanlar
             // aksi halde `user.settings[key]` erişiminde uygulamayı çökertir.
             setUser(normalizeStoredUser(userData));
+          } else if (isAccountDeletionInProgress()) {
+            log.debug('hesap siliniyor; kullanıcı dokümanı yeniden oluşturulmadı', { uid });
           } else {
             // New user — create Firestore document (triggers onUserCreated)
             const newUser = {

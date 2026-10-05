@@ -93,7 +93,9 @@ function initializeFirebase() {
   // O yapılana kadar native'de App Check başlatılmaz.
   if (!useEmulators && isNative()) {
     if (import.meta.env.DEV) {
-      console.warn('[Firebase] App Check native kabukta atlandı (reCAPTCHA capacitor:// ile çalışmaz).');
+      console.warn(
+        '[Firebase] App Check native kabukta atlandı (reCAPTCHA capacitor:// ile çalışmaz).',
+      );
     }
   } else if (!useEmulators && recaptchaSiteKey) {
     if (import.meta.env.DEV) {
@@ -125,9 +127,11 @@ function initializeFirebase() {
 
   db = initializeFirestore(app, {
     localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-    // WKWebView/Capacitor can hang with Firestore's default streaming transport.
-    // Force the more compatible polling path on native shells.
-    experimentalAutoDetectLongPolling: isNative(),
+    // WKWebView/Capacitor'da varsayılan akış (WebChannel) bağlantısı asılıyor.
+    // "Otomatik algıla" modu da her yeni dinleyicide ~30 sn bekleyip sonra long
+    // polling'e düşüyordu (girişte ve hesap silmede ekran dakikalarca donuyordu);
+    // native kabukta long polling doğrudan zorlanır.
+    ...(isNative() ? { experimentalForceLongPolling: true } : {}),
   });
   storage = getStorage(app);
   functions = getFunctions(app, 'europe-west1');
