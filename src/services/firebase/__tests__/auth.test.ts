@@ -9,6 +9,8 @@
 import {
   GoogleAuthProvider,
   OAuthProvider,
+  reauthenticateWithCredential,
+  revokeAccessToken,
   signInWithCredential,
   signInWithPopup,
   signOut as firebaseSignOut,
@@ -34,7 +36,11 @@ vi.mock('@capacitor/core', () => ({
   },
 }));
 
-vi.mock('../app', () => ({ auth: { name: 'test-auth' } }));
+const fakeAuth = vi.hoisted(() => ({
+  name: 'test-auth',
+  currentUser: null as null | { isAnonymous: boolean; providerData: { providerId: string }[] },
+}));
+vi.mock('../app', () => ({ auth: fakeAuth }));
 
 vi.mock('@services/parentGate/parentGateSession', () => ({ resetParentGate: vi.fn() }));
 
@@ -42,6 +48,7 @@ const {
   SIGN_IN_CANCELLED_ERROR,
   isAppleSignInAvailable,
   isSignInCancelled,
+  reauthenticateForDeletion,
   signInWithApple,
   signInWithGoogle,
   signOut,
@@ -77,7 +84,7 @@ describe('auth — Google girişi', () => {
 
     expect(native.signInWithGoogle).toHaveBeenCalledWith({ skipNativeAuth: true });
     expect(googleCredential).toHaveBeenCalledWith('id-123', 'acc-456');
-    expect(signInWithCredential).toHaveBeenCalledWith({ name: 'test-auth' }, 'google-credential');
+    expect(signInWithCredential).toHaveBeenCalledWith(fakeAuth, 'google-credential');
     expect(signInWithPopup).not.toHaveBeenCalled();
     expect(user).toBe(fakeUser);
   });
@@ -117,7 +124,7 @@ describe('auth — Apple girişi', () => {
 
     expect(native.signInWithApple).toHaveBeenCalledWith({ skipNativeAuth: true });
     expect(credentialFn).toHaveBeenCalledWith({ idToken: 'apple-id', rawNonce: 'raw-nonce' });
-    expect(signInWithCredential).toHaveBeenCalledWith({ name: 'test-auth' }, 'apple-credential');
+    expect(signInWithCredential).toHaveBeenCalledWith(fakeAuth, 'apple-credential');
   });
 
   it("Apple girişi yalnızca iOS'ta sunulur", () => {
@@ -157,5 +164,77 @@ describe('auth — iptal ve çıkış', () => {
     await signOut();
     expect(native.signOut).not.toHaveBeenCalled();
     expect(firebaseSignOut).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('auth — hesap silme öncesi kimlik tazeleme (App Store 5.1.1(v))', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    platform.current = 'ios';
+    (GoogleAuthProvider as unknown as { credential: unknown }).credential = googleCredential;
+  });
+
+  it('misafir hesapta hiçbir sağlayıcı açılmaz', async () => {
+    fakeAuth.currentUser = { isAnonymous: true, providerData: [] };
+    await reauthenticateForDeletion();
+    expect(native.signInWithApple).not.toHaveBeenCalled();
+    expect(native.signInWithGoogle).not.toHaveBeenCalled();
+    expect(reauthenticateWithCredential).not.toHaveBeenCalled();
+  });
+
+  it("Apple hesabında kimliği tazeler ve Apple token'ını iptal eder", async () => {
+    fakeAuth.currentUser = { isAnonymous: false, providerData: [{ providerId: 'apple.com' }] };
+    const credentialFn = vi.fn(() => 'apple-credential');
+    vi.mocked(OAuthProvider).mockImplementation(
+      () => ({ addScope: vi.fn(), credential: credentialFn }) as never,
+    );
+    vi.mocked(native.signInWithApple).mockResolvedValue({
+      user: null,
+      additionalUserInfo: null,
+      credential: {
+        providerId: 'apple.com',
+        idToken: 'apple-id',
+        nonce: 'raw-nonce',
+        authorizationCode: 'auth-code',
+      },
+    });
+
+    await reauthenticateForDeletion();
+
+    expect(reauthenticateWithCredential).toHaveBeenCalledWith(
+      fakeAuth.currentUser,
+      'apple-credential',
+    );
+    expect(revokeAccessToken).toHaveBeenCalledWith(fakeAuth, 'auth-code');
+  });
+
+  it('Google hesabında hesap seçiciden gelen kimlikle tazeler', async () => {
+    fakeAuth.currentUser = { isAnonymous: false, providerData: [{ providerId: 'google.com' }] };
+    vi.mocked(native.signInWithGoogle).mockResolvedValue({
+      user: null,
+      additionalUserInfo: null,
+      credential: { providerId: 'google.com', idToken: 'id-1', accessToken: 'acc-1' },
+    });
+
+    await reauthenticateForDeletion();
+
+    expect(googleCredential).toHaveBeenCalledWith('id-1', 'acc-1');
+    expect(reauthenticateWithCredential).toHaveBeenCalledWith(
+      fakeAuth.currentUser,
+      'google-credential',
+    );
+    expect(revokeAccessToken).not.toHaveBeenCalled();
+  });
+
+  it('kullanıcı onayı iptal ederse tazeleme yapılmaz ve iptal hatası fırlar', async () => {
+    fakeAuth.currentUser = { isAnonymous: false, providerData: [{ providerId: 'apple.com' }] };
+    vi.mocked(native.signInWithApple).mockResolvedValue({
+      user: null,
+      additionalUserInfo: null,
+      credential: null,
+    });
+
+    await expect(reauthenticateForDeletion()).rejects.toThrow(SIGN_IN_CANCELLED_ERROR);
+    expect(reauthenticateWithCredential).not.toHaveBeenCalled();
   });
 });

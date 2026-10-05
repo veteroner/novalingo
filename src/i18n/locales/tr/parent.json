@@ -108,13 +108,15 @@
     "emailInUse": "Bu e-posta adresi zaten kullanımda.",
     "emailFailed": "E-posta değiştirilemedi. Tekrar deneyin.",
     "deleteModalTitle": "⚠️ Hesabı Sil",
-    "deleteModalDesc": "Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinecektir.",
+    "deleteModalDesc": "Bu işlem geri alınamaz. Hesabınız, tüm çocuk profilleri, ilerleme ve ayarlar kalıcı olarak silinecek. Google veya Apple ile giriş yaptıysanız kimliğinizi bir kez daha onaylamanız istenecek.",
     "deletePinPrompt": "Onaylamak için PIN kodunuzu girin",
-    "deleteFailed": "Hesap silinemedi. PIN kodunu kontrol edin.",
+    "deleteFailed": "Hesap silinemedi. Lütfen tekrar deneyin.",
     "deleting": "Siliniyor...",
     "deleteConfirm": "Evet, Hesabı Sil",
     "privacy": "Gizlilik Politikası",
-    "terms": "Kullanım Koşulları"
+    "terms": "Kullanım Koşulları",
+    "deleteWrongPin": "PIN kodu hatalı. Lütfen tekrar deneyin.",
+    "deleteCancelled": "Onay iptal edildi; hesabınız silinmedi."
   },
   "dashboard": {
     "gateTitle": "🔒 Ebeveyn Paneli",

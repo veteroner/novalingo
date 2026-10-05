@@ -10,7 +10,7 @@ import { Card } from '@components/molecules/Card';
 import { ListItem } from '@components/molecules/ListItem';
 import { MainLayout } from '@components/templates/MainLayout';
 import { useChildren, useParentSettings, useSaveParentSettings } from '@hooks/queries';
-import { getCurrentUser, signOut } from '@services/firebase/auth';
+import { getCurrentUser, isSignInCancelled, signOut } from '@services/firebase/auth';
 import {
   deleteAccount as deleteAccountCallable,
   setParentPin as setParentPinCallable,
@@ -23,7 +23,7 @@ import { verifyBeforeUpdateEmail } from 'firebase/auth';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Toggle switch component
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
@@ -49,6 +49,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
 
 export default function ParentSettings() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation('parent');
   const child = useChildStore((s) => s.activeChild);
 
@@ -68,7 +69,11 @@ export default function ParentSettings() {
     leaderboard: true,
     chatEnabled: false,
   });
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  // Hızlı ayarlardaki "Hesabı Sil" buraya `openDeleteAccount` ile gelir; ebeveyn
+  // kapısından geçilince silme onayı doğrudan açık başlar.
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(() =>
+    Boolean((location.state as { openDeleteAccount?: boolean } | null)?.openDeleteAccount),
+  );
   const [showPinChange, setShowPinChange] = useState(false);
   const [pinStep, setPinStep] = useState<'current' | 'new' | 'confirm'>('current');
   const [currentPinInput, setCurrentPinInput] = useState('');
@@ -186,6 +191,13 @@ export default function ParentSettings() {
 
   const user = useAuthStore((s) => s.user);
   const hasPinSet = user?.settings.parentPin != null;
+
+  // Yönlendirme bayrağını temizle: geri gelindiğinde onay tekrar açılmasın.
+  useEffect(() => {
+    if ((location.state as { openDeleteAccount?: boolean } | null)?.openDeleteAccount) {
+      void navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location.pathname, location.state, navigate]);
 
   // Hydrate local state from query data
   useEffect(() => {
@@ -755,12 +767,19 @@ export default function ParentSettings() {
                         setDeleteError('');
 
                         try {
-                          await removeAccount({ pin: deletePinInput || '0000' });
+                          // PIN yalnızca belirlenmişse gönderilir; yoksa sunucu doğrulamayı atlar.
+                          await removeAccount({ pin: deletePinInput });
                           useAuthStore.getState().reset();
                           useChildStore.getState().reset();
-                          void navigate('/onboarding');
-                        } catch {
-                          setDeleteError(t('settings.deleteFailed'));
+                          void navigate('/login', { replace: true });
+                        } catch (err) {
+                          if (isSignInCancelled(err)) {
+                            setDeleteError(t('settings.deleteCancelled'));
+                          } else if (err instanceof Error && err.message === 'Invalid PIN') {
+                            setDeleteError(t('settings.deleteWrongPin'));
+                          } else {
+                            setDeleteError(t('settings.deleteFailed'));
+                          }
                           setDeletePinInput('');
                         } finally {
                           setDeleting(false);

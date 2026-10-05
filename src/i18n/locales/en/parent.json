@@ -108,13 +108,15 @@
     "emailInUse": "This email address is already in use.",
     "emailFailed": "Couldn't change email. Please try again.",
     "deleteModalTitle": "⚠️ Delete Account",
-    "deleteModalDesc": "This action cannot be undone. All your data will be permanently deleted.",
+    "deleteModalDesc": "This cannot be undone. Your account, all child profiles, progress and settings will be permanently deleted. If you signed in with Google or Apple, you will be asked to confirm your identity once more.",
     "deletePinPrompt": "Enter your PIN code to confirm",
-    "deleteFailed": "Couldn't delete account. Check your PIN code.",
+    "deleteFailed": "The account could not be deleted. Please try again.",
     "deleting": "Deleting...",
     "deleteConfirm": "Yes, Delete Account",
     "privacy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "deleteWrongPin": "Incorrect PIN. Please try again.",
+    "deleteCancelled": "Confirmation was cancelled; your account was not deleted."
   },
   "dashboard": {
     "gateTitle": "🔒 Parent Panel",

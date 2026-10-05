@@ -10,6 +10,7 @@ import { getRandomCollectible, getRandomRareCollectible } from '@/data/collectib
 import type { AgeGroup } from '@/types/user';
 import * as Sentry from '@sentry/react';
 import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
+import { reauthenticateForDeletion, signOut } from './auth';
 import {
   collection,
   deleteDoc,
@@ -1193,12 +1194,30 @@ export interface DeleteAccountRes {
   deleted: boolean;
 }
 
+/**
+ * Hesabı ve tüm çocuk verilerini kalıcı olarak siler (App Store 5.1.1(v)).
+ *
+ * Sıra önemlidir:
+ * 1. PIN yalnızca belirlenmişse doğrulanır. Ebeveyn alanı zaten ebeveyn kapısı
+ *    arkasında; PIN'i olmayan hesaplarda eskiden "No PIN set" hatası silmeyi
+ *    tamamen engelliyordu.
+ * 2. Kimlik tazelenir (Google/Apple). Firebase, giriş hesabını silmek için yakın
+ *    tarihli giriş ister; bu adım veriler silinmeden ÖNCE yapılır ki kullanıcı
+ *    iptal ederse ya da tazeleme başarısız olursa hiçbir şey yarım silinmesin.
+ * 3. Çocuk verileri, kullanıcı dokümanı ve giriş hesabı silinir; oturum kapatılır.
+ */
 export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccountRes> {
   const uid = requireCurrentUserId();
-  // Verify PIN first
-  await verifyParentPin({ pin: data.pin });
 
-  // Delete all children and their subcollections
+  const userSnap = await getDoc(doc(db, 'users', uid));
+  const settings = (userSnap.data() as StoredUserProfile | undefined)?.settings;
+  if (settings?.parentPinHash && settings.parentPinSalt) {
+    await verifyParentPin({ pin: data.pin });
+  }
+
+  await reauthenticateForDeletion();
+
+  // Çocuklar ve alt koleksiyonları (istemcinin yazabildiği her şey)
   const childrenSnap = await getDocs(
     query(collection(db, 'children'), where('parentUid', '==', uid)),
   );
@@ -1210,7 +1229,10 @@ export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccou
     'inventory',
     'dailySpins',
     'stats',
+    'conversationSessions',
+    'conversationBestScores',
   ];
+  const weekId = getWeekId();
 
   for (const childDoc of childrenSnap.docs) {
     for (const sub of subcollections) {
@@ -1219,18 +1241,26 @@ export async function deleteAccount(data: DeleteAccountReq): Promise<DeleteAccou
       subSnap.docs.forEach((d) => batch.delete(d.ref));
       if (!subSnap.empty) await batch.commit();
     }
+    // Bu haftanın liderlik kaydı (isim içermez ama çocuk aktif tablodan çıksın)
+    await deleteDoc(doc(db, 'leaderboards', weekId, 'entries', childDoc.id)).catch(() => undefined);
     await deleteDoc(childDoc.ref);
   }
 
-  // Delete user document
   await deleteDoc(doc(db, 'users', uid));
 
-  // Delete Firebase Auth user
   const currentUser = auth.currentUser;
   if (currentUser) {
-    await firebaseDeleteUser(currentUser);
+    try {
+      await firebaseDeleteUser(currentUser);
+    } catch (error) {
+      // Misafir hesaplar tazelenemez; giriş kaydı birkaç dakikadan eskiyse silinemez.
+      // Verileri zaten silindiği için oturumu kapatmak yeterli — hesap boş kalır.
+      const code = (error as { code?: string }).code;
+      if (!(currentUser.isAnonymous && code === 'auth/requires-recent-login')) throw error;
+    }
   }
 
+  await signOut();
   return { deleted: true };
 }
 

@@ -126,7 +126,8 @@
     "wheelErrorMessage": "Lütfen biraz sonra tekrar dene.",
     "wheelNoProfile": "Çarkı çevirmek için önce bir profil seç.",
     "wheelAlreadySpun": "Bugünkü ödülünü aldın. Yarın tekrar gel.",
-    "wheelPrompt": "Her gün bir kez çevir ve sürpriz ödül kazan."
+    "wheelPrompt": "Her gün bir kez çevir ve sürpriz ödül kazan.",
+    "deleteAccountButton": "Hesabı Sil"
   },
   "parentalGate": {
     "title": "🔒 Ebeveyn Doğrulaması",
