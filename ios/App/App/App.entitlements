@@ -11,5 +11,8 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<!-- Game Center — Xcode "Game Center" capability; App Store Connect'te sürüm sayfasında da açık. -->
+	<key>com.apple.developer.game-center</key>
+	<true/>
 </dict>
 </plist>
