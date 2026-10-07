@@ -181,13 +181,9 @@ vi.mock('@components/molecules/ListItem', () => ({
 
 import ParentDashboard from './ParentDashboard';
 
+/** PIN belirlenmemiş ebeveyn: panel doğrudan açılır (ebeveyn kapısı rotada). */
 async function unlockDashboard() {
   render(<ParentDashboard />);
-
-  fireEvent.click(screen.getByRole('button', { name: '1' }));
-  fireEvent.click(screen.getByRole('button', { name: '2' }));
-  fireEvent.click(screen.getByRole('button', { name: '3' }));
-  fireEvent.click(screen.getByRole('button', { name: '4' }));
 
   await screen.findByText('dashboard.themesTitle');
 }
@@ -236,11 +232,15 @@ describe('ParentDashboard', () => {
 
     render(<ParentDashboard />);
 
-    fireEvent.click(screen.getByRole('button', { name: '1' }));
-    fireEvent.click(screen.getByRole('button', { name: '2' }));
-    fireEvent.click(screen.getByRole('button', { name: '3' }));
-    fireEvent.click(screen.getByRole('button', { name: '4' }));
-
     expect(await screen.findByText('dashboard.lockedTitle')).toBeInTheDocument();
+  });
+
+  it('asks for the PIN only when a parent PIN is set', () => {
+    authState.user = { settings: { parentPin: '****' }, isPremium: false };
+
+    render(<ParentDashboard />);
+
+    expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
+    expect(screen.queryByText('dashboard.lockedTitle')).not.toBeInTheDocument();
   });
 });

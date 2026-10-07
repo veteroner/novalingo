@@ -1,5 +1,6 @@
 {
   "subscription": {
+    "plansLoading": "Abonelik seçenekleri mağazadan yükleniyor...",
     "features": {
       "allWorlds": "Tüm dünyalara erişim (9 dünya)",
       "unlimited": "Sınırsız ders",

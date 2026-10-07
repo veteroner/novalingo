@@ -1,5 +1,6 @@
 {
   "subscription": {
+    "plansLoading": "Loading subscription options from the store...",
     "features": {
       "allWorlds": "Access to all worlds (9 worlds)",
       "unlimited": "Unlimited lessons",
