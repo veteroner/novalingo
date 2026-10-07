@@ -6,7 +6,7 @@ const navigateMock = vi.fn();
 
 const authState = {
   firebaseUser: null,
-  user: { settings: { parentPin: null }, isPremium: true },
+  user: { settings: { parentPin: null as string | null }, isPremium: true },
 };
 
 const childState = {
