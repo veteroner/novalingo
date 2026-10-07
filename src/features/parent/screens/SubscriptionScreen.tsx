@@ -56,14 +56,14 @@ const PREMIUM_FEATURES = [
   { emoji: '📊', key: 'report' },
 ] as const;
 
-// Fiyatlar mağazadan (App Store Connect / Play Console) okunur.
-// `fallbackPrice` yalnızca ürün bilgisi henüz yüklenmediğinde gösterilir.
+// Fiyatlar yalnızca mağazadan (App Store Connect / Play Console) okunur; sabit
+// fiyat gösterilmez. Native'de mağazada bulunmayan plan listelenmez — App Review
+// 2.1(b) satın alınamayan bir planı uygulama hatası sayar.
 const PLANS = [
   {
     id: IAP_PRODUCTS.MONTHLY,
     key: 'monthly',
     labelKey: 'planMonthly',
-    fallbackPrice: '₺149,99',
     periodKey: 'perMonth',
     highlighted: false,
   },
@@ -71,7 +71,6 @@ const PLANS = [
     id: IAP_PRODUCTS.YEARLY,
     key: 'yearly',
     labelKey: 'planYearly',
-    fallbackPrice: '₺899,99',
     periodKey: 'perYear',
     highlighted: true,
   },
@@ -114,15 +113,15 @@ export default function SubscriptionScreen() {
     };
   }, []);
 
-  const selectedPlan = PLANS.find((plan) => plan.id === selectedPlanId) ?? PLANS[1];
-  const selectedPricing = pricing[selectedPlanId] ?? null;
+  const visiblePlans = isNativePlatform ? PLANS.filter((plan) => pricing[plan.id]) : PLANS;
+  const selectedPlan =
+    visiblePlans.find((plan) => plan.id === selectedPlanId) ?? visiblePlans.at(0) ?? PLANS[1];
+  const selectedPricing = pricing[selectedPlan.id] ?? null;
+  const plansReady = visiblePlans.length > 0;
   const trialDays = selectedPricing?.trialDays ?? null;
 
-  /** Mağaza fiyatı varsa onu, yoksa yedek fiyatı göster. */
-  const priceFor = useCallback(
-    (planId: string, fallbackPrice: string) => pricing[planId]?.price ?? fallbackPrice,
-    [pricing],
-  );
+  /** Mağaza fiyatı; henüz yüklenmediyse yer tutucu. */
+  const priceFor = useCallback((planId: string) => pricing[planId]?.price ?? '—', [pricing]);
 
   /**
    * Yıllık planın aylık karşılığı ve tasarruf oranı — mağazadan gelen gerçek
@@ -152,11 +151,9 @@ export default function SubscriptionScreen() {
     try {
       // Deneme olayı yalnızca mağazada gerçekten deneme tanımlıysa gönderilir.
       if (trialDays != null) {
-        trackSubscriptionTrialStarted(selectedPlanId, platform);
+        trackSubscriptionTrialStarted(selectedPlan.id, platform);
       }
-      const result = await purchaseSubscription(
-        selectedPlanId as (typeof IAP_PRODUCTS)[keyof typeof IAP_PRODUCTS],
-      );
+      const result = await purchaseSubscription(selectedPlan.id);
       if (result.status === 'success') {
         showToast({
           type: 'success',
@@ -270,9 +267,16 @@ export default function SubscriptionScreen() {
             </Card>
 
             {/* Plan picker */}
-            <div className="grid grid-cols-2 gap-3">
-              {PLANS.map((plan) => {
-                const isSelected = plan.id === selectedPlanId;
+            {!plansReady && (
+              <Text variant="bodySmall" align="center" className="text-text-secondary">
+                {t('subscription.plansLoading')}
+              </Text>
+            )}
+            <div
+              className={`grid gap-3 ${visiblePlans.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}
+            >
+              {visiblePlans.map((plan) => {
+                const isSelected = plan.id === selectedPlan.id;
                 return (
                   <button
                     key={plan.key}
@@ -296,7 +300,7 @@ export default function SubscriptionScreen() {
                           {t(`subscription.${plan.labelKey}`)}
                         </Text>
                         <Text variant="h3" className="text-nova-blue">
-                          {priceFor(plan.id, plan.fallbackPrice)}
+                          {priceFor(plan.id)}
                         </Text>
                         <Text variant="caption" className="text-text-secondary">
                           {t(`subscription.${plan.periodKey}`)}
@@ -326,7 +330,7 @@ export default function SubscriptionScreen() {
               size="lg"
               fullWidth
               onClick={handlePurchase}
-              disabled={purchasing}
+              disabled={purchasing || !plansReady}
             >
               {purchasing
                 ? t('subscription.processing')
@@ -336,22 +340,24 @@ export default function SubscriptionScreen() {
             </Button>
 
             {/* Otomatik yenilenen abonelik açıklaması — App Store 3.1.2 / Play politikası */}
-            <Text variant="caption" align="center" className="text-text-secondary">
-              {t(
-                trialDays != null
-                  ? 'subscription.renewalNoticeTrial'
-                  : 'subscription.renewalNotice',
-                {
-                  days: trialDays,
-                  price: priceFor(selectedPlan.id, selectedPlan.fallbackPrice),
-                  period: t(
-                    selectedPlan.id === IAP_PRODUCTS.YEARLY
-                      ? 'subscription.periodYear'
-                      : 'subscription.periodMonth',
-                  ),
-                },
-              )}
-            </Text>
+            {plansReady && (
+              <Text variant="caption" align="center" className="text-text-secondary">
+                {t(
+                  trialDays != null
+                    ? 'subscription.renewalNoticeTrial'
+                    : 'subscription.renewalNotice',
+                  {
+                    days: trialDays,
+                    price: priceFor(selectedPlan.id),
+                    period: t(
+                      selectedPlan.id === IAP_PRODUCTS.YEARLY
+                        ? 'subscription.periodYear'
+                        : 'subscription.periodMonth',
+                    ),
+                  },
+                )}
+              </Text>
+            )}
 
             {/* Restore */}
             <Button

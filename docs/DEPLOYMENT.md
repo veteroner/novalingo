@@ -129,7 +129,7 @@ Public launch is blocked until all six scenarios pass.
 
 - Review notes must mention that subscription unlock can wait for backend verification.
 - Support team should have a restore-purchases troubleshooting script.
-- Store listing copy must match actual free limits: 2 worlds, 3 lessons/day, 1 child profile.
+- Store listing copy must match actual free limits: 4 of 12 worlds, 3 lessons/day, 1 child profile.
 - Store listing copy must match actual Plus benefits: all worlds, unlimited lessons, up to 5 child profiles, detailed reports.
 
 ## Recommended Deployment Order

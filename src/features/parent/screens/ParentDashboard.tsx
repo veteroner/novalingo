@@ -39,7 +39,10 @@ export default function ParentDashboard() {
   const user = useAuthStore((s) => s.user);
   const hasPinSet = user?.settings.parentPin != null;
   const hasDetailedReports = Boolean(user?.isPremium);
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [pinUnlocked, setIsUnlocked] = useState(false);
+  // PIN belirlenmemişse ebeveyn kapısı (rota) yeterli; anlamsız bir "herhangi 4 hane"
+  // ekranı App Review'da akışı karıştırıyordu.
+  const isUnlocked = pinUnlocked || !hasPinSet;
   const [pin, setPin] = useState('');
   const [pinError, setPinError] = useState('');
   const [verifying, setVerifying] = useState(false);
@@ -111,11 +114,6 @@ export default function ParentDashboard() {
                   setPin(newPin);
                   setPinError('');
                   if (newPin.length === 4) {
-                    if (!hasPinSet) {
-                      // No PIN set yet — allow access, prompt to set PIN in settings
-                      setIsUnlocked(true);
-                      return;
-                    }
                     setVerifying(true);
                     verifyParentPin({ pin: newPin })
                       .then(() => {
