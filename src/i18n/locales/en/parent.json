@@ -2,7 +2,7 @@
   "subscription": {
     "plansLoading": "Loading subscription options from the store...",
     "features": {
-      "allWorlds": "Access to all worlds (9 worlds)",
+      "allWorlds": "Access to all worlds (12 worlds)",
       "unlimited": "Unlimited lessons",
       "report": "Detailed parent report"
     },
@@ -24,7 +24,7 @@
     "freePlan": "Free Plan",
     "plusName": "NovaLingo Plus",
     "premiumDesc": "You have access to all features",
-    "freeDesc": "First 2 worlds, 3 lessons/day, 1 child profile — ad-free",
+    "freeDesc": "First 4 worlds, 3 lessons/day, 1 child profile — ad-free",
     "selected": "✔ Selected",
     "processing": "Processing…",
     "checking": "Checking…",

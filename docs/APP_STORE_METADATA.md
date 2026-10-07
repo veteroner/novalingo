@@ -8,8 +8,8 @@
 - Category: Education
 - Audience: Turkish-speaking children ages 4–12 and their parents
 - Commercial model: Ad-free freemium with an optional NovaLingo Plus subscription
-- Free: first 4 of 9 worlds, 3 lessons per day
-- Plus: all 9 worlds, unlimited lessons, detailed parent report
+- Free: first 4 of 12 worlds, 3 lessons per day
+- Plus: all 12 worlds, unlimited lessons, detailed parent report
 
 ### Claims we must NOT make
 
@@ -107,7 +107,7 @@ Neler var?
 • Günde 3 ders
 
 NovaLingo Plus ile:
-• 9 dünyanın tamamı
+• 12 dünyanın tamamı
 • Sınırsız günlük ders
 • Detaylı ebeveyn raporu
 
@@ -140,7 +140,7 @@ Free plan
 • 3 lessons per day
 
 NovaLingo Plus
-• All 9 worlds
+• All 12 worlds
 • Unlimited daily lessons
 • Detailed parent report
 

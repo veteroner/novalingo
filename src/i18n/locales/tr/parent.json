@@ -2,7 +2,7 @@
   "subscription": {
     "plansLoading": "Abonelik seçenekleri mağazadan yükleniyor...",
     "features": {
-      "allWorlds": "Tüm dünyalara erişim (9 dünya)",
+      "allWorlds": "Tüm dünyalara erişim (12 dünya)",
       "unlimited": "Sınırsız ders",
       "report": "Detaylı ebeveyn raporu"
     },
@@ -24,7 +24,7 @@
     "freePlan": "Ücretsiz Plan",
     "plusName": "NovaLingo Plus",
     "premiumDesc": "Tüm özelliklere erişiminiz var",
-    "freeDesc": "İlk 2 dünya, günde 3 ders, 1 çocuk profili — reklamsız",
+    "freeDesc": "İlk 4 dünya, günde 3 ders, 1 çocuk profili — reklamsız",
     "selected": "✔ Seçildi",
     "processing": "İşleniyor…",
     "checking": "Kontrol ediliyor…",
