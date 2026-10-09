@@ -8,7 +8,10 @@
  *  2. User taps "Satın Al" → purchaseSubscription() opens the native payment sheet.
  *  3. User completes payment in the OS sheet.
  *  4. cordova-plugin-purchase calls: approved() → finish() → finished().
- *  5. finished() registers the transaction with our backend.
+ *  5. iOS: approved() sends the transactionId to the Netlify function
+ *     `verifyApplePurchase`, which asks the App Store Server API and writes the
+ *     entitlement with the Admin SDK; the transaction is finished afterwards.
+ *     Android: finished() registers the purchase token with our backend.
  *  6. Backend verification updates the canonical entitlement record.
  *  7. Apple/Google server notifications keep renewals, expirations and billing issues in sync.
  *
@@ -17,10 +20,10 @@
  *  iOS stores this as `appAccountToken`; Android as `obfuscatedExternalAccountId`.
  *  This allows the backend webhook to find the correct Firestore user document.
  *
- * VALIDATOR:
- *  We skip server-side receipt validation for MVP — StoreKit / Play Billing
- *  validate the receipt on the device. Add a validator URL to store.validator
- *  when you need cross-device receipt checks.
+ * SPARK PLAN:
+ *  Cloud Functions are not deployed, so Apple verification runs as a Netlify
+ *  function. Native shells call it by absolute URL (capacitor://localhost has
+ *  no /.netlify route).
  */
 
 import { IAP_PRODUCTS, type IAPProductId } from '@/config/constants';
@@ -76,6 +79,7 @@ interface PurchaseReceipt {
 
 interface PurchaseTransaction {
   finish(): Promise<void>;
+  transactionId?: string;
   products: PurchaseProduct[];
   parentReceipt?: PurchaseReceipt | null;
 }
@@ -144,6 +148,33 @@ async function grantPremiumLocally(): Promise<void> {
   await updateDoc(doc(db, 'users', uid), { isPremium: true });
 }
 
+/** Netlify sitesi; native kabukta göreli /.netlify yolu çalışmaz. */
+const NETLIFY_ORIGIN = 'https://novalingo.teknovagroup.com';
+
+type AppleVerifyOutcome = 'verified' | 'rejected' | 'retry';
+
+/**
+ * iOS işlemini sunucuda doğrulatır. `retry` (ağ/sunucu hatası) dönerse işlem
+ * bitirilmez; StoreKit onu bir sonraki açılışta yeniden teslim eder.
+ */
+async function verifyAppleTransaction(transactionId: string): Promise<AppleVerifyOutcome> {
+  const user = auth.currentUser;
+  if (!user) return 'retry';
+  try {
+    const idToken = await user.getIdToken();
+    const response = await fetch(`${NETLIFY_ORIGIN}/.netlify/functions/verifyApplePurchase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+      body: JSON.stringify({ transactionId }),
+    });
+    if (response.ok) return 'verified';
+    // 4xx: kalıcı ret (başka hesaba bağlı, imza geçersiz, bulunamadı)
+    return response.status >= 400 && response.status < 500 ? 'rejected' : 'retry';
+  } catch {
+    return 'retry';
+  }
+}
+
 const ENTITLEMENT_POLL_DELAYS_MS = [750, 1500, 2500, 4000] as const;
 
 /** Read Firestore to check premium state (fallback for restore flow). */
@@ -202,9 +233,17 @@ export function initializeStore(): void {
     { id: IAP_PRODUCTS.YEARLY, type: ProductType.PAID_SUBSCRIPTION, platform: storePlatform },
   ]);
 
-  // Skip server validator for MVP — finish approved transactions directly.
+  // iOS: verify on our server before finishing so a failed call is retried by
+  // StoreKit on the next launch. Android keeps its existing token registration.
   store.when().approved((transaction) => {
-    void transaction.finish();
+    const transactionId = transaction.transactionId;
+    if (platform !== 'ios' || !transactionId) {
+      void transaction.finish();
+      return;
+    }
+    void verifyAppleTransaction(transactionId).then((outcome) => {
+      if (outcome !== 'retry') void transaction.finish();
+    });
   });
 
   // After a transaction is fully finished, register it with the backend.

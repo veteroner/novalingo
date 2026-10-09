@@ -77,6 +77,7 @@
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^1.1.7",
     "firebase": "^11.2.0",
+    "firebase-admin": "^13.10.0",
     "framer-motion": "^12.0.0",
     "howler": "^2.2.4",
     "i18next": "^24.2.0",

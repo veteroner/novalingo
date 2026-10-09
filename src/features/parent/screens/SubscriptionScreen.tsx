@@ -42,7 +42,7 @@ import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -95,6 +95,21 @@ export default function SubscriptionScreen() {
   useEffect(() => {
     trackSubscriptionPaywallViewed({ source: 'subscription_screen', isPremium });
   }, [isPremium]);
+
+  // Satın alma sunucuda doğrulanıp `isPremium` bu ekrandayken açılırsa kutla ve
+  // çocuğu kilidi açılan içeriğe götür. Zaten Plus olarak açılan ekranda tetiklenmez.
+  const wasPremiumRef = useRef(isPremium);
+  useEffect(() => {
+    if (isPremium && !wasPremiumRef.current) {
+      showToast({
+        type: 'success',
+        title: t('subscription.successTitle'),
+        message: t('subscription.successMessage'),
+      });
+      void navigate('/home', { replace: true });
+    }
+    wasPremiumRef.current = isPremium;
+  }, [isPremium, navigate, showToast, t]);
 
   // Fiyatlar mağazadan asenkron yüklenir; ürün bilgisi güncellendikçe tazele.
   useEffect(() => {
@@ -154,13 +169,7 @@ export default function SubscriptionScreen() {
         trackSubscriptionTrialStarted(selectedPlan.id, platform);
       }
       const result = await purchaseSubscription(selectedPlan.id);
-      if (result.status === 'success') {
-        showToast({
-          type: 'success',
-          title: t('subscription.successTitle'),
-          message: t('subscription.successMessage'),
-        });
-      } else if (result.status === 'store_redirect') {
+      if (result.status === 'store_redirect') {
         showToast({
           type: 'info',
           title: t('subscription.storeOpenedTitle'),
@@ -168,9 +177,8 @@ export default function SubscriptionScreen() {
             ? t('subscription.storeOpenedNative')
             : t('subscription.storeOpenedWeb'),
         });
-      } else if (result.status === 'cancelled') {
-        // User cancelled — no toast needed
-      } else {
+      } else if (result.status === 'error') {
+        // 'success' ve 'cancelled' için mesaj yok — kutlama isPremium efektinden gelir.
         showToast({ type: 'error', title: t('subscription.errorTitle'), message: result.message });
       }
     } finally {
