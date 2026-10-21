@@ -7,7 +7,7 @@
 
 import { isNative } from '@/utils/platform';
 import * as Sentry from '@sentry/react';
-import { getAnalytics, type Analytics } from 'firebase/analytics';
+import type { Analytics } from 'firebase/analytics';
 import { initializeApp, type FirebaseApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaV3Provider, type AppCheck } from 'firebase/app-check';
 import {
@@ -61,7 +61,8 @@ let auth: Auth;
 let db: Firestore;
 let storage: FirebaseStorage;
 let functions: Functions;
-let analytics: Analytics | null = null;
+// Çocuk profilleri yetişkin oturumlarında da kullanılabilir: Analytics hiçbir oturumda açılmaz.
+const analytics: Analytics | null = null;
 let appCheck: AppCheck | null = null;
 // Başlatma başarısız olursa uygulama, Firebase'i çağırıp çökmek yerine net bir
 // hata ekranı gösterebilsin diye hatayı burada tutuyoruz (bkz. main.tsx).
@@ -135,15 +136,6 @@ function initializeFirebase() {
   });
   storage = getStorage(app);
   functions = getFunctions(app, 'europe-west1');
-
-  // Analytics sadece production'da ve measurementId varsa
-  if (import.meta.env.VITE_APP_ENV === 'production' && firebaseConfig.measurementId) {
-    try {
-      analytics = getAnalytics(app);
-    } catch (e) {
-      console.warn('[Firebase] Analytics initialization failed:', e);
-    }
-  }
 
   // Emülatör bağlantıları
   if (useEmulators) {

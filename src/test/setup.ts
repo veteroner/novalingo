@@ -9,6 +9,33 @@ import { cleanup } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, vi } from 'vitest';
 
+// Node 25+ kendi (dosyasız, metotsuz) global localStorage'ını tanımlar ve
+// jsdom'unkini gölgeler. Depolama kullanılamıyorsa bellek içi bir yedek koy.
+function installMemoryStorage(name: 'localStorage' | 'sessionStorage') {
+  const current = (globalThis as Record<string, unknown>)[name] as Storage | undefined;
+  if (typeof current?.clear === 'function') return;
+  const data = new Map<string, string>();
+  const storage: Storage = {
+    get length() {
+      return data.size;
+    },
+    clear: () => {
+      data.clear();
+    },
+    getItem: (key) => data.get(key) ?? null,
+    key: (index) => [...data.keys()][index] ?? null,
+    removeItem: (key) => {
+      data.delete(key);
+    },
+    setItem: (key, value) => {
+      data.set(key, value);
+    },
+  };
+  Object.defineProperty(globalThis, name, { value: storage, configurable: true, writable: true });
+}
+installMemoryStorage('localStorage');
+installMemoryStorage('sessionStorage');
+
 // Automatic cleanup after each test
 afterEach(() => {
   cleanup();
@@ -134,6 +161,7 @@ vi.mock('firebase/auth', () => ({
   reauthenticateWithCredential: vi.fn(() => Promise.resolve()),
   reauthenticateWithPopup: vi.fn(() => Promise.resolve()),
   revokeAccessToken: vi.fn(() => Promise.resolve()),
+  updateProfile: vi.fn(() => Promise.resolve()),
   deleteUser: vi.fn(() => Promise.resolve()),
   signInAnonymously: vi.fn(),
   signOut: vi.fn(),

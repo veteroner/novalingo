@@ -25,6 +25,7 @@ function cleanAppleDoublePlugin(): Plugin {
   }
   return {
     name: 'clean-apple-double',
+    apply: 'build',
     enforce: 'pre',
     buildStart() {
       const outDir = resolve(__dirname, 'dist');

@@ -14,8 +14,15 @@ import {
   signInWithCredential,
   signInWithPopup,
   signOut as firebaseSignOut,
+  updateProfile,
 } from 'firebase/auth';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const agePolicy = vi.hoisted(() => ({ adult: true }));
+vi.mock('@services/ageScreen/ageScreenPolicy', () => ({ isAdultSession: () => agePolicy.adult }));
+beforeEach(() => {
+  agePolicy.adult = true;
+});
 
 const platform = vi.hoisted(() => ({ current: 'web' as 'web' | 'ios' | 'android' }));
 
@@ -45,6 +52,7 @@ vi.mock('../app', () => ({ auth: fakeAuth }));
 vi.mock('@services/parentGate/parentGateSession', () => ({ resetParentGate: vi.fn() }));
 
 const {
+  linkAnonymousAccount,
   SIGN_IN_CANCELLED_ERROR,
   isAppleSignInAvailable,
   isSignInCancelled,
@@ -125,6 +133,52 @@ describe('auth — Apple girişi', () => {
     expect(native.signInWithApple).toHaveBeenCalledWith({ skipNativeAuth: true });
     expect(credentialFn).toHaveBeenCalledWith({ idToken: 'apple-id', rawNonce: 'raw-nonce' });
     expect(signInWithCredential).toHaveBeenCalledWith(fakeAuth, 'apple-credential');
+  });
+
+  it('Apple adı verirse profil adına yazar — kullanıcıdan tekrar sorulmaz (Yönerge 4)', async () => {
+    platform.current = 'ios';
+    vi.mocked(OAuthProvider).mockImplementation(
+      () => ({ addScope: vi.fn(), credential: vi.fn(() => 'apple-credential') }) as never,
+    );
+    const newUser = { uid: 'u2', displayName: null };
+    vi.mocked(signInWithCredential).mockResolvedValue({ user: newUser } as never);
+    vi.mocked(native.signInWithApple).mockResolvedValue({
+      user: { displayName: 'Ayşe Yılmaz' } as never,
+      additionalUserInfo: null,
+      credential: { providerId: 'apple.com', idToken: 'apple-id', nonce: 'n' },
+    });
+
+    await signInWithApple();
+
+    expect(updateProfile).toHaveBeenCalledWith(newUser, { displayName: 'Ayşe Yılmaz' });
+  });
+
+  it('profilde zaten ad varsa veya Apple ad vermezse profil adına dokunmaz', async () => {
+    platform.current = 'ios';
+    vi.mocked(OAuthProvider).mockImplementation(
+      () => ({ addScope: vi.fn(), credential: vi.fn(() => 'apple-credential') }) as never,
+    );
+    vi.mocked(signInWithCredential).mockResolvedValue({
+      user: { uid: 'u3', displayName: 'Mevcut' },
+    } as never);
+    vi.mocked(native.signInWithApple).mockResolvedValue({
+      user: { displayName: 'Yeni Ad' } as never,
+      additionalUserInfo: null,
+      credential: { providerId: 'apple.com', idToken: 'apple-id', nonce: 'n' },
+    });
+    await signInWithApple();
+
+    vi.mocked(native.signInWithApple).mockResolvedValue({
+      user: null,
+      additionalUserInfo: null,
+      credential: { providerId: 'apple.com', idToken: 'apple-id', nonce: 'n' },
+    });
+    vi.mocked(signInWithCredential).mockResolvedValue({
+      user: { uid: 'u4', displayName: null },
+    } as never);
+    await signInWithApple();
+
+    expect(updateProfile).not.toHaveBeenCalled();
   });
 
   it("Apple girişi yalnızca iOS'ta sunulur", () => {
@@ -236,5 +290,19 @@ describe('auth — hesap silme öncesi kimlik tazeleme (App Store 5.1.1(v))', ()
 
     await expect(reauthenticateForDeletion()).rejects.toThrow(SIGN_IN_CANCELLED_ERROR);
     expect(reauthenticateWithCredential).not.toHaveBeenCalled();
+  });
+});
+
+describe('yaş kuralı — UI dışında da uygulanır', () => {
+  it('çocuk/bilinmeyen yaşta sosyal sağlayıcıları çağırmaz', async () => {
+    vi.clearAllMocks();
+    agePolicy.adult = false;
+    platform.current = 'android';
+    await expect(signInWithGoogle()).rejects.toThrow('AGE_SCREEN_RESTRICTED');
+    await expect(signInWithApple()).rejects.toThrow('AGE_SCREEN_RESTRICTED');
+    await expect(linkAnonymousAccount('google')).rejects.toThrow('AGE_SCREEN_RESTRICTED');
+    expect(native.signInWithGoogle).not.toHaveBeenCalled();
+    expect(native.signInWithApple).not.toHaveBeenCalled();
+    expect(signInWithPopup).not.toHaveBeenCalled();
   });
 });

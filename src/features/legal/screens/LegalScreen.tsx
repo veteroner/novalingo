@@ -88,8 +88,10 @@ function PrivacyPolicy() {
             <h3 className="font-semibold text-gray-800">Otomatik Toplanan Veriler</h3>
             <ul className="mt-1 list-disc space-y-1 pl-5">
               <li>Ders tamamlama istatistikleri ve oturum süreleri</li>
-              <li>Hata raporları (Sentry — anonim, cihaz bilgisi içerebilir)</li>
-              <li>Firebase Analytics — toplu kullanım istatistikleri, anonim</li>
+              <li>Firebase Analytics ve Sentry oturum/hata aktarımı devre dışıdır.</li>
+              <li>
+                Doğum tarihi saklanmaz veya gönderilmez; erişim sınıfı yalnızca cihazda tutulur.
+              </li>
             </ul>
           </div>
         </div>
@@ -115,8 +117,8 @@ function PrivacyPolicy() {
         <ul className="list-disc space-y-1 pl-5">
           <li>Aktif hesap verileri: hesap silinene kadar saklanır</li>
           <li>Hesap silme sonrası tüm çocuk profilleri 30 gün içinde kalıcı olarak silinir</li>
-          <li>Anonim analitik veriler: 14 ay (Firebase Analytics varsayılanı)</li>
-          <li>Hata logları: 90 gün (Sentry)</li>
+          <li>Yaş doğrulaması erişim sınıfı: uygulamanın verileri cihazdan silinene kadar</li>
+          <li>Tanılama günlüğü: yalnızca cihaz belleğinde, uygulama kapatılana kadar</li>
         </ul>
       </section>
 
@@ -128,15 +130,13 @@ function PrivacyPolicy() {
             Gizlilik Politikası geçerlidir.
           </li>
           <li>
-            <strong>Sentry:</strong> Anonim hata raporlama. Kişisel veri içermeyen teknik bilgiler;
-            ekran metinleri maskelenir.
-          </li>
-          <li>
             <strong>Cihaz konuşma tanıma hizmeti (Google):</strong> Konuşma pratiğinde sesin metne
             çevrilmesi. Ses, işletim sisteminin hizmeti tarafından işlenir; {APP_NAME} saklamaz.
           </li>
           <li>
-            <strong>Firebase Cloud Messaging:</strong> Ebeveyne gönderilen hatırlatma bildirimleri.
+            <strong>Firebase Cloud Messaging:</strong> Yaş doğrulamasından geçen yetişkin
+            oturumlarında, cihaz bildirim izniyle ebeveyne gönderilen hatırlatmalar. Çocuk
+            oturumlarında kayıt yapılmaz.
           </li>
           <li>
             <strong>Apple App Store / Google Play:</strong> Ödeme işlemleri. Ödeme bilgileri

@@ -1,7 +1,7 @@
 # NovaLingo — Monetization
 
 > Canonical commercial truth for launch.
-> Last updated: March 2026
+> Last verified: October 15, 2026
 
 ## Business Model
 
@@ -20,7 +20,7 @@ Free is intentionally useful but bounded.
 
 | Area                    | Free               |
 | ----------------------- | ------------------ |
-| Worlds                  | First 4 of 9       |
+| Worlds                  | First 4 of 12      |
 | Daily lesson access     | 3 lessons per day  |
 | Child profiles          | 1 child            |
 | Parent reports          | Basic summary only |
@@ -86,7 +86,9 @@ Exact local pricing is set in App Store Connect and Google Play Console, but pro
 
 ## Funnel Events
 
-Subscription funnel telemetry is required for launch analysis.
+The event names below describe the subscription funnel. Analytics and Sentry are
+currently disabled in the age-screen release; these events must not be described
+as collected or used for launch analysis while that configuration remains in place.
 
 - `subscription_paywall_viewed`
 - `subscription_trial_started`

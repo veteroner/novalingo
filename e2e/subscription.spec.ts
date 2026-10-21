@@ -10,7 +10,7 @@
  * remain discoverable.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { APP_BUNDLE_ID, IAP_PRODUCTS } from '../src/config/constants';
 
 // ─────────────────────────────────────────────────────────────────────────────

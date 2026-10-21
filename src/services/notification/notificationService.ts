@@ -5,6 +5,7 @@
  * COPPA uyumlu — çocuklara doğrudan bildirim gönderilmez.
  */
 
+import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
 import { getPlatform } from '@/types/common';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { docs, updateDocument } from '@services/firebase/firestore';
@@ -15,7 +16,7 @@ let initialized = false;
  * Push bildirimlerini başlat ve FCM token'ı Firestore'a kaydet
  */
 export async function initializeNotifications(uid?: string): Promise<string | null> {
-  if (getPlatform() === 'web') {
+  if (!isAdultSession() || getPlatform() === 'web') {
     return null;
   }
 
@@ -65,7 +66,7 @@ export async function initializeNotifications(uid?: string): Promise<string | nu
 export function setupNotificationListeners(
   onNotification: (data: Record<string, unknown>) => void,
 ): void {
-  if (getPlatform() === 'web') return;
+  if (!isAdultSession() || getPlatform() === 'web') return;
 
   // Uygulama açıkken gelen bildirim
   void PushNotifications.addListener('pushNotificationReceived', (notification) => {
