@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 test.describe('Authentication Flow', () => {
   test('shows login screen by default for unauthenticated user', async ({ page }) => {

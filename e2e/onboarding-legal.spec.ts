@@ -9,7 +9,7 @@
  *  - Legal tab switching works
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 async function gotoRoute(page: import('@playwright/test').Page, path: string) {
   await page.goto(path, { waitUntil: 'domcontentloaded' });

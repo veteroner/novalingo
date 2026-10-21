@@ -14,14 +14,16 @@
  * FIREBASE_AUTH_EMULATOR_HOST and seed a test user before running.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Collect browser console errors during a page navigation. */
-async function collectConsoleErrors(page: Parameters<typeof test>[1] extends never ? never : import('@playwright/test').Page) {
+async function collectConsoleErrors(
+  page: Parameters<typeof test>[1] extends never ? never : import('@playwright/test').Page,
+) {
   const errors: string[] = [];
   page.on('console', (msg) => {
     if (msg.type() === 'error') errors.push(msg.text());

@@ -1,17 +1,15 @@
-import { initSentry } from '@/config/sentry';
 import '@/i18n';
 import '@/styles/globals.css';
 
-// Initialize Sentry before React renders so it captures all errors
-initSentry();
-
-import { App } from '@/app/App';
-import { FirebaseConfigError } from '@/app/FirebaseConfigError';
-import { firebaseInitError } from '@/services/firebase/app';
+import { AgeScreenGate } from '@/features/auth/screens/AgeScreenGate';
+import { LoadingScreen } from '@components/atoms/Spinner/LoadingScreen';
 import { createLogger, installGlobalErrorHandlers } from '@/utils/logger';
 import { getPlatform, isNative } from '@/utils/platform';
-import { StrictMode } from 'react';
+import { lazy, StrictMode, Suspense } from 'react';
+
 import { createRoot } from 'react-dom/client';
+
+const BootstrapApp = lazy(() => import('@/app/BootstrapApp'));
 
 // Yakalanmamış hata/promise dinleyicileri — React hiç mount olmadan patlarsa tek kaynağımız bu
 installGlobalErrorHandlers();
@@ -79,6 +77,10 @@ if (!rootElement) {
 // çökmek yerine net bir hata ekranı göster.
 createRoot(rootElement).render(
   <StrictMode>
-    {firebaseInitError ? <FirebaseConfigError error={firebaseInitError} /> : <App />}
+    <AgeScreenGate>
+      <Suspense fallback={<LoadingScreen />}>
+        <BootstrapApp />
+      </Suspense>
+    </AgeScreenGate>
   </StrictMode>,
 );

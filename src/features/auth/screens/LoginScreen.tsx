@@ -5,6 +5,7 @@
  * Çocuk-dostu splash + Nova maskotu.
  */
 
+import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
 import novaMascot from '@assets/images/nova-mascot.svg';
 import { AppleSignInButton } from '@components/atoms/AppleSignInButton';
 import { Button } from '@components/atoms/Button';
@@ -25,6 +26,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
+  const allowSocialLogin = isAdultSession();
   const { t } = useTranslation('auth');
   const setLoading = useAuthStore((s) => s.setLoading);
   const setError = useAuthStore((s) => s.setError);
@@ -114,20 +116,22 @@ export default function LoginScreen() {
           </div>
         ) : (
           <>
-            <Button
-              variant="primary"
-              size="xl"
-              fullWidth
-              onClick={handleGoogleLogin}
-              icon={<span>🔵</span>}
-              disabled={!kvkkAccepted}
-            >
-              {t('login.withGoogle')}
-            </Button>
+            {allowSocialLogin && (
+              <Button
+                variant="primary"
+                size="xl"
+                fullWidth
+                onClick={handleGoogleLogin}
+                icon={<span>🔵</span>}
+                disabled={!kvkkAccepted}
+              >
+                {t('login.withGoogle')}
+              </Button>
+            )}
 
             {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable).
                 Düğme Apple HIG'e uyar; emoji/üçüncü taraf logo kullanılmaz. */}
-            {isAppleSignInAvailable() && (
+            {allowSocialLogin && isAppleSignInAvailable() && (
               <AppleSignInButton
                 label={t('login.withApple')}
                 onClick={() => {
@@ -137,16 +141,18 @@ export default function LoginScreen() {
               />
             )}
 
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200" />
+            {allowSocialLogin && (
+              <div className="relative py-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center">
+                  <Text variant="caption" className="text-text-secondary bg-white px-4">
+                    {t('login.or')}
+                  </Text>
+                </div>
               </div>
-              <div className="relative flex justify-center">
-                <Text variant="caption" className="text-text-secondary bg-white px-4">
-                  {t('login.or')}
-                </Text>
-              </div>
-            </div>
+            )}
 
             <Button
               variant="secondary"

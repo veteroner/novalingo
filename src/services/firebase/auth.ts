@@ -12,6 +12,7 @@
  * görür. Web'de açılır pencere akışı aynen kullanılır.
  */
 
+import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
 import { Capacitor } from '@capacitor/core';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import {
@@ -27,12 +28,18 @@ import {
   reauthenticateWithCredential,
   reauthenticateWithPopup,
   revokeAccessToken,
+  updateProfile,
   type AuthCredential,
   type User as FirebaseUser,
   type Unsubscribe,
 } from 'firebase/auth';
 import { resetParentGate } from '@services/parentGate/parentGateSession';
 import { auth } from './app';
+
+/** UI dışında yapılan çağrılarda da yaş kuralını uygula. */
+function requireAdultSession(): void {
+  if (!isAdultSession()) throw new Error('AGE_SCREEN_RESTRICTED');
+}
 
 const googleProvider = new GoogleAuthProvider();
 const appleProvider = new OAuthProvider('apple.com');
@@ -86,6 +93,7 @@ async function getNativeGoogleCredential(): Promise<AuthCredential> {
 async function getNativeAppleSignIn(): Promise<{
   credential: AuthCredential;
   authorizationCode: string | undefined;
+  displayName: string | undefined;
 }> {
   const result = await FirebaseAuthentication.signInWithApple({ skipNativeAuth: true });
   const idToken = result.credential?.idToken;
@@ -96,17 +104,26 @@ async function getNativeAppleSignIn(): Promise<{
       rawNonce: result.credential?.nonce,
     }),
     authorizationCode: result.credential?.authorizationCode,
+    // skipNativeAuth modunda Apple'ın verdiği ad yalnızca burada döner (ilk yetkilendirmede).
+    displayName: result.user?.displayName?.trim() || undefined,
   };
 }
 
-async function getNativeAppleCredential(): Promise<AuthCredential> {
-  return (await getNativeAppleSignIn()).credential;
+/**
+ * Apple'ın verdiği adı Firebase profiline yazar. Firebase, Apple kimlik
+ * bilgisinden adı kendisi doldurmaz; yazılmazsa profil ekranı adı tekrar
+ * sorar ve App Store Yönerge 4'e takılır.
+ */
+async function rememberAppleName(user: FirebaseUser, displayName: string | undefined) {
+  if (!displayName || user.displayName) return;
+  await updateProfile(user, { displayName }).catch(() => undefined);
 }
 
 /**
  * Google ile giriş yap
  */
 export async function signInWithGoogle(): Promise<FirebaseUser> {
+  requireAdultSession();
   if (isNativePlatform()) {
     const credential = await getNativeGoogleCredential();
     return (await signInWithCredential(auth, credential)).user;
@@ -119,9 +136,12 @@ export async function signInWithGoogle(): Promise<FirebaseUser> {
  * Apple ile giriş yap
  */
 export async function signInWithApple(): Promise<FirebaseUser> {
+  requireAdultSession();
   if (isNativePlatform()) {
-    const credential = await getNativeAppleCredential();
-    return (await signInWithCredential(auth, credential)).user;
+    const { credential, displayName } = await getNativeAppleSignIn();
+    const user = (await signInWithCredential(auth, credential)).user;
+    await rememberAppleName(user, displayName);
+    return user;
   }
   const result = await signInWithPopup(auth, appleProvider);
   return result.user;
@@ -153,14 +173,20 @@ export async function signInAnonymousUser(): Promise<FirebaseUser> {
  * Anonim hesabı kalıcı hesaba bağla
  */
 export async function linkAnonymousAccount(provider: 'google' | 'apple'): Promise<FirebaseUser> {
+  requireAdultSession();
   const currentUser = auth.currentUser;
   if (!currentUser?.isAnonymous) {
     throw new Error('Current user is not anonymous');
   }
 
   if (isNativePlatform()) {
-    const credential =
-      provider === 'google' ? await getNativeGoogleCredential() : await getNativeAppleCredential();
+    if (provider === 'apple') {
+      const { credential, displayName } = await getNativeAppleSignIn();
+      const user = (await linkWithCredential(currentUser, credential)).user;
+      await rememberAppleName(user, displayName);
+      return user;
+    }
+    const credential = await getNativeGoogleCredential();
     return (await linkWithCredential(currentUser, credential)).user;
   }
 

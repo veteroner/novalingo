@@ -5,6 +5,7 @@
  * AppProviders'ta AuthProvider sonrasında çağrılır.
  */
 
+import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
 import {
   trackRetentionDay,
   trackSubscriptionBillingIssue,
@@ -38,18 +39,19 @@ export function useAppInit(): void {
 
     // Platform-agnostic services (safe to call on web — they no-op gracefully)
     startSyncManager();
-    void initializeNotifications(userId);
+    if (isAdultSession()) void initializeNotifications(userId);
 
     // Wire notification tap/receive handlers (native only — no-op on web via guard in service)
-    setupNotificationListeners((data) => {
-      // Deep-link routing from notification tap
-      // Navigating here is not possible without router context; route is handled
-      // by the screen that reads notification data from the store or query params.
-      // The listener is still needed to keep Capacitor's listener registry active.
-      if (import.meta.env.DEV) {
-        console.warn('[useAppInit] push notification received:', data);
-      }
-    });
+    if (isAdultSession())
+      setupNotificationListeners((data) => {
+        // Deep-link routing from notification tap
+        // Navigating here is not possible without router context; route is handled
+        // by the screen that reads notification data from the store or query params.
+        // The listener is still needed to keep Capacitor's listener registry active.
+        if (import.meta.env.DEV) {
+          console.warn('[useAppInit] push notification received:', data);
+        }
+      });
 
     // Initialize native IAP subscriptions
     initializeStore();

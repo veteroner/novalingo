@@ -65,7 +65,8 @@ export default function CreateProfileScreen() {
   const createChildMutation = useCreateChild();
   // Apple/Google girişinde sağlayıcı zaten adı veriyor; kullanıcıdan tekrar
   // istememek için ilk profil adını onunla dolduruyoruz (App Store Yönerge 4).
-  const accountName = useAuthStore((s) => s.user?.displayName ?? s.firebaseUser?.displayName ?? '');
+  // `||`: Firestore'daki boş displayName ('') Firebase profilindeki adı gölgelemesin.
+  const accountName = useAuthStore((s) => s.user?.displayName || s.firebaseUser?.displayName || '');
   const [name, setName] = useState(() => sanitizeSuggestedName(accountName));
   const [selectedAge, setSelectedAge] = useState<AgeGroup | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
@@ -85,8 +86,11 @@ export default function CreateProfileScreen() {
     [t],
   );
 
-  const nameError = name.length > 0 ? validateName(name) : null;
-  const isNameValid = name.trim().length >= 2 && !nameError;
+  // Takma ad isteğe bağlı: boş bırakılırsa varsayılan ad kullanılır. Apple ile
+  // Giriş'te ad paylaşılmamışsa bile kullanıcı bir isim yazmak zorunda kalmaz.
+  const nameError = name.trim().length > 0 ? validateName(name) : null;
+  const isNameValid = !nameError;
+  const profileName = name.trim() || t('createProfile.defaultName');
 
   const handleContinue = useCallback(() => {
     if (step === 'name' && isNameValid) {
@@ -103,7 +107,7 @@ export default function CreateProfileScreen() {
       setError(null);
       createChildMutation.mutate(
         {
-          name: name.trim(),
+          name: profileName,
           ageGroup: selectedAge,
           avatarId: selectedAvatar,
         },
@@ -119,7 +123,7 @@ export default function CreateProfileScreen() {
     }
   }, [
     step,
-    name,
+    profileName,
     selectedAge,
     selectedAvatar,
     isNameValid,

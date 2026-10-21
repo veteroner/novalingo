@@ -19,6 +19,9 @@ vi.mock('@services/firebase/auth', () => ({
   isSignInCancelled: vi.fn((err: unknown) => err instanceof Error && err.message === 'CANCELLED'),
 }));
 
+const agePolicy = vi.hoisted(() => ({ adult: true }));
+vi.mock('@services/ageScreen/ageScreenPolicy', () => ({ isAdultSession: () => agePolicy.adult }));
+
 const mockSetError = vi.hoisted(() => vi.fn());
 vi.mock('@stores/authStore', () => ({
   useAuthStore: (selector: (s: Record<string, unknown>) => unknown) =>
@@ -45,8 +48,21 @@ function renderLogin() {
 describe('LoginScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    agePolicy.adult = true;
     vi.mocked(isAppleSignInAvailable).mockReturnValue(true);
     vi.mocked(signInWithGoogle).mockResolvedValue({ uid: 'test' } as never);
+  });
+
+  it('çocuk veya bilinmeyen yaşta sosyal girişleri gizler, misafir erişimi devam eder', async () => {
+    agePolicy.adult = false;
+    renderLogin();
+    expect(screen.queryByText('login.withGoogle')).not.toBeInTheDocument();
+    expect(screen.queryByText('login.withApple')).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('checkbox'));
+    await userEvent.click(screen.getByText('login.asGuest'));
+    expect(signInAnonymousUser).toHaveBeenCalledOnce();
+    expect(signInWithGoogle).not.toHaveBeenCalled();
+    expect(signInWithApple).not.toHaveBeenCalled();
   });
 
   it('renders app title', () => {
