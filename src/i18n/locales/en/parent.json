@@ -117,7 +117,13 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "deleteWrongPin": "Incorrect PIN. Please try again.",
-    "deleteCancelled": "Confirmation was cancelled; your account was not deleted."
+    "deleteCancelled": "Confirmation was cancelled; your account was not deleted.",
+    "childNameTitle": "👤 Child's name",
+    "childNameDesc": "Nova calls your child by this name. A nickname is enough.",
+    "childNameSave": "Save",
+    "childNameInvalid": "2-20 characters, letters and emoji only",
+    "childNameSaved": "Name updated",
+    "childNameError": "Could not save the name, try again"
   },
   "dashboard": {
     "gateTitle": "🔒 Parent Panel",

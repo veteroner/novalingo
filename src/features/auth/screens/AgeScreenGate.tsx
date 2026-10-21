@@ -23,7 +23,11 @@ export function AgeScreenGate({ children }: { children: ReactNode }) {
     if (isNative()) void SplashScreen.hide().catch(() => undefined);
   }, []);
 
-  if (band) return <>{children}</>;
+  // Web'deki yasal sayfalar (gizlilik, koşullar, hesap silme talebi) herkese
+  // açık olmalı: mağaza kayıtları ve gizlilik politikası bu adreslere bağlanır.
+  const isPublicLegalPage = !isNative() && window.location.pathname.startsWith('/legal');
+
+  if (band || isPublicLegalPage) return <>{children}</>;
 
   return (
     <main className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen items-center justify-center bg-linear-to-b to-white px-6 py-8">

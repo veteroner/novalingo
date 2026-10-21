@@ -52,25 +52,24 @@ const avatars: AvatarOption[] = [
 // Allow Unicode letters, spaces, and emoji only
 const NAME_PATTERN = /^[\p{L}\p{Extended_Pictographic}\s]+$/u;
 
-/** Sağlayıcıdan gelen adı ilk ada indirger; kurallara uymuyorsa boş döner. */
-function sanitizeSuggestedName(value: string): string {
-  const first = value.trim().split(/\s+/)[0] ?? '';
-  if (first.length < 2 || first.length > 20 || !NAME_PATTERN.test(first)) return '';
-  return first;
-}
-
 export default function CreateProfileScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation('auth');
   const createChildMutation = useCreateChild();
-  // Apple/Google girişinde sağlayıcı zaten adı veriyor; kullanıcıdan tekrar
-  // istememek için ilk profil adını onunla dolduruyoruz (App Store Yönerge 4).
-  // `||`: Firestore'daki boş displayName ('') Firebase profilindeki adı gölgelemesin.
-  const accountName = useAuthStore((s) => s.user?.displayName || s.firebaseUser?.displayName || '');
-  const [name, setName] = useState(() => sanitizeSuggestedName(accountName));
+  // Apple/Google ile giriş yapan kişiye ad sorulmaz (App Store Yönerge 4: Apple
+  // ile Giriş'ten sonra ad/e-posta tekrar istenmez). Hesap sahibi ebeveyndir;
+  // onun adını çocuk profiline yazmak da yanlış olurdu. Çocuk varsayılan adla
+  // başlar, ebeveyn adı Ebeveyn Ayarları'ndan verir. Misafirlere takma ad
+  // isteğe bağlı olarak sorulur.
+  const isSocialAccount = useAuthStore((s) =>
+    Boolean(s.firebaseUser && !s.firebaseUser.isAnonymous),
+  );
+  const [name, setName] = useState('');
   const [selectedAge, setSelectedAge] = useState<AgeGroup | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-  const [step, setStep] = useState<'name' | 'age' | 'avatar'>('name');
+  const [step, setStep] = useState<'name' | 'age' | 'avatar'>(() =>
+    isSocialAccount ? 'age' : 'name',
+  );
   const [error, setError] = useState<string | null>(null);
 
   const isCreating = createChildMutation.isPending;
@@ -137,7 +136,7 @@ export default function CreateProfileScreen() {
     <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col bg-linear-to-b to-white px-6">
       {/* Back button */}
       <div className="pt-4">
-        {step !== 'name' && (
+        {(step === 'avatar' || (step === 'age' && !isSocialAccount)) && (
           <button
             onClick={() => {
               setStep(step === 'avatar' ? 'age' : 'name');

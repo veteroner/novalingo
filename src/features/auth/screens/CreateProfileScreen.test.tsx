@@ -2,8 +2,8 @@
  * CreateProfileScreen — App Store Yönerge 4 (Apple ile Giriş).
  *
  * Apple ile Giriş kullanan kişiden ad tekrar istenmemeli (21 Ekim 2026 reddi):
- * sağlayıcının verdiği ad önceden doldurulur, ad paylaşılmamışsa takma ad
- * isteğe bağlıdır ve boş bırakılarak devam edilebilir.
+ * Apple/Google hesabında ad adımı hiç gösterilmez, çocuk varsayılan adla başlar.
+ * Misafir kullanımda takma ad isteğe bağlıdır.
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -15,10 +15,7 @@ vi.mock('@hooks/queries', () => ({
   useCreateChild: () => ({ mutate, isPending: false }),
 }));
 
-const authState: {
-  user: { displayName: string } | null;
-  firebaseUser: { displayName: string | null } | null;
-} = { user: null, firebaseUser: null };
+const authState: { firebaseUser: { isAnonymous: boolean } | null } = { firebaseUser: null };
 vi.mock('@stores/authStore', () => ({
   useAuthStore: (selector: (s: typeof authState) => unknown) => selector(authState),
 }));
@@ -37,33 +34,27 @@ function continueButton() {
   return screen.getByRole('button', { name: 'createProfile.continue' });
 }
 
+function finishAgeAndAvatar() {
+  fireEvent.click(screen.getByText('createProfile.age.stars'));
+  fireEvent.click(continueButton());
+  fireEvent.click(screen.getByText('createProfile.avatar.fox'));
+  fireEvent.click(screen.getByRole('button', { name: 'createProfile.start' }));
+}
+
 describe('CreateProfileScreen — ad tekrar sorulmaz', () => {
   beforeEach(() => {
     mutate.mockReset();
-    authState.user = null;
     authState.firebaseUser = null;
   });
 
-  it('Firestore adı boş olsa bile Apple adını önceden doldurur', () => {
-    authState.user = { displayName: '' };
-    authState.firebaseUser = { displayName: 'Ayşe Yılmaz' };
+  it('Apple/Google hesabında ad adımı hiç gösterilmez ve varsayılan ad kullanılır', () => {
+    authState.firebaseUser = { isAnonymous: false };
 
     renderScreen();
 
-    expect(screen.getByPlaceholderText('createProfile.namePlaceholder')).toHaveValue('Ayşe');
-  });
-
-  it('ad paylaşılmamışsa boş bırakıp devam edilebilir ve varsayılan ad kullanılır', () => {
-    authState.firebaseUser = { displayName: null };
-
-    renderScreen();
-
-    expect(continueButton()).toBeEnabled();
-    fireEvent.click(continueButton());
-    fireEvent.click(screen.getByText('createProfile.age.stars'));
-    fireEvent.click(continueButton());
-    fireEvent.click(screen.getByText('createProfile.avatar.fox'));
-    fireEvent.click(screen.getByRole('button', { name: 'createProfile.start' }));
+    expect(screen.queryByPlaceholderText('createProfile.namePlaceholder')).not.toBeInTheDocument();
+    expect(screen.queryByText('createProfile.back')).not.toBeInTheDocument();
+    finishAgeAndAvatar();
 
     expect(mutate).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'createProfile.defaultName' }),
@@ -71,7 +62,23 @@ describe('CreateProfileScreen — ad tekrar sorulmaz', () => {
     );
   });
 
-  it('geçersiz bir takma ad yazılırsa devam edilemez', () => {
+  it('misafir takma adı boş bırakıp devam edebilir', () => {
+    authState.firebaseUser = { isAnonymous: true };
+
+    renderScreen();
+
+    expect(continueButton()).toBeEnabled();
+    fireEvent.click(continueButton());
+    finishAgeAndAvatar();
+
+    expect(mutate).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'createProfile.defaultName' }),
+      expect.anything(),
+    );
+  });
+
+  it('misafir geçersiz bir takma ad yazarsa devam edemez', () => {
+    authState.firebaseUser = { isAnonymous: true };
     renderScreen();
 
     fireEvent.change(screen.getByPlaceholderText('createProfile.namePlaceholder'), {

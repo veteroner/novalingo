@@ -53,4 +53,14 @@ describe('ilk açılış yaş ekranı', () => {
     expect(screen.getByText('application')).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
+
+  it("web'de yasal sayfalar yaş ekranına takılmadan açılır", () => {
+    window.history.pushState({}, '', '/legal/delete-account');
+    try {
+      renderGate();
+      expect(screen.getByText('application')).toBeInTheDocument();
+    } finally {
+      window.history.pushState({}, '', '/');
+    }
+  });
 });

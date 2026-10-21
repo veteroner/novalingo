@@ -201,7 +201,7 @@ function TermsOfService() {
       <section>
         <h2 className="mb-2 text-base font-bold text-gray-900">1. Hizmet Tanımı</h2>
         <p>
-          {APP_NAME}, 3-8 yaş çocuklar için İngilizce öğretme uygulamasıdır. Uygulamayı indirerek
+          {APP_NAME}, 4-12 yaş çocuklar için İngilizce öğretme uygulamasıdır. Uygulamayı indirerek
           veya kullanarak bu Kullanım Koşulları&apos;nı kabul etmiş sayılırsınız.
         </p>
       </section>
@@ -219,9 +219,9 @@ function TermsOfService() {
       <section>
         <h2 className="mb-2 text-base font-bold text-gray-900">3. Ücretlendirme</h2>
         <p>
-          {APP_NAME} ücretsiz indirilebilir; ek özellikler isteğe bağlı Premium abonelikle sunulur.
-          Satın alma işlemleri Apple App Store veya Google Play Store aracılığıyla gerçekleştirilir
-          ve yalnızca ebeveyn doğrulamasından sonra yapılabilir.
+          {APP_NAME} ücretsiz indirilebilir; ek özellikler isteğe bağlı NovaLingo Plus aboneliğiyle
+          sunulur. Satın alma işlemleri Apple App Store veya Google Play Store aracılığıyla
+          gerçekleştirilir ve yalnızca ebeveyn doğrulamasından sonra yapılabilir.
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>Tüm satın almalar platform mağazasının iade politikasına tabidir.</li>
