@@ -134,7 +134,7 @@ export default function CreateProfileScreen() {
   ]);
 
   return (
-    <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col bg-linear-to-b to-white px-6">
+    <div className="safe-area-top safe-area-bottom nova-page flex min-h-screen flex-col px-6">
       {/* Back button */}
       <div className="pt-4">
         {step !== 'name' && (
@@ -173,11 +173,11 @@ export default function CreateProfileScreen() {
               }}
               placeholder={t('createProfile.namePlaceholder')}
               maxLength={20}
-              className="focus:border-nova-blue h-14 w-full rounded-2xl border-3 border-gray-200 bg-white px-4 text-center text-xl font-bold transition-colors focus:outline-none"
+              className="focus:border-nova-blue border-border bg-surface h-14 w-full rounded-2xl border-3 px-4 text-center text-xl font-bold transition-colors focus:outline-none"
               autoFocus
             />
             {nameError && (
-              <Text variant="caption" align="center" className="text-error mt-1">
+              <Text variant="caption" align="center" className="text-error-ink mt-1">
                 {nameError}
               </Text>
             )}
@@ -210,7 +210,7 @@ export default function CreateProfileScreen() {
                     setSelectedAge(group.id);
                   }}
                   className={
-                    selectedAge === group.id ? `border-3 ${group.color} bg-white shadow-md` : ''
+                    selectedAge === group.id ? `border-3 ${group.color} bg-surface shadow-md` : ''
                   }
                 >
                   <div className="flex items-center gap-4">
@@ -264,7 +264,7 @@ export default function CreateProfileScreen() {
                   className={`flex flex-col items-center gap-1 rounded-2xl border-3 p-3 transition-all ${
                     selectedAvatar === avatar.id
                       ? 'border-nova-blue bg-nova-sky scale-105 shadow-md'
-                      : 'border-gray-200 bg-white'
+                      : 'border-border bg-surface'
                   }`}
                 >
                   <span className="text-3xl">{avatar.emoji}</span>
@@ -281,7 +281,7 @@ export default function CreateProfileScreen() {
       {/* Continue Button */}
       <div className="space-y-2 pb-8">
         {error && (
-          <Text variant="bodySmall" align="center" className="text-error">
+          <Text variant="bodySmall" align="center" className="text-error-ink">
             {error}
           </Text>
         )}

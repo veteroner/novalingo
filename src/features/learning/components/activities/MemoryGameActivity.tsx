@@ -159,7 +159,7 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
         {Array.from({ length: totalPairs }).map((_, i) => (
           <motion.div
             key={i}
-            className={`h-3 w-3 rounded-full ${i < matchedCount ? 'bg-green-400' : 'bg-gray-200'}`}
+            className={`h-3 w-3 rounded-full ${i < matchedCount ? 'bg-green-400' : 'bg-border'}`}
             animate={i < matchedCount ? { scale: [1, 1.3, 1] } : {}}
           />
         ))}
@@ -189,10 +189,10 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
                 }
                 className={`flex aspect-square items-center justify-center rounded-2xl p-2 text-center transition-all duration-300 ${
                   card.isMatched
-                    ? 'border-2 border-green-300 bg-green-100 opacity-60'
+                    ? 'border-success/30 bg-success-soft border-2 opacity-60'
                     : card.isFlipped
-                      ? 'border-2 border-blue-400 bg-white shadow-md'
-                      : 'bg-linear-to-br from-blue-400 to-purple-500 shadow-md'
+                      ? 'border-primary/30 bg-surface border-2 shadow-md'
+                      : 'bg-primary-dark shadow-md'
                 }`}
                 onClick={() => {
                   handleCardTap(card.id);
@@ -215,7 +215,7 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
                     {/* Emoji yoksa tek başına kalan kelimeyi biraz büyüterek eş kartla görsel denge kur */}
                     <span
                       className={`${emoji === null ? 'text-sm' : 'text-xs'} leading-tight font-bold ${
-                        card.isMatched ? 'text-green-600' : 'text-gray-800'
+                        card.isMatched ? 'text-success-ink' : 'text-text'
                       }`}
                     >
                       {card.content}
@@ -245,10 +245,10 @@ export default function MemoryGameActivity({ data, onComplete }: MemoryGameActiv
           className="py-4 text-center"
         >
           <div className="mb-2 text-5xl">🎉</div>
-          <Text variant="h3" className="text-green-600">
+          <Text variant="h3" className="text-success-ink">
             {t('activityUI.memory.great')}
           </Text>
-          <Text variant="bodySmall" className="text-gray-400">
+          <Text variant="bodySmall" className="text-text-secondary">
             {t('activityUI.memory.complete')}
           </Text>
         </motion.div>

@@ -80,7 +80,7 @@ export default function LoginScreen() {
   }, [navigate, setLoading, setError, t]);
 
   return (
-    <div className="from-nova-sky flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
+    <div className="nova-page flex min-h-screen flex-col items-center justify-center px-6">
       {/* Logo & Mascot */}
       <motion.div
         className="mb-8 text-center"
@@ -144,10 +144,10 @@ export default function LoginScreen() {
             {allowSocialLogin && (
               <div className="relative py-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200" />
+                  <div className="border-border w-full border-t" />
                 </div>
                 <div className="relative flex justify-center">
-                  <Text variant="caption" className="text-text-secondary bg-white px-4">
+                  <Text variant="caption" className="text-text-secondary bg-surface px-4">
                     {t('login.or')}
                   </Text>
                 </div>

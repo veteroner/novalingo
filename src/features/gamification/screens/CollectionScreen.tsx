@@ -1,3 +1,5 @@
+import { FeatureHeader } from '@components/molecules/FeatureHeader';
+import { TreasureChestIcon } from '@phosphor-icons/react';
 /**
  * CollectionScreen
  *
@@ -76,13 +78,11 @@ export default function CollectionScreen() {
   return (
     <MainLayout>
       <div className="space-y-6 px-4 py-6">
-        {/* Header */}
-        <div>
-          <Text variant="h3">{t('collection.title')}</Text>
-          <Text variant="bodySmall" className="text-text-secondary">
-            {t('collection.collected', { collected: collectedCount, total: totalCount })}
-          </Text>
-        </div>
+        <FeatureHeader
+          title={t('collection.title')}
+          description={t('collection.collected', { collected: collectedCount, total: totalCount })}
+          icon={<TreasureChestIcon size={28} weight="duotone" />}
+        />
 
         {/* Category Tabs */}
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
@@ -91,8 +91,8 @@ export default function CollectionScreen() {
               key={cat.id}
               className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
-                  ? 'bg-nova-purple text-white'
-                  : 'text-text-secondary bg-gray-100'
+                  ? 'bg-primary-dark text-white'
+                  : 'text-text-secondary bg-surface-elevated'
               }`}
               onClick={() => {
                 setActiveCategory(cat.id);

@@ -163,7 +163,7 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
           <motion.div
             key={p.id}
             className={`h-3 w-3 rounded-full transition-colors ${
-              matchedIds.has(p.id) ? 'bg-green-400' : 'bg-gray-200'
+              matchedIds.has(p.id) ? 'bg-green-400' : 'bg-border'
             }`}
             animate={matchedIds.has(p.id) ? { scale: [1, 1.5, 1] } : {}}
           />
@@ -174,7 +174,7 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
       <div className="flex w-full gap-4">
         {/* Left column — English */}
         <div className="flex flex-1 flex-col gap-3">
-          <Text variant="caption" weight="bold" className="text-center text-blue-500">
+          <Text variant="caption" weight="bold" className="text-primary text-center">
             English 🇬🇧
           </Text>
           <AnimatePresence>
@@ -184,14 +184,14 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
                 layout
                 className={`relative w-full rounded-2xl px-3 py-4 text-center text-base font-bold transition-all ${
                   matchedIds.has(pair.id)
-                    ? 'border-2 border-green-300 bg-green-100 text-green-600 opacity-50'
+                    ? 'border-success/30 bg-success-soft text-success-ink border-2 opacity-50'
                     : selectedLeft === pair.id
                       ? feedback === 'correct'
-                        ? 'border-2 border-green-400 bg-green-100 text-green-700 shadow-lg'
+                        ? 'border-success/50 bg-success-soft text-success-ink border-2 shadow-lg'
                         : feedback === 'wrong'
-                          ? 'border-2 border-red-400 bg-red-100 text-red-700'
-                          : 'border-2 border-blue-400 bg-blue-100 text-blue-700 shadow-lg'
-                      : 'border-2 border-gray-200 bg-white text-gray-800 hover:border-blue-300 active:scale-95'
+                          ? 'border-error/50 bg-error-soft text-error-ink border-2'
+                          : 'border-primary/30 bg-primary-soft text-primary border-2 shadow-lg'
+                      : 'border-border bg-surface text-text hover:border-primary/30 border-2 active:scale-95'
                 }`}
                 onClick={() => {
                   handleLeftTap(pair.id);
@@ -202,7 +202,7 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
               >
                 {pair.left}
                 {matchedIds.has(pair.id) && (
-                  <span className="absolute top-1 right-2 text-green-500">✓</span>
+                  <span className="text-success-ink absolute top-1 right-2">✓</span>
                 )}
               </motion.button>
             ))}
@@ -221,14 +221,14 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
                 layout
                 className={`relative w-full rounded-2xl px-3 py-4 text-center text-base font-bold transition-all ${
                   matchedIds.has(item.id)
-                    ? 'border-2 border-green-300 bg-green-100 text-green-600 opacity-50'
+                    ? 'border-success/30 bg-success-soft text-success-ink border-2 opacity-50'
                     : selectedRight === item.id
                       ? feedback === 'correct'
-                        ? 'border-2 border-green-400 bg-green-100 text-green-700 shadow-lg'
+                        ? 'border-success/50 bg-success-soft text-success-ink border-2 shadow-lg'
                         : feedback === 'wrong'
-                          ? 'border-2 border-red-400 bg-red-100 text-red-700'
-                          : 'border-2 border-orange-400 bg-orange-100 text-orange-700 shadow-lg'
-                      : 'border-2 border-gray-200 bg-white text-gray-800 hover:border-orange-300 active:scale-95'
+                          ? 'border-error/50 bg-error-soft text-error-ink border-2'
+                          : 'border-accent bg-reward-soft text-reward-ink border-2 shadow-lg'
+                      : 'border-border bg-surface text-text hover:border-accent border-2 active:scale-95'
                 }`}
                 onClick={() => {
                   handleRightTap(item.id);
@@ -240,7 +240,7 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
               >
                 {item.text}
                 {matchedIds.has(item.id) && (
-                  <span className="absolute top-1 right-2 text-green-500">✓</span>
+                  <span className="text-success-ink absolute top-1 right-2">✓</span>
                 )}
               </motion.button>
             ))}
@@ -256,7 +256,7 @@ export default function MatchPairsActivity({ data, onComplete }: MatchPairsActiv
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <Text variant="h3" className="text-green-600">
+            <Text variant="h3" className="text-success-ink">
               🎉 Harika!
             </Text>
           </motion.div>

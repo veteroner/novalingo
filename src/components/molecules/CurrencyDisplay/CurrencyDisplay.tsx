@@ -31,7 +31,7 @@ export function CurrencyDisplay({
       {/* Stars */}
       <div className="relative flex items-center gap-1">
         <span className={compact ? 'text-base' : 'text-xl'}>⭐</span>
-        <span className={clsx('text-nova-yellow-dark font-bold', compact ? 'text-xs' : 'text-sm')}>
+        <span className={clsx('text-reward-ink font-bold', compact ? 'text-xs' : 'text-sm')}>
           {formatNumber(stars)}
         </span>
         <AnimatePresence>
@@ -42,7 +42,7 @@ export function CurrencyDisplay({
               exit={{ opacity: 0, y: -20 }}
               className={clsx(
                 'absolute -top-2 -right-4 text-[0.625rem] font-extrabold',
-                starDelta > 0 ? 'text-success' : 'text-error',
+                starDelta > 0 ? 'text-success-ink' : 'text-error-ink',
               )}
             >
               {starDelta > 0 ? '+' : ''}
@@ -55,7 +55,7 @@ export function CurrencyDisplay({
       {/* Gems */}
       <div className="relative flex items-center gap-1">
         <span className={compact ? 'text-base' : 'text-xl'}>💎</span>
-        <span className={clsx('text-nova-purple font-bold', compact ? 'text-xs' : 'text-sm')}>
+        <span className={clsx('text-primary font-bold', compact ? 'text-xs' : 'text-sm')}>
           {formatNumber(gems)}
         </span>
         <AnimatePresence>
@@ -66,7 +66,7 @@ export function CurrencyDisplay({
               exit={{ opacity: 0, y: -20 }}
               className={clsx(
                 'absolute -top-2 -right-4 text-[0.625rem] font-extrabold',
-                gemDelta > 0 ? 'text-success' : 'text-error',
+                gemDelta > 0 ? 'text-success-ink' : 'text-error-ink',
               )}
             >
               {gemDelta > 0 ? '+' : ''}

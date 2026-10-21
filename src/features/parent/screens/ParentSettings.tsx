@@ -39,7 +39,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
       }`}
     >
       <motion.div
-        className="absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow"
+        className="bg-surface absolute top-0.5 left-0.5 h-6 w-6 rounded-full shadow"
         animate={{ x: value ? 20 : 0 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
       />
@@ -257,8 +257,8 @@ export default function ParentSettings() {
                 key={limit}
                 className={`rounded-xl py-3 text-sm font-bold transition-all ${
                   dailyLimit === limit
-                    ? 'bg-nova-blue text-white shadow-md'
-                    : 'text-text-secondary bg-gray-100 hover:bg-gray-200'
+                    ? 'bg-primary-dark text-white shadow-md'
+                    : 'text-text-secondary bg-surface-elevated hover:bg-border'
                 }`}
                 onClick={() => {
                   setDailyLimit(limit);
@@ -433,7 +433,7 @@ export default function ParentSettings() {
                 setDeletePinInput('');
                 setDeleteError('');
               }}
-              className="text-error!"
+              className="text-error-ink!"
             >
               {t('settings.deleteAccount')}
             </Button>
@@ -456,7 +456,7 @@ export default function ParentSettings() {
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.9 }}
-                className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-xl"
+                className="bg-surface w-full max-w-sm rounded-3xl p-6 shadow-xl"
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -483,9 +483,7 @@ export default function ParentSettings() {
                       <div
                         key={i}
                         className={`flex h-12 w-12 items-center justify-center rounded-2xl border-2 text-xl font-bold ${
-                          activePin.length > i
-                            ? 'border-nova-blue bg-nova-blue/5'
-                            : 'border-gray-200'
+                          activePin.length > i ? 'border-nova-blue bg-nova-blue/5' : 'border-border'
                         }`}
                       >
                         {activePin.length > i ? '●' : ''}
@@ -503,7 +501,7 @@ export default function ParentSettings() {
                       className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl text-lg font-bold ${
                         key === null
                           ? 'invisible'
-                          : 'bg-gray-100 transition-colors active:bg-gray-200'
+                          : 'bg-surface-elevated active:bg-border transition-colors'
                       }`}
                       onClick={() => {
                         const setter =
@@ -577,7 +575,7 @@ export default function ParentSettings() {
                   <Text
                     variant="bodySmall"
                     align="center"
-                    className={`mb-3 ${pinSuccess ? 'text-success' : 'text-error'}`}
+                    className={`mb-3 ${pinSuccess ? 'text-success-ink' : 'text-error-ink'}`}
                   >
                     {pinMessage}
                   </Text>
@@ -613,7 +611,7 @@ export default function ParentSettings() {
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.9 }}
-                className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-xl"
+                className="bg-surface w-full max-w-sm rounded-3xl p-6 shadow-xl"
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -638,7 +636,7 @@ export default function ParentSettings() {
                     setEmailMessage('');
                   }}
                   placeholder={t('settings.emailPlaceholder')}
-                  className="focus:border-nova-blue mb-4 w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm outline-none"
+                  className="focus:border-nova-blue border-border mb-4 w-full rounded-xl border-2 px-4 py-3 text-sm outline-none"
                   disabled={emailSaving}
                 />
 
@@ -646,7 +644,7 @@ export default function ParentSettings() {
                   <Text
                     variant="bodySmall"
                     align="center"
-                    className={`mb-3 ${emailSuccess ? 'text-success' : 'text-error'}`}
+                    className={`mb-3 ${emailSuccess ? 'text-success-ink' : 'text-error-ink'}`}
                   >
                     {emailMessage}
                   </Text>
@@ -691,7 +689,7 @@ export default function ParentSettings() {
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.9 }}
-                className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-xl"
+                className="bg-surface w-full max-w-sm rounded-3xl p-6 shadow-xl"
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -713,9 +711,7 @@ export default function ParentSettings() {
                         <div
                           key={i}
                           className={`flex h-12 w-12 items-center justify-center rounded-2xl border-2 text-xl font-bold ${
-                            deletePinInput.length > i
-                              ? 'border-error bg-error/5'
-                              : 'border-gray-200'
+                            deletePinInput.length > i ? 'border-error bg-error/5' : 'border-border'
                           }`}
                         >
                           {deletePinInput.length > i ? '●' : ''}
@@ -730,7 +726,7 @@ export default function ParentSettings() {
                           className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl text-lg font-bold ${
                             key === null
                               ? 'invisible'
-                              : 'bg-gray-100 transition-colors active:bg-gray-200'
+                              : 'bg-surface-elevated active:bg-border transition-colors'
                           }`}
                           onClick={() => {
                             if (key === 'del') {
@@ -751,7 +747,7 @@ export default function ParentSettings() {
                 )}
 
                 {deleteError && (
-                  <Text variant="bodySmall" align="center" className="text-error mb-3">
+                  <Text variant="bodySmall" align="center" className="text-error-ink mb-3">
                     {deleteError}
                   </Text>
                 )}
@@ -819,16 +815,16 @@ export default function ParentSettings() {
           {/* Legal Links */}
           <div className="mt-4 flex justify-center gap-4">
             <button
-              className="text-xs text-gray-400 underline"
+              className="text-text-secondary text-xs underline"
               onClick={() => {
                 void navigate('/legal/privacy');
               }}
             >
               {t('settings.privacy')}
             </button>
-            <span className="text-xs text-gray-300">·</span>
+            <span className="text-text-secondary text-xs">·</span>
             <button
-              className="text-xs text-gray-400 underline"
+              className="text-text-secondary text-xs underline"
               onClick={() => {
                 void navigate('/legal/terms');
               }}

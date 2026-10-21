@@ -1,3 +1,4 @@
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 /**
  * OnboardingScreen
  *
@@ -50,7 +51,7 @@ export default function OnboardingScreen() {
   const pageNum = currentPage + 1;
 
   return (
-    <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col bg-linear-to-b to-white">
+    <div className="safe-area-top safe-area-bottom nova-page flex min-h-screen flex-col">
       {/* Progress */}
       <div className="px-6 pt-4">
         <ProgressBar value={(currentPage + 1) / PAGE_COUNT} variant="lesson" size="xs" />
@@ -74,13 +75,19 @@ export default function OnboardingScreen() {
             exit={{ opacity: 0, x: -50 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <motion.div
-              className="mb-6 text-8xl"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              {emoji}
-            </motion.div>
+            <div className="mb-6 flex justify-center">
+              <NovaCharacter
+                size="hero"
+                mood={
+                  currentPage === PAGE_COUNT - 1
+                    ? 'happy'
+                    : currentPage === 2
+                      ? 'listening'
+                      : 'idle'
+                }
+                decorative
+              />
+            </div>
 
             <Text variant="h2" align="center" className="mb-3">
               {t(`onboarding.page${pageNum}Title`)}
@@ -103,7 +110,7 @@ export default function OnboardingScreen() {
               className="h-2 rounded-full"
               animate={{
                 width: i === currentPage ? 24 : 8,
-                backgroundColor: i === currentPage ? '#0d8ecf' : '#d1d5db',
+                backgroundColor: i === currentPage ? 'var(--color-primary)' : 'var(--color-border)',
               }}
               transition={{ type: 'spring', stiffness: 300 }}
             />

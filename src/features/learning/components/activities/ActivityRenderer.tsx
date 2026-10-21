@@ -48,7 +48,7 @@ function hasActivityData<TType extends ActivityType>(
 function renderUnknownActivity() {
   return (
     <div className="p-8 text-center">
-      <Text variant="body" className="text-error">
+      <Text variant="body" className="text-error-ink">
         Bilinmeyen aktivite tipi
       </Text>
     </div>

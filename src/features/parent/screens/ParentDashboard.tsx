@@ -80,7 +80,7 @@ export default function ParentDashboard() {
   // PIN gate
   if (!isUnlocked) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
+      <div className="bg-surface flex min-h-screen flex-col items-center justify-center px-6">
         <Text variant="h3" align="center" className="mb-2">
           {t('dashboard.gateTitle')}
         </Text>
@@ -92,7 +92,7 @@ export default function ParentDashboard() {
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl border-3 text-2xl font-bold ${pin.length > i ? 'border-nova-blue bg-nova-blue/5' : 'border-gray-200'}`}
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl border-3 text-2xl font-bold ${pin.length > i ? 'border-nova-blue bg-nova-blue/5' : 'border-border'}`}
             >
               {pin.length > i ? '●' : ''}
             </div>
@@ -104,7 +104,7 @@ export default function ParentDashboard() {
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, 'del'].map((key) => (
             <button
               key={String(key)}
-              className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold ${key === null ? 'invisible' : 'bg-gray-100 transition-colors active:bg-gray-200'}`}
+              className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold ${key === null ? 'invisible' : 'bg-surface-elevated active:bg-border transition-colors'}`}
               onClick={() => {
                 if (key === 'del') {
                   setPin((p) => p.slice(0, -1));
@@ -136,7 +136,7 @@ export default function ParentDashboard() {
         </div>
 
         {pinError && (
-          <Text variant="bodySmall" align="center" className="text-error mt-4">
+          <Text variant="bodySmall" align="center" className="text-error-ink mt-4">
             {pinError}
           </Text>
         )}
@@ -173,7 +173,7 @@ export default function ParentDashboard() {
           <div className="mb-3 flex items-center justify-between">
             <Text variant="h4">{t('dashboard.thisWeek')}</Text>
             {weeklyStats && weeklyStats.streakDays > 0 && (
-              <Text variant="caption" className="text-nova-orange font-semibold">
+              <Text variant="caption" className="text-reward-ink font-semibold">
                 {t('dashboard.daysActive', { count: weeklyStats.streakDays })}
               </Text>
             )}
@@ -191,8 +191,8 @@ export default function ParentDashboard() {
                   variant="caption"
                   className={
                     weeklyStats.lessonsThisWeek >= weeklyStats.lessonsLastWeek
-                      ? 'text-success'
-                      : 'text-error'
+                      ? 'text-success-ink'
+                      : 'text-error-ink'
                   }
                 >
                   {weeklyStats.lessonsThisWeek >= weeklyStats.lessonsLastWeek ? '▲' : '▼'}{' '}
@@ -201,7 +201,7 @@ export default function ParentDashboard() {
               )}
             </div>
             <div>
-              <Text variant="h3" className="text-success">
+              <Text variant="h3" className="text-success-ink">
                 {weeklyStats?.totalMinutesThisWeek != null
                   ? `${weeklyStats.totalMinutesThisWeek}dk`
                   : `${child.totalPlayTimeMinutes}dk`}
@@ -211,7 +211,7 @@ export default function ParentDashboard() {
               </Text>
             </div>
             <div>
-              <Text variant="h3" className="text-nova-orange">
+              <Text variant="h3" className="text-reward-ink">
                 {weeklyStats?.totalXpThisWeek != null
                   ? `+${weeklyStats.totalXpThisWeek}`
                   : child.totalXP}
@@ -229,7 +229,7 @@ export default function ParentDashboard() {
                   %{Math.round(weeklyStats.avgAccuracyThisWeek * 100)}
                 </span>
                 {weeklyStats.perfectLessonsThisWeek > 0 && (
-                  <span className="text-nova-orange ml-2">
+                  <span className="text-reward-ink ml-2">
                     {t('dashboard.perfectLessons', { count: weeklyStats.perfectLessonsThisWeek })}
                   </span>
                 )}
@@ -303,7 +303,7 @@ export default function ParentDashboard() {
                     {canDoStatements.unitStatements.slice(0, 3).map((statement) => (
                       <div
                         key={statement}
-                        className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800"
+                        className="bg-success-soft text-success-ink rounded-2xl border border-emerald-200 px-3 py-2 text-sm font-medium"
                       >
                         {statement}
                       </div>
@@ -419,7 +419,7 @@ export default function ParentDashboard() {
             </div>
 
             {recommendedConversationTheme && (
-              <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <div className="bg-reward-soft mb-5 rounded-2xl border border-amber-200 px-4 py-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <Text variant="bodySmall" weight="bold" className="text-amber-900">
@@ -431,7 +431,7 @@ export default function ParentDashboard() {
                       {recommendedConversationTheme.reason}
                     </Text>
                   </div>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-amber-800">
+                  <span className="bg-surface rounded-full px-2.5 py-1 text-xs font-semibold text-amber-800">
                     %{recommendedConversationTheme.averageScore}
                   </span>
                 </div>
@@ -441,7 +441,7 @@ export default function ParentDashboard() {
                     {recommendedConversationTheme.focusWords.map((word) => (
                       <span
                         key={word}
-                        className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-amber-900"
+                        className="bg-surface rounded-full px-2.5 py-1 text-xs font-semibold text-amber-900"
                       >
                         {word}
                       </span>
@@ -522,7 +522,7 @@ export default function ParentDashboard() {
                             {(item.recentUtterances ?? []).slice(0, 2).map((utterance, index) => (
                               <div
                                 key={`${item.theme}-${utterance}-${index}`}
-                                className="rounded-xl bg-white px-3 py-2 text-sm text-violet-900 shadow-sm"
+                                className="bg-surface rounded-xl px-3 py-2 text-sm text-violet-900 shadow-sm"
                               >
                                 “{utterance}”
                               </div>
@@ -553,13 +553,16 @@ export default function ParentDashboard() {
                     {topic.label}
                   </Text>
                   <div className="flex items-center gap-2">
-                    <div className="h-2 w-24 overflow-hidden rounded-full bg-gray-100">
+                    <div className="bg-surface-elevated h-2 w-24 overflow-hidden rounded-full">
                       <div
                         className="h-full rounded-full bg-red-400"
                         style={{ width: `${Math.round(topic.avgAccuracy * 100)}%` }}
                       />
                     </div>
-                    <Text variant="caption" className="w-10 text-right font-semibold text-red-500">
+                    <Text
+                      variant="caption"
+                      className="text-error-ink w-10 text-right font-semibold"
+                    >
                       {Math.round(topic.avgAccuracy * 100)}%
                     </Text>
                   </div>
@@ -593,7 +596,7 @@ export default function ParentDashboard() {
                 </Text>
               </div>
               <div className="bg-surface-50 rounded-xl p-3 text-center">
-                <Text variant="h3" className="text-nova-orange">
+                <Text variant="h3" className="text-reward-ink">
                   {learningStats.wordsDueForReview}
                 </Text>
                 <Text variant="caption" className="text-text-secondary mt-1 block">
@@ -655,7 +658,9 @@ export default function ParentDashboard() {
                     <Text
                       variant="body"
                       weight="bold"
-                      className={efficacy.retentionTrend >= 0 ? 'text-success' : 'text-error'}
+                      className={
+                        efficacy.retentionTrend >= 0 ? 'text-success-ink' : 'text-error-ink'
+                      }
                     >
                       {efficacy.retentionTrend >= 0 ? '▲' : '▼'}{' '}
                       {Math.abs(Math.round(efficacy.retentionTrend * 100))}%
@@ -694,7 +699,7 @@ export default function ParentDashboard() {
                       </Text>
                     </div>
                   </div>
-                  <Text variant="body" weight="bold" className="text-nova-orange">
+                  <Text variant="body" weight="bold" className="text-reward-ink">
                     {efficacy.speakingActivitiesCompleted}/{efficacy.totalSpeakingSessions}
                   </Text>
                 </div>
@@ -750,7 +755,7 @@ export default function ParentDashboard() {
                       </Text>
                     </div>
                   </div>
-                  <Text variant="body" weight="bold" className="text-success">
+                  <Text variant="body" weight="bold" className="text-success-ink">
                     %{Math.round(efficacy.activeVocabularyRatio * 100)}
                   </Text>
                 </div>
@@ -771,7 +776,9 @@ export default function ParentDashboard() {
                   <Text
                     variant="body"
                     weight="bold"
-                    className={efficacy.recentTrendDelta >= 0 ? 'text-success' : 'text-error'}
+                    className={
+                      efficacy.recentTrendDelta >= 0 ? 'text-success-ink' : 'text-error-ink'
+                    }
                   >
                     {efficacy.recentTrendDelta >= 0 ? '▲' : '▼'}{' '}
                     {Math.abs(Math.round(efficacy.recentTrendDelta * 100))}%
@@ -791,7 +798,7 @@ export default function ParentDashboard() {
                       %{Math.round(efficacy.consistencyScore * 100)}
                     </Text>
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div className="bg-surface-elevated h-2 w-full overflow-hidden rounded-full">
                     <div
                       className="bg-nova-blue h-full rounded-full transition-all"
                       style={{ width: `${Math.round(efficacy.consistencyScore * 100)}%` }}
@@ -813,7 +820,7 @@ export default function ParentDashboard() {
                         </Text>
                       </div>
                     </div>
-                    <Text variant="body" weight="bold" className="text-nova-purple">
+                    <Text variant="body" weight="bold" className="text-primary">
                       {efficacy.conversationCompletions}
                     </Text>
                   </div>
@@ -832,7 +839,7 @@ export default function ParentDashboard() {
                         </Text>
                       </div>
                     </div>
-                    <Text variant="body" weight="bold" className="text-emerald-700">
+                    <Text variant="body" weight="bold" className="text-success-ink">
                       {efficacy.masteredConversationPatterns}
                     </Text>
                   </div>
@@ -855,7 +862,7 @@ export default function ParentDashboard() {
                     <Text
                       variant="body"
                       weight="bold"
-                      className={efficacy.prePostDelta >= 0 ? 'text-success' : 'text-error'}
+                      className={efficacy.prePostDelta >= 0 ? 'text-success-ink' : 'text-error-ink'}
                     >
                       {efficacy.prePostDelta >= 0 ? '▲' : '▼'}{' '}
                       {Math.abs(Math.round(efficacy.prePostDelta * 100))}%
@@ -911,7 +918,7 @@ export default function ParentDashboard() {
                                 %{val}
                               </Text>
                             </div>
-                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                            <div className="bg-surface-elevated h-1.5 w-full overflow-hidden rounded-full">
                               <div
                                 className="bg-nova-blue h-full rounded-full transition-all"
                                 style={{ width: `${val}%` }}
@@ -933,7 +940,7 @@ export default function ParentDashboard() {
             leading={<span>⏰</span>}
             title={t('dashboard.settingsTimeLimit')}
             subtitle={t('dashboard.timeLimit30')}
-            trailing={<span className="text-gray-400">→</span>}
+            trailing={<span className="text-text-secondary">→</span>}
             onClick={() => navigate('/parent/settings')}
             divider
           />
@@ -941,7 +948,7 @@ export default function ParentDashboard() {
             leading={<span>🔔</span>}
             title={t('dashboard.settingsNotifications')}
             subtitle={t('dashboard.notificationsOn')}
-            trailing={<span className="text-gray-400">→</span>}
+            trailing={<span className="text-text-secondary">→</span>}
             onClick={() => navigate('/parent/settings')}
             divider
           />
@@ -949,14 +956,14 @@ export default function ParentDashboard() {
             leading={<span>💳</span>}
             title={t('dashboard.settingsSubscription')}
             subtitle={t('dashboard.freePlan')}
-            trailing={<span className="text-gray-400">→</span>}
+            trailing={<span className="text-text-secondary">→</span>}
             onClick={() => navigate('/subscription')}
             divider
           />
           <ListItem
             leading={<span>👤</span>}
             title={t('dashboard.settingsAccount')}
-            trailing={<span className="text-gray-400">→</span>}
+            trailing={<span className="text-text-secondary">→</span>}
             onClick={() => navigate('/parent/settings')}
           />
         </Card>
@@ -997,13 +1004,13 @@ function formatRelativeConversationDate(
 function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
   const { t } = useTranslation('parent');
   const theme = item.scenarioTheme?.trim() || t('dashboard.freeTalk');
-  const scoreTone = item.passed ? 'text-emerald-700' : 'text-amber-700';
+  const scoreTone = item.passed ? 'text-success-ink' : 'text-amber-700';
   const scoreBadgeTone = item.passed
-    ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-    : 'border-amber-200 bg-amber-50 text-amber-800';
+    ? 'border-emerald-200 bg-success-soft text-success-ink'
+    : 'border-amber-200 bg-reward-soft text-amber-800';
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="bg-surface rounded-2xl border border-slate-200 px-4 py-3 shadow-sm">
       <div className="mb-2 flex items-start justify-between gap-3">
         <div>
           <Text variant="bodySmall" weight="bold">
@@ -1072,7 +1079,7 @@ function ConversationHighlightCard({ item }: { item: ConversationHighlight }) {
             {item.patternsHit.slice(0, 3).map((pattern) => (
               <span
                 key={pattern}
-                className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800"
+                className="bg-success-soft text-success-ink rounded-full px-2.5 py-1 text-xs font-semibold"
               >
                 {pattern}
               </span>
@@ -1108,15 +1115,15 @@ function ConversationThemeProgressCard({
   const progressTone =
     variant === 'strong'
       ? score >= 85
-        ? 'bg-emerald-500'
+        ? 'bg-success'
         : 'bg-sky-500'
       : score >= 65
         ? 'bg-amber-500'
         : 'bg-rose-500';
   const badgeTone =
     variant === 'strong'
-      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      : 'bg-amber-50 text-amber-700 border-amber-200';
+      ? 'bg-success-soft text-success-ink border-emerald-200'
+      : 'bg-reward-soft text-amber-700 border-amber-200';
   const containerTone =
     variant === 'strong'
       ? 'border-emerald-100 bg-emerald-50/40'

@@ -56,7 +56,7 @@ export function Leaderboard({
               'flex items-center gap-3 rounded-2xl px-4 py-3',
               isCurrentUser
                 ? 'bg-nova-blue/10 border-nova-blue/30 border-2'
-                : 'border border-gray-100 bg-white',
+                : 'border-border bg-surface border',
               rank <= 3 && 'shadow-md',
             )}
             initial={{ opacity: 0, x: -20 }}

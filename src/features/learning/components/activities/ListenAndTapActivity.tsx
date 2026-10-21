@@ -118,8 +118,8 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
       <motion.button
         className={`flex h-24 w-24 items-center justify-center rounded-full text-4xl shadow-xl transition-colors ${
           listenCount >= 3
-            ? 'bg-gray-200 text-gray-400'
-            : 'bg-blue-500 text-white hover:bg-blue-600'
+            ? 'bg-border text-text-secondary'
+            : 'bg-primary-dark hover:bg-primary-dark text-white'
         }`}
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.05 }}
@@ -134,7 +134,7 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
           <div
             key={n}
             className={`h-2 w-2 rounded-full transition-colors ${
-              n <= listenCount ? 'bg-blue-400' : 'bg-gray-200'
+              n <= listenCount ? 'bg-primary' : 'bg-border'
             }`}
           />
         ))}
@@ -151,19 +151,19 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
         {data.options.map((option) => {
           const isThis = selected === option;
           const isAnswer = option === data.correctAnswer;
-          let bg = 'bg-white border-2 border-gray-200 hover:border-blue-300';
-          let textColor = 'text-gray-800';
+          let bg = 'bg-surface border-2 border-border hover:border-primary/30';
+          let textColor = 'text-text';
 
           if (isCorrect !== null) {
             if (isAnswer && (isThis || showAnswer)) {
-              bg = 'bg-green-100 border-2 border-green-400';
-              textColor = 'text-green-700';
+              bg = 'bg-success-soft border-2 border-success/50';
+              textColor = 'text-success-ink';
             } else if (isThis && !isAnswer) {
-              bg = 'bg-red-100 border-2 border-red-400';
-              textColor = 'text-red-600';
+              bg = 'bg-error-soft border-2 border-error/50';
+              textColor = 'text-error-ink';
             } else {
-              bg = 'bg-gray-50 border-2 border-gray-100';
-              textColor = 'text-gray-400';
+              bg = 'bg-surface-elevated border-2 border-border';
+              textColor = 'text-text-secondary';
             }
           }
 
@@ -199,7 +199,7 @@ export default function ListenAndTapActivity({ data, onComplete }: ListenAndTapA
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`rounded-xl px-4 py-2 text-center ${
-              isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              isCorrect ? 'bg-success-soft text-success-ink' : 'bg-error-soft text-error-ink'
             }`}
           >
             <Text variant="body" weight="bold">

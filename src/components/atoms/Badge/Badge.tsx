@@ -21,13 +21,13 @@ interface BadgeProps {
 
 const variantStyles: Record<BadgeVariant, string> = {
   xp: 'bg-nova-blue/15 text-nova-blue border-nova-blue/30',
-  level: 'bg-nova-purple/15 text-nova-purple border-nova-purple/30',
-  streak: 'bg-nova-orange/15 text-nova-orange border-nova-orange/30',
-  star: 'bg-nova-yellow/15 text-nova-yellow-dark border-nova-yellow/30',
-  gem: 'bg-nova-purple/15 text-nova-purple border-nova-purple/30',
-  info: 'bg-info/15 text-info border-info/30',
-  success: 'bg-success/15 text-success border-success/30',
-  warning: 'bg-warning/15 text-warning border-warning/30',
+  level: 'bg-nova-purple/15 text-primary border-nova-purple/30',
+  streak: 'bg-nova-orange/15 text-reward-ink border-nova-orange/30',
+  star: 'bg-nova-yellow/15 text-reward-ink border-nova-yellow/30',
+  gem: 'bg-nova-purple/15 text-primary border-nova-purple/30',
+  info: 'bg-info/15 text-primary border-info/30',
+  success: 'bg-success/15 text-success-ink border-success/30',
+  warning: 'bg-warning/15 text-reward-ink border-warning/30',
 };
 
 const sizeStyles: Record<BadgeSize, string> = {

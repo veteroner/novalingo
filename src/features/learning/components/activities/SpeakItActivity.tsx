@@ -178,27 +178,27 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
 
       {/* Word Card */}
       <motion.div
-        className="rounded-3xl bg-white p-8 text-center shadow-lg"
+        className="bg-surface rounded-3xl p-8 text-center shadow-lg"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
       >
         <div className="mb-4 text-7xl">{emoji}</div>
-        <Text variant="h2" className="mb-2 text-gray-900">
+        <Text variant="h2" className="text-text mb-2">
           {data.word}
         </Text>
-        <Text variant="body" className="text-gray-400">
+        <Text variant="body" className="text-text-secondary">
           {data.translation}
         </Text>
 
         {/* Sesli örnek butonu */}
         <button
-          className="mt-4 inline-flex items-center justify-center rounded-full bg-blue-50 p-3 transition-transform active:scale-95"
+          className="bg-primary-soft mt-4 inline-flex items-center justify-center rounded-full p-3 transition-transform active:scale-95"
           onClick={() => {
             speak(data.word);
           }}
         >
           <span className="text-2xl">🔊</span>
-          <span className="ml-2 text-sm font-medium text-blue-600">Dinle</span>
+          <span className="text-primary ml-2 text-sm font-medium">Dinle</span>
         </button>
       </motion.div>
 
@@ -214,9 +214,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
             >
               <motion.button
                 className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full text-4xl shadow-lg ${
-                  isListening
-                    ? 'bg-red-500 text-white'
-                    : 'bg-linear-to-br from-purple-500 to-pink-500 text-white'
+                  isListening ? 'bg-error text-white' : 'bg-primary-dark text-white'
                 }`}
                 onClick={startListening}
                 whileTap={{ scale: 0.9 }}
@@ -229,7 +227,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
               >
                 {isListening ? '⏺' : '🎤'}
               </motion.button>
-              <Text variant="bodySmall" className="mt-2 text-gray-400">
+              <Text variant="bodySmall" className="text-text-secondary mt-2">
                 {isListening ? t('activityUI.speakIt.listening') : t('activityUI.speakIt.tapMic')}
               </Text>
             </motion.div>
@@ -243,11 +241,11 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
               className="space-y-2"
             >
               <div className="text-6xl">🎉</div>
-              <Text variant="h3" className="text-green-600">
+              <Text variant="h3" className="text-success-ink">
                 Harika!
               </Text>
               {spokenText && (
-                <Text variant="bodySmall" className="text-gray-400">
+                <Text variant="bodySmall" className="text-text-secondary">
                   &quot;{spokenText}&quot;
                 </Text>
               )}
@@ -267,7 +265,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                 Tekrar dene!
               </Text>
               {spokenText && (
-                <Text variant="bodySmall" className="text-gray-400">
+                <Text variant="bodySmall" className="text-text-secondary">
                   Sen: &quot;{spokenText}&quot;
                 </Text>
               )}
@@ -276,9 +274,9 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                 <motion.div
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 rounded-xl bg-blue-50 px-4 py-2"
+                  className="bg-primary-soft mt-2 rounded-xl px-4 py-2"
                 >
-                  <Text variant="bodySmall" className="text-blue-600">
+                  <Text variant="bodySmall" className="text-primary">
                     {t('activityUI.speakIt.pronunciation')}{' '}
                     <span className="font-bold">{data.phonemeHint}</span>
                   </Text>
@@ -295,7 +293,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
             animate={{ opacity: 1, y: 0 }}
             className="mt-4 space-y-3"
           >
-            <Text variant="bodySmall" className="text-gray-400">
+            <Text variant="bodySmall" className="text-text-secondary">
               {t('activityUI.speakIt.micUnavailable')}
             </Text>
             <div className="flex justify-center gap-3">
@@ -325,7 +323,7 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
       {/* Attempts indicator */}
       {attempts > 0 && feedback === 'idle' && (
         <div className="text-center">
-          <Text variant="caption" className="text-gray-300">
+          <Text variant="caption" className="text-text-secondary">
             Deneme: {attempts}
           </Text>
         </div>

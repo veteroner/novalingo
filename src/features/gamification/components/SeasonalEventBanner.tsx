@@ -56,7 +56,7 @@ export function SeasonalEventBanner() {
         <div className="mt-3 flex items-center gap-3">
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/20">
             <motion.div
-              className="h-full rounded-full bg-white"
+              className="bg-surface h-full rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress * 100}%` }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -96,16 +96,16 @@ export function SeasonalEventBanner() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800"
+        className="border-border bg-surface-elevated flex items-center gap-3 rounded-xl border p-3"
       >
         <span className="text-xl">{nextEvent.emoji}</span>
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+          <p className="text-text text-sm font-medium">
             {t('event.upcoming', { name: nextEvent.name })}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{nextEvent.description}</p>
+          <p className="text-text-secondary text-xs">{nextEvent.description}</p>
         </div>
-        <CalendarDots className="h-4 w-4 text-gray-400" />
+        <CalendarDots className="text-text-secondary h-4 w-4" />
       </motion.div>
     );
   }

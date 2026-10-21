@@ -104,12 +104,12 @@ function ModalShell({
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4">
-      <div className={`w-full ${size} rounded-3xl bg-white p-6 shadow-2xl`}>
+      <div className={`w-full ${size} bg-surface rounded-3xl p-6 shadow-2xl`}>
         {children}
         <button
           type="button"
           onClick={onClose}
-          className="mt-4 w-full rounded-2xl bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-600"
+          className="bg-surface-elevated text-text-secondary mt-4 w-full rounded-2xl px-4 py-3 text-sm font-semibold"
         >
           Kapat
         </button>
@@ -140,11 +140,11 @@ function ConfirmationModal({
 
   return (
     <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/55 p-4">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl">
+      <div className="bg-surface w-full max-w-sm rounded-3xl p-6 shadow-2xl">
         <div className="text-center">
           <div className="mb-3 text-4xl">{tone === 'danger' ? '⚠️' : '✅'}</div>
-          <h3 className="text-xl font-bold text-gray-900">{title}</h3>
-          <p className="mt-2 text-sm leading-6 text-gray-500">{message}</p>
+          <h3 className="text-text text-xl font-bold">{title}</h3>
+          <p className="text-text-secondary mt-2 text-sm leading-6">{message}</p>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
@@ -154,7 +154,7 @@ function ConfirmationModal({
               onCancel?.();
               onClose();
             }}
-            className="rounded-2xl bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-600"
+            className="bg-surface-elevated text-text-secondary rounded-2xl px-4 py-3 text-sm font-semibold"
           >
             {cancelText}
           </button>
@@ -165,7 +165,7 @@ function ConfirmationModal({
               onClose();
             }}
             className={`rounded-2xl px-4 py-3 text-sm font-semibold text-white ${
-              tone === 'danger' ? 'bg-red-500' : 'bg-nova-blue'
+              tone === 'danger' ? 'bg-error' : 'bg-nova-blue'
             }`}
           >
             {confirmText}
@@ -204,8 +204,8 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
     <ModalShell isOpen={isOpen} onClose={onClose}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-xl font-bold text-gray-900">{t('modals.settingsTitle')}</h3>
-          <p className="mt-1 text-sm text-gray-500">{t('modals.settingsDesc')}</p>
+          <h3 className="text-text text-xl font-bold">{t('modals.settingsTitle')}</h3>
+          <p className="text-text-secondary mt-1 text-sm">{t('modals.settingsDesc')}</p>
         </div>
       </div>
 
@@ -220,16 +220,18 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         ).map(([labelKey, key]) => (
           <div
             key={key}
-            className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3"
+            className="bg-surface-elevated flex items-center justify-between rounded-2xl px-4 py-3"
           >
-            <span className="text-sm font-semibold text-gray-700">{t(labelKey)}</span>
+            <span className="text-text text-sm font-semibold">{t(labelKey)}</span>
             <button
               type="button"
               onClick={() => {
                 toggleSetting(key);
               }}
               className={`rounded-full px-3 py-1 text-xs font-bold ${
-                user?.settings[key] ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'
+                user?.settings[key]
+                  ? 'bg-success-soft text-success-ink'
+                  : 'bg-border text-text-secondary'
               }`}
             >
               {user?.settings[key] ? t('modals.on') : t('modals.off')}
@@ -239,8 +241,8 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
       </div>
 
       {/* Language switcher — UI dili (öğretilen dil değil) */}
-      <div className="mt-5 flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
-        <span className="text-sm font-semibold text-gray-700">{t('modals.language')}</span>
+      <div className="bg-surface-elevated mt-5 flex items-center justify-between rounded-2xl px-4 py-3">
+        <span className="text-text text-sm font-semibold">{t('modals.language')}</span>
         <div className="flex gap-2">
           {(
             [
@@ -255,7 +257,7 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                 void i18n.changeLanguage(lng);
               }}
               className={`rounded-full px-3 py-1 text-xs font-bold ${
-                activeLang === lng ? 'bg-nova-blue text-white' : 'bg-gray-200 text-gray-500'
+                activeLang === lng ? 'bg-primary-dark text-white' : 'bg-border text-text-secondary'
               }`}
             >
               {label}
@@ -293,7 +295,7 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
               },
             });
           }}
-          className="w-full rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600"
+          className="bg-error-soft text-error-ink w-full rounded-2xl px-4 py-3 text-sm font-semibold"
         >
           {t('modals.signOutButton')}
         </button>
@@ -305,7 +307,7 @@ function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             onClose();
             void navigate('/parent/settings', { state: { openDeleteAccount: true } });
           }}
-          className="w-full rounded-2xl px-4 py-3 text-sm font-semibold text-red-600"
+          className="text-error-ink w-full rounded-2xl px-4 py-3 text-sm font-semibold"
         >
           {t('modals.deleteAccountButton')}
         </button>
@@ -330,22 +332,24 @@ function StreakLostModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
     <ModalShell isOpen={isOpen} onClose={onClose}>
       <div className="text-center">
         <div className="mb-3 text-5xl">🔥</div>
-        <h3 className="text-xl font-bold text-gray-900">{t('modals.streakTitle')}</h3>
-        <p className="mt-2 text-sm leading-6 text-gray-500">
+        <h3 className="text-text text-xl font-bold">{t('modals.streakTitle')}</h3>
+        <p className="text-text-secondary mt-2 text-sm leading-6">
           {streakText}. {t('modals.streakDesc')}
         </p>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-2xl bg-orange-50 p-4 text-center">
+        <div className="bg-reward-soft rounded-2xl p-4 text-center">
           <div className="text-2xl font-bold text-orange-600">{child?.currentStreak ?? 0}</div>
-          <div className="mt-1 text-xs font-semibold text-gray-500">
+          <div className="text-text-secondary mt-1 text-xs font-semibold">
             {t('modals.activeStreakLabel')}
           </div>
         </div>
         <div className="rounded-2xl bg-sky-50 p-4 text-center">
           <div className="text-2xl font-bold text-sky-600">{child?.streakFreezes ?? 0}</div>
-          <div className="mt-1 text-xs font-semibold text-gray-500">{t('modals.freezeLabel')}</div>
+          <div className="text-text-secondary mt-1 text-xs font-semibold">
+            {t('modals.freezeLabel')}
+          </div>
         </div>
       </div>
 
@@ -371,11 +375,11 @@ function StreakLostModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
             });
             onClose();
           }}
-          className="w-full rounded-2xl bg-sky-500 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-200"
+          className="disabled:bg-border w-full rounded-2xl bg-sky-500 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed"
         >
           {t('modals.useFreeze')}
         </button>
-        <p className="text-center text-xs text-gray-500">{t('modals.streakNoFreeze')}</p>
+        <p className="text-text-secondary text-center text-xs">{t('modals.streakNoFreeze')}</p>
       </div>
     </ModalShell>
   );
@@ -401,14 +405,14 @@ function CollectibleModal({
     <ModalShell isOpen={isOpen} onClose={onClose} size="max-w-sm">
       <div className="text-center">
         <div className="mb-3 text-6xl">{emoji}</div>
-        <div className="bg-nova-purple/10 text-nova-purple mb-2 inline-flex rounded-full px-3 py-1 text-xs font-bold tracking-wide uppercase">
+        <div className="bg-nova-purple/10 text-primary mb-2 inline-flex rounded-full px-3 py-1 text-xs font-bold tracking-wide uppercase">
           {rarity}
         </div>
-        <h3 className="text-2xl font-bold text-gray-900">{name}</h3>
-        <p className="mt-3 text-sm leading-6 text-gray-500">{description}</p>
+        <h3 className="text-text text-2xl font-bold">{name}</h3>
+        <p className="text-text-secondary mt-3 text-sm leading-6">{description}</p>
       </div>
 
-      <div className="mt-5 rounded-2xl bg-amber-50 p-4">
+      <div className="bg-reward-soft mt-5 rounded-2xl p-4">
         <div className="text-xs font-bold tracking-wide text-amber-700 uppercase">
           {t('modals.novaNote')}
         </div>
@@ -492,16 +496,16 @@ function DailyWheelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+      <div className="bg-surface w-full max-w-md rounded-3xl p-6 shadow-2xl">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-gray-900">{t('modals.wheelTitle')}</h3>
-            <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
+            <h3 className="text-text text-xl font-bold">{t('modals.wheelTitle')}</h3>
+            <p className="text-text-secondary mt-1 text-sm">{subtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-500"
+            className="bg-surface-elevated text-text-secondary rounded-full px-3 py-1 text-sm font-semibold"
           >
             Kapat
           </button>

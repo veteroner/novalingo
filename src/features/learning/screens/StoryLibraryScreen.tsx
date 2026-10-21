@@ -50,7 +50,7 @@ export default function StoryLibraryScreen() {
     <MainLayout headerOffset>
       {/* Header */}
       <motion.div
-        className="from-nova-blue to-nova-blue/80 rounded-b-3xl bg-linear-to-b px-4 py-6 text-white"
+        className="from-primary-dark to-primary-dark rounded-b-3xl bg-linear-to-b px-4 py-6 text-white"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -82,8 +82,8 @@ export default function StoryLibraryScreen() {
               }}
               className={`flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold transition-all ${
                 filterWorld === wid
-                  ? 'bg-nova-blue text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-primary-dark text-white shadow-md'
+                  : 'bg-surface-elevated text-text-secondary hover:bg-border'
               }`}
             >
               <span>{emoji}</span>
@@ -96,9 +96,9 @@ export default function StoryLibraryScreen() {
       {/* Story Grid */}
       <div className="grid grid-cols-2 gap-3 px-4 py-2 pb-8">
         {filteredStories.length === 0 && (
-          <div className="col-span-2 py-10 text-center text-gray-400">
+          <div className="text-text-secondary col-span-2 py-10 text-center">
             <span className="text-4xl">📭</span>
-            <Text variant="bodySmall" className="mt-2 text-gray-400">
+            <Text variant="bodySmall" className="text-text-secondary mt-2">
               {t('storyLibrary.emptyWorld')}
             </Text>
           </div>
@@ -136,27 +136,36 @@ function StoryCard({
   return (
     <motion.button
       onClick={onOpen}
-      className="flex flex-col items-start rounded-2xl border border-gray-100 bg-white p-3 text-left shadow-sm active:scale-95"
+      className="border-border bg-surface flex min-w-0 flex-col items-start rounded-2xl border p-3 text-left shadow-sm active:scale-95"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
     >
       {/* Theme Emoji area */}
-      <div className="mb-2 flex h-12 w-full items-center justify-center rounded-xl bg-indigo-50 text-3xl">
-        {worldEmoji ?? '📖'}
+      <div className="bg-primary-soft mb-3 flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded-xl text-4xl">
+        {story.data.pages[0]?.imageUrl.startsWith('/story/nova-v2/') ? (
+          <img
+            src={story.data.pages[0].imageUrl}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          (worldEmoji ?? '📖')
+        )}
       </div>
 
       {/* Title */}
-      <Text variant="caption" weight="bold" className="line-clamp-2 text-gray-800">
+      <Text variant="caption" weight="bold" className="text-text line-clamp-2">
         {story.titleTr}
       </Text>
 
       {/* Meta */}
-      <div className="mt-1 flex items-center gap-1">
-        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-600">
+      <div className="mt-1 flex flex-wrap items-center gap-1">
+        <span className="bg-primary-soft text-primary rounded-full px-2 py-0.5 text-[10px] font-semibold">
           {story.theme}
         </span>
-        <span className="text-[10px] text-gray-400">
+        <span className="text-text-secondary text-[10px]">
           {t('storyLibrary.pageCount', { count: pageCount })}
         </span>
       </div>

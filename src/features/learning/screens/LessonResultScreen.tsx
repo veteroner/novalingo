@@ -270,19 +270,19 @@ export default function LessonResultScreen() {
       : t('lessonResult.hintAllDone');
 
   return (
-    <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
+    <div className="safe-area-top safe-area-bottom nova-page flex min-h-screen flex-col items-center justify-center px-6">
       {/* Boss Victory Banner */}
       {isBossLesson && (
         <motion.div
-          className="mb-4 w-full max-w-sm rounded-3xl bg-linear-to-r from-yellow-400 to-amber-500 px-6 py-4 text-center shadow-lg"
+          className="bg-reward-soft border-border mb-4 w-full max-w-sm rounded-3xl border px-6 py-4 text-center shadow-lg"
           initial={{ opacity: 0, scale: 0.5, y: -20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 12 }}
         >
-          <Text variant="h2" align="center" className="text-white drop-shadow">
+          <Text variant="h2" align="center" className="text-reward-ink">
             {t('lessonResult.bossVictoryTitle')}
           </Text>
-          <Text variant="bodySmall" align="center" className="mt-1 text-yellow-100">
+          <Text variant="bodySmall" align="center" className="text-reward-ink mt-1">
             {t('lessonResult.bossVictorySubtitle')}
           </Text>
         </motion.div>
@@ -316,7 +316,7 @@ export default function LessonResultScreen() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
       >
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
           <Text variant="h3" className="text-nova-blue">
             +{xpEarned}
           </Text>
@@ -325,8 +325,8 @@ export default function LessonResultScreen() {
           </Text>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-          <Text variant="h3" className="text-success">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
+          <Text variant="h3" className="text-success-ink">
             %{Math.round(accuracy * 100)}
           </Text>
           <Text variant="caption" className="text-text-secondary">
@@ -334,8 +334,8 @@ export default function LessonResultScreen() {
           </Text>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-          <Text variant="h3" className="text-nova-orange">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
+          <Text variant="h3" className="text-reward-ink">
             {formatTime(summary.durationSeconds)}
           </Text>
           <Text variant="caption" className="text-text-secondary">
@@ -343,8 +343,8 @@ export default function LessonResultScreen() {
           </Text>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-          <Text variant="h3" className="text-nova-purple">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
+          <Text variant="h3" className="text-primary">
             {summary.correctAnswers}/{summary.totalActivities}
           </Text>
           <Text variant="caption" className="text-text-secondary">
@@ -385,7 +385,7 @@ export default function LessonResultScreen() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1.6, type: 'spring', stiffness: 200 }}
         >
-          <Text variant="h3" className="text-nova-orange">
+          <Text variant="h3" className="text-reward-ink">
             {t('lessonResult.levelUp', { level: backendResult.newLevel })}
           </Text>
           <Text variant="caption" className="text-text-secondary">
@@ -402,7 +402,7 @@ export default function LessonResultScreen() {
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ delay: 1.8, type: 'spring', stiffness: 200, damping: 12 }}
         >
-          <div className="dark:bg-surface-900/95 rounded-xl bg-white/95 px-5 py-4 text-center">
+          <div className="bg-surface/95 rounded-xl px-5 py-4 text-center">
             <motion.span
               className="inline-block text-5xl"
               animate={{ scale: [1, 1.2, 1] }}
@@ -410,10 +410,7 @@ export default function LessonResultScreen() {
             >
               {backendResult.collectibleGranted.emoji}
             </motion.span>
-            <Text
-              variant="caption"
-              className="text-nova-purple mt-2 font-bold tracking-wide uppercase"
-            >
+            <Text variant="caption" className="text-primary mt-2 font-bold tracking-wide uppercase">
               {t('lessonResult.newCollectible')}
             </Text>
             <Text variant="h4" align="center" className="mt-1">
@@ -437,7 +434,10 @@ export default function LessonResultScreen() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1.75, type: 'spring', stiffness: 180 }}
         >
-          <Text variant="caption" className="text-success mb-1 font-bold tracking-wide uppercase">
+          <Text
+            variant="caption"
+            className="text-success-ink mb-1 font-bold tracking-wide uppercase"
+          >
             {t('lessonResult.canDo')}
           </Text>
           <Text variant="body" className="text-surface-900 dark:text-surface-100 font-semibold">
@@ -453,14 +453,14 @@ export default function LessonResultScreen() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 1.65, type: 'spring', stiffness: 180, damping: 14 }}
         >
-          <div className="rounded-[calc(1.5rem-1px)] bg-white px-5 py-4 text-center">
+          <div className="bg-surface rounded-[calc(1.5rem-1px)] px-5 py-4 text-center">
             <Text variant="caption" className="font-bold tracking-wide text-orange-500 uppercase">
               {t('lessonResult.newWorldUnlocked')}
             </Text>
             <Text variant="h4" align="center" className="mt-1">
               {nextWorld.emoji} {nextWorld.name}
             </Text>
-            <Text variant="bodySmall" className="mt-1 text-gray-600">
+            <Text variant="bodySmall" className="text-text-secondary mt-1">
               {t('lessonResult.newWorldDesc')}
             </Text>
           </div>
@@ -485,7 +485,7 @@ export default function LessonResultScreen() {
               return (
                 <div
                   key={word}
-                  className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-sm"
+                  className="bg-surface flex items-center gap-1.5 rounded-xl px-3 py-2 shadow-sm"
                 >
                   <span className="text-lg">{emoji}</span>
                   <div className="text-left">
@@ -510,12 +510,12 @@ export default function LessonResultScreen() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
       >
-        <div className="rounded-2xl bg-indigo-50 px-4 py-3 text-center">
-          <Text variant="caption" className="font-semibold text-indigo-600">
+        <div className="bg-primary-soft rounded-2xl px-4 py-3 text-center">
+          <Text variant="caption" className="text-primary font-semibold">
             {primaryActionHint}
           </Text>
           {shouldAutoAdvance && (
-            <Text variant="caption" className="mt-1 block text-indigo-500">
+            <Text variant="caption" className="text-primary mt-1 block">
               {t('lessonResult.autoAdvance', { count: secondsRemaining })}
             </Text>
           )}

@@ -12,7 +12,7 @@ import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
-import { NovaStageAvatar, STAGE_CONFIG } from '@components/molecules/NovaStageAvatar';
+import { NovaStageAvatar } from '@components/molecules/NovaStageAvatar';
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { useChildStore } from '@stores/childStore';
@@ -42,7 +42,7 @@ export default function ProfileScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Profile Header */}
         <motion.div
-          className="flex flex-col items-center text-center"
+          className="border-border from-primary-soft to-surface flex flex-col items-center rounded-3xl border bg-linear-to-b p-6 text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -108,7 +108,7 @@ export default function ProfileScreen() {
               <Text variant="body" weight="semibold">
                 {t('profile.quickSettings')}
               </Text>
-              <span className="text-gray-400">→</span>
+              <span className="text-text-secondary">→</span>
             </div>
           </Card>
 
@@ -124,7 +124,7 @@ export default function ProfileScreen() {
               <Text variant="body" weight="semibold">
                 {t('profile.streakFreeze')}
               </Text>
-              <span className="text-gray-400">→</span>
+              <span className="text-text-secondary">→</span>
             </div>
           </Card>
 
@@ -146,7 +146,7 @@ export default function ProfileScreen() {
                 <Text variant="body" weight="semibold">
                   {link.label}
                 </Text>
-                <span className="text-gray-400">→</span>
+                <span className="text-text-secondary">→</span>
               </div>
             </Card>
           ))}
@@ -187,15 +187,13 @@ function NovaStageCard({
     };
   }, [stage, totalXP]);
 
-  const config = STAGE_CONFIG[stage];
-
   return (
     <Card variant="elevated" padding="md">
       <div className="flex flex-col items-center gap-3 text-center">
         <NovaStageAvatar stage={stage} size="lg" />
         <div className="w-full">
           <div className="flex items-center gap-2">
-            <Text variant="body" weight="bold" style={{ color: config.bodyColor }}>
+            <Text variant="body" weight="bold" className="text-primary">
               {t(`profile.stage.${stage}`)}
             </Text>
             <Text variant="caption" className="text-text-secondary">
@@ -215,7 +213,7 @@ function NovaStageCard({
               </Text>
             </>
           ) : (
-            <Text variant="caption" className="text-nova-orange mt-1 font-semibold">
+            <Text variant="caption" className="text-reward-ink mt-1 font-semibold">
               {t('profile.maxStage')}
             </Text>
           )}

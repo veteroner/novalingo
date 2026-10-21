@@ -39,7 +39,7 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
 
           {/* Content */}
           <motion.div
-            className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white p-8 text-center shadow-2xl"
+            className="bg-surface relative w-full max-w-sm overflow-hidden rounded-3xl p-8 text-center shadow-2xl"
             initial={{ scale: 0.5, y: 50 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.8, y: 50, opacity: 0 }}
@@ -94,7 +94,7 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
               transition={{ delay: 0.6 }}
             >
               {rewards.stars > 0 && (
-                <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-4 py-2">
+                <div className="bg-reward-soft flex items-center gap-1.5 rounded-full px-4 py-2">
                   <span className="text-xl">⭐</span>
                   <Text variant="body" weight="bold" className="text-amber-600">
                     +{rewards.stars}
@@ -102,7 +102,7 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
                 </div>
               )}
               {rewards.gems > 0 && (
-                <div className="flex items-center gap-1.5 rounded-full bg-purple-50 px-4 py-2">
+                <div className="bg-primary-soft flex items-center gap-1.5 rounded-full px-4 py-2">
                   <span className="text-xl">💎</span>
                   <Text variant="body" weight="bold" className="text-purple-600">
                     +{rewards.gems}
