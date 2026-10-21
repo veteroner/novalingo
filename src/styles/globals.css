@@ -107,15 +107,15 @@
   --color-secondary: var(--theme-secondary, #00b894);
   --color-accent: var(--theme-accent, #f2bc55);
 
-  --color-background: var(--theme-background, #f8f5ef);
+  --color-background: var(--theme-background, #f5f7fc);
   --color-surface: var(--theme-surface, #ffffff);
   --color-surface-elevated: var(--theme-surface-elevated, #ffffff);
 
-  --color-text: var(--theme-text, #25314c);
-  --color-text-secondary: var(--theme-text-secondary, #637087);
+  --color-text: var(--theme-text, #24314a);
+  --color-text-secondary: var(--theme-text-secondary, #5b6880);
   --color-text-inverse: var(--theme-text-inverse, #ffffff);
 
-  --color-border: var(--theme-border, #e4e3ed);
+  --color-border: var(--theme-border, #dfe5f0);
   --color-success: var(--theme-success, #237f64);
   --color-warning: var(--theme-warning, #f2bc55);
   --color-error: var(--theme-error, #c95050);

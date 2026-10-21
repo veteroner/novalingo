@@ -38,3 +38,12 @@ Başka dünya: `?view=world/w6&world=w6`. İlerleme: `progress=new` / `progress=
 - [Mobil ders yolu ve ders kartı](screenshots/nova-world-path-mobile.png)
 - [Masaüstü ders yolu](screenshots/nova-world-path-desktop.png)
 - [320 piksel koyu tema ve İngilizce rehber](screenshots/nova-world-guide-dark.png)
+
+## Renk paletinin son geçişi
+
+Ortak vurgu rengi Nova'nın indigosunda kalır. Açık modda genel zemin hafif soğuk beyaz/lavanta; yaş gruplarına göre sıcak krem veya buz mavisi varyantları vardır. Her dünyanın ünite zemini kendi vurgu renginin beyaz yüzeyle karışımını kullanır: bahçede soluk nane, galakside lila, mutfakta sıcak şeftali. Bu tonlar yeni görsel dosyası gerektirmez.
+
+Koyu mod gece mavisi zemin, daha açık mavi kartlar ve belirgin ikincil metin kullanır. Dünya yollarının tamamlanan çizgileri koyu modda ayrıca açılır. Renk değişikliğinin 36 mevcut kontrast testi, lint, tüm kaynakların biçim kontrolü ve üretim derlemesi başarılıdır. Telefon önizlemesinde açık/koyu görünüm doğrulandı.
+
+- [Yeni açık palet](screenshots/nova-colors-light.png)
+- [Yeni koyu palet](screenshots/nova-colors-dark.png)

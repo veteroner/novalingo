@@ -1,7 +1,20 @@
 /* The learning trail is bounded on phones; wide screens gain a useful journey rail. */
 .learning-map {
   --world-color: #23775b;
+  --path-paper: color-mix(in srgb, var(--world-color) 5%, var(--color-surface));
+  --path-wash: color-mix(in srgb, var(--world-color) 10%, var(--color-surface));
+  --path-trail: color-mix(in srgb, var(--world-color) 46%, var(--color-border));
+  min-height: 100dvh;
   padding: 0 16px 32px;
+  background:
+    radial-gradient(ellipse 65% 480px at 0 0, var(--path-wash), transparent),
+    radial-gradient(ellipse 65% 520px at 100% 220px, var(--path-wash), transparent),
+    var(--color-background);
+}
+[data-mode='dark'] .learning-map {
+  --path-paper: color-mix(in srgb, var(--world-color) 12%, var(--color-background));
+  --path-wash: color-mix(in srgb, var(--world-color) 20%, var(--color-background));
+  --path-trail: color-mix(in srgb, var(--world-color) 60%, #afc4d6);
 }
 .learning-topbar {
   display: flex;
@@ -168,7 +181,10 @@
   margin-bottom: 20px;
 }
 .learning-unit {
+  position: relative;
   margin-bottom: 24px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, var(--path-wash), var(--path-paper) 60%, transparent);
 }
 .learning-unit-banner {
   position: sticky;
@@ -283,7 +299,7 @@
   stroke-linecap: round;
 }
 .learning-route-line path.is-complete {
-  stroke: color-mix(in srgb, var(--world-color) 42%, var(--color-border));
+  stroke: var(--path-trail);
 }
 .learning-row {
   position: relative;
@@ -371,7 +387,7 @@
   margin-top: 12px;
   padding: 3px 6px;
   border-radius: 7px;
-  background: var(--color-background);
+  background: var(--path-paper);
   color: var(--color-text);
 }
 .learning-stop[data-status='locked'] .learning-stop-name {
@@ -547,6 +563,13 @@
 }
 .learning-nova-card {
   text-align: center;
+  background:
+    radial-gradient(
+      ellipse at 50% 0,
+      color-mix(in srgb, var(--world-color) 12%, transparent),
+      transparent 65%
+    ),
+    var(--color-surface);
 }
 .learning-nova-card .learning-eyebrow {
   justify-content: center;
