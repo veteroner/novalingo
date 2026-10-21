@@ -13,12 +13,16 @@ import HomeScreen from '../src/features/home/screens/HomeScreen';
 import WorldMapScreen from '../src/features/home/screens/WorldMapScreen';
 import ConversationScreen from '../src/features/conversation/screens/ConversationScreen';
 import StoryTimeActivity from '../src/features/learning/components/activities/StoryTimeActivity';
+import { curriculum, getWorld } from '../src/features/learning/data/curriculum';
 import { getStory } from '../src/features/learning/data/storyBank';
 import { getActiveEvent } from '../src/features/gamification/data/seasonalEvents';
 import { useChildStore } from '../src/stores/childStore';
 import { useAuthStore } from '../src/stores/authStore';
 
 if (!import.meta.env.DEV) throw new Error('Visual fixture is only available in development');
+const params = new URLSearchParams(location.search);
+const fixtureWorld = getWorld(params.get('world') ?? 'w1') ?? curriculum[0]!;
+const fixtureLessons = fixtureWorld.units.flatMap((unit) => unit.lessons);
 const child = {
   id: 'visual-fixture',
   parentUid: 'visual-only',
@@ -42,8 +46,8 @@ const child = {
   leagueId: 'demo',
   leagueTier: 'bronze' as const,
   weeklyXP: 120,
-  currentWorldId: 'w1',
-  currentUnitId: 'w1_u1',
+  currentWorldId: fixtureWorld.id,
+  currentUnitId: fixtureWorld.units[0]?.id ?? 'w1_u1',
   completedLessons: 12,
   totalPlayTimeMinutes: 85,
 };
@@ -54,10 +58,26 @@ const queryClient = new QueryClient({
 });
 queryClient.setQueryData(['worlds'], []);
 queryClient.setQueryData(['vocabulary', child.id], []);
-queryClient.setQueryData(['lessonProgress', child.id], []);
+const progressMode = params.get('progress') ?? 'started';
+const completedLessons =
+  progressMode === 'complete'
+    ? fixtureLessons
+    : progressMode === 'new'
+      ? []
+      : fixtureLessons.slice(0, 2);
+queryClient.setQueryData(
+  ['lessonProgress', child.id],
+  completedLessons.map((lesson, index) => ({
+    lessonId: lesson.id,
+    starsEarned: index % 2 === 0 ? 3 : 2,
+    completedAt: Timestamp.fromMillis(1),
+  })),
+);
+for (const world of curriculum)
+  for (const unit of world.units) queryClient.setQueryData(['lessons', world.id, unit.id], []);
 queryClient.setQueryData(['eventProgress', child.id, getActiveEvent()?.id ?? ''], null);
 const story = getStory('story-w2-nova-is-happy');
-const view = new URLSearchParams(location.search).get('view') ?? 'home';
+const view = params.get('view') ?? 'home';
 
 function Fixture() {
   const { toggleColorMode, colorMode } = useTheme();
@@ -65,7 +85,7 @@ function Fixture() {
   const [mood, setMood] = useState<'idle' | 'listening' | 'celebrating'>('idle');
   return (
     <>
-      <aside className="bg-surface border-border mx-auto flex max-w-md flex-wrap items-center gap-3 border-b p-3 text-xs">
+      <aside className="bg-surface border-border mx-auto flex max-w-6xl flex-wrap items-center gap-3 border-b p-3 text-xs">
         <strong>Yerel tasarım önizlemesi</strong>
         <button onClick={toggleColorMode}>
           {colorMode === 'light' ? 'Koyu tema' : 'Açık tema'}
@@ -74,6 +94,7 @@ function Fixture() {
           TR / EN
         </button>
         <Link to="/home">Ana sayfa</Link>
+        <Link to={`/world/${fixtureWorld.id}`}>Dünyalar</Link>
         <Link to="/conversation">Sohbet</Link>
         <Link to="/story">Hikâye</Link>
         <Link to="/profile">Nova</Link>
