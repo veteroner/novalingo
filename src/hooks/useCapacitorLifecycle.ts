@@ -30,7 +30,7 @@ export function useCapacitorLifecycle(): void {
     // setBackgroundColor yalnızca Android'de var; iOS'ta UNIMPLEMENTED ile reddeder ve
     // yakalanmadığında her rota değişiminde unhandledrejection üretip gerçek hataları gizler.
     if (isAndroid()) {
-      StatusBar.setBackgroundColor({ color: '#6c5ce7' }).catch(() => {
+      StatusBar.setBackgroundColor({ color: '#5145c8' }).catch(() => {
         // Eski Android sürümlerinde desteklenmeyebilir.
       });
     }

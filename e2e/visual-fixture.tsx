@@ -159,7 +159,10 @@ function Fixture() {
   const [mood, setMood] = useState<'idle' | 'listening' | 'celebrating'>('idle');
   return (
     <>
-      <aside className="safe-area-top bg-surface border-border mx-auto flex max-w-6xl flex-wrap items-center gap-3 border-b p-3 text-xs">
+      <aside
+        className="bg-surface border-border mx-auto flex max-w-6xl flex-wrap items-center gap-3 border-b p-3 text-xs"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
+      >
         <strong>Yerel test · örnek profil</strong>
         <button onClick={toggleColorMode}>
           {colorMode === 'light' ? 'Koyu tema' : 'Açık tema'}
