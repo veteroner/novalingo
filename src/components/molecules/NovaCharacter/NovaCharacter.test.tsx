@@ -5,7 +5,10 @@ import { NovaCharacter } from './NovaCharacter';
 describe('NovaCharacter', () => {
   it('changes expression when the conversation enters a new state', () => {
     const { rerender } = render(<NovaCharacter mood="idle" />);
-    expect(screen.getByRole('img', { name: 'Nova' })).toHaveAttribute('src', '/nova/nova-idle.webp');
+    expect(screen.getByRole('img', { name: 'Nova' })).toHaveAttribute(
+      'src',
+      '/nova/nova-idle.webp',
+    );
     rerender(<NovaCharacter mood="listening" />);
     expect(screen.getByRole('img', { name: 'Nova' })).toHaveAttribute(
       'src',
