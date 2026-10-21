@@ -25,14 +25,14 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'cla
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-nova-blue text-white shadow-[0_4px_0_0_#0a6ba8] active:shadow-[0_2px_0_0_#0a6ba8] active:translate-y-[2px]',
+    'bg-primary-dark text-white shadow-[0_4px_0_0_#352a96] active:shadow-[0_2px_0_0_#352a96] active:translate-y-[2px]',
   secondary:
-    'bg-nova-orange text-white shadow-[0_4px_0_0_#cc7a00] active:shadow-[0_2px_0_0_#cc7a00] active:translate-y-[2px]',
+    'bg-accent text-[#25314c] shadow-[0_4px_0_0_#cc7a00] active:shadow-[0_2px_0_0_#cc7a00] active:translate-y-[2px]',
   success:
     'bg-success text-white shadow-[0_4px_0_0_#2e7d32] active:shadow-[0_2px_0_0_#2e7d32] active:translate-y-[2px]',
   danger:
     'bg-error text-white shadow-[0_4px_0_0_#c62828] active:shadow-[0_2px_0_0_#c62828] active:translate-y-[2px]',
-  ghost: 'bg-transparent text-nova-blue border-2 border-nova-blue hover:bg-nova-blue/10',
+  ghost: 'bg-transparent text-primary border-2 border-primary hover:bg-primary/10',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

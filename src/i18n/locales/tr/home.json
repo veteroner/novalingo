@@ -1,8 +1,8 @@
 {
-  "greeting": "Merhaba, {{name}}! 👋",
+  "greeting": "Merhaba, {{name}}!",
   "subtitle": "Bugün ne öğrenmek istersin?",
   "streakLabel": "Gün Seri",
-  "worldsTitle": "Dünyalar 🌍",
+  "worldsTitle": "Keşfedilecek dünyalar",
   "seeAll": "Tümünü Gör",
   "conversation": {
     "title": "Nova ile Konuş",
@@ -67,5 +67,12 @@
     "familyDesc": "Aile üyelerini tanı",
     "food": "Yiyecek Şöleni",
     "foodDesc": "Lezzetli kelimeler öğren"
+  },
+  "hero": {
+    "label": "Nova ile yeni bir keşif",
+    "eyebrow": "Birlikte keşfedelim",
+    "currentWorld": "Şu anki dünyan",
+    "continue": "Derse devam et",
+    "visitNova": "Nova’yı ve gelişimini gör"
   }
 }

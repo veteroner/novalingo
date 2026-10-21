@@ -6,7 +6,7 @@
  */
 
 import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
-import novaMascot from '@assets/images/nova-mascot.svg';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { AppleSignInButton } from '@components/atoms/AppleSignInButton';
 import { Button } from '@components/atoms/Button';
 import { Spinner } from '@components/atoms/Spinner';
@@ -89,11 +89,11 @@ export default function LoginScreen() {
         transition={{ type: 'spring', stiffness: 200 }}
       >
         <motion.div
-          className="mb-4"
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="mb-4 flex justify-center"
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2, ease: 'easeInOut' }}
         >
-          <img src={novaMascot} alt="Nova" className="mx-auto h-20 w-20" />
+          <NovaCharacter size="xl" />
         </motion.div>
         <Text variant="h1" align="center" className="text-nova-blue">
           NovaLingo

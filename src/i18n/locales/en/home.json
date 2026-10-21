@@ -1,8 +1,8 @@
 {
-  "greeting": "Hello, {{name}}! 👋",
+  "greeting": "Hello, {{name}}!",
   "subtitle": "What would you like to learn today?",
   "streakLabel": "Day Streak",
-  "worldsTitle": "Worlds 🌍",
+  "worldsTitle": "Worlds to explore",
   "seeAll": "See All",
   "conversation": {
     "title": "Talk with Nova",
@@ -67,5 +67,12 @@
     "familyDesc": "Meet the family members",
     "food": "Food Feast",
     "foodDesc": "Learn delicious words"
+  },
+  "hero": {
+    "label": "A new adventure with Nova",
+    "eyebrow": "Let’s explore together",
+    "currentWorld": "Your current world",
+    "continue": "Continue learning",
+    "visitNova": "Visit Nova and see your progress"
   }
 }

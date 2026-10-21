@@ -161,7 +161,7 @@ export default function WorldMapScreen() {
     <MainLayout headerOffset>
       {/* World Header */}
       <motion.div
-        className="from-nova-blue to-nova-blue/80 rounded-b-3xl bg-linear-to-b px-4 py-6 text-white"
+        className="from-primary-dark to-primary-dark rounded-b-3xl bg-linear-to-b px-4 py-6 text-white"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
