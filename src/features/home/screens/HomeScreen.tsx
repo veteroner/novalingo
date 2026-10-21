@@ -10,7 +10,17 @@ import { Badge } from '@components/atoms/Badge';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
-import { NovaStageAvatar } from '@components/molecules/NovaStageAvatar';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
+import { NovaHomeHero } from '../components/NovaHomeHero';
+import {
+  BookOpenIcon,
+  ArrowRightIcon,
+  TrophyIcon,
+  FlagIcon,
+  StorefrontIcon,
+  CircleNotchIcon,
+  FlameIcon,
+} from '@phosphor-icons/react';
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { SeasonalEventBanner } from '@features/gamification/components/SeasonalEventBanner';
@@ -114,13 +124,27 @@ export default function HomeScreen() {
           <CurrencyDisplay stars={child.stars} gems={child.gems} compact />
         </div>
 
+        <NovaHomeHero
+          stage={child.novaStage}
+          worldName={
+            curriculum.find((w) => w.id === child.currentWorldId)?.name ??
+            t('worldMap.worldFallback')
+          }
+          onContinue={() => {
+            void navigate(`/world/${child.currentWorldId}`);
+          }}
+          onVisitNova={() => {
+            void navigate('/profile');
+          }}
+        />
+
         {/* Streak & XP */}
         <div className="flex gap-3">
           <Card variant="filled" padding="sm" className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🔥</span>
+              <FlameIcon size={28} weight="fill" className="text-streak" aria-hidden="true" />
               <div>
-                <Text variant="h4" className="text-nova-orange">
+                <Text variant="h4" className="text-text">
                   {child.currentStreak}
                 </Text>
                 <Text variant="caption" className="text-text-secondary">
@@ -150,11 +174,11 @@ export default function HomeScreen() {
             pressable
             padding="md"
             onClick={() => navigate('/conversation/topics')}
-            className="border-nova-blue/20 border bg-linear-to-r from-purple-50 to-blue-50"
+            className="border-primary/15 bg-surface border"
           >
             <div className="flex items-center gap-4">
               <div className="bg-nova-blue/10 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl">
-                🎭
+                <NovaCharacter size="sm" mood="listening" decorative />
               </div>
               <div className="flex-1">
                 <Text variant="body" weight="bold">
@@ -164,7 +188,7 @@ export default function HomeScreen() {
                   {t('conversation.subtitle')}
                 </Text>
               </div>
-              <span className="text-nova-blue text-xl">→</span>
+              <ArrowRightIcon size={22} className="text-primary" aria-hidden="true" />
             </div>
           </Card>
         </motion.div>
@@ -207,15 +231,8 @@ export default function HomeScreen() {
         <div className="grid grid-cols-2 gap-3">
           {[
             {
-              id: 'continue',
-              emoji: '📚',
-              label: t('quickActions.continue'),
-              description: t('quickActions.continueDesc'),
-              onClick: () => navigate(`/world/${child.currentWorldId}`),
-            },
-            {
               id: 'dailyWheel',
-              emoji: '🎰',
+              icon: CircleNotchIcon,
               label: t('quickActions.dailyWheel'),
               description: t('quickActions.dailyWheelDesc'),
               onClick: () => {
@@ -224,28 +241,28 @@ export default function HomeScreen() {
             },
             {
               id: 'achievements',
-              emoji: '🏆',
+              icon: TrophyIcon,
               label: t('quickActions.achievements'),
               description: t('quickActions.achievementsDesc'),
               onClick: () => navigate('/achievements'),
             },
             {
               id: 'quests',
-              emoji: '⚔️',
+              icon: FlagIcon,
               label: t('quickActions.quests'),
               description: t('quickActions.questsDesc'),
               onClick: () => navigate('/quests'),
             },
             {
               id: 'shop',
-              emoji: '🛒',
+              icon: StorefrontIcon,
               label: t('quickActions.shop'),
               description: t('quickActions.shopDesc'),
               onClick: () => navigate('/shop'),
             },
             {
               id: 'stories',
-              emoji: '📖',
+              icon: BookOpenIcon,
               label: t('quickActions.stories'),
               description: t('quickActions.storiesDesc'),
               onClick: () => navigate('/stories'),
@@ -259,7 +276,7 @@ export default function HomeScreen() {
               onClick={action.onClick}
             >
               <div className="space-y-1 text-center">
-                <span className="text-3xl">{action.emoji}</span>
+                <action.icon size={28} className="text-primary mx-auto" aria-hidden="true" />
                 <Text variant="bodySmall" weight="bold">
                   {action.label}
                 </Text>
@@ -361,34 +378,6 @@ export default function HomeScreen() {
           </Card>
         </motion.div>
       </div>
-
-      {/* Nova Companion — interactive SVG */}
-      <motion.div
-        className="fixed right-4 z-30"
-        style={{ bottom: 'calc(var(--spacing-nav-height) + var(--spacing-safe-bottom) + 0.5rem)' }}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.5 }}
-      >
-        <motion.button
-          className="relative cursor-pointer touch-manipulation"
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => navigate('/profile')}
-        >
-          <NovaStageAvatar stage={child.novaStage} size="sm" />
-          {/* Speech bubble */}
-          <motion.div
-            className="absolute right-0 bottom-full mb-2 max-w-44 min-w-28 rounded-2xl rounded-br-sm border border-gray-100 bg-white px-3 py-2 shadow-lg"
-            initial={{ opacity: 0, scale: 0.5, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 1.2, type: 'spring', stiffness: 400, damping: 20 }}
-          >
-            <p className="text-text-primary text-xs font-semibold">{t('novaGreeting')}</p>
-          </motion.div>
-        </motion.button>
-      </motion.div>
     </MainLayout>
   );
 }

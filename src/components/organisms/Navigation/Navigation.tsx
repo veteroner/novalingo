@@ -10,6 +10,7 @@ import type { TabType } from '@stores/uiStore';
 import { useUIStore } from '@stores/uiStore';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
+import { HouseIcon, BookOpenIcon, FlagIcon, UserCircleIcon } from '@phosphor-icons/react';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -68,7 +69,7 @@ export function Navigation() {
     <nav
       className={clsx(
         'fixed right-0 bottom-0 left-0 z-40',
-        'border-t border-gray-100 bg-white/90 backdrop-blur-xl',
+        'border-border bg-surface/95 border-t backdrop-blur-xl',
         'safe-area-bottom',
       )}
     >
@@ -84,9 +85,9 @@ export function Navigation() {
                 void navigate(item.path);
               }}
               className={clsx(
-                'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 pt-3',
+                'relative flex min-h-16 flex-1 flex-col items-center justify-center gap-0.5 py-2 pt-3',
                 'touch-manipulation transition-colors select-none',
-                isActive ? 'text-nova-blue' : 'text-gray-400',
+                isActive ? 'text-nova-blue' : 'text-text-secondary',
               )}
             >
               <motion.span
@@ -94,9 +95,17 @@ export function Navigation() {
                 animate={isActive ? { scale: 1.2, y: -2 } : { scale: 1, y: 0 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 15 }}
               >
-                {item.emoji}
+                {item.id === 'home' ? (
+                  <HouseIcon size={24} weight={isActive ? 'fill' : 'regular'} />
+                ) : item.id === 'learn' ? (
+                  <BookOpenIcon size={24} weight={isActive ? 'fill' : 'regular'} />
+                ) : item.id === 'quests' ? (
+                  <FlagIcon size={24} weight={isActive ? 'fill' : 'regular'} />
+                ) : (
+                  <UserCircleIcon size={24} weight={isActive ? 'fill' : 'regular'} />
+                )}
               </motion.span>
-              <span className="text-[0.625rem] font-bold">{t(`nav.${item.id}`)}</span>
+              <span className="text-xs font-bold">{t(`nav.${item.id}`)}</span>
               {isActive && (
                 <motion.div
                   layoutId="nav-indicator"

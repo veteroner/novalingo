@@ -31,13 +31,11 @@ describe('NovaEvolutionModal', () => {
     expect(screen.getByText(/novaEvolution\.evolve/)).toBeInTheDocument();
   });
 
-  it('renders two SVGs (old stage avatar)', () => {
+  it('renders the shared Nova character during evolution)', () => {
     const { container } = render(
       <NovaEvolutionModal isOpen={true} oldStage="child" newStage="teen" onClose={vi.fn()} />,
     );
-    // NovaStageAvatar renders an SVG inside
-    const svgs = container.querySelectorAll('svg');
-    expect(svgs.length).toBeGreaterThanOrEqual(1);
+    expect(container.querySelector('img[alt="Nova"]')).toBeInTheDocument();
   });
 
   it('calls onClose when dismiss button is clicked', () => {

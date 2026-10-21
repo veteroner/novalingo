@@ -331,10 +331,10 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
     <div className="mx-auto w-full max-w-md space-y-3">
       {/* Title */}
       <div className="text-center">
-        <Text variant="overline" className="text-purple-500">
+        <Text variant="overline" className="text-primary">
           {storyEmoji} {storyLabel}
         </Text>
-        <Text variant="h3" className="mt-1 text-gray-800">
+        <Text variant="h3" className="text-text mt-1">
           {data.title}
         </Text>
       </div>
@@ -350,11 +350,11 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
 
       {/* Page Counter + Listen */}
       <div className="flex items-center justify-between">
-        <Text variant="caption" className="text-gray-400">
+        <Text variant="caption" className="text-text-secondary">
           Sayfa {currentPage + 1} / {totalPages}
         </Text>
         <motion.button
-          className="flex items-center gap-1 rounded-full border border-purple-200 bg-purple-50 px-3 py-1.5 text-sm font-bold text-purple-600"
+          className="text-primary flex items-center gap-1 rounded-full border border-purple-200 bg-purple-50 px-3 py-1.5 text-sm font-bold"
           whileTap={{ scale: 0.95 }}
           onClick={handleListenPage}
         >
@@ -370,17 +370,17 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -60 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="min-h-55 space-y-4 overflow-hidden rounded-3xl bg-white shadow-lg"
+          className="bg-surface min-h-55 space-y-4 overflow-hidden rounded-3xl shadow-lg"
         >
           {/* Parallax story illustration */}
-          <div className="relative h-36 w-full overflow-hidden">
+          <div className="bg-background relative aspect-3/2 w-full overflow-hidden">
             <motion.img
               src={page.imageUrl || generateStoryPlaceholderImage(data.title, currentPage)}
               alt={t('activityUI.storyTime.imageAlt')}
-              className="absolute inset-0 h-full w-full object-cover"
-              initial={{ scale: 1.15, x: 30 }}
-              animate={{ scale: 1.05, x: 0 }}
-              exit={{ scale: 1.15, x: -30 }}
+              className="absolute inset-0 h-full w-full object-contain"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = generateStoryPlaceholderImage(
@@ -414,7 +414,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                             ? 'bg-green-100 font-bold text-green-700'
                             : isHighlight
                               ? 'bg-yellow-100 font-bold text-yellow-700 underline decoration-dotted'
-                              : 'text-gray-700'
+                              : 'text-text'
                       }`}
                       whileTap={{ scale: 1.15 }}
                       onClick={() => {
@@ -460,7 +460,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                   }
 
                   return (
-                    <span key={`${currentPage}-${idx}`} className="px-0.5 text-lg text-gray-700">
+                    <span key={`${currentPage}-${idx}`} className="text-text px-0.5 text-lg">
                       {word}
                     </span>
                   );
@@ -506,7 +506,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                     }
 
                     return (
-                      <span key={`${currentPage}-${idx}`} className="px-0.5 text-lg text-gray-700">
+                      <span key={`${currentPage}-${idx}`} className="text-text px-0.5 text-lg">
                         {word}
                       </span>
                     );
@@ -543,7 +543,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-1 leading-relaxed">
                   {pageWords.map((word, idx) => (
-                    <span key={`${currentPage}-${idx}`} className="px-0.5 text-lg text-gray-700">
+                    <span key={`${currentPage}-${idx}`} className="text-text px-0.5 text-lg">
                       {word}
                     </span>
                   ))}
@@ -565,10 +565,10 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                           key={opt.label}
                           className={`rounded-2xl px-4 py-3 text-left font-bold transition-colors ${
                             isSelected
-                              ? 'bg-purple-500 text-white shadow-md'
+                              ? 'bg-primary-dark text-white shadow-md'
                               : choiceMade
-                                ? 'bg-gray-100 text-gray-400'
-                                : 'bg-white text-gray-700 shadow-sm'
+                                ? 'text-text-secondary bg-gray-100'
+                                : 'bg-surface text-text shadow-sm'
                           }`}
                           whileTap={!choiceMade ? { scale: 0.97 } : {}}
                           onClick={() => {
@@ -610,10 +610,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                   <div className="space-y-3">
                     <div className="flex flex-wrap gap-1 leading-relaxed">
                       {pageWords.map((word, idx) => (
-                        <span
-                          key={`${currentPage}-${idx}`}
-                          className="px-0.5 text-lg text-gray-700"
-                        >
+                        <span key={`${currentPage}-${idx}`} className="text-text px-0.5 text-lg">
                           {selectedWord && word === '{WORD}' ? (
                             <span className="rounded-md bg-teal-100 px-2 font-bold text-teal-700">
                               {selectedWord}
@@ -642,8 +639,8 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                                 isSelected
                                   ? 'bg-teal-500 text-white shadow-md'
                                   : selectedWord
-                                    ? 'bg-gray-100 text-gray-400'
-                                    : 'bg-white text-teal-700 shadow-sm'
+                                    ? 'text-text-secondary bg-gray-100'
+                                    : 'bg-surface text-teal-700 shadow-sm'
                               }`}
                               whileTap={!selectedWord ? { scale: 0.95 } : {}}
                               onClick={() => {
@@ -681,7 +678,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                   | undefined;
                 return (
                   <div className="space-y-4">
-                    <Text variant="body" className="text-center text-gray-700">
+                    <Text variant="body" className="text-text text-center">
                       {siData?.prompt ?? t('activityUI.storyTime.picturePrompt')}
                     </Text>
                     {siData?.targetWords && siData.targetWords.length > 0 && (
@@ -726,7 +723,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
               })()}
 
             {/* Çeviri */}
-            <Text variant="caption" className="text-gray-400 italic">
+            <Text variant="caption" className="text-text-secondary italic">
               {page.translation}
             </Text>
           </div>
@@ -749,7 +746,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
             className={`flex-1 rounded-2xl py-3 font-bold shadow-md transition-opacity ${
               currentPage === totalPages - 1
                 ? 'bg-linear-to-r from-purple-500 to-pink-500 text-white'
-                : 'bg-purple-500 text-white'
+                : 'bg-primary-dark text-white'
             } ${!isInteractionComplete ? 'opacity-50' : ''}`}
             whileTap={isInteractionComplete ? { scale: 0.95 } : {}}
             onClick={() => {
@@ -775,7 +772,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
             <div className="text-5xl">
               {isRhyme ? '🎶✨' : isChain ? '🔗✨' : isPicture ? '🖼️✨' : '📖✨'}
             </div>
-            <Text variant="h3" className="text-purple-600">
+            <Text variant="h3" className="text-primary">
               {isRhyme
                 ? t('activityUI.storyTime.rhymeComplete')
                 : isChain
@@ -784,7 +781,7 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                     ? t('activityUI.storyTime.toldGreatTitle')
                     : t('activityUI.storyTime.storyComplete')}
             </Text>
-            <Text variant="body" className="text-gray-500">
+            <Text variant="body" className="text-text-secondary">
               {t('activityUI.storyTime.wordsDiscovered', {
                 tapped: totalTapped,
                 total: totalHighlights,

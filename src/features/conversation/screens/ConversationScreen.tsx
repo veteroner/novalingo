@@ -13,6 +13,7 @@ import { unlockAudioPlayback } from '@services/speech/speechService';
 import { useChildStore } from '@stores/childStore';
 import { initConversationProgress, useConversationStore } from '@stores/conversationStore';
 import { motion } from 'framer-motion';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -102,23 +103,23 @@ export default function ConversationScreen() {
   // Tap-to-start overlay — ensures audio is unlocked via direct user gesture on mobile
   if (!audioReady) {
     return (
-      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-indigo-200 via-violet-100 to-fuchsia-100 px-6">
+      <div className="safe-area-top safe-area-bottom bg-background flex min-h-screen flex-col items-center justify-center px-6">
         <motion.div
-          animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
           className="mb-6 text-7xl"
         >
-          🎭
+          <NovaCharacter mood="listening" size="hero" />
         </motion.div>
         <Text variant="h3" align="center" className="mb-2">
           {t('activities.conversationScreenTitle')}
         </Text>
-        <Text variant="bodySmall" align="center" className="mb-8 text-gray-500">
+        <Text variant="bodySmall" align="center" className="text-text-secondary mb-8">
           {t('activities.conversationScreenSubtitle')}
         </Text>
         <button
           onClick={handleTapToStart}
-          className="rounded-2xl bg-indigo-500 px-8 py-4 text-lg font-bold text-white shadow-lg active:bg-indigo-600"
+          className="bg-primary-dark rounded-2xl px-8 py-4 text-lg font-bold text-white shadow-lg active:brightness-90"
         >
           {t('activities.conversationScreenStart')}
         </button>
@@ -129,13 +130,13 @@ export default function ConversationScreen() {
   // Loading state — session started but scenario not yet ready
   if (!session || !scenario || !isActive) {
     return (
-      <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-indigo-200 via-violet-100 to-fuchsia-100">
+      <div className="safe-area-top safe-area-bottom bg-background flex min-h-screen flex-col items-center justify-center">
         <motion.div
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
           className="mb-4 text-6xl"
         >
-          🎭
+          <NovaCharacter mood="listening" size="hero" />
         </motion.div>
         <Text variant="h3" align="center">
           {t('activities.conversationScreenLoading')}

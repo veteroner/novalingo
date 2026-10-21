@@ -1325,7 +1325,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'Today Nova is very happy. The sun is bright and warm.',
           translation: 'Bugün Nova çok mutlu. Güneş parlak ve sıcak.',
-          imageUrl: '/story/story-w2-nova-is-happy-p1.jpg',
+          imageUrl: '/story/nova-v2/happy-1.webp',
           audioUrl: '/audio/tts/e909607b9ba217c6.mp3',
           highlightWords: ['happy', 'is'],
           interactionType: 'tap-word',
@@ -1333,7 +1333,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: '"I am Nova," she says proudly. "I am seven years old."',
           translation: '"Ben Novayım," diyor gururla. "Ben yedi yaşındayım."',
-          imageUrl: '/story/story-w2-nova-is-happy-p2.jpg',
+          imageUrl: '/story/nova-v2/happy-2.webp',
           audioUrl: '/audio/tts/788c2c001fa1b7d8.mp3',
           highlightWords: ['I am'],
           interactionType: 'tap-word',
@@ -1342,15 +1342,15 @@ const rawStoryBank: MicroStory[] = [
           text: 'The birds are singing. They are yellow and blue.',
           translation: 'Kuşlar şarkı söylüyor. Onlar sarı ve mavi.',
           interactionType: 'tap-word',
-          imageUrl: '/story/story-w2-nova-is-happy-p3.jpg',
+          imageUrl: '/story/nova-v2/happy-3.webp',
           audioUrl: '/audio/tts/b4fc4c2dbe202eab.mp3',
           highlightWords: ['are', 'yellow', 'blue'],
         },
         {
           text: '"You ARE amazing!" says Bolt. "We are best friends!" shouts Nova.',
           translation:
-            '"Sen HAİKA bir varlıksın!" diyor Bolt. "Biz en iyi arkadaşlarız!" diye bağırıyor Nova.',
-          imageUrl: '/story/story-w2-nova-is-happy-p4.jpg',
+            '"Sen HARİKA bir varlıksın!" diyor Bolt. "Biz en iyi arkadaşlarız!" diye bağırıyor Nova.',
+          imageUrl: '/story/nova-v2/happy-4.webp',
           audioUrl: '/audio/tts/4e271c01540c0b1a.mp3',
           highlightWords: ['are', 'friends'],
           interactionType: 'none',

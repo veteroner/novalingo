@@ -15,7 +15,7 @@ import {
 import type { ConversationScenario } from '@/features/learning/data/conversations/types/conversationScenario';
 import type { ConversationSuccessCriteriaData } from '@/types/content';
 import { createLogger } from '@/utils/logger';
-import novaMascot from '@assets/images/nova-mascot.svg';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { Text } from '@components/atoms/Text';
 import { useHaptic } from '@hooks/useHaptic';
 import {
@@ -217,35 +217,6 @@ function interpolateTemplate(
  * Senaryo temasına göre canlı arka plan gradyanı (UX spec: chat-first redesign).
  * Metinler her zaman beyaz/açık kartlar üzerinde durur — kontrast gradyana bağlı değildir.
  */
-const THEME_GRADIENTS: Record<string, string> = {
-  animals: 'from-emerald-200 via-lime-100 to-amber-100',
-  nature: 'from-emerald-200 via-sky-100 to-cyan-100',
-  weather: 'from-sky-200 via-cyan-100 to-blue-100',
-  food: 'from-orange-200 via-amber-100 to-yellow-100',
-  school: 'from-sky-200 via-indigo-100 to-violet-100',
-  family: 'from-rose-200 via-pink-100 to-amber-100',
-  friends: 'from-pink-200 via-rose-100 to-orange-100',
-  city: 'from-slate-200 via-sky-100 to-indigo-100',
-  travel: 'from-cyan-200 via-sky-100 to-emerald-100',
-  transport: 'from-cyan-200 via-sky-100 to-emerald-100',
-  transportation: 'from-cyan-200 via-sky-100 to-emerald-100',
-  sports: 'from-lime-200 via-emerald-100 to-teal-100',
-  jobs: 'from-amber-200 via-yellow-100 to-orange-100',
-  helpers: 'from-blue-200 via-sky-100 to-cyan-100',
-  time: 'from-violet-200 via-purple-100 to-indigo-100',
-  routine: 'from-violet-200 via-purple-100 to-indigo-100',
-  health: 'from-teal-200 via-emerald-100 to-green-100',
-  art: 'from-fuchsia-200 via-pink-100 to-purple-100',
-  colors: 'from-fuchsia-200 via-pink-100 to-purple-100',
-  emotions: 'from-yellow-200 via-amber-100 to-rose-100',
-  toys: 'from-pink-200 via-fuchsia-100 to-violet-100',
-  home: 'from-amber-200 via-orange-100 to-rose-100',
-  clothes: 'from-purple-200 via-fuchsia-100 to-pink-100',
-  body: 'from-rose-200 via-orange-100 to-amber-100',
-  actions: 'from-lime-200 via-green-100 to-emerald-100',
-};
-const DEFAULT_THEME_GRADIENT = 'from-indigo-200 via-violet-100 to-fuchsia-100';
-
 const AVATAR_EMOJIS: Record<string, string> = {
   fox: '🦊',
   panda: '🐼',
@@ -264,165 +235,8 @@ const AVATAR_EMOJIS: Record<string, string> = {
 /* ─── Nova Header Avatar — kompakt (64px) mood animasyonlu avatar (chat-first redesign) ─── */
 
 function NovaHeaderAvatar({ mood }: { mood: NovaMood }) {
-  const isSpeaking = mood === 'speaking';
-  const isCelebrating = mood === 'celebrating';
-  const isListening = mood === 'listening';
-  const isSad = mood === 'sad';
-  const isThinking = mood === 'thinking';
-
-  return (
-    <div
-      className="relative flex shrink-0 items-center justify-center"
-      style={{ width: 64, height: 64 }}
-    >
-      {/* Mood glow ring */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{ width: 52, height: 52 }}
-        animate={
-          isSpeaking
-            ? {
-                boxShadow: [
-                  '0 0 8px 3px rgba(99,102,241,0.25)',
-                  '0 0 18px 7px rgba(99,102,241,0.5)',
-                  '0 0 8px 3px rgba(99,102,241,0.25)',
-                ],
-              }
-            : isCelebrating
-              ? { boxShadow: '0 0 14px 6px rgba(52,211,153,0.45)' }
-              : isListening
-                ? {
-                    boxShadow: [
-                      '0 0 6px 2px rgba(251,191,36,0.2)',
-                      '0 0 14px 5px rgba(251,191,36,0.4)',
-                      '0 0 6px 2px rgba(251,191,36,0.2)',
-                    ],
-                  }
-                : isSad
-                  ? { boxShadow: '0 0 10px 4px rgba(239,68,68,0.3)' }
-                  : isThinking
-                    ? {
-                        boxShadow: [
-                          '0 0 5px 2px rgba(168,85,247,0.15)',
-                          '0 0 10px 4px rgba(168,85,247,0.3)',
-                          '0 0 5px 2px rgba(168,85,247,0.15)',
-                        ],
-                      }
-                    : { boxShadow: '0 0 4px 2px rgba(99,102,241,0.1)' }
-        }
-        transition={
-          isSpeaking || isListening || isThinking
-            ? { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
-            : { duration: 0.5 }
-        }
-      />
-
-      {/* Character body with mood-driven animation */}
-      <motion.div
-        className="relative"
-        animate={
-          isSpeaking
-            ? { y: [0, -2, 0], rotate: [0, 1.5, -1.5, 0] }
-            : isCelebrating
-              ? { y: [0, -8, 0], scale: [1, 1.15, 1], rotate: [0, -5, 5, 0] }
-              : isListening
-                ? { y: [0, -1, 0], scale: [1, 1.03, 1] }
-                : isSad
-                  ? { rotate: [0, -6, 6, -6, 0], y: [0, 1, 0] }
-                  : isThinking
-                    ? { rotate: [0, 4, -4, 0], y: [0, -1, 0] }
-                    : { y: [0, -1, 0] }
-        }
-        transition={
-          isSpeaking
-            ? { duration: 0.5, repeat: Infinity, ease: 'easeInOut' }
-            : isCelebrating
-              ? { duration: 0.65, repeat: 3, ease: 'easeOut' }
-              : isSad
-                ? { duration: 0.4, repeat: 2, ease: 'easeInOut' }
-                : isThinking
-                  ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
-                  : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
-        }
-      >
-        <img src={novaMascot} alt="Nova" className="h-14 w-14 drop-shadow-lg" />
-      </motion.div>
-
-      {/* Listening bars */}
-      <AnimatePresence>
-        {isListening && (
-          <motion.div
-            className="absolute -bottom-0.5 flex items-center gap-0.5"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-          >
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="w-1 rounded-full bg-amber-400"
-                animate={{ height: [3, 9, 3] }}
-                transition={{ duration: 0.5, delay: i * 0.15, repeat: Infinity }}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Thinking dots */}
-      <AnimatePresence>
-        {isThinking && (
-          <motion.div
-            className="absolute -bottom-0.5 flex items-center gap-0.5"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-          >
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="h-1.5 w-1.5 rounded-full bg-purple-400"
-                animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Celebration sparkle */}
-      <AnimatePresence>
-        {isCelebrating && (
-          <motion.span
-            className="pointer-events-none absolute -top-1 -right-1 text-base"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0, 1.3, 0] }}
-            transition={{ duration: 1.1, repeat: 1 }}
-          >
-            ✨
-          </motion.span>
-        )}
-      </AnimatePresence>
-
-      {/* Sad reaction */}
-      <AnimatePresence>
-        {isSad && (
-          <motion.span
-            className="pointer-events-none absolute -top-1 -right-1 text-base"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.5 }}
-          >
-            😿
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+  return <NovaCharacter mood={mood} size="sm" />;
 }
-
-/* ─── Progress Dots ─── */
 
 function ProgressDots({ current, total }: { current: number; total: number }) {
   if (total <= 0) return null;
@@ -1549,7 +1363,6 @@ export default function ConversationActivity({
     setNovaMood('listening');
   };
 
-  const themeGradient = THEME_GRADIENTS[data.scenarioTheme ?? ''] ?? DEFAULT_THEME_GRADIENT;
   const inputActive = options.length > 0;
   // TTS konuşurken en yeni Nova balonunda "konuşuyor" göstergesi gösterilir
   // (eski altyazı kartının yerini alır — UX spec Zone B)
@@ -1563,9 +1376,7 @@ export default function ConversationActivity({
   }
 
   return (
-    <div
-      className={`relative flex h-full flex-col overflow-hidden bg-linear-to-b ${themeGradient}`}
-    >
+    <div className="bg-background relative flex h-full flex-col overflow-hidden">
       {/* ═══ Scenario Intro Card ═══ */}
       <AnimatePresence>
         {showIntro && data.scenarioSummary && (
@@ -1573,18 +1384,18 @@ export default function ConversationActivity({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            className="absolute inset-0 z-20 flex items-center justify-center bg-white/70 p-6 backdrop-blur-sm"
+            className="bg-surface/70 absolute inset-0 z-20 flex items-center justify-center p-6 backdrop-blur-sm"
           >
-            <div className="w-full max-w-xs rounded-3xl bg-white p-6 text-center shadow-xl">
+            <div className="bg-surface w-full max-w-xs rounded-3xl p-6 text-center shadow-xl">
               <span className="text-4xl">{data.sceneEmoji}</span>
-              <h2 className="mt-3 text-lg font-bold text-gray-800">{data.title}</h2>
-              <p className="mt-1 text-sm text-gray-500">{data.scenarioSummaryTr}</p>
+              <h2 className="text-text mt-3 text-lg font-bold">{data.title}</h2>
+              <p className="text-text-secondary mt-1 text-sm">{data.scenarioSummaryTr}</p>
               {data.targetPatterns && data.targetPatterns.length > 0 && (
                 <div className="mt-3 flex flex-wrap justify-center gap-1.5">
                   {data.targetPatterns.map((p) => (
                     <span
                       key={p}
-                      className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-600"
+                      className="bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-medium"
                     >
                       {p}
                     </span>
@@ -1601,7 +1412,7 @@ export default function ConversationActivity({
 
       {/* ═══ Zone A — Kompakt Başlık (≤88px, sabit) ═══ */}
       <div className="shrink-0 px-3 pt-2">
-        <div className="flex items-center gap-2 rounded-3xl bg-white/90 py-1 pr-2 pl-1 shadow-md backdrop-blur">
+        <div className="bg-surface/90 flex items-center gap-2 rounded-3xl py-1 pr-2 pl-1 shadow-md backdrop-blur">
           <NovaHeaderAvatar mood={novaMood} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 leading-tight">
@@ -1612,7 +1423,7 @@ export default function ConversationActivity({
                 {t('activities.conversationHeader')}
               </Text>
             </div>
-            <Text variant="caption" className="block truncate text-xs font-semibold text-gray-700">
+            <Text variant="caption" className="text-text block truncate text-xs font-semibold">
               {data.titleTr}
             </Text>
             <div className="mt-0.5">
@@ -1623,7 +1434,7 @@ export default function ConversationActivity({
             onClick={() => {
               setSpeechRateIndex((i) => (i + 1) % SPEECH_RATES.length);
             }}
-            className="flex h-11 min-w-11 items-center justify-center rounded-full bg-indigo-50 px-2 text-xs font-bold text-indigo-500 active:bg-indigo-100"
+            className="bg-primary/10 active:bg-primary/10 flex h-11 min-w-11 items-center justify-center rounded-full px-2 text-xs font-bold text-indigo-500"
           >
             {SPEECH_RATES[speechRateIndex]}x
           </button>
@@ -1660,7 +1471,7 @@ export default function ConversationActivity({
                   ? 'border border-amber-200 bg-amber-50'
                   : bubble.tone === 'info'
                     ? 'border border-sky-200 bg-sky-50'
-                    : 'bg-white';
+                    : 'bg-surface';
             return (
               <motion.div
                 key={bubble.id}
@@ -1672,15 +1483,11 @@ export default function ConversationActivity({
                 }`}
               >
                 {bubble.speaker === 'nova' ? (
-                  <img
-                    src={novaMascot}
-                    alt=""
-                    className="h-7 w-7 shrink-0 rounded-full bg-white/80 p-0.5 shadow-sm"
-                  />
+                  <NovaCharacter size="sm" className="h-8 w-8" decorative />
                 ) : (
                   <span
                     aria-hidden="true"
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/80 text-sm shadow-sm"
+                    className="bg-surface/80 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm shadow-sm"
                   >
                     {childAvatarEmoji}
                   </span>
@@ -1690,7 +1497,7 @@ export default function ConversationActivity({
                   className={`max-w-[80%] rounded-3xl px-4 py-2.5 shadow-md ${
                     bubble.speaker === 'nova'
                       ? `rounded-tl-md ${novaBubbleClass}`
-                      : 'rounded-tr-md bg-indigo-500 text-white'
+                      : 'bg-primary-dark rounded-tr-md text-white'
                   }`}
                 >
                   <p
@@ -1700,7 +1507,7 @@ export default function ConversationActivity({
                           ? 'text-rose-700'
                           : bubble.tone === 'warning'
                             ? 'text-amber-700'
-                            : 'text-gray-800'
+                            : 'text-text'
                         : 'text-white'
                     }`}
                   >
@@ -1725,14 +1532,14 @@ export default function ConversationActivity({
                   {showTranslation && bubble.textTr.trim().length > 0 && (
                     <p
                       className={`mt-0.5 text-xs ${
-                        bubble.speaker === 'nova' ? 'text-gray-400' : 'text-indigo-200'
+                        bubble.speaker === 'nova' ? 'text-text-secondary' : 'text-indigo-200'
                       }`}
                     >
                       {bubble.textTr}
                     </p>
                   )}
                   {bubble.example && (
-                    <span className="mt-1.5 inline-flex max-w-full rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm">
+                    <span className="bg-surface text-text mt-1.5 inline-flex max-w-full rounded-full px-3 py-1 text-xs font-semibold shadow-sm">
                       {bubble.example}
                     </span>
                   )}
@@ -1798,15 +1605,11 @@ export default function ConversationActivity({
               exit={{ opacity: 0 }}
               className="flex items-start gap-1.5"
             >
-              <img
-                src={novaMascot}
-                alt=""
-                className="h-7 w-7 shrink-0 rounded-full bg-white/80 p-0.5 shadow-sm"
-              />
+              <NovaCharacter size="sm" className="h-8 w-8" decorative />
               <div
                 role="status"
                 aria-label={t('activities.conversationTypingIndicator')}
-                className="flex items-center gap-1 rounded-3xl rounded-tl-md bg-white px-4 py-3.5 shadow-md"
+                className="bg-surface flex items-center gap-1 rounded-3xl rounded-tl-md px-4 py-3.5 shadow-md"
               >
                 {[0, 1, 2].map((i) => (
                   <motion.span
@@ -1827,7 +1630,7 @@ export default function ConversationActivity({
         {/* Sabit yükseklikte durum satırı — dock zıplamaz */}
         <div className="flex h-6 items-center justify-center" aria-live="polite">
           {isListening ? (
-            <Text variant="caption" className="font-semibold text-indigo-600">
+            <Text variant="caption" className="text-primary font-semibold">
               {t('activities.conversationListening')}
             </Text>
           ) : feedback === 'wrong' ? (
@@ -1839,13 +1642,13 @@ export default function ConversationActivity({
               {micError}
             </Text>
           ) : inputActive && SpeechRecognitionAPI ? (
-            <Text variant="caption" className="text-gray-600">
+            <Text variant="caption" className="text-text-secondary">
               {t('activities.conversationModeHint')}
             </Text>
           ) : null}
         </div>
 
-        <div className="flex items-center gap-2 rounded-3xl bg-white/95 p-2 shadow-lg backdrop-blur">
+        <div className="bg-surface/95 flex items-center gap-2 rounded-3xl p-2 shadow-lg backdrop-blur">
           <input
             type="text"
             value={freeInputText}
@@ -1861,7 +1664,7 @@ export default function ConversationActivity({
               }
             }}
             placeholder={t('activities.conversationTypeHere')}
-            className="h-11 min-w-0 flex-1 rounded-full border border-indigo-100 bg-indigo-50 px-4 text-base text-gray-700 placeholder:text-gray-400 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 focus:outline-none disabled:opacity-40"
+            className="bg-primary/10 text-text placeholder:text-text-secondary h-11 min-w-0 flex-1 rounded-full border border-indigo-100 px-4 text-base focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 focus:outline-none disabled:opacity-40"
           />
           <AnimatePresence>
             {freeInputText.trim() && (
@@ -1875,7 +1678,7 @@ export default function ConversationActivity({
                   setFreeInputText('');
                   void handleFreeInput(val);
                 }}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white shadow-md"
+                className="bg-primary-dark flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md"
               >
                 <span className="text-lg">➤</span>
               </motion.button>
@@ -1891,7 +1694,7 @@ export default function ConversationActivity({
                   ? 'animate-pulse bg-red-500'
                   : feedback === 'wrong'
                     ? 'bg-red-100'
-                    : 'bg-indigo-500 active:scale-95'
+                    : 'bg-primary-dark active:scale-95'
               }`}
               aria-label={
                 isListening
