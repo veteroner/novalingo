@@ -9,8 +9,12 @@ export const APP_NAME = 'NovaLingo';
 export const APP_VERSION = '1.0.0';
 export const APP_BUNDLE_ID = 'com.novalingo.app';
 export const SUPPORT_EMAIL = 'support@novalingo.app';
-export const PRIVACY_POLICY_URL = 'https://teknovagroup.com/novalingo-gizlilik-politikasi.html';
-export const TERMS_OF_SERVICE_URL = 'https://teknovagroup.com/novalingo-kullanim-kosullari.html';
+// Abonelik ekranındaki bağlantılar App Store 3.1.2 gereği çalışır olmalı.
+// Eski `.html` adresleri 404 veriyordu. Kullanım koşulları için Apple'ın
+// standart EULA'sı kullanılır (abonelik yenileme koşullarını kapsar).
+export const PRIVACY_POLICY_URL = 'https://teknovagroup.com/novalingo-gizlilik-politikasi';
+export const TERMS_OF_SERVICE_URL =
+  'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 
 // ─── Subscriptions ───────────────────────────────────────────────
 // Product IDs must match exactly what's registered in App Store Connect / Google Play Console.

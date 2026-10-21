@@ -8,6 +8,7 @@
 import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
 import novaMascot from '@assets/images/nova-mascot.svg';
 import { AppleSignInButton } from '@components/atoms/AppleSignInButton';
+import { GoogleSignInButton } from '@components/atoms/GoogleSignInButton';
 import { Button } from '@components/atoms/Button';
 import { Spinner } from '@components/atoms/Spinner';
 import { Text } from '@components/atoms/Text';
@@ -32,6 +33,23 @@ export default function LoginScreen() {
   const setError = useAuthStore((s) => s.setError);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [kvkkAccepted, setKvkkAccepted] = useState(false);
+  const [consentMissing, setConsentMissing] = useState(false);
+
+  /**
+   * Koşullar kabul edilmeden giriş başlatılmaz. Düğmeler devre dışı (gri)
+   * gösterilmez: Apple HIG, Apple ile Giriş düğmesinin rengini değiştirmeyi
+   * yasaklar. Onun yerine onay kutusunun altında uyarı gösterilir.
+   */
+  const requireConsent = useCallback(
+    (action: () => Promise<void>) => () => {
+      if (!kvkkAccepted) {
+        setConsentMissing(true);
+        return;
+      }
+      void action();
+    },
+    [kvkkAccepted],
+  );
 
   const handleGoogleLogin = useCallback(async () => {
     try {
@@ -116,28 +134,19 @@ export default function LoginScreen() {
           </div>
         ) : (
           <>
-            {allowSocialLogin && (
-              <Button
-                variant="primary"
-                size="xl"
-                fullWidth
-                onClick={handleGoogleLogin}
-                icon={<span>🔵</span>}
-                disabled={!kvkkAccepted}
-              >
-                {t('login.withGoogle')}
-              </Button>
-            )}
-
-            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable).
-                Düğme Apple HIG'e uyar; emoji/üçüncü taraf logo kullanılmaz. */}
+            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable). Düğme
+                Apple HIG'e uyar ve diğer giriş düğmeleriyle aynı boyda, en üsttedir. */}
             {allowSocialLogin && isAppleSignInAvailable() && (
               <AppleSignInButton
                 label={t('login.withApple')}
-                onClick={() => {
-                  void handleAppleLogin();
-                }}
-                disabled={!kvkkAccepted}
+                onClick={requireConsent(handleAppleLogin)}
+              />
+            )}
+
+            {allowSocialLogin && (
+              <GoogleSignInButton
+                label={t('login.withGoogle')}
+                onClick={requireConsent(handleGoogleLogin)}
               />
             )}
 
@@ -158,8 +167,7 @@ export default function LoginScreen() {
               variant="secondary"
               size="lg"
               fullWidth
-              onClick={handleAnonymousLogin}
-              disabled={!kvkkAccepted}
+              onClick={requireConsent(handleAnonymousLogin)}
             >
               {t('login.asGuest')}
             </Button>
@@ -170,6 +178,7 @@ export default function LoginScreen() {
                 checked={kvkkAccepted}
                 onChange={(e) => {
                   setKvkkAccepted(e.target.checked);
+                  if (e.target.checked) setConsentMissing(false);
                 }}
                 className="accent-nova-blue mt-1 h-5 w-5 shrink-0 rounded"
               />
@@ -200,6 +209,11 @@ export default function LoginScreen() {
                 />
               </Text>
             </label>
+            {consentMissing && (
+              <Text variant="caption" align="center" className="text-error" role="alert">
+                {t('login.consentRequired')}
+              </Text>
+            )}
           </>
         )}
       </motion.div>

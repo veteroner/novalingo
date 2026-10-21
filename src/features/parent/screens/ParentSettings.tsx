@@ -9,6 +9,7 @@ import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { ListItem } from '@components/molecules/ListItem';
 import { MainLayout } from '@components/templates/MainLayout';
+import { ChildNameCard } from '@features/parent/components/ChildNameCard';
 import { useChildren, useParentSettings, useSaveParentSettings } from '@hooks/queries';
 import { getCurrentUser, isSignInCancelled, signOut } from '@services/firebase/auth';
 import {
@@ -242,6 +243,8 @@ export default function ParentSettings() {
             </Text>
           </div>
         </div>
+
+        {child && <ChildNameCard key={child.id} childId={child.id} currentName={child.name} />}
 
         {/* Time Limit */}
         <Card variant="elevated" padding="md">
