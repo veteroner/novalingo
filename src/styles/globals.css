@@ -121,6 +121,14 @@
   --color-error: var(--theme-error, #c95050);
   --color-info: var(--theme-info, #74b9ff);
 
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --color-success-soft: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  --color-error-soft: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+  --color-reward-soft: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
+  --color-success-ink: var(--theme-success-ink, #216b54);
+  --color-error-ink: var(--theme-error-ink, #a72f43);
+  --color-reward-ink: var(--theme-reward-ink, #77500b);
+
   /* Gamification */
   --color-xp: var(--theme-xp, #f2bc55);
   --color-star: var(--theme-star, #ffd93d);
@@ -479,4 +487,43 @@
   65% {
     transform: scale(0.98, 1.025);
   }
+}
+
+/* Shared screen atmosphere; visual surfaces use the same tokens as lessons. */
+.nova-page {
+  background:
+    radial-gradient(ellipse 100% 400px at 100% 0, var(--color-primary-soft), transparent),
+    var(--color-background);
+  color: var(--color-text);
+}
+[data-mode='dark'] {
+  --color-success-ink: #8ae0b9;
+  --color-error-ink: #ffb2bd;
+  --color-reward-ink: #f3ce88;
+}
+.nova-feature-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--color-border);
+  border-bottom-width: 3px;
+  border-radius: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--color-primary-soft), var(--color-surface));
+}
+.nova-feature-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--color-primary-dark);
+  color: white;
+  box-shadow: 0 4px 0 #352a96;
+  flex-shrink: 0;
+}
+.nova-lesson-shell {
+  max-width: 680px;
+  width: 100%;
+  margin-inline: auto;
 }

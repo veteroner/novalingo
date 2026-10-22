@@ -15,8 +15,9 @@ import {
 import type { ConversationScenario } from '@/features/learning/data/conversations/types/conversationScenario';
 import type { ConversationSuccessCriteriaData } from '@/types/content';
 import { createLogger } from '@/utils/logger';
-import { NovaCharacter } from '@components/molecules/NovaCharacter';
+import { Avatar } from '@components/atoms/Avatar';
 import { Text } from '@components/atoms/Text';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { useHaptic } from '@hooks/useHaptic';
 import {
   trackConversationCompleted,
@@ -213,25 +214,6 @@ function interpolateTemplate(
   return fallback ?? template;
 }
 
-/**
- * Senaryo temasına göre canlı arka plan gradyanı (UX spec: chat-first redesign).
- * Metinler her zaman beyaz/açık kartlar üzerinde durur — kontrast gradyana bağlı değildir.
- */
-const AVATAR_EMOJIS: Record<string, string> = {
-  fox: '🦊',
-  panda: '🐼',
-  unicorn: '🦄',
-  lion: '🦁',
-  owl: '🦉',
-  rabbit: '🐰',
-  cat: '🐱',
-  dog: '🐶',
-  dragon: '🐉',
-  astronaut: '🧑‍🚀',
-  robot: '🤖',
-  star: '🌟',
-};
-
 /* ─── Nova Header Avatar — kompakt (64px) mood animasyonlu avatar (chat-first redesign) ─── */
 
 function NovaHeaderAvatar({ mood }: { mood: NovaMood }) {
@@ -249,7 +231,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
             i < current
               ? 'w-4 bg-emerald-400'
               : i === current
-                ? 'w-4 bg-indigo-400'
+                ? 'bg-primary-dark w-4'
                 : 'w-1.5 bg-gray-300'
           }`}
           animate={i === current ? { scale: [1, 1.15, 1] } : {}}
@@ -269,7 +251,6 @@ export default function ConversationActivity({
 }: ConversationActivityProps) {
   const { t } = useTranslation('lesson');
   const activeChild = useChildStore((s) => s.activeChild);
-  const childAvatarEmoji = AVATAR_EMOJIS[activeChild?.avatarId ?? ''] ?? '🧒';
   const haptic = useHaptic();
 
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
@@ -1403,7 +1384,7 @@ export default function ConversationActivity({
                 </div>
               )}
               {data.scenarioMode === 'guided' && (
-                <p className="mt-2 text-xs text-indigo-400">{t('activities.conversationGuided')}</p>
+                <p className="text-primary mt-2 text-xs">{t('activities.conversationGuided')}</p>
               )}
             </div>
           </motion.div>
@@ -1419,7 +1400,7 @@ export default function ConversationActivity({
               <span aria-hidden="true" className="text-sm">
                 {data.sceneEmoji}
               </span>
-              <Text variant="overline" className="text-[10px] text-indigo-400">
+              <Text variant="overline" className="text-primary text-[10px]">
                 {t('activities.conversationHeader')}
               </Text>
             </div>
@@ -1434,7 +1415,7 @@ export default function ConversationActivity({
             onClick={() => {
               setSpeechRateIndex((i) => (i + 1) % SPEECH_RATES.length);
             }}
-            className="bg-primary/10 active:bg-primary/10 flex h-11 min-w-11 items-center justify-center rounded-full px-2 text-xs font-bold text-indigo-500"
+            className="bg-primary/10 active:bg-primary/10 text-primary flex h-11 min-w-11 items-center justify-center rounded-full px-2 text-xs font-bold"
           >
             {SPEECH_RATES[speechRateIndex]}x
           </button>
@@ -1445,7 +1426,7 @@ export default function ConversationActivity({
             aria-pressed={showTranslation}
             aria-label={t('activities.conversationTranslate')}
             className={`flex h-11 w-11 items-center justify-center rounded-full text-lg ${
-              showTranslation ? 'bg-emerald-100' : 'bg-gray-100 opacity-60'
+              showTranslation ? 'bg-success-soft' : 'bg-surface-elevated opacity-60'
             }`}
           >
             <span aria-hidden="true">🇹🇷</span>
@@ -1468,7 +1449,7 @@ export default function ConversationActivity({
               bubble.tone === 'error'
                 ? 'border border-rose-200 bg-rose-50'
                 : bubble.tone === 'warning'
-                  ? 'border border-amber-200 bg-amber-50'
+                  ? 'border border-amber-200 bg-reward-soft'
                   : bubble.tone === 'info'
                     ? 'border border-sky-200 bg-sky-50'
                     : 'bg-surface';
@@ -1485,12 +1466,11 @@ export default function ConversationActivity({
                 {bubble.speaker === 'nova' ? (
                   <NovaCharacter size="sm" className="h-8 w-8" decorative />
                 ) : (
-                  <span
-                    aria-hidden="true"
-                    className="bg-surface/80 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm shadow-sm"
-                  >
-                    {childAvatarEmoji}
-                  </span>
+                  <Avatar
+                    avatarId={activeChild?.avatarId ?? 'owl'}
+                    name={activeChild?.name}
+                    size="xs"
+                  />
                 )}
 
                 <div
@@ -1521,7 +1501,7 @@ export default function ConversationActivity({
                         {[0, 1, 2].map((i) => (
                           <motion.span
                             key={i}
-                            className="w-1 rounded-full bg-indigo-400"
+                            className="bg-primary-dark w-1 rounded-full"
                             animate={{ height: [4, 10, 4] }}
                             transition={{ duration: 0.5, delay: i * 0.15, repeat: Infinity }}
                           />
@@ -1548,7 +1528,7 @@ export default function ConversationActivity({
                       onClick={() => {
                         replaySpeech(bubble.text, bubble.audioUrl);
                       }}
-                      className="-mb-1.5 -ml-1.5 flex min-h-11 min-w-11 items-center justify-center rounded-full text-base text-indigo-400 opacity-70 transition-opacity active:opacity-100"
+                      className="text-primary -mb-1.5 -ml-1.5 flex min-h-11 min-w-11 items-center justify-center rounded-full text-base opacity-70 transition-opacity active:opacity-100"
                       aria-label={t('activities.conversationReplay')}
                     >
                       <span aria-hidden="true">🔊</span>
@@ -1575,7 +1555,7 @@ export default function ConversationActivity({
               >
                 💡
               </span>
-              <div className="max-w-[80%] rounded-3xl rounded-tl-md border border-amber-200 bg-amber-50 px-4 py-2.5 shadow-md">
+              <div className="bg-reward-soft max-w-[80%] rounded-3xl rounded-tl-md border border-amber-200 px-4 py-2.5 shadow-md">
                 <p className="text-xs text-amber-500">{t('activities.conversationTryThis')}</p>
                 <p className="text-base font-semibold text-amber-700">{options[0].text}</p>
                 {showTranslation && <p className="text-xs text-amber-400">{options[0].textTr}</p>}
@@ -1691,9 +1671,9 @@ export default function ConversationActivity({
               onClick={isListening ? abortRecognition : startListening}
               className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full shadow-lg transition-all disabled:opacity-40 ${
                 isListening
-                  ? 'animate-pulse bg-red-500'
+                  ? 'bg-error animate-pulse'
                   : feedback === 'wrong'
-                    ? 'bg-red-100'
+                    ? 'bg-error-soft'
                     : 'bg-primary-dark active:scale-95'
               }`}
               aria-label={
@@ -1714,7 +1694,7 @@ export default function ConversationActivity({
               setHintVisible(true);
             }}
             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full active:bg-amber-100 disabled:opacity-40 ${
-              hintVisible ? 'bg-amber-200' : 'bg-amber-50'
+              hintVisible ? 'bg-amber-200' : 'bg-reward-soft'
             }`}
             aria-label={t('activities.conversationHintButton')}
           >

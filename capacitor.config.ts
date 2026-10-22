@@ -23,13 +23,13 @@ const config: CapacitorConfig = {
   },
   android: {
     allowMixedContent: false,
-    backgroundColor: '#6c5ce7',
+    backgroundColor: '#5145c8',
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
       launchAutoHide: false, // We hide manually after app is ready
-      backgroundColor: '#6c5ce7',
+      backgroundColor: '#5145c8',
       androidSplashResourceName: 'splash',
       iosSplashResourceName: 'Default',
       showSpinner: false,
@@ -38,7 +38,7 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'LIGHT',
-      backgroundColor: '#6c5ce7',
+      backgroundColor: '#5145c8',
     },
     Keyboard: {
       resize: 'body',

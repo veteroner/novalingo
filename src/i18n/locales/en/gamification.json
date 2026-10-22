@@ -25,7 +25,17 @@
       "legendary": "Legendary Nova"
     },
     "nextStage": "Next: {{name}} · {{xp}} XP left",
-    "maxStage": "✦ Maximum Stage ✦"
+    "maxStage": "✦ Maximum Stage ✦",
+    "avatar": {
+      "change": "Change your avatar",
+      "title": "Choose your avatar",
+      "description": "Your companion on your profile, the leaderboard and in conversations. You can change it anytime.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving your avatar…",
+      "saved": "Your avatar is updated!",
+      "error": "Your avatar could not be saved. Please try again."
+    }
   },
   "quests": {
     "title": "⚔️ Daily Quests",

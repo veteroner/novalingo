@@ -11,7 +11,7 @@ import { Spinner } from './Spinner';
 
 export function LoadingScreen() {
   return (
-    <div className="from-nova-sky fixed inset-0 z-50 flex flex-col items-center justify-center bg-linear-to-b to-white">
+    <div className="nova-page fixed inset-0 z-50 flex flex-col items-center justify-center">
       {/* Nova mascot */}
       <motion.div
         className="mb-6"

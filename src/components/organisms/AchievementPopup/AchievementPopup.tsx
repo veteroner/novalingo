@@ -20,10 +20,10 @@ interface AchievementPopupProps {
 }
 
 const rarityColors: Record<string, string> = {
-  common: 'text-gray-500',
+  common: 'text-text-secondary',
   rare: 'text-nova-blue',
-  epic: 'text-nova-purple',
-  legendary: 'text-nova-orange',
+  epic: 'text-primary',
+  legendary: 'text-reward-ink',
 };
 
 export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPopupProps) {
@@ -51,7 +51,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
           {/* Content */}
           <motion.div
             className={clsx(
-              'relative w-full max-w-sm rounded-3xl bg-white p-8',
+              'bg-surface relative w-full max-w-sm rounded-3xl p-8',
               'overflow-hidden text-center shadow-2xl',
             )}
             initial={{ scale: 0.5, y: 50 }}
@@ -83,7 +83,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Text variant="overline" className="text-nova-orange mb-1">
+              <Text variant="overline" className="text-reward-ink mb-1">
                 {t('achievement.title')}
               </Text>
               <Text variant="h3" className="mb-2">

@@ -61,7 +61,7 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-xl"
+          className="bg-surface w-full max-w-sm rounded-3xl p-8 shadow-xl"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
@@ -91,12 +91,12 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                   if (e.key === 'Enter') handleMathSubmit();
                 }}
                 placeholder={t('parentalGate.answerPlaceholder')}
-                className="focus:border-nova-blue mb-2 h-14 w-full rounded-2xl border-3 border-gray-200 bg-white px-4 text-center text-2xl font-bold transition-colors focus:outline-none"
+                className="focus:border-nova-blue border-border bg-surface mb-2 h-14 w-full rounded-2xl border-3 px-4 text-center text-2xl font-bold transition-colors focus:outline-none"
                 autoFocus
               />
 
               {error && (
-                <Text variant="caption" align="center" className="text-error mb-2">
+                <Text variant="caption" align="center" className="text-error-ink mb-2">
                   {t('parentalGate.wrong')}
                 </Text>
               )}
@@ -136,7 +136,7 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                     className="mt-1 h-5 w-5 shrink-0 rounded accent-blue-500"
                     aria-label={t('parentalGate.consentAria')}
                   />
-                  <span className="text-sm leading-snug text-gray-700">
+                  <span className="text-text text-sm leading-snug">
                     <Trans
                       i18nKey="parentalGate.consentText"
                       ns="common"
@@ -144,11 +144,11 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                         privacy: (
                           <Link
                             to="/legal/privacy"
-                            className="font-medium text-blue-600 underline"
+                            className="text-primary font-medium underline"
                           />
                         ),
                         terms: (
-                          <Link to="/legal/terms" className="font-medium text-blue-600 underline" />
+                          <Link to="/legal/terms" className="text-primary font-medium underline" />
                         ),
                       }}
                     />
@@ -165,7 +165,7 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                     className="mt-1 h-5 w-5 shrink-0 rounded accent-blue-500"
                     aria-label={t('parentalGate.coppaAria')}
                   />
-                  <span className="text-sm leading-snug text-gray-700">
+                  <span className="text-text text-sm leading-snug">
                     <Trans
                       i18nKey="parentalGate.coppaText"
                       ns="common"
@@ -173,7 +173,7 @@ export function ParentalGate({ onPass, onCancel, requireConsent = false }: Paren
                         privacy: (
                           <Link
                             to="/legal/privacy"
-                            className="font-medium text-blue-600 underline"
+                            className="text-primary font-medium underline"
                           />
                         ),
                       }}

@@ -25,7 +25,17 @@
       "legendary": "Efsanevi Nova"
     },
     "nextStage": "Sonraki: {{name}} · {{xp}} XP kaldı",
-    "maxStage": "✦ Maksimum Aşama ✦"
+    "maxStage": "✦ Maksimum Aşama ✦",
+    "avatar": {
+      "change": "Avatarını değiştir",
+      "title": "Avatarını seç",
+      "description": "Profilinde, puan tablosunda ve konuşma derslerinde sana eşlik eder. İstediğin zaman değiştirebilirsin.",
+      "save": "Kaydet",
+      "cancel": "Vazgeç",
+      "saving": "Avatarın kaydediliyor…",
+      "saved": "Avatarın güncellendi!",
+      "error": "Avatarın kaydedilemedi. Tekrar deneyebilirsin."
+    }
   },
   "quests": {
     "title": "⚔️ Günlük Görevler",

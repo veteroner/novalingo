@@ -1,3 +1,4 @@
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 /**
  * ReviewScreen
  *
@@ -94,7 +95,7 @@ export default function ReviewScreen() {
   // ===== NO CARDS STATE =====
   if (!stats || stats.totalCards === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
+      <div className="nova-page safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center gap-6 p-6">
         <Text variant="h2" align="center">
           {t('review.title')}
         </Text>
@@ -109,7 +110,7 @@ export default function ReviewScreen() {
   // ===== STATS SCREEN (before start) =====
   if (!started) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
+      <div className="nova-page safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center gap-6 p-6">
         <Text variant="h2" align="center">
           {t('review.title')}
         </Text>
@@ -128,7 +129,7 @@ export default function ReviewScreen() {
           </Button>
         ) : (
           <div className="text-center">
-            <Text variant="body" className="text-green-600">
+            <Text variant="body" className="text-success-ink">
               {t('review.doneToday')}
             </Text>
             <Button variant="secondary" onClick={() => navigate('/home')} className="mt-4">
@@ -150,11 +151,9 @@ export default function ReviewScreen() {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex min-h-screen flex-col items-center justify-center gap-6 p-6"
+        className="nova-page safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center gap-6 p-6"
       >
-        <Text variant="h1" align="center">
-          🎉
-        </Text>
+        <NovaCharacter mood="happy" size="xl" decorative />
         <Text variant="h2" align="center">
           {t('review.completedTitle')}
         </Text>
@@ -181,15 +180,15 @@ export default function ReviewScreen() {
 
   // ===== ACTIVITY STATE =====
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="nova-page safe-area-top safe-area-bottom flex min-h-screen flex-col">
       {/* Progress bar */}
       <div className="flex items-center gap-3 p-4">
         <Button variant="ghost" size="sm" onClick={() => navigate('/home')}>
           ✕
         </Button>
-        <div className="h-2 flex-1 rounded-full bg-gray-200">
+        <div className="bg-border h-2 flex-1 rounded-full">
           <motion.div
-            className="h-full rounded-full bg-blue-500"
+            className="bg-primary-dark h-full rounded-full"
             initial={{ width: 0 }}
             animate={{
               width: `${activities.length > 0 ? ((currentActivityIndex + 1) / activities.length) * 100 : 0}%`,
@@ -238,11 +237,11 @@ function StatCard({
   return (
     <div
       className={`rounded-2xl p-4 text-center ${
-        highlight ? 'bg-blue-50 ring-2 ring-blue-200' : 'bg-gray-50'
+        highlight ? 'bg-primary-soft ring-primary/20 ring-2' : 'bg-surface-elevated'
       }`}
     >
       <span className="text-2xl">{emoji}</span>
-      <Text variant="h3" className={highlight ? 'text-blue-700' : ''}>
+      <Text variant="h3" className={highlight ? 'text-primary' : ''}>
         {value}
       </Text>
       <Text variant="bodySmall" className="text-text-secondary">

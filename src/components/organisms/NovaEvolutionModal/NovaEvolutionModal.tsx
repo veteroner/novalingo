@@ -89,7 +89,7 @@ export function NovaEvolutionModal({
 
           {/* Content */}
           <motion.div
-            className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white p-8 text-center shadow-2xl"
+            className="bg-surface relative w-full max-w-sm overflow-hidden rounded-3xl p-8 text-center shadow-2xl"
             initial={{ scale: 0.5, y: 50 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.8, y: 50, opacity: 0 }}
@@ -110,7 +110,7 @@ export function NovaEvolutionModal({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Text variant="overline" className="text-nova-purple">
+              <Text variant="overline" className="text-primary">
                 {t('novaEvolution.title')}
               </Text>
             </motion.div>

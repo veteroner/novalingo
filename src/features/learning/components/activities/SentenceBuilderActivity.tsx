@@ -122,18 +122,18 @@ export default function SentenceBuilderActivity({
       </Text>
 
       {/* Translation hint */}
-      <div className="rounded-xl bg-blue-50 px-4 py-2 text-center">
+      <div className="bg-primary-soft rounded-xl px-4 py-2 text-center">
         <Text variant="bodySmall" className="text-text-secondary">
           {t('activityUI.sentenceBuilder.turkish')}
         </Text>
-        <Text variant="body" className="font-semibold text-blue-700">
+        <Text variant="body" className="text-primary font-semibold">
           {data.translation}
         </Text>
       </div>
 
       {/* Audio button */}
       <button
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-lg text-white shadow active:scale-95"
+        className="bg-primary-dark flex h-10 w-10 items-center justify-center rounded-full text-lg text-white shadow active:scale-95"
         onClick={() => {
           speak(data.sentence);
         }}
@@ -143,7 +143,7 @@ export default function SentenceBuilderActivity({
 
       {/* Built sentence area */}
       <motion.div
-        className="flex min-h-12 flex-wrap justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-3"
+        className="border-border bg-surface-elevated flex min-h-12 flex-wrap justify-center gap-2 rounded-xl border-2 border-dashed p-3"
         animate={wrongShake ? { x: [0, -8, 8, -8, 8, 0] } : {}}
         transition={{ duration: 0.4 }}
       >
@@ -155,7 +155,7 @@ export default function SentenceBuilderActivity({
           builtWords.map((word, idx) => (
             <motion.span
               key={idx}
-              className="rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800"
+              className="bg-success-soft text-success-ink rounded-lg px-3 py-1 text-sm font-semibold"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
@@ -176,8 +176,8 @@ export default function SentenceBuilderActivity({
               key={idx}
               className={`rounded-xl px-4 py-2 text-sm font-bold transition-all ${
                 isPlaced
-                  ? 'border-2 border-gray-200 bg-gray-100 text-transparent'
-                  : 'border-2 border-gray-300 bg-white text-gray-800 shadow-md hover:border-blue-400 hover:shadow-lg active:scale-90'
+                  ? 'border-border bg-surface-elevated border-2 text-transparent'
+                  : 'border-border bg-surface text-text hover:border-primary/30 border-2 shadow-md hover:shadow-lg active:scale-90'
               }`}
               onClick={() => {
                 handleWordTap(idx);
@@ -213,12 +213,12 @@ export default function SentenceBuilderActivity({
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="rounded-2xl bg-green-100 px-6 py-3 text-center"
+            className="bg-success-soft rounded-2xl px-6 py-3 text-center"
           >
-            <Text variant="h3" className="text-green-700">
+            <Text variant="h3" className="text-success-ink">
               ✨ Harika!
             </Text>
-            <Text variant="body" className="text-green-600">
+            <Text variant="body" className="text-success-ink">
               {data.sentence}
             </Text>
           </motion.div>

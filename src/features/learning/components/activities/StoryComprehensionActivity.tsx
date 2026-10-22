@@ -94,19 +94,19 @@ export default function StoryComprehensionActivity({
     return (
       <div className="mx-auto w-full max-w-md space-y-4">
         <div className="text-center">
-          <Text variant="overline" className="text-blue-500">
+          <Text variant="overline" className="text-primary">
             📖 OKU VE ANLA
           </Text>
         </div>
 
-        <div className="space-y-3 rounded-3xl bg-white p-5 shadow-lg">
-          <p className="text-lg leading-relaxed text-gray-800">{data.passage}</p>
+        <div className="bg-surface space-y-3 rounded-3xl p-5 shadow-lg">
+          <p className="text-text text-lg leading-relaxed">{data.passage}</p>
 
           {showTranslation && (
             <motion.p
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="text-sm leading-relaxed text-gray-400 italic"
+              className="text-text-secondary text-sm leading-relaxed italic"
             >
               {data.passageTranslation}
             </motion.p>
@@ -114,14 +114,14 @@ export default function StoryComprehensionActivity({
 
           <div className="flex items-center justify-between pt-2">
             <motion.button
-              className="flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-bold text-blue-600"
+              className="border-primary/30 bg-primary-soft text-primary flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm font-bold"
               whileTap={{ scale: 0.95 }}
               onClick={handleListen}
             >
               🔊 Dinle
             </motion.button>
             <motion.button
-              className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-500"
+              className="border-border bg-surface-elevated text-text-secondary rounded-full border px-3 py-1.5 text-sm"
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 setShowTranslation((p) => !p);
@@ -146,15 +146,15 @@ export default function StoryComprehensionActivity({
   return (
     <div className="mx-auto w-full max-w-md space-y-4">
       <div className="text-center">
-        <Text variant="overline" className="text-blue-500">
+        <Text variant="overline" className="text-primary">
           ❓ SORU {currentQ + 1} / {data.questions.length}
         </Text>
       </div>
 
       {/* Progress */}
-      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+      <div className="bg-surface-elevated h-2 w-full overflow-hidden rounded-full">
         <motion.div
-          className="h-full rounded-full bg-linear-to-r from-blue-400 to-indigo-400"
+          className="bg-primary-dark h-full rounded-full"
           animate={{ width: `${((currentQ + 1) / data.questions.length) * 100}%` }}
           transition={{ duration: 0.3 }}
         />
@@ -168,33 +168,33 @@ export default function StoryComprehensionActivity({
           exit={{ opacity: 0, x: -30 }}
           className="space-y-3"
         >
-          <div className="rounded-2xl bg-white p-4 shadow-lg">
-            <Text variant="h4" className="text-gray-800">
+          <div className="bg-surface rounded-2xl p-4 shadow-lg">
+            <Text variant="h4" className="text-text">
               {question.question}
             </Text>
           </div>
 
           <div className="space-y-2">
             {question.options.map((opt, idx) => {
-              let bg = 'bg-white hover:bg-gray-50';
-              let border = 'border-gray-200';
+              let bg = 'bg-surface hover:bg-surface-elevated';
+              let border = 'border-border';
               if (selected === idx) {
                 if (feedback === 'correct') {
-                  bg = 'bg-green-100';
-                  border = 'border-green-400';
+                  bg = 'bg-success-soft';
+                  border = 'border-success/50';
                 } else if (feedback === 'wrong') {
-                  bg = 'bg-red-100';
-                  border = 'border-red-400';
+                  bg = 'bg-error-soft';
+                  border = 'border-error/50';
                 } else {
-                  bg = 'bg-blue-50';
-                  border = 'border-blue-300';
+                  bg = 'bg-primary-soft';
+                  border = 'border-primary/30';
                 }
               }
 
               return (
                 <motion.button
                   key={idx}
-                  className={`w-full rounded-xl border-2 ${border} ${bg} px-4 py-3 text-left text-base font-medium text-gray-700 transition-colors`}
+                  className={`w-full rounded-xl border-2 ${border} ${bg} text-text px-4 py-3 text-left text-base font-medium transition-colors`}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     handleSelect(idx);

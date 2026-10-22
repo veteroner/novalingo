@@ -244,7 +244,7 @@ export default function SubscriptionScreen() {
               </Text>
             </div>
             {isPremium && (
-              <span className="bg-success/20 text-success rounded-full px-3 py-1 text-xs font-bold">
+              <span className="bg-success/20 text-success-ink rounded-full px-3 py-1 text-xs font-bold">
                 {t('subscription.active')}
               </span>
             )}
@@ -314,7 +314,7 @@ export default function SubscriptionScreen() {
                           {t(`subscription.${plan.periodKey}`)}
                         </Text>
                         {plan.highlighted && yearlyValue && (
-                          <Text variant="caption" className="text-success font-semibold">
+                          <Text variant="caption" className="text-success-ink font-semibold">
                             {t('subscription.perMonthEquivalent', {
                               price: yearlyValue.perMonth,
                             })}
@@ -398,7 +398,7 @@ export default function SubscriptionScreen() {
                   <Text variant="bodySmall" className="text-text-secondary">
                     {t('subscription.statusLabel')}
                   </Text>
-                  <Text variant="bodySmall" weight="bold" className="text-success">
+                  <Text variant="bodySmall" weight="bold" className="text-success-ink">
                     {t('subscription.active')}
                   </Text>
                 </div>

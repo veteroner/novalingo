@@ -27,7 +27,7 @@ export function MainLayout({
   wide = false,
 }: MainLayoutProps) {
   return (
-    <div className="bg-background-primary flex min-h-screen flex-col">
+    <div className="nova-page flex min-h-screen flex-col">
       <main
         className={clsx(
           'mx-auto w-full flex-1',

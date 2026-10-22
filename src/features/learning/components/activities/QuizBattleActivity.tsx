@@ -17,10 +17,22 @@ interface QuizBattleActivityProps extends ActivityCallbacks {
 }
 
 const OPTION_COLORS = [
-  { bg: 'bg-red-50 border-red-200 hover:bg-red-100', text: 'text-red-700', icon: '🔴' },
-  { bg: 'bg-blue-50 border-blue-200 hover:bg-blue-100', text: 'text-blue-700', icon: '🔵' },
-  { bg: 'bg-green-50 border-green-200 hover:bg-green-100', text: 'text-green-700', icon: '🟢' },
-  { bg: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100', text: 'text-yellow-700', icon: '🟡' },
+  { bg: 'bg-error-soft border-error/30 hover:bg-error-soft', text: 'text-error-ink', icon: '🔴' },
+  {
+    bg: 'bg-primary-soft border-primary/30 hover:bg-primary-soft',
+    text: 'text-primary',
+    icon: '🔵',
+  },
+  {
+    bg: 'bg-success-soft border-success/30 hover:bg-success-soft',
+    text: 'text-success-ink',
+    icon: '🟢',
+  },
+  {
+    bg: 'bg-reward-soft border-yellow-200 hover:bg-yellow-100',
+    text: 'text-yellow-700',
+    icon: '🟡',
+  },
 ];
 
 export default function QuizBattleActivity({ data, onComplete }: QuizBattleActivityProps) {
@@ -134,9 +146,9 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
       </div>
 
       {/* Progress bar */}
-      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+      <div className="bg-surface-elevated h-2 w-full overflow-hidden rounded-full">
         <motion.div
-          className="h-full rounded-full bg-linear-to-r from-orange-400 to-pink-500"
+          className="bg-primary-dark h-full rounded-full"
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.3 }}
         />
@@ -150,13 +162,13 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
             {totalScore}
           </Text>
         </div>
-        <Text variant="caption" className="text-gray-400">
+        <Text variant="caption" className="text-text-secondary">
           {currentIndex + 1} / {totalQuestions}
         </Text>
       </div>
 
       {/* Timer bar */}
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+      <div className="bg-surface-elevated h-1.5 w-full overflow-hidden rounded-full">
         <motion.div
           className={`h-full rounded-full ${
             timePercent > 50 ? 'bg-green-400' : timePercent > 25 ? 'bg-yellow-400' : 'bg-red-400'
@@ -177,8 +189,8 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
           className="space-y-4"
         >
           {/* Question text */}
-          <motion.div className="rounded-2xl bg-white p-6 text-center shadow-lg">
-            <Text variant="h3" className="text-gray-900">
+          <motion.div className="bg-surface rounded-2xl p-6 text-center shadow-lg">
+            <Text variant="h3" className="text-text">
               {currentQ.question}
             </Text>
           </motion.div>
@@ -187,8 +199,8 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
           <div className="grid grid-cols-1 gap-3">
             {currentQ.options.map((option, idx) => {
               const defaultColor = {
-                bg: 'bg-gray-50 border-gray-200',
-                text: 'text-gray-700',
+                bg: 'bg-surface-elevated border-border',
+                text: 'text-text',
                 icon: '⚪',
               };
               const color = OPTION_COLORS[idx % OPTION_COLORS.length] ?? defaultColor;
@@ -198,11 +210,11 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
               let style = `${color.bg} border-2`;
               if (isAnswered) {
                 if (isCorrect) {
-                  style = 'bg-green-100 border-2 border-green-400';
+                  style = 'bg-success-soft border-2 border-success/50';
                 } else if (isSelected) {
-                  style = 'bg-red-100 border-2 border-red-400';
+                  style = 'bg-error-soft border-2 border-error/50';
                 } else {
-                  style = 'bg-gray-50 border-2 border-gray-100 opacity-50';
+                  style = 'bg-surface-elevated border-2 border-border opacity-50';
                 }
               }
 
@@ -228,9 +240,9 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
                     variant="body"
                     className={`font-bold ${
                       isAnswered && isCorrect
-                        ? 'text-green-700'
+                        ? 'text-success-ink'
                         : isAnswered && isSelected
-                          ? 'text-red-600'
+                          ? 'text-error-ink'
                           : color.text
                     }`}
                   >
@@ -262,7 +274,7 @@ export default function QuizBattleActivity({ data, onComplete }: QuizBattleActiv
                   ? '⭐'
                   : '💪'}
             </div>
-            <Text variant="h3" className="text-gray-800">
+            <Text variant="h3" className="text-text">
               {t('activityUI.quizBattle.score', { correct: correctCount, total: totalQuestions })}
             </Text>
             <Text variant="body" className="font-bold text-orange-500">

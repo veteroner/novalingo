@@ -11,7 +11,7 @@ export function ActivityErrorFallback({ onSkip }: { onSkip: () => void }) {
   const { t } = useTranslation('lesson');
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
-      <Text variant="body" className="text-error">
+      <Text variant="body" className="text-error-ink">
         {t('activityUI.errorBoundary.message')}
       </Text>
       <Button variant="primary" size="md" onClick={onSkip}>

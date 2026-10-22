@@ -151,11 +151,11 @@ export default function ConversationScreen() {
   const conversationData = toConversationActivityData(scenario);
 
   return (
-    <div className="safe-area-top safe-area-bottom flex h-dvh flex-col overflow-hidden bg-white">
+    <div className="safe-area-top safe-area-bottom bg-surface flex h-dvh flex-col overflow-hidden">
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between px-4 py-3">
         <button
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100"
+          className="bg-surface-elevated flex h-10 w-10 items-center justify-center rounded-full"
           onClick={handleClose}
         >
           <span className="text-lg">✕</span>
@@ -168,8 +168,8 @@ export default function ConversationScreen() {
             {scenario.titleTr}
           </Text>
           {scenario.series && (
-            <div className="mt-0.5 flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5">
-              <Text variant="caption" className="text-[10px] font-semibold text-purple-600">
+            <div className="bg-primary-soft mt-0.5 flex items-center gap-1 rounded-full px-2 py-0.5">
+              <Text variant="caption" className="text-primary text-[10px] font-semibold">
                 📖 {scenario.series.seriesTitleTr} ·{' '}
                 {t('activities.conversationScreenEpisode', {
                   episode: scenario.series.episodeNumber,

@@ -502,7 +502,9 @@ export default function LessonScreen() {
               </div>
               <motion.div
                 className={`rounded-full px-3 py-1 text-sm font-bold ${
-                  bossTimeLeft <= 10 ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'
+                  bossTimeLeft <= 10
+                    ? 'bg-error-soft text-error-ink'
+                    : 'bg-orange-100 text-orange-600'
                 }`}
                 animate={bossTimeLeft <= 5 ? { scale: [1, 1.1, 1] } : {}}
                 transition={{ duration: 0.5, repeat: Infinity }}
@@ -527,7 +529,7 @@ export default function LessonScreen() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="space-y-4 rounded-3xl bg-white p-8 text-center"
+              className="bg-surface space-y-4 rounded-3xl p-8 text-center"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
             >

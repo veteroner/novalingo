@@ -1,3 +1,5 @@
+import { isAndroid, isNative } from '@/utils/platform';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { applyTheme, themes, type AgeGroupTheme, type ColorMode } from '@/config/theme';
 import { useChildStore } from '@stores/childStore';
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
@@ -41,6 +43,15 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   useEffect(() => {
     const config = themes[theme][colorMode];
     applyTheme(config);
+    if (isNative()) {
+      // Capacitor styles name the background: Dark uses light text, Light uses dark text.
+      void StatusBar.setStyle({ style: colorMode === 'dark' ? Style.Dark : Style.Light }).catch(
+        () => {},
+      );
+      if (isAndroid()) {
+        void StatusBar.setBackgroundColor({ color: config.colors.background }).catch(() => {});
+      }
+    }
   }, [theme, colorMode]);
 
   const toggleColorMode = useCallback(() => {

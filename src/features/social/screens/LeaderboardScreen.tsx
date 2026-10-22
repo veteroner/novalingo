@@ -19,11 +19,11 @@ import { useTranslation } from 'react-i18next';
 // Etiketler i18n'den gelir (common.leaderboard.tiers, id'ye göre); burada emoji/renk.
 const leagueTiers: { id: LeagueTier; emoji: string; color: string }[] = [
   { id: 'bronze', emoji: '🥉', color: 'text-amber-700' },
-  { id: 'silver', emoji: '🥈', color: 'text-gray-400' },
+  { id: 'silver', emoji: '🥈', color: 'text-text-secondary' },
   { id: 'gold', emoji: '🥇', color: 'text-yellow-500' },
   { id: 'platinum', emoji: '💫', color: 'text-cyan-500' },
   { id: 'diamond', emoji: '💎', color: 'text-nova-blue' },
-  { id: 'legend', emoji: '👑', color: 'text-nova-purple' },
+  { id: 'legend', emoji: '👑', color: 'text-primary' },
 ];
 
 export default function LeaderboardScreen() {
@@ -86,7 +86,7 @@ export default function LeaderboardScreen() {
         <Card variant="filled" padding="sm">
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm">🏆</span>
-            <Text variant="caption" weight="bold" className="text-success">
+            <Text variant="caption" weight="bold" className="text-success-ink">
               {t('leaderboard.topPromote')}
             </Text>
           </div>
@@ -110,6 +110,7 @@ export default function LeaderboardScreen() {
             entries={entries}
             currentUserId={child?.id ?? 'current'}
             currentUserName={child?.name}
+            currentUserAvatarId={child?.avatarId}
           />
         )}
       </div>

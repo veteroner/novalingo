@@ -1,20 +1,30 @@
 /**
  * Yaş doğrulaması: doğum tarihi yalnızca cihazda değerlendirilir.
- * Kalıcı olarak tarih/yaş değil, yalnızca güvenli erişim sınıfı tutulur.
+ * Tarih/tam yaş tutulmaz; erişim sınıfı ve ilk profil için kaba ders grubu tutulur.
  * Bilinmeyen yaş, çocuk oturumu gibi ele alınır.
  */
+import type { AgeGroup } from '@/types/user';
+
 export type AgeBand = 'minor' | 'adult';
 export const AGE_SCREEN_STORAGE_KEY = 'novalingo:age-screen:v1';
-let memoryBand: AgeBand | null = null;
+interface AgeScreenResult {
+  band: AgeBand;
+  learnerAgeGroup?: AgeGroup;
+}
+let memoryResult: AgeScreenResult | null = null;
 
-export function getAgeBand(): AgeBand | null {
+function isAgeGroup(value: unknown): value is AgeGroup {
+  return value === 'cubs' || value === 'stars' || value === 'legends';
+}
+
+function getAgeScreenResult(): AgeScreenResult | null {
   let stored: string | null;
   try {
     stored = localStorage.getItem(AGE_SCREEN_STORAGE_KEY);
   } catch {
-    return memoryBand;
+    return memoryResult;
   }
-  if (stored === null) return memoryBand;
+  if (stored === null) return memoryResult;
   try {
     const value: unknown = JSON.parse(stored);
     if (
@@ -25,20 +35,42 @@ export function getAgeBand(): AgeBand | null {
       'band' in value &&
       (value.band === 'minor' || value.band === 'adult')
     )
-      return value.band;
+      return {
+        band: value.band,
+        ...(value.band === 'minor' &&
+        'learnerAgeGroup' in value &&
+        isAgeGroup(value.learnerAgeGroup)
+          ? { learnerAgeGroup: value.learnerAgeGroup }
+          : {}),
+      };
   } catch {
     // Bozuk veri yetişkin erişimi açamaz.
   }
   return null;
 }
 
-export function rememberAgeBand(band: AgeBand): void {
-  memoryBand = band;
+export function getAgeBand(): AgeBand | null {
+  return getAgeScreenResult()?.band ?? null;
+}
+
+/** Adult DOB belongs to the account holder, never automatically to their child. */
+export function getLearnerAgeGroup(): AgeGroup | null {
+  return getAgeScreenResult()?.learnerAgeGroup ?? null;
+}
+
+export function rememberAgeBand(band: AgeBand, learnerAgeGroup?: AgeGroup): void {
+  memoryResult = { band, ...(band === 'minor' && learnerAgeGroup ? { learnerAgeGroup } : {}) };
   try {
-    localStorage.setItem(AGE_SCREEN_STORAGE_KEY, JSON.stringify({ version: 1, band }));
+    localStorage.setItem(AGE_SCREEN_STORAGE_KEY, JSON.stringify({ version: 1, ...memoryResult }));
   } catch {
     // Depolama engelliyse yalnızca bu açılışta geçerlidir.
   }
+}
+
+/** Consume the suggestion after the first profile; additional children choose their own group. */
+export function clearLearnerAgeGroup(): void {
+  const band = getAgeBand();
+  if (band) rememberAgeBand(band);
 }
 
 export function isAdultSession(): boolean {
@@ -46,12 +78,12 @@ export function isAdultSession(): boolean {
 }
 
 /** Geçersiz/gelecekteki tarihler kabul edilmez; eşik tamamlanmış 18 yaştır. */
-export function classifyBirthDate(
+export function assessBirthDate(
   day: string,
   month: string,
   year: string,
   today: Date = new Date(),
-): AgeBand | null {
+): AgeScreenResult | null {
   if (!/^\d{1,2}$/.test(day) || !/^\d{1,2}$/.test(month) || !/^\d{4}$/.test(year)) return null;
   const d = Number(day);
   const m = Number(month);
@@ -67,5 +99,16 @@ export function classifyBirthDate(
     return null;
   let age = today.getFullYear() - y;
   if (today.getMonth() < m - 1 || (today.getMonth() === m - 1 && today.getDate() < d)) age--;
-  return age >= 18 ? 'adult' : 'minor';
+  if (age >= 18) return { band: 'adult' };
+  const learnerAgeGroup = age <= 6 ? 'cubs' : age <= 9 ? 'stars' : 'legends';
+  return { band: 'minor', learnerAgeGroup };
+}
+
+export function classifyBirthDate(
+  day: string,
+  month: string,
+  year: string,
+  today: Date = new Date(),
+): AgeBand | null {
+  return assessBirthDate(day, month, year, today)?.band ?? null;
 }

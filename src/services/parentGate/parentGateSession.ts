@@ -11,6 +11,7 @@
 export const PARENT_GATE_TTL_MS = 15 * 60 * 1000;
 
 let passedAtMs = 0;
+let profileConsentAtMs = 0;
 
 /** Kapı yakın zamanda geçildi mi? */
 export function isParentGatePassed(nowMs: number = Date.now()): boolean {
@@ -25,4 +26,15 @@ export function markParentGatePassed(nowMs: number = Date.now()): void {
 /** Doğrulamayı sıfırla (çıkış yapıldığında veya testlerde). */
 export function resetParentGate(): void {
   passedAtMs = 0;
+  profileConsentAtMs = 0;
+}
+
+/** Profile setup also requires the two consent checkboxes, beyond the math gate. */
+export function isProfileConsentPassed(nowMs: number = Date.now()): boolean {
+  return profileConsentAtMs > 0 && nowMs - profileConsentAtMs < PARENT_GATE_TTL_MS;
+}
+
+export function markProfileConsentPassed(nowMs: number = Date.now()): void {
+  profileConsentAtMs = nowMs;
+  markParentGatePassed(nowMs);
 }

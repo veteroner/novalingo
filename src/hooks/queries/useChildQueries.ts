@@ -219,7 +219,18 @@ export function useUpdateChild() {
   return useMutation({
     mutationFn: (data: UpdateChildProfileReq) => updateChildProfile(data),
     onSuccess: (result) => {
-      updateActiveChild({ name: result.name, avatarId: result.avatarId });
+      if (useChildStore.getState().activeChild?.id === result.childId) {
+        updateActiveChild({ name: result.name, avatarId: result.avatarId });
+      } else {
+        const state = useChildStore.getState();
+        state.setChildren(
+          state.children.map((child) =>
+            child.id === result.childId
+              ? { ...child, name: result.name, avatarId: result.avatarId }
+              : child,
+          ),
+        );
+      }
       if (uid) {
         void queryClient.invalidateQueries({ queryKey: childKeys.list(uid) });
       }
