@@ -168,7 +168,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
     <div className="mx-auto w-full max-w-md space-y-4">
       {/* Header */}
       <div className="text-center">
-        <Text variant="overline" className="mb-1 text-emerald-600">
+        <Text variant="overline" className="text-success-ink mb-1">
           {t('activityUI.wordSearch.title')}
         </Text>
         <Text variant="bodySmall" className="text-text-secondary">
@@ -184,12 +184,14 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
             <motion.div
               key={w.word}
               className={`rounded-full px-3 py-1 text-sm font-bold ${
-                isFound ? 'bg-green-100 text-green-600 line-through' : 'bg-gray-100 text-gray-700'
+                isFound
+                  ? 'bg-success-soft text-success-ink line-through'
+                  : 'bg-surface-elevated text-text'
               }`}
               animate={isFound ? { scale: [1, 1.2, 1] } : {}}
             >
               {w.word}
-              <span className="ml-1 text-xs text-gray-400">({w.translation})</span>
+              <span className="text-text-secondary ml-1 text-xs">({w.translation})</span>
             </motion.div>
           );
         })}
@@ -197,7 +199,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
 
       {/* Grid */}
       <motion.div
-        className={`rounded-2xl bg-white p-3 shadow-lg ${wrongFlash ? 'ring-2 ring-red-400' : ''}`}
+        className={`bg-surface rounded-2xl p-3 shadow-lg ${wrongFlash ? 'ring-2 ring-red-400' : ''}`}
         animate={wrongFlash ? { x: [0, -4, 4, -2, 2, 0] } : {}}
       >
         <div
@@ -217,10 +219,10 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
                   key={key}
                   className={`flex aspect-square items-center justify-center rounded-lg text-sm font-black transition-colors ${
                     isFound
-                      ? 'bg-green-200 text-green-700'
+                      ? 'bg-success-soft text-success-ink'
                       : isSelected
-                        ? 'bg-blue-400 text-white'
-                        : 'bg-gray-50 text-gray-700 hover:bg-blue-50'
+                        ? 'bg-primary text-white'
+                        : 'bg-surface-elevated text-text hover:bg-primary-soft'
                   }`}
                   onClick={() => {
                     handleCellTap(ri, ci);
@@ -243,7 +245,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
           className="flex justify-center gap-3"
         >
           <button
-            className="rounded-full bg-gray-200 px-6 py-2 font-bold text-gray-600 transition-transform active:scale-95"
+            className="bg-border text-text-secondary rounded-full px-6 py-2 font-bold transition-transform active:scale-95"
             onClick={() => {
               setSelectedCells([]);
               setIsSelecting(false);
@@ -252,7 +254,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
             {t('activityUI.wordSearch.cancel')}
           </button>
           <button
-            className="rounded-full bg-blue-500 px-6 py-2 font-bold text-white transition-transform active:scale-95"
+            className="bg-primary-dark rounded-full px-6 py-2 font-bold text-white transition-transform active:scale-95"
             onClick={confirmSelection}
           >
             Onayla ✓
@@ -269,7 +271,7 @@ export default function WordSearchActivity({ data, onComplete }: WordSearchActiv
             className="py-2 text-center"
           >
             <div className="text-5xl">🎉</div>
-            <Text variant="h3" className="text-green-600">
+            <Text variant="h3" className="text-success-ink">
               {t('activityUI.wordSearch.complete')}
             </Text>
           </motion.div>

@@ -15,6 +15,8 @@ interface MainLayoutProps {
   className?: string;
   /** Extra top padding for header area */
   headerOffset?: boolean;
+  /** Let learning maps use a journey sidebar on larger screens. */
+  wide?: boolean;
 }
 
 export function MainLayout({
@@ -22,12 +24,14 @@ export function MainLayout({
   showNavigation = true,
   className,
   headerOffset = false,
+  wide = false,
 }: MainLayoutProps) {
   return (
-    <div className="bg-background-primary flex min-h-screen flex-col">
+    <div className="nova-page flex min-h-screen flex-col">
       <main
         className={clsx(
-          'mx-auto w-full max-w-md flex-1',
+          'mx-auto w-full flex-1',
+          wide ? 'max-w-6xl' : 'max-w-md',
           'safe-area-top safe-area-left safe-area-right',
           showNavigation && 'pb-nav', // space for bottom nav + safe area
           headerOffset && 'pt-16',

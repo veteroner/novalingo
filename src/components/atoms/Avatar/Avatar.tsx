@@ -5,6 +5,8 @@
  * Nova companion küçük overlay desteği ile.
  */
 
+import { resolveAvatarId } from '@/config/avatars';
+import { AvatarArtwork } from './AvatarArtwork';
 import { clsx } from 'clsx';
 import { type ImgHTMLAttributes, useState } from 'react';
 
@@ -12,6 +14,7 @@ type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 interface AvatarProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'className' | 'src'> {
   src?: string | null;
+  avatarId?: string | null;
   name?: string;
   size?: AvatarSize;
   borderColor?: string;
@@ -55,6 +58,7 @@ function getColor(name: string): string {
 
 export function Avatar({
   src,
+  avatarId,
   name = '?',
   size = 'md',
   borderColor,
@@ -62,10 +66,22 @@ export function Avatar({
   className,
   ...props
 }: AvatarProps) {
-  const [imgError, setImgError] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   return (
     <div className={clsx('relative inline-flex shrink-0', className)}>
-      {src && !imgError ? (
+      {avatarId != null ? (
+        <div
+          role="img"
+          aria-label={name}
+          className={clsx(
+            'overflow-hidden rounded-full border-3 border-white shadow-md',
+            sizeStyles[size],
+          )}
+          style={borderColor ? { borderColor } : undefined}
+        >
+          <AvatarArtwork id={resolveAvatarId(avatarId)} />
+        </div>
+      ) : src && src !== failedSrc ? (
         <img
           src={src}
           alt={name}
@@ -75,7 +91,7 @@ export function Avatar({
           )}
           style={borderColor ? { borderColor } : undefined}
           onError={() => {
-            setImgError(true);
+            setFailedSrc(src);
           }}
           {...props}
         />

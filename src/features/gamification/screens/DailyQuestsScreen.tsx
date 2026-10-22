@@ -1,3 +1,5 @@
+import { FeatureHeader } from '@components/molecules/FeatureHeader';
+import { TargetIcon } from '@phosphor-icons/react';
 /**
  * DailyQuestsScreen
  *
@@ -76,13 +78,11 @@ export default function DailyQuestsScreen() {
   return (
     <MainLayout>
       <div className="space-y-6 px-4 py-6">
-        {/* Header */}
-        <div>
-          <Text variant="h3">{t('quests.title')}</Text>
-          <Text variant="bodySmall" className="text-text-secondary">
-            {t('quests.subtitle')}
-          </Text>
-        </div>
+        <FeatureHeader
+          title={t('quests.title')}
+          description={t('quests.subtitle')}
+          icon={<TargetIcon size={28} weight="duotone" />}
+        />
 
         {/* Overall Progress — yalnızca görev varken göster */}
         {quests.length > 0 && (
@@ -99,7 +99,7 @@ export default function DailyQuestsScreen() {
               <ProgressBar value={progress} variant="xp" size="md" />
               {progress >= 1 && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <Text variant="caption" className="text-success text-center font-bold">
+                  <Text variant="caption" className="text-success-ink text-center font-bold">
                     {t('quests.allComplete')}
                   </Text>
                 </motion.div>
@@ -115,7 +115,7 @@ export default function DailyQuestsScreen() {
             <Card variant="filled" padding="lg">
               <div className="space-y-3 text-center">
                 {[0, 1, 2].map((i) => (
-                  <div key={i} className="h-14 animate-pulse rounded-2xl bg-gray-200" />
+                  <div key={i} className="bg-border h-14 animate-pulse rounded-2xl" />
                 ))}
                 <Text variant="caption" className="text-text-secondary">
                   {t('quests.loading')}

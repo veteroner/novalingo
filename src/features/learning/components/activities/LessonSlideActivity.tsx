@@ -1,3 +1,4 @@
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 /**
  * LessonSlideActivity
  *
@@ -39,7 +40,13 @@ export default function LessonSlideActivity({ data, onComplete }: LessonSlideAct
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
     >
-      <Text variant="h2" className="text-surface-900 dark:text-surface-100 mb-10 leading-snug">
+      <NovaCharacter
+        size="xl"
+        mood={data.type === 'lesson-outro' ? 'happy' : 'idle'}
+        decorative
+        className="mb-6"
+      />
+      <Text variant="h2" className="text-text mb-10 leading-snug">
         {data.text}
       </Text>
       <Button variant="primary" size="lg" onClick={handleContinue} className="w-full max-w-xs">

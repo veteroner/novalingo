@@ -84,7 +84,7 @@ export default function GrammarTransformActivity({
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl bg-orange-50 p-4 text-center"
+        className="bg-reward-soft rounded-2xl p-4 text-center"
       >
         <Text variant="h4" className="text-orange-700">
           {data.instruction}
@@ -95,13 +95,13 @@ export default function GrammarTransformActivity({
       </motion.div>
 
       {/* Source sentence */}
-      <div className="rounded-2xl bg-white p-5 shadow-lg">
+      <div className="bg-surface rounded-2xl p-5 shadow-lg">
         <div className="flex items-center justify-between">
-          <Text variant="body" className="text-lg font-medium text-gray-800">
+          <Text variant="body" className="text-text text-lg font-medium">
             {data.sourceSentence}
           </Text>
           <motion.button
-            className="shrink-0 rounded-full border border-orange-200 bg-orange-50 p-2 text-sm"
+            className="bg-reward-soft shrink-0 rounded-full border border-orange-200 p-2 text-sm"
             whileTap={{ scale: 0.9 }}
             onClick={handleListen}
           >
@@ -115,7 +115,7 @@ export default function GrammarTransformActivity({
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="rounded-xl bg-yellow-50 p-3 text-center"
+          className="bg-reward-soft rounded-xl p-3 text-center"
         >
           <Text variant="caption" className="text-yellow-700">
             {t('activityUI.grammar.hintStart', {
@@ -129,19 +129,19 @@ export default function GrammarTransformActivity({
       <AnimatePresence>
         <div className="space-y-2">
           {data.options.map((opt, idx) => {
-            let bg = 'bg-white hover:bg-gray-50';
-            let border = 'border-gray-200';
-            let textColor = 'text-gray-700';
+            let bg = 'bg-surface hover:bg-surface-elevated';
+            let border = 'border-border';
+            let textColor = 'text-text';
 
             if (selected === idx) {
               if (feedback === 'correct') {
-                bg = 'bg-green-100';
-                border = 'border-green-400';
-                textColor = 'text-green-800';
+                bg = 'bg-success-soft';
+                border = 'border-success/50';
+                textColor = 'text-success-ink';
               } else if (feedback === 'wrong') {
-                bg = 'bg-red-100';
-                border = 'border-red-400';
-                textColor = 'text-red-800';
+                bg = 'bg-error-soft';
+                border = 'border-error/50';
+                textColor = 'text-error-ink';
               }
             }
 
@@ -170,7 +170,7 @@ export default function GrammarTransformActivity({
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mx-auto block rounded-full border border-yellow-300 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700"
+          className="bg-reward-soft mx-auto block rounded-full border border-yellow-300 px-4 py-2 text-sm font-medium text-yellow-700"
           whileTap={{ scale: 0.95 }}
           onClick={handleHint}
         >

@@ -39,10 +39,10 @@ export function QuestItem({ quest, onClaim, className }: QuestItemProps) {
       className={clsx(
         'flex items-center gap-3 rounded-2xl border-2 p-3 transition-colors',
         isClaimed
-          ? 'border-gray-200 bg-gray-50 opacity-60'
+          ? 'border-border bg-surface-elevated opacity-60'
           : isCompleted
             ? 'bg-success/5 border-success/30'
-            : 'border-gray-100 bg-white',
+            : 'border-border bg-surface',
         className,
       )}
     >

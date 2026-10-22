@@ -7,6 +7,8 @@
 
 @import 'tailwindcss';
 
+@custom-variant dark (&:where([data-mode='dark'], [data-mode='dark'] *));
+
 /* ─── Self-hosted Fonts ───────────────────────────────────── */
 @font-face {
   font-family: 'Baloo 2';
@@ -89,47 +91,55 @@
 /* ─── Custom Design Tokens ────────────────────────────────── */
 @theme {
   /* Nova Brand Colors */
-  --color-nova-blue: #6c5ce7;
-  --color-nova-purple: #a29bfe;
-  --color-nova-orange: #fdcb6e;
-  --color-nova-red: #ff6b6b;
-  --color-nova-green: #6bcb77;
-  --color-nova-cyan: #4ecdc4;
+  --color-nova-blue: var(--color-primary);
+  --color-nova-purple: var(--color-primary-light);
+  --color-nova-orange: #f2bc55;
+  --color-nova-red: #c95050;
+  --color-nova-green: #237f64;
+  --color-nova-cyan: #48b9a0;
   --color-nova-pink: #fd79a8;
   --color-nova-yellow: #ffd93d;
 
   /* Semantic Colors (overridden by theme) */
-  --color-primary: var(--theme-primary, #6c5ce7);
-  --color-primary-light: var(--theme-primary-light, #a29bfe);
+  --color-primary: var(--theme-primary, #5145c8);
+  --color-primary-light: var(--theme-primary-light, #9386df);
   --color-primary-dark: var(--theme-primary-dark, #5a4bd1);
   --color-secondary: var(--theme-secondary, #00b894);
-  --color-accent: var(--theme-accent, #fdcb6e);
+  --color-accent: var(--theme-accent, #f2bc55);
 
-  --color-background: var(--theme-background, #f8f9fe);
+  --color-background: var(--theme-background, #f5f7fc);
   --color-surface: var(--theme-surface, #ffffff);
   --color-surface-elevated: var(--theme-surface-elevated, #ffffff);
 
-  --color-text: var(--theme-text, #2d3436);
-  --color-text-secondary: var(--theme-text-secondary, #636e72);
+  --color-text: var(--theme-text, #24314a);
+  --color-text-secondary: var(--theme-text-secondary, #5b6880);
   --color-text-inverse: var(--theme-text-inverse, #ffffff);
 
-  --color-border: var(--theme-border, #e0e0f0);
-  --color-success: var(--theme-success, #6bcb77);
-  --color-warning: var(--theme-warning, #fdcb6e);
-  --color-error: var(--theme-error, #ff6b6b);
+  --color-border: var(--theme-border, #dfe5f0);
+  --color-success: var(--theme-success, #237f64);
+  --color-warning: var(--theme-warning, #f2bc55);
+  --color-error: var(--theme-error, #c95050);
   --color-info: var(--theme-info, #74b9ff);
 
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --color-success-soft: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  --color-error-soft: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+  --color-reward-soft: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
+  --color-success-ink: var(--theme-success-ink, #216b54);
+  --color-error-ink: var(--theme-error-ink, #a72f43);
+  --color-reward-ink: var(--theme-reward-ink, #77500b);
+
   /* Gamification */
-  --color-xp: var(--theme-xp, #fdcb6e);
+  --color-xp: var(--theme-xp, #f2bc55);
   --color-star: var(--theme-star, #ffd93d);
-  --color-gem: var(--theme-gem, #a29bfe);
+  --color-gem: var(--theme-gem, #9386df);
   --color-streak: var(--theme-streak, #ff6348);
 
   /* Rarity Colors */
   --color-rarity-common: #b2bec3;
   --color-rarity-rare: #74b9ff;
-  --color-rarity-epic: #a29bfe;
-  --color-rarity-legendary: #fdcb6e;
+  --color-rarity-epic: #9386df;
+  --color-rarity-legendary: #f2bc55;
 
   /* Custom Spacing */
   --spacing-safe-top: env(safe-area-inset-top, 0px);
@@ -153,6 +163,10 @@
 
   /* Typography */
   --font-display: 'Baloo 2', 'Nunito', system-ui, sans-serif;
+  --font-heading: var(--font-display);
+  --color-nova-sky: var(--color-background);
+  --color-background-primary: var(--color-background);
+  --color-text-primary: var(--color-text);
   --font-body: 'Nunito', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -408,44 +422,6 @@
   }
 }
 
-/* ─── Age Group Theme Overrides ───────────────────────────── */
-[data-theme='cubs'] {
-  --theme-primary: #ff6b6b;
-  --theme-primary-light: #ff9b9b;
-  --theme-primary-dark: #e94848;
-  --theme-secondary: #ffd93d;
-  --theme-accent: #6bcb77;
-  --theme-background: #fff8f0;
-}
-
-[data-theme='stars'] {
-  --theme-primary: #6c5ce7;
-  --theme-primary-light: #a29bfe;
-  --theme-primary-dark: #5a4bd1;
-  --theme-secondary: #00b894;
-  --theme-accent: #fdcb6e;
-  --theme-background: #f8f9fe;
-}
-
-[data-theme='legends'] {
-  --theme-primary: #0984e3;
-  --theme-primary-light: #74b9ff;
-  --theme-primary-dark: #0767b5;
-  --theme-secondary: #00cec9;
-  --theme-accent: #fd79a8;
-  --theme-background: #f0f8ff;
-}
-
-[data-theme='dark'] {
-  --theme-background: #1a1a2e;
-  --theme-surface: #16213e;
-  --theme-surface-elevated: #1f2b47;
-  --theme-text: #f0f0f0;
-  --theme-text-secondary: #a0a0b0;
-  --theme-text-inverse: #1a1a2e;
-  --theme-border: #2a2a4e;
-}
-
 /* ─── Reduced Motion (WCAG 2.1 AA · SC 2.3.3) ─────────────────
  * Kullanıcı OS'te "Hareketi Azalt"ı açtıysa CSS animasyon/geçişlerini
  * neredeyse anlık yap (işlevsellik korunur, hareket kalkar). framer-motion
@@ -460,4 +436,94 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Nova v2 — grounded poses. Movement is an occasional response to an event. */
+.nova-contact-shadow {
+  position: absolute;
+  bottom: 5%;
+  width: 48%;
+  height: 7%;
+  border-radius: 50%;
+  background: #25314c25;
+  filter: blur(3px);
+}
+.nova-character-art {
+  object-position: center bottom;
+  transform-origin: 50% 94%;
+}
+.nova-character[data-stage='baby'] .nova-character-art {
+  transform: scale(0.88);
+}
+.nova-character[data-mood='sleeping'] .nova-character-art {
+  opacity: 0.8;
+}
+.nova-character[data-motion='on'][data-mood='celebrating'] .nova-character-art,
+.nova-character[data-motion='on'][data-mood='excited'] .nova-character-art {
+  animation: nova-celebrate 0.7s ease-out 1;
+}
+.nova-stage-star,
+.nova-stage-mark {
+  position: absolute;
+  right: 2%;
+  top: 5%;
+  z-index: 12;
+  color: #946200;
+  font-size: 1.1em;
+}
+.nova-stage-star {
+  padding: 0.1em 0.35em;
+  border-radius: 50%;
+  background: #fff2cc;
+}
+@keyframes nova-celebrate {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.045, 0.97);
+  }
+  65% {
+    transform: scale(0.98, 1.025);
+  }
+}
+
+/* Shared screen atmosphere; visual surfaces use the same tokens as lessons. */
+.nova-page {
+  background:
+    radial-gradient(ellipse 100% 400px at 100% 0, var(--color-primary-soft), transparent),
+    var(--color-background);
+  color: var(--color-text);
+}
+[data-mode='dark'] {
+  --color-success-ink: #8ae0b9;
+  --color-error-ink: #ffb2bd;
+  --color-reward-ink: #f3ce88;
+}
+.nova-feature-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--color-border);
+  border-bottom-width: 3px;
+  border-radius: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--color-primary-soft), var(--color-surface));
+}
+.nova-feature-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--color-primary-dark);
+  color: white;
+  box-shadow: 0 4px 0 #352a96;
+  flex-shrink: 0;
+}
+.nova-lesson-shell {
+  max-width: 680px;
+  width: 100%;
+  margin-inline: auto;
 }

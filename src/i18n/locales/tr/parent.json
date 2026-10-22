@@ -117,7 +117,13 @@
     "privacy": "Gizlilik Politikası",
     "terms": "Kullanım Koşulları",
     "deleteWrongPin": "PIN kodu hatalı. Lütfen tekrar deneyin.",
-    "deleteCancelled": "Onay iptal edildi; hesabınız silinmedi."
+    "deleteCancelled": "Onay iptal edildi; hesabınız silinmedi.",
+    "childNameTitle": "👤 Çocuğun adı",
+    "childNameDesc": "Nova çocuğunuza bu adla seslenir. Yalnızca takma ad yeterlidir.",
+    "childNameSave": "Kaydet",
+    "childNameInvalid": "2-20 karakter, yalnızca harf ve emoji",
+    "childNameSaved": "Ad güncellendi",
+    "childNameError": "Ad kaydedilemedi, tekrar deneyin"
   },
   "dashboard": {
     "gateTitle": "🔒 Ebeveyn Paneli",

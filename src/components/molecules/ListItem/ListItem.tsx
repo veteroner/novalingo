@@ -32,8 +32,8 @@ export function ListItem({
     <Component
       className={clsx(
         'flex w-full items-center gap-3 px-4 py-3',
-        onClick && 'cursor-pointer transition-colors active:bg-gray-50',
-        divider && 'border-b border-gray-100',
+        onClick && 'active:bg-surface-elevated cursor-pointer transition-colors',
+        divider && 'border-border border-b',
         className,
       )}
       onClick={onClick}

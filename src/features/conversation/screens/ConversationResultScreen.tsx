@@ -163,7 +163,7 @@ export default function ConversationResultScreen() {
     if (type === 'collectible') {
       const emoji = COLLECTIBLE_EMOJIS[id] ?? '🎁';
       return {
-        gradient: 'from-amber-400 to-orange-500',
+        gradient: 'from-primary-dark to-primary-dark',
         icon: emoji,
         label: t('conversationResult.rewardCollectibleLabel'),
         sublabel: id ? id.replace(/-/g, ' ') : 'Yeni öğe',
@@ -171,7 +171,7 @@ export default function ConversationResultScreen() {
     }
     if (type === 'badge_progress') {
       return {
-        gradient: 'from-violet-500 to-purple-600',
+        gradient: 'from-primary-dark to-primary-dark',
         icon: '🏅',
         label: t('conversationResult.rewardBadgeLabel'),
         sublabel: id ? id.replace(/-/g, ' ') : 'Harika ilerleme',
@@ -179,7 +179,7 @@ export default function ConversationResultScreen() {
     }
     if (type === 'sticker') {
       return {
-        gradient: 'from-pink-400 to-rose-500',
+        gradient: 'from-primary-dark to-primary-dark',
         icon: '✨',
         label: t('conversationResult.rewardStickerLabel'),
         sublabel: id ? id.replace(/-/g, ' ') : 'Koleksiyonuna eklendi',
@@ -193,7 +193,7 @@ export default function ConversationResultScreen() {
   const { mood, msg } = getMoodMessage();
 
   return (
-    <div className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
+    <div className="safe-area-top safe-area-bottom nova-page flex min-h-screen flex-col items-center justify-center px-6">
       {/* Scene Emoji */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5 }}
@@ -222,7 +222,7 @@ export default function ConversationResultScreen() {
         </Text>
         {scenario.series && (
           <div className="mt-1 flex items-center justify-center gap-1">
-            <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-600">
+            <span className="bg-primary-soft rounded-full px-2.5 py-0.5 text-xs font-semibold text-purple-600">
               📖 {scenario.series.seriesTitleTr} ·{' '}
               {t('conversationResult.episodeBadge', {
                 episode: scenario.series.episodeNumber,
@@ -243,8 +243,8 @@ export default function ConversationResultScreen() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-          <Text variant="h3" className="text-success">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
+          <Text variant="h3" className="text-success-ink">
             {t('conversationResult.accuracyPercent', {
               percent: Math.round(result.accuracy * 100),
             })}
@@ -254,7 +254,7 @@ export default function ConversationResultScreen() {
           </Text>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
           <Text variant="h3" className="text-nova-blue">
             {result.targetWordsHit}/{result.targetWordsTotal}
           </Text>
@@ -263,8 +263,8 @@ export default function ConversationResultScreen() {
           </Text>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-          <Text variant="h3" className="text-nova-orange">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
+          <Text variant="h3" className="text-reward-ink">
             {formatTime(result.durationSeconds)}
           </Text>
           <Text variant="caption" className="text-text-secondary">
@@ -272,8 +272,8 @@ export default function ConversationResultScreen() {
           </Text>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-          <Text variant="h3" className="text-nova-purple">
+        <div className="bg-surface rounded-2xl p-4 text-center shadow-sm">
+          <Text variant="h3" className="text-primary">
             {result.score}
           </Text>
           <Text variant="caption" className="text-text-secondary">
@@ -290,13 +290,13 @@ export default function ConversationResultScreen() {
         transition={{ delay: 0.8 }}
       >
         {isSaving && !xpResult ? (
-          <div className="rounded-2xl bg-yellow-50 p-4 text-center">
+          <div className="bg-reward-soft rounded-2xl p-4 text-center">
             <Text variant="bodySmall" className="text-text-secondary animate-pulse">
               {t('conversationResult.xpLoading')}
             </Text>
           </div>
         ) : saveError ? (
-          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-center">
+          <div className="bg-reward-soft rounded-2xl border border-orange-200 p-4 text-center">
             <Text variant="bodySmall" className="font-semibold text-orange-600">
               {saveError === 'offline' ? '⚡️ İnternet bağlantısı kesildi' : '⚠️ Kaydedilemedi'}
             </Text>
@@ -307,13 +307,13 @@ export default function ConversationResultScreen() {
             </Text>
           </div>
         ) : xpResult ? (
-          <div className="rounded-2xl bg-linear-to-r from-yellow-300 to-orange-400 p-4 shadow-md">
+          <div className="border-border bg-reward-soft rounded-2xl border p-4 shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <Text variant="h3" className="font-bold text-white">
+                <Text variant="h3" className="text-reward-ink font-bold">
                   +{displayedXP} XP ⭐
                 </Text>
-                <Text variant="caption" className="text-white/80">
+                <Text variant="caption" className="text-reward-ink">
                   {xpResult.streak > 1
                     ? t('conversationResult.xpStreak', { count: xpResult.streak })
                     : t('conversationResult.xpFirst')}
@@ -322,14 +322,14 @@ export default function ConversationResultScreen() {
               <div className="text-right">
                 {xpResult.leveledUp && (
                   <div className="mb-1 rounded-full bg-white/20 px-2 py-0.5">
-                    <Text variant="caption" className="font-bold text-white">
+                    <Text variant="caption" className="text-reward-ink font-bold">
                       {t('conversationResult.levelUp', { level: xpResult.newLevel })}
                     </Text>
                   </div>
                 )}
                 {xpResult.isNewBest && (
                   <div className="rounded-full bg-white/20 px-2 py-0.5">
-                    <Text variant="caption" className="font-bold text-white">
+                    <Text variant="caption" className="text-reward-ink font-bold">
                       {t('conversationResult.newRecord')}
                     </Text>
                   </div>
@@ -378,7 +378,7 @@ export default function ConversationResultScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.1 }}
         >
-          <div className="flex items-center gap-3 rounded-2xl bg-purple-50 px-4 py-3">
+          <div className="bg-primary-soft flex items-center gap-3 rounded-2xl px-4 py-3">
             <span className="text-2xl">▶️</span>
             <div>
               <Text variant="caption" className="font-semibold text-purple-700">
@@ -413,7 +413,7 @@ export default function ConversationResultScreen() {
               return (
                 <div
                   key={word}
-                  className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-sm"
+                  className="bg-surface flex items-center gap-1.5 rounded-xl px-3 py-2 shadow-sm"
                 >
                   <span className="text-lg">{emoji}</span>
                   <Text variant="bodySmall" className="font-semibold capitalize">
@@ -438,11 +438,14 @@ export default function ConversationResultScreen() {
           </Text>
           <div className="space-y-2">
             {result.rawChildResponses.slice(0, 5).map((answer, index) => (
-              <div key={`${answer}-${index}`} className="rounded-2xl bg-white px-4 py-3 shadow-sm">
+              <div
+                key={`${answer}-${index}`}
+                className="bg-surface rounded-2xl px-4 py-3 shadow-sm"
+              >
                 <Text variant="caption" className="text-text-secondary">
                   #{index + 1}
                 </Text>
-                <Text variant="bodySmall" className="mt-1 font-semibold text-gray-700">
+                <Text variant="bodySmall" className="text-text mt-1 font-semibold">
                   {answer}
                 </Text>
               </div>
@@ -479,7 +482,7 @@ export default function ConversationResultScreen() {
           </>
         ) : (
           <>
-            <div className="rounded-2xl bg-linear-to-r from-amber-400 to-orange-500 p-4 text-center shadow-sm">
+            <div className="bg-primary-dark rounded-2xl p-4 text-center shadow-sm">
               <Text variant="bodySmall" className="font-bold text-white">
                 {t('conversationResult.allScenariosComplete')}
               </Text>

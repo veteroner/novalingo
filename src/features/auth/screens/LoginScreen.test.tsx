@@ -4,9 +4,9 @@
  * Render, button presence, login handlers.
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock auth service before importing component
@@ -37,10 +37,15 @@ import {
 } from '@services/firebase/auth';
 import LoginScreen from './LoginScreen';
 
+function Destination() {
+  const location = useLocation();
+  return <output data-testid="destination">{location.pathname}</output>;
+}
 function renderLogin() {
   return render(
     <MemoryRouter>
       <LoginScreen />
+      <Destination />
     </MemoryRouter>,
   );
 }
@@ -61,6 +66,9 @@ describe('LoginScreen', () => {
     await userEvent.click(screen.getByRole('checkbox'));
     await userEvent.click(screen.getByText('login.asGuest'));
     expect(signInAnonymousUser).toHaveBeenCalledOnce();
+    await waitFor(() => {
+      expect(screen.getByTestId('destination')).toHaveTextContent('/home');
+    });
     expect(signInWithGoogle).not.toHaveBeenCalled();
     expect(signInWithApple).not.toHaveBeenCalled();
   });
@@ -92,11 +100,14 @@ describe('LoginScreen', () => {
     expect(screen.getByText('login.asGuest')).toBeInTheDocument();
   });
 
-  it('calls signInWithGoogle when Google button clicked', async () => {
+  it('giriş sonrası tanıtımı zorlamak yerine profil durumuna yönlenir', async () => {
     renderLogin();
     await userEvent.click(screen.getByRole('checkbox'));
     await userEvent.click(screen.getByText('login.withGoogle'));
     expect(signInWithGoogle).toHaveBeenCalledOnce();
+    await waitFor(() => {
+      expect(screen.getByTestId('destination')).toHaveTextContent('/home');
+    });
   });
 
   it('calls signInWithApple when Apple button clicked', async () => {
@@ -111,6 +122,9 @@ describe('LoginScreen', () => {
     await userEvent.click(screen.getByRole('checkbox'));
     await userEvent.click(screen.getByText('login.asGuest'));
     expect(signInAnonymousUser).toHaveBeenCalledOnce();
+    await waitFor(() => {
+      expect(screen.getByTestId('destination')).toHaveTextContent('/home');
+    });
   });
 
   it('hides the Apple button where Apple sign-in is unavailable (Android / web)', () => {
@@ -137,10 +151,30 @@ describe('LoginScreen', () => {
     expect(mockSetError).toHaveBeenCalledWith('auth/network-request-failed');
   });
 
-  it('disables login buttons when KVKK not accepted', () => {
+  it('koşullar kabul edilmeden giriş başlatmaz; düğmeler grileşmez, uyarı gösterilir', async () => {
     renderLogin();
-    expect(screen.getByText('login.withGoogle').closest('button')).toBeDisabled();
-    expect(screen.getByText('login.withApple').closest('button')).toBeDisabled();
-    expect(screen.getByText('login.asGuest').closest('button')).toBeDisabled();
+    const apple = screen.getByRole('button', { name: 'login.withApple' });
+    // Apple HIG: Apple ile Giriş düğmesinin rengi değiştirilmez (devre dışı/gri olmaz).
+    expect(apple).toBeEnabled();
+
+    await userEvent.click(apple);
+    await userEvent.click(screen.getByRole('button', { name: 'login.withGoogle' }));
+    await userEvent.click(screen.getByText('login.asGuest'));
+
+    expect(signInWithApple).not.toHaveBeenCalled();
+    expect(signInWithGoogle).not.toHaveBeenCalled();
+    expect(signInAnonymousUser).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('login.consentRequired');
+  });
+
+  it('Apple ve Google düğmeleri aynı boyda, Apple en üstte', () => {
+    renderLogin();
+    const apple = screen.getByRole('button', { name: 'login.withApple' });
+    const google = screen.getByRole('button', { name: 'login.withGoogle' });
+
+    expect(apple.className).toContain('h-[56px]');
+    expect(google.className).toContain('h-[56px]');
+    expect(apple.compareDocumentPosition(google) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(google.textContent).not.toMatch(/\p{Extended_Pictographic}/u);
   });
 });

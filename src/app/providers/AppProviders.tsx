@@ -182,7 +182,7 @@ function ChildDataProvider({ children }: { children: ReactNode }) {
           Firebase baglantisi kurulamadigi icin cocuk profilleri alinamadi.
         </p>
         <button
-          className="bg-nova-blue rounded-xl px-6 py-3 font-bold text-white"
+          className="bg-primary-dark rounded-xl px-6 py-3 font-bold text-white"
           onClick={() => {
             void refetch();
           }}

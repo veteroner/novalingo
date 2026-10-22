@@ -182,13 +182,13 @@ describe('ConversationActivity', () => {
     expect(mockSpeak).toHaveBeenCalledWith('Which pet do you want?', expect.any(Object));
   });
 
-  it('renders Nova mascot hero image', () => {
+  it('renders the shared Nova listening pose', () => {
     const onComplete = vi.fn();
     render(<ConversationActivity data={buildSimpleData()} onComplete={onComplete} />);
 
     const img = screen.getByAltText('Nova');
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', 'nova-mascot.svg');
+    expect(img).toHaveAttribute('src', '/nova/nova-listen.webp');
   });
 
   it('renders free-form text input instead of option buttons', () => {

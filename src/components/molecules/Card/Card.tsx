@@ -23,10 +23,10 @@ interface CardProps {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  elevated: 'bg-white shadow-lg shadow-black/5 border border-gray-100',
-  outlined: 'bg-white border-2 border-gray-200',
-  filled: 'bg-gray-50 border border-gray-100',
-  glass: 'bg-white/60 backdrop-blur-xl border border-white/50 shadow-lg shadow-black/5',
+  elevated: 'bg-surface shadow-card border border-border',
+  outlined: 'bg-surface border-2 border-border',
+  filled: 'bg-surface-elevated border border-border',
+  glass: 'bg-surface/90 backdrop-blur-xl border border-border shadow-lg shadow-black/5',
 };
 
 const paddingStyles: Record<string, string> = {

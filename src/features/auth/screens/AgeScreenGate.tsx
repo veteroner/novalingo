@@ -1,11 +1,7 @@
-import novaMascot from '@assets/images/nova-mascot.svg';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { Button } from '@components/atoms/Button';
 import { SplashScreen } from '@capacitor/splash-screen';
-import {
-  classifyBirthDate,
-  getAgeBand,
-  rememberAgeBand,
-} from '@services/ageScreen/ageScreenPolicy';
+import { assessBirthDate, getAgeBand, rememberAgeBand } from '@services/ageScreen/ageScreenPolicy';
 import { isNative } from '@utils/platform';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,28 +19,34 @@ export function AgeScreenGate({ children }: { children: ReactNode }) {
     if (isNative()) void SplashScreen.hide().catch(() => undefined);
   }, []);
 
-  if (band) return <>{children}</>;
+  // Web'deki yasal sayfalar (gizlilik, koşullar, hesap silme talebi) herkese
+  // açık olmalı: mağaza kayıtları ve gizlilik politikası bu adreslere bağlanır.
+  const isPublicLegalPage = !isNative() && window.location.pathname.startsWith('/legal');
+
+  if (band || isPublicLegalPage) return <>{children}</>;
 
   return (
-    <main className="from-nova-sky safe-area-top safe-area-bottom flex min-h-screen items-center justify-center bg-linear-to-b to-white px-6 py-8">
+    <main className="safe-area-top safe-area-bottom nova-page flex min-h-screen items-center justify-center px-6 py-8">
       <form
         className="w-full max-w-sm space-y-6"
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          const result = classifyBirthDate(day, month, year);
+          const result = assessBirthDate(day, month, year);
           if (!result) {
             setInvalid(true);
             return;
           }
-          rememberAgeBand(result);
+          rememberAgeBand(result.band, result.learnerAgeGroup);
           setDay('');
           setMonth('');
           setYear('');
-          setBand(result);
+          setBand(result.band);
         }}
       >
-        <img src={novaMascot} alt="Nova" className="mx-auto h-20 w-20" />
+        <div className="flex justify-center">
+          <NovaCharacter size="lg" />
+        </div>
         <h1 className="text-text-primary text-center text-2xl font-bold">{t('ageScreen.title')}</h1>
         <p className="text-text-secondary text-center">{t('ageScreen.subtitle')}</p>
         <div className="grid grid-cols-3 gap-3">
@@ -69,13 +71,13 @@ export function AgeScreenGate({ children }: { children: ReactNode }) {
                   field.setValue(event.target.value);
                   setInvalid(false);
                 }}
-                className="focus:border-nova-blue h-14 w-full rounded-2xl border-2 border-gray-200 bg-white px-3 text-center text-xl focus:outline-none"
+                className="focus:border-nova-blue border-border bg-surface h-14 w-full rounded-2xl border-2 px-3 text-center text-xl focus:outline-none"
               />
             </label>
           ))}
         </div>
         {invalid && (
-          <p id="birth-date-error" role="alert" className="text-error text-sm">
+          <p id="birth-date-error" role="alert" className="text-error-ink text-sm">
             {t('ageScreen.invalid')}
           </p>
         )}

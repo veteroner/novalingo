@@ -110,16 +110,16 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
       </Text>
 
       {/* Translation hint */}
-      <div className="rounded-xl bg-blue-50 px-4 py-2">
-        <Text variant="bodySmall" className="text-center text-blue-600 italic">
+      <div className="bg-primary-soft rounded-xl px-4 py-2">
+        <Text variant="bodySmall" className="text-primary text-center italic">
           💡 {data.translation}
         </Text>
       </div>
 
       {/* Sentence card */}
-      <motion.div className="w-full rounded-3xl bg-white p-6 shadow-lg" layout>
+      <motion.div className="bg-surface w-full rounded-3xl p-6 shadow-lg" layout>
         <div className="text-center text-xl leading-relaxed">
-          <span className="font-medium text-gray-800">{beforeBlank}</span>
+          <span className="text-text font-medium">{beforeBlank}</span>
 
           {/* The blank / filled word */}
           <AnimatePresence mode="wait">
@@ -130,10 +130,10 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 className={`mx-1 inline-block rounded-lg px-3 py-1 font-black ${
                   isCorrect === true
-                    ? 'bg-green-200 text-green-700'
+                    ? 'bg-success-soft text-success-ink'
                     : isCorrect === false
-                      ? 'bg-red-200 text-red-600 line-through'
-                      : 'bg-blue-200 text-blue-700'
+                      ? 'bg-error-soft text-error-ink line-through'
+                      : 'bg-primary-soft text-primary'
                 }`}
               >
                 {selected}
@@ -141,14 +141,14 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
             ) : (
               <motion.span
                 key="blank"
-                className="mx-1 inline-block border-b-4 border-dashed border-blue-400 px-6 py-1"
+                className="border-primary/30 mx-1 inline-block border-b-4 border-dashed px-6 py-1"
               >
                 {'   '}
               </motion.span>
             )}
           </AnimatePresence>
 
-          <span className="font-medium text-gray-800">{afterBlank}</span>
+          <span className="text-text font-medium">{afterBlank}</span>
         </div>
 
         {/* Show correct answer if wrong */}
@@ -157,14 +157,16 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="mt-4 border-t border-gray-100 pt-3 text-center"
+              className="border-border mt-4 border-t pt-3 text-center"
             >
               <Text variant="bodySmall" className="text-text-secondary">
                 {t('activityUI.fillBlank.correctAnswer')}
               </Text>
-              <Text variant="body" weight="bold" className="text-green-600">
+              <Text variant="body" weight="bold" className="text-success-ink">
                 {beforeBlank}
-                <span className="mx-1 rounded bg-green-100 px-2 py-0.5">{data.correctAnswer}</span>
+                <span className="bg-success-soft mx-1 rounded px-2 py-0.5">
+                  {data.correctAnswer}
+                </span>
                 {afterBlank}
               </Text>
             </motion.div>
@@ -174,7 +176,7 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
 
       {/* Audio button */}
       <button
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-xl text-white shadow-md transition-transform active:scale-95"
+        className="bg-primary-dark flex h-12 w-12 items-center justify-center rounded-full text-xl text-white shadow-md transition-transform active:scale-95"
         onClick={() => {
           const full = data.sentence.replace('___', data.correctAnswer);
           speak(full);
@@ -189,15 +191,15 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
         {data.options.map((option) => {
           const isThis = selected === option;
           const isAnswer = option === data.correctAnswer;
-          let style = 'bg-white border-2 border-gray-200 text-gray-800 hover:border-blue-300';
+          let style = 'bg-surface border-2 border-border text-text hover:border-primary/30';
 
           if (isCorrect !== null) {
             if (isAnswer) {
-              style = 'bg-green-100 border-2 border-green-400 text-green-700 font-black';
+              style = 'bg-success-soft border-2 border-success/50 text-success-ink font-black';
             } else if (isThis) {
-              style = 'bg-red-100 border-2 border-red-300 text-red-500 line-through';
+              style = 'bg-error-soft border-2 border-error/30 text-error-ink line-through';
             } else {
-              style = 'bg-gray-50 border-2 border-gray-100 text-gray-300';
+              style = 'bg-surface-elevated border-2 border-border text-text-secondary';
             }
           }
 
@@ -232,7 +234,7 @@ export default function FillBlankActivity({ data, onComplete }: FillBlankActivit
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`rounded-xl px-4 py-2 text-center ${
-              isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              isCorrect ? 'bg-success-soft text-success-ink' : 'bg-error-soft text-error-ink'
             }`}
           >
             <Text variant="body" weight="bold">

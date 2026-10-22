@@ -22,6 +22,7 @@ interface LeaderboardProps {
   currentUserId: string;
   /** Oturumdaki çocuğun adı — yalnızca kendi satırında gösterilir. */
   currentUserName?: string;
+  currentUserAvatarId?: string;
   className?: string;
 }
 
@@ -35,6 +36,7 @@ export function Leaderboard({
   entries,
   currentUserId,
   currentUserName,
+  currentUserAvatarId,
   className,
 }: LeaderboardProps) {
   const { t } = useTranslation('common');
@@ -56,7 +58,7 @@ export function Leaderboard({
               'flex items-center gap-3 rounded-2xl px-4 py-3',
               isCurrentUser
                 ? 'bg-nova-blue/10 border-nova-blue/30 border-2'
-                : 'border border-gray-100 bg-white',
+                : 'border-border bg-surface border',
               rank <= 3 && 'shadow-md',
             )}
             initial={{ opacity: 0, x: -20 }}
@@ -75,7 +77,12 @@ export function Leaderboard({
             </div>
 
             {/* Avatar */}
-            <Avatar name={label} src={entry.avatarId} size="sm" showLevel={entry.level} />
+            <Avatar
+              name={label}
+              avatarId={isCurrentUser ? (currentUserAvatarId ?? entry.avatarId) : entry.avatarId}
+              size="sm"
+              showLevel={entry.level}
+            />
 
             {/* Name */}
             <div className="min-w-0 flex-1">

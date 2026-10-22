@@ -34,12 +34,12 @@ export function LessonLayout({
   className,
 }: LessonLayoutProps) {
   return (
-    <div className="bg-background-primary safe-area-top safe-area-bottom fixed inset-0 z-50 flex flex-col">
+    <div className="nova-page safe-area-top safe-area-bottom fixed inset-0 z-50 flex flex-col">
       {/* Header bar */}
-      <div className="flex shrink-0 items-center gap-3 px-4 py-3">
+      <div className="nova-lesson-shell flex shrink-0 items-center gap-3 px-4 py-3">
         {/* Close button */}
         <motion.button
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500"
+          className="bg-surface-elevated text-text-secondary flex h-9 w-9 items-center justify-center rounded-full"
           whileTap={{ scale: 0.85 }}
           onClick={onClose}
         >
@@ -65,7 +65,9 @@ export function LessonLayout({
       </div>
 
       {/* Content */}
-      <div className={clsx('flex-1 overflow-y-auto px-4 pb-8', className)}>{children}</div>
+      <div className={clsx('nova-lesson-shell flex-1 overflow-y-auto px-4 pb-8', className)}>
+        {children}
+      </div>
     </div>
   );
 }

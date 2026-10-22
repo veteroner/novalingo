@@ -14,7 +14,7 @@ const ALL_STAGES: NovaStage[] = ['egg', 'baby', 'child', 'teen', 'adult', 'legen
 describe('NovaStageAvatar', () => {
   it.each(ALL_STAGES)('renders %s stage without crashing', (stage) => {
     const { container } = render(<NovaStageAvatar stage={stage} />);
-    expect(container.querySelector('svg')).toBeInTheDocument();
+    expect(container.querySelector(stage === 'egg' ? 'svg' : 'img')).toBeInTheDocument();
   });
 
   it('applies size class', () => {
@@ -36,15 +36,17 @@ describe('NovaStageAvatar', () => {
     expect(config.glowColor).toBeTruthy();
   });
 
-  it('renders glow ring for legendary', () => {
-    const { container } = render(<NovaStageAvatar stage="legendary" />);
-    const glow = container.querySelector('.animate-pulse');
-    expect(glow).toBeInTheDocument();
+  it('keeps the same character identity when evolving and marks the new stage', () => {
+    const { container, rerender } = render(<NovaStageAvatar stage="child" />);
+    const source = container.querySelector('img')?.getAttribute('src');
+    rerender(<NovaStageAvatar stage="legendary" />);
+    expect(container.querySelector('img')).toHaveAttribute('src', source);
+    expect(container.querySelector('[data-stage="legendary"]')).toBeInTheDocument();
+    expect(container.querySelector('.nova-stage-star')).toBeInTheDocument();
   });
 
-  it('does not render glow pulse for non-legendary', () => {
-    const { container } = render(<NovaStageAvatar stage="child" />);
-    const glow = container.querySelector('.animate-pulse');
-    expect(glow).not.toBeInTheDocument();
+  it('allows motion to be disabled for the shared character', () => {
+    const { container } = render(<NovaStageAvatar stage="child" animate={false} />);
+    expect(container.querySelector('[data-motion="off"]')).toBeInTheDocument();
   });
 });

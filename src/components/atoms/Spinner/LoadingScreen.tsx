@@ -5,26 +5,26 @@
  * Nova maskotu ve animasyon ile çocuk-dostu.
  */
 
-import novaMascot from '@assets/images/nova-mascot.svg';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { motion } from 'framer-motion';
 import { Spinner } from './Spinner';
 
 export function LoadingScreen() {
   return (
-    <div className="from-nova-sky fixed inset-0 z-50 flex flex-col items-center justify-center bg-linear-to-b to-white">
+    <div className="nova-page fixed inset-0 z-50 flex flex-col items-center justify-center">
       {/* Nova mascot */}
       <motion.div
         className="mb-6"
         animate={{
-          y: [0, -12, 0],
+          opacity: 1,
         }}
         transition={{
           duration: 1.4,
-          repeat: Infinity,
+
           ease: 'easeInOut',
         }}
       >
-        <img src={novaMascot} alt="Nova" className="h-24 w-24" />
+        <NovaCharacter size="xl" />
       </motion.div>
 
       {/* App name */}

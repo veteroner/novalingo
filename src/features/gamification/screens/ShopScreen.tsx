@@ -1,3 +1,5 @@
+import { FeatureHeader } from '@components/molecules/FeatureHeader';
+import { StorefrontIcon } from '@phosphor-icons/react';
 /**
  * ShopScreen
  *
@@ -377,11 +379,12 @@ export default function ShopScreen() {
   return (
     <MainLayout>
       <div className="space-y-6 px-4 py-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <Text variant="h3">{t('screen.title')}</Text>
+        <FeatureHeader
+          title={t('screen.title')}
+          icon={<StorefrontIcon size={28} weight="duotone" />}
+        >
           <CurrencyDisplay stars={child.stars} gems={child.gems} compact />
-        </div>
+        </FeatureHeader>
 
         {/* Category Tabs */}
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
@@ -390,8 +393,8 @@ export default function ShopScreen() {
               key={cat.id}
               className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
-                  ? 'bg-nova-blue text-white'
-                  : 'text-text-secondary bg-gray-100'
+                  ? 'bg-primary-dark text-white'
+                  : 'text-text-secondary bg-surface-elevated'
               }`}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
@@ -427,7 +430,7 @@ export default function ShopScreen() {
               return (
                 <Card key={item.id} variant="elevated" padding="sm">
                   <div className="space-y-2 text-center">
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100 text-3xl">
+                    <div className="bg-surface-elevated mx-auto flex h-20 w-20 items-center justify-center rounded-2xl text-3xl">
                       {item.emoji}
                     </div>
                     <Text variant="bodySmall" weight="bold" truncate>

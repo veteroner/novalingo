@@ -25,7 +25,7 @@ export default function SeasonalEventScreen() {
   if (!event) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">{t('event.notFound')}</p>
+        <p className="text-text-secondary">{t('event.notFound')}</p>
       </div>
     );
   }
@@ -35,7 +35,7 @@ export default function SeasonalEventScreen() {
   const earnedCollectibles = new Set(progress?.collectiblesEarned ?? []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="bg-surface-elevated min-h-screen">
       {/* Header */}
       <div
         className="relative px-4 pt-12 pb-6"
@@ -86,7 +86,7 @@ export default function SeasonalEventScreen() {
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-white/20">
               <motion.div
-                className="h-full rounded-full bg-white"
+                className="bg-surface h-full rounded-full"
                 initial={{ width: 0 }}
                 animate={{
                   width: `${totalLessons > 0 ? (lessonsCompleted / totalLessons) * 100 : 0}%`,
@@ -101,9 +101,7 @@ export default function SeasonalEventScreen() {
       {/* Content */}
       <div className="px-4 py-6">
         {/* Lessons */}
-        <h2 className="mb-3 text-lg font-bold text-gray-800 dark:text-gray-100">
-          📖 Dersler ({event.lessons.length})
-        </h2>
+        <h2 className="text-text mb-3 text-lg font-bold">📖 Dersler ({event.lessons.length})</h2>
         <div className="space-y-2">
           {event.lessons.map((lesson, index) => (
             <LessonCard
@@ -117,9 +115,7 @@ export default function SeasonalEventScreen() {
         </div>
 
         {/* Collectibles */}
-        <h2 className="mt-8 mb-3 text-lg font-bold text-gray-800 dark:text-gray-100">
-          {t('event.limitedRewards')}
-        </h2>
+        <h2 className="text-text mt-8 mb-3 text-lg font-bold">{t('event.limitedRewards')}</h2>
         <div className="grid grid-cols-3 gap-3">
           {event.collectibles.map((item) => (
             <CollectibleCard key={item.id} item={item} isEarned={earnedCollectibles.has(item.id)} />
@@ -127,16 +123,14 @@ export default function SeasonalEventScreen() {
         </div>
 
         {/* Vocabulary preview */}
-        <h2 className="mt-8 mb-3 text-lg font-bold text-gray-800 dark:text-gray-100">
-          {t('event.wordsToLearn')}
-        </h2>
+        <h2 className="text-text mt-8 mb-3 text-lg font-bold">{t('event.wordsToLearn')}</h2>
         <div className="flex flex-wrap gap-2">
           {event.lessons
             .flatMap((l) => l.vocabulary)
             .map((word, i) => (
               <span
                 key={`${word}-${i}`}
-                className="rounded-full bg-white px-3 py-1 text-sm text-gray-700 shadow-sm dark:bg-gray-800 dark:text-gray-300"
+                className="bg-surface text-text rounded-full px-3 py-1 text-sm shadow-sm"
               >
                 {word}
               </span>
@@ -148,13 +142,15 @@ export default function SeasonalEventScreen() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mt-8 rounded-2xl border-2 border-green-200 bg-green-50 p-6 text-center dark:border-green-800 dark:bg-green-900/20"
+            className="border-success/30 bg-success-soft mt-8 rounded-2xl border-2 p-6 text-center dark:border-green-800 dark:bg-green-900/20"
           >
             <span className="text-4xl">🏆</span>
-            <h3 className="mt-2 text-lg font-bold text-green-700 dark:text-green-400">
+            <h3 className="text-success-ink dark:text-success-ink mt-2 text-lg font-bold">
               {t('event.congrats')}
             </h3>
-            <p className="text-sm text-green-600 dark:text-green-500">{t('event.allComplete')}</p>
+            <p className="text-success-ink dark:text-success-ink text-sm">
+              {t('event.allComplete')}
+            </p>
           </motion.div>
         )}
       </div>
@@ -181,18 +177,16 @@ function LessonCard({
       transition={{ delay: index * 0.05 }}
       className={`flex items-center gap-3 rounded-xl border p-3 ${
         isCompleted
-          ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
+          ? 'border-success/30 bg-success-soft dark:border-green-800 dark:bg-green-900/20'
           : isLocked
-            ? 'border-gray-200 bg-gray-100 opacity-60 dark:border-gray-700 dark:bg-gray-800'
-            : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
+            ? 'border-border bg-surface-elevated opacity-60'
+            : 'border-border bg-surface'
       }`}
     >
       {/* Number badge */}
       <div
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-          isCompleted
-            ? 'bg-green-500 text-white'
-            : 'bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300'
+          isCompleted ? 'bg-success text-white' : 'bg-border text-text-secondary dark:bg-gray-600'
         }`}
       >
         {isCompleted ? <CheckCircle className="h-4 w-4" /> : index + 1}
@@ -200,8 +194,8 @@ function LessonCard({
 
       {/* Content */}
       <div className="flex-1">
-        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100">{lesson.title}</h4>
-        <p className="text-xs text-gray-500 dark:text-gray-400">{lesson.description}</p>
+        <h4 className="text-text text-sm font-semibold">{lesson.title}</h4>
+        <p className="text-text-secondary text-xs">{lesson.description}</p>
       </div>
 
       {/* XP badge */}
@@ -209,7 +203,7 @@ function LessonCard({
         +{lesson.xpReward} XP
       </div>
 
-      {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
+      {isLocked && <Lock className="text-text-secondary h-4 w-4" />}
     </motion.div>
   );
 }
@@ -217,9 +211,9 @@ function LessonCard({
 // ── Collectible Card ─────────────────────────────────────────
 function CollectibleCard({ item, isEarned }: { item: SeasonalCollectible; isEarned: boolean }) {
   const rarityColors: Record<string, string> = {
-    common: 'border-gray-300',
-    uncommon: 'border-green-400',
-    rare: 'border-blue-400',
+    common: 'border-border',
+    uncommon: 'border-success/50',
+    rare: 'border-primary/30',
     epic: 'border-purple-400',
     legendary: 'border-amber-400',
   };
@@ -228,14 +222,12 @@ function CollectibleCard({ item, isEarned }: { item: SeasonalCollectible; isEarn
     <motion.div
       whileHover={{ scale: 1.05 }}
       className={`flex flex-col items-center rounded-xl border-2 p-3 text-center ${
-        rarityColors[item.rarity] ?? 'border-gray-300'
-      } ${isEarned ? 'bg-white dark:bg-gray-800' : 'bg-gray-100 opacity-60 dark:bg-gray-800/50'}`}
+        rarityColors[item.rarity] ?? 'border-border'
+      } ${isEarned ? 'bg-surface' : 'bg-surface-elevated opacity-60'}`}
     >
       <span className="text-3xl">{isEarned ? item.emoji : '❓'}</span>
-      <p className="mt-1 text-xs font-medium text-gray-700 dark:text-gray-300">
-        {isEarned ? item.name : '???'}
-      </p>
-      <p className="text-[10px] text-gray-400 capitalize">{item.rarity}</p>
+      <p className="text-text mt-1 text-xs font-medium">{isEarned ? item.name : '???'}</p>
+      <p className="text-text-secondary text-[10px] capitalize">{item.rarity}</p>
     </motion.div>
   );
 }

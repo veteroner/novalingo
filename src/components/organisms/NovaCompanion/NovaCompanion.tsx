@@ -4,18 +4,14 @@
  * Nova maskotu — ekranın köşesinde yaşar.
  * Mood sistemli: happy, excited, thinking, sleeping, encouraging.
  * Konuşma balonu ile bağlamsal ipuçları verir.
- * Lottie animasyonları ile canlandırılır.
+ * Paylaşılan NovaCharacter görsellerini kullanır.
  */
 
 import { Text } from '@components/atoms/Text';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-
-import novaCelebrating from '@/assets/lottie/nova-celebrating.json';
-import novaHappy from '@/assets/lottie/nova-happy.json';
-import novaThinking from '@/assets/lottie/nova-thinking.json';
+import { useEffect, useState } from 'react';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 
 type NovaMood = 'happy' | 'excited' | 'thinking' | 'sleeping' | 'encouraging' | 'celebrating';
 
@@ -27,24 +23,6 @@ interface NovaCompanionProps {
   onTap?: () => void;
   className?: string;
 }
-
-const moodToAnimation: Record<NovaMood, unknown> = {
-  happy: novaHappy,
-  excited: novaCelebrating,
-  thinking: novaThinking,
-  sleeping: novaHappy, // reuse happy with slower speed
-  encouraging: novaHappy,
-  celebrating: novaCelebrating,
-};
-
-const moodSpeed: Record<NovaMood, number> = {
-  happy: 1,
-  excited: 1.4,
-  thinking: 0.8,
-  sleeping: 0.3,
-  encouraging: 1.2,
-  celebrating: 1,
-};
 
 const sizeStyles: Record<string, string> = {
   sm: 'h-14 w-14',
@@ -68,13 +46,6 @@ export function NovaCompanion({
 }: NovaCompanionProps) {
   const [showBubble, setShowBubble] = useState(!!message);
 
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
-  const animationData = useMemo(() => moodToAnimation[mood], [mood]);
-
-  useEffect(() => {
-    lottieRef.current?.setSpeed(moodSpeed[mood]);
-  }, [mood]);
-
   useEffect(() => {
     if (message) {
       setShowBubble(true);
@@ -96,38 +67,33 @@ export function NovaCompanion({
           <motion.div
             className={clsx(
               'absolute right-0 bottom-full mb-2 max-w-50 min-w-30',
-              'rounded-2xl rounded-br-sm border border-gray-100 bg-white px-3 py-2 shadow-lg',
+              'border-border bg-surface rounded-2xl rounded-br-sm border px-3 py-2 shadow-lg',
             )}
             initial={{ opacity: 0, scale: 0.5, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           >
-            <Text variant="caption" weight="semibold" className="text-text-primary">
+            <Text variant="caption" weight="semibold" className="text-text">
               {message}
             </Text>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Nova character — Lottie animation */}
+      {/* Shared Nova pose */}
       <motion.button
         className={clsx(
-          'bg-nova-blue/10 border-nova-blue/30 overflow-hidden rounded-full border-3',
+          'rounded-2xl',
           'flex items-center justify-center shadow-lg',
           'cursor-pointer touch-manipulation select-none',
           sizeStyles[size],
         )}
         whileTap={{ scale: 0.9 }}
         onClick={onTap}
+        aria-label="Nova"
       >
-        <Lottie
-          lottieRef={lottieRef}
-          animationData={animationData}
-          loop
-          autoplay
-          className="h-full w-full"
-        />
+        <NovaCharacter mood={mood} size={size} className="h-full w-full" decorative />
       </motion.button>
     </div>
   );

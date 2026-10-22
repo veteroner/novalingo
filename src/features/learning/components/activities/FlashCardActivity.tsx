@@ -74,7 +74,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
 
       {/* 3D Flip Card */}
       <div
-        className="relative h-96 w-72 cursor-pointer"
+        className="relative h-96 w-full max-w-72 cursor-pointer"
         style={{ perspective: '1000px' }}
         onClick={handleFlip}
       >
@@ -86,7 +86,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
         >
           {/* FRONT — English word + emoji */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-3xl border-4 border-blue-200 bg-linear-to-br from-blue-50 to-blue-100 p-6 shadow-xl"
+            className="border-primary/30 bg-primary-soft absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-3xl border-4 p-6 shadow-xl"
             style={{ backfaceVisibility: 'hidden' }}
           >
             <motion.div
@@ -97,14 +97,14 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
               {emoji}
             </motion.div>
 
-            <Text variant="h2" align="center" className="text-blue-700">
+            <Text variant="h2" align="center" className="text-primary">
               {data.word}
             </Text>
 
             {/* Audio buttons */}
             <div className="mt-2 flex gap-3">
               <button
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-xl text-white shadow-md transition-transform active:scale-95"
+                className="bg-primary-dark flex h-12 w-12 items-center justify-center rounded-full text-xl text-white shadow-md transition-transform active:scale-95"
                 onClick={(e) => {
                   e.stopPropagation();
                   speak(data.word);
@@ -114,7 +114,7 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
                 🔊
               </button>
               <button
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-300 text-xl text-white shadow-md transition-transform active:scale-95"
+                className="bg-primary-dark flex h-12 w-12 items-center justify-center rounded-full text-xl text-white shadow-md transition-transform active:scale-95"
                 onClick={(e) => {
                   e.stopPropagation();
                   speak(data.word, true);
@@ -125,36 +125,36 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
               </button>
             </div>
 
-            <Text variant="caption" className="mt-1 text-blue-400">
+            <Text variant="caption" className="text-primary mt-1">
               {t('activityUI.flashCard.flip')}
             </Text>
           </div>
 
           {/* BACK — Turkish translation + example sentence */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl border-4 border-green-200 bg-linear-to-br from-green-50 to-green-100 p-6 shadow-xl"
+            className="border-success/30 bg-success-soft absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl border-4 p-6 shadow-xl"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
             <div className="mb-2 text-5xl">{emoji}</div>
 
-            <Text variant="h3" align="center" className="text-green-700">
+            <Text variant="h3" align="center" className="text-success-ink">
               {data.translation}
             </Text>
 
-            <div className="mt-1 w-full border-t border-green-200 pt-3">
-              <Text variant="caption" className="block text-center text-green-500">
+            <div className="border-success/30 mt-1 w-full border-t pt-3">
+              <Text variant="caption" className="text-success-ink block text-center">
                 {t('activityUI.flashCard.example')}
               </Text>
-              <Text variant="body" align="center" className="mt-1 font-medium text-green-800">
+              <Text variant="body" align="center" className="text-success-ink mt-1 font-medium">
                 "{data.exampleSentence}"
               </Text>
-              <Text variant="bodySmall" align="center" className="mt-1 text-green-500 italic">
+              <Text variant="bodySmall" align="center" className="text-success-ink mt-1 italic">
                 {data.exampleTranslation}
               </Text>
             </div>
 
             <button
-              className="mt-2 flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-lg text-white shadow-md transition-transform active:scale-95"
+              className="bg-success mt-2 flex h-10 w-10 items-center justify-center rounded-full text-lg text-white shadow-md transition-transform active:scale-95"
               onClick={(e) => {
                 e.stopPropagation();
                 speak(data.exampleSentence);

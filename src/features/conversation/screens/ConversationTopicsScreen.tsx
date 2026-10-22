@@ -55,12 +55,12 @@ export default function ConversationTopicsScreen() {
   const scenarios = PHASE_SCENARIOS[phase] ?? ALL_CONVERSATION_SCENARIOS;
 
   return (
-    <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col bg-linear-to-b from-indigo-50 to-white">
+    <div className="safe-area-top safe-area-bottom nova-page flex min-h-screen flex-col">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3 px-4 py-4">
         <button
           onClick={() => navigate(-1)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm"
+          className="bg-surface flex h-10 w-10 items-center justify-center rounded-full shadow-sm"
           aria-label="Geri"
         >
           <span className="text-lg">←</span>
@@ -94,7 +94,7 @@ export default function ConversationTopicsScreen() {
               {/* Circle icon */}
               <div
                 className={`flex h-20 w-20 items-center justify-center rounded-full text-3xl shadow-md ${
-                  isCompleted ? 'bg-teal-400' : 'bg-indigo-400'
+                  isCompleted ? 'bg-teal-400' : 'bg-primary-dark'
                 }`}
               >
                 {scenario.sceneEmoji}
@@ -107,7 +107,7 @@ export default function ConversationTopicsScreen() {
               <Text
                 variant="caption"
                 align="center"
-                className="line-clamp-2 w-full text-center text-[11px] leading-tight font-semibold text-gray-700"
+                className="text-text line-clamp-2 w-full text-center text-[11px] leading-tight font-semibold"
               >
                 {scenario.titleTr}
               </Text>

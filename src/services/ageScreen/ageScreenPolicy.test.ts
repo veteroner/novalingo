@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AGE_SCREEN_STORAGE_KEY, classifyBirthDate } from './ageScreenPolicy';
+import { AGE_SCREEN_STORAGE_KEY, classifyBirthDate, assessBirthDate } from './ageScreenPolicy';
 
 describe('doğum tarihi doğrulaması', () => {
   const today = new Date(2026, 9, 11, 12);
@@ -52,4 +52,53 @@ describe('yaş sınıfı saklama', () => {
       expect(policy.isAdultSession()).toBe(false);
     },
   );
+});
+
+describe('ilk profil ders grubunu tekrar sormama', () => {
+  const today = new Date(2026, 9, 22, 12);
+  it.each([
+    ['22', '10', '2020', 'cubs'],
+    ['23', '10', '2019', 'cubs'],
+    ['22', '10', '2019', 'stars'],
+    ['23', '10', '2016', 'stars'],
+    ['22', '10', '2016', 'legends'],
+    ['22', '10', '2009', 'legends'],
+  ])('%s/%s/%s için yalnızca kaba ders grubu türetilir', (d, m, y, group) => {
+    expect(assessBirthDate(d, m, y, today)).toEqual({ band: 'minor', learnerAgeGroup: group });
+  });
+  it('yetişkinin tarihinden çocuğun ders grubunu tahmin etmez', () => {
+    expect(assessBirthDate('22', '10', '2008', today)).toEqual({ band: 'adult' });
+  });
+  it('grubu yeniden yüklemede korur, ilk profil tamamlanınca tüketir; erişim sınıfı değişmez', async () => {
+    const policy = await import('./ageScreenPolicy');
+    policy.rememberAgeBand('minor', 'stars');
+    vi.resetModules();
+    const reloaded = await import('./ageScreenPolicy');
+    expect(reloaded.getLearnerAgeGroup()).toBe('stars');
+    expect(JSON.parse(localStorage.getItem(AGE_SCREEN_STORAGE_KEY) ?? '{}')).toEqual({
+      version: 1,
+      band: 'minor',
+      learnerAgeGroup: 'stars',
+    });
+    reloaded.clearLearnerAgeGroup();
+    expect(reloaded.getLearnerAgeGroup()).toBeNull();
+    expect(reloaded.isAdultSession()).toBe(false);
+  });
+  it('eski sürüm kaydı çalışır ama yanlış grup uydurmaz', async () => {
+    const policy = await import('./ageScreenPolicy');
+    localStorage.setItem(AGE_SCREEN_STORAGE_KEY, '{"version":1,"band":"minor"}');
+    expect(policy.getLearnerAgeGroup()).toBeNull();
+    expect(policy.getAgeBand()).toBe('minor');
+  });
+  it('bozuk veya yetişkin kaydından çocuk grubu çıkarmaz', async () => {
+    const policy = await import('./ageScreenPolicy');
+    for (const record of [
+      { version: 1, band: 'adult', learnerAgeGroup: 'stars' },
+      { version: 1, band: 'minor', learnerAgeGroup: 'unknown' },
+      { version: 0, band: 'minor', learnerAgeGroup: 'stars' },
+    ]) {
+      localStorage.setItem(AGE_SCREEN_STORAGE_KEY, JSON.stringify(record));
+      expect(policy.getLearnerAgeGroup()).toBeNull();
+    }
+  });
 });

@@ -151,7 +151,7 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Text variant="h4" className="text-success">
+          <Text variant="h4" className="text-success-ink">
             🎉 +{result.amount}{' '}
             {result.type === 'xp' ? 'XP' : result.type === 'stars' ? '⭐' : '💎'}
           </Text>

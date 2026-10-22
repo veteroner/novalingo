@@ -23,15 +23,15 @@ interface ProgressBarProps {
 
 const variantStyles: Record<ProgressBarVariant, { track: string; fill: string }> = {
   default: {
-    track: 'bg-gray-200',
+    track: 'bg-border',
     fill: 'bg-nova-blue',
   },
   xp: {
     track: 'bg-nova-purple/20',
-    fill: 'bg-linear-to-r from-nova-purple to-nova-pink',
+    fill: 'bg-primary-dark',
   },
   lesson: {
-    track: 'bg-white/30',
+    track: 'bg-border',
     fill: 'bg-success',
   },
   health: {

@@ -50,12 +50,12 @@ export default function StoryViewerScreen() {
   }
 
   return (
-    <div className="safe-area-top safe-area-bottom flex min-h-screen flex-col bg-white">
+    <div className="safe-area-top safe-area-bottom bg-surface flex min-h-screen flex-col">
       {/* Minimal header */}
-      <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3">
+      <div className="border-border flex items-center gap-3 border-b px-4 py-3">
         <button
           onClick={() => navigate('/stories')}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg"
+          className="bg-surface-elevated flex h-9 w-9 items-center justify-center rounded-full text-lg"
         >
           ←
         </button>
@@ -63,7 +63,7 @@ export default function StoryViewerScreen() {
           <Text variant="bodySmall" weight="bold">
             {story.titleTr}
           </Text>
-          <Text variant="caption" className="text-gray-400">
+          <Text variant="caption" className="text-text-secondary">
             {story.data.pages.length} sayfa
           </Text>
         </div>

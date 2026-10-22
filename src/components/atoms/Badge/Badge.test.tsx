@@ -42,6 +42,6 @@ describe('Badge', () => {
 
   it('applies variant-specific classes for streak', () => {
     const { container } = render(<Badge variant="streak">5</Badge>);
-    expect(container.firstChild).toHaveClass('text-nova-orange');
+    expect(container.firstChild).toHaveClass('text-reward-ink');
   });
 });

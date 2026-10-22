@@ -12,23 +12,47 @@ import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
 import { Card } from '@components/molecules/Card';
 import { CurrencyDisplay } from '@components/molecules/CurrencyDisplay';
-import { NovaStageAvatar, STAGE_CONFIG } from '@components/molecules/NovaStageAvatar';
+import { NovaStageAvatar } from '@components/molecules/NovaStageAvatar';
 import { XPDisplay } from '@components/molecules/XPDisplay';
 import { MainLayout } from '@components/templates/MainLayout';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { AvatarEditor } from '../components/AvatarEditor';
 
 export default function ProfileScreen() {
   const child = useChildStore((s) => s.activeChild);
   const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
   const { t } = useTranslation('gamification');
+  const [editingAvatar, setEditingAvatar] = useState(false);
+  const [avatarSaved, setAvatarSaved] = useState(false);
+  const editButton = useRef<HTMLButtonElement>(null);
 
   if (!child) return null;
+
+  if (editingAvatar) {
+    return (
+      <MainLayout>
+        <div className="px-4 py-6">
+          <AvatarEditor
+            key={child.id}
+            childId={child.id}
+            avatarId={child.avatarId}
+            name={child.name}
+            onClose={(saved) => {
+              setEditingAvatar(false);
+              setAvatarSaved(saved);
+              requestAnimationFrame(() => editButton.current?.focus());
+            }}
+          />
+        </div>
+      </MainLayout>
+    );
+  }
 
   const stats = [
     { label: t('profile.stats.completedLessons'), value: child.completedLessons, emoji: '📚' },
@@ -42,17 +66,33 @@ export default function ProfileScreen() {
       <div className="space-y-6 px-4 py-6">
         {/* Profile Header */}
         <motion.div
-          className="flex flex-col items-center text-center"
+          className="border-border from-primary-soft to-surface flex flex-col items-center rounded-3xl border bg-linear-to-b p-6 text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Avatar name={child.name} src={child.avatarId} size="xl" showLevel={child.level} />
+          <Avatar name={child.name} avatarId={child.avatarId} size="xl" showLevel={child.level} />
           <Text variant="h3" className="mt-3">
             {child.name}
           </Text>
           <Badge variant="level" size="lg" className="mt-1">
             {t('profile.level', { level: child.level })}
           </Badge>
+          <button
+            ref={editButton}
+            type="button"
+            onClick={() => {
+              setEditingAvatar(true);
+              setAvatarSaved(false);
+            }}
+            className="text-primary focus-visible:ring-primary mt-4 min-h-11 rounded-xl px-4 text-sm font-bold focus-visible:ring-2"
+          >
+            {t('profile.avatar.change')}
+          </button>
+          {avatarSaved && (
+            <p role="status" className="text-success-ink mt-3 text-sm">
+              {t('profile.avatar.saved')}
+            </p>
+          )}
         </motion.div>
 
         {/* XP Progress */}
@@ -108,7 +148,7 @@ export default function ProfileScreen() {
               <Text variant="body" weight="semibold">
                 {t('profile.quickSettings')}
               </Text>
-              <span className="text-gray-400">→</span>
+              <span className="text-text-secondary">→</span>
             </div>
           </Card>
 
@@ -124,7 +164,7 @@ export default function ProfileScreen() {
               <Text variant="body" weight="semibold">
                 {t('profile.streakFreeze')}
               </Text>
-              <span className="text-gray-400">→</span>
+              <span className="text-text-secondary">→</span>
             </div>
           </Card>
 
@@ -146,7 +186,7 @@ export default function ProfileScreen() {
                 <Text variant="body" weight="semibold">
                   {link.label}
                 </Text>
-                <span className="text-gray-400">→</span>
+                <span className="text-text-secondary">→</span>
               </div>
             </Card>
           ))}
@@ -187,15 +227,13 @@ function NovaStageCard({
     };
   }, [stage, totalXP]);
 
-  const config = STAGE_CONFIG[stage];
-
   return (
     <Card variant="elevated" padding="md">
       <div className="flex flex-col items-center gap-3 text-center">
         <NovaStageAvatar stage={stage} size="lg" />
         <div className="w-full">
           <div className="flex items-center gap-2">
-            <Text variant="body" weight="bold" style={{ color: config.bodyColor }}>
+            <Text variant="body" weight="bold" className="text-primary">
               {t(`profile.stage.${stage}`)}
             </Text>
             <Text variant="caption" className="text-text-secondary">
@@ -215,7 +253,7 @@ function NovaStageCard({
               </Text>
             </>
           ) : (
-            <Text variant="caption" className="text-nova-orange mt-1 font-semibold">
+            <Text variant="caption" className="text-reward-ink mt-1 font-semibold">
               {t('profile.maxStage')}
             </Text>
           )}

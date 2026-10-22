@@ -195,7 +195,7 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
             {data.translation}
           </Text>
           <button
-            className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-lg text-white shadow active:scale-95"
+            className="bg-primary-dark mt-1 flex h-10 w-10 items-center justify-center rounded-full text-lg text-white shadow active:scale-95"
             onClick={() => {
               speak(data.word);
             }}
@@ -221,11 +221,11 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
               className={`flex h-14 w-12 items-center justify-center rounded-xl border-2 text-xl font-black transition-colors ${
                 placed
                   ? state === 'correct'
-                    ? 'border-green-400 bg-green-100 text-green-700'
-                    : 'border-red-400 bg-red-100 text-red-700'
+                    ? 'border-success/50 bg-success-soft text-success-ink'
+                    : 'border-error/50 bg-error-soft text-error-ink'
                   : index === placedTileIds.length
-                    ? 'border-dashed border-blue-300 bg-blue-50'
-                    : 'border-dashed border-gray-200 bg-gray-50'
+                    ? 'border-primary/30 bg-primary-soft border-dashed'
+                    : 'border-border bg-surface-elevated border-dashed'
               }`}
               animate={placed && state === 'correct' ? { scale: [1, 1.15, 1] } : {}}
               transition={{ duration: 0.2 }}
@@ -246,8 +246,8 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
               key={tile.id}
               className={`h-12 w-12 rounded-xl text-lg font-black transition-all ${
                 isPlaced
-                  ? 'border-2 border-gray-200 bg-gray-100 text-transparent'
-                  : 'border-2 border-gray-300 bg-white text-gray-800 shadow-md hover:border-blue-400 hover:shadow-lg active:scale-90'
+                  ? 'border-border bg-surface-elevated border-2 text-transparent'
+                  : 'border-border bg-surface text-text hover:border-primary/30 border-2 shadow-md hover:shadow-lg active:scale-90'
               }`}
               onClick={() => {
                 handleTileTap(tile.id);
@@ -283,12 +283,12 @@ export default function WordBuilderActivity({ data, onComplete }: WordBuilderAct
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="rounded-2xl bg-green-100 px-6 py-3 text-center"
+            className="bg-success-soft rounded-2xl px-6 py-3 text-center"
           >
-            <Text variant="h3" className="text-green-700">
+            <Text variant="h3" className="text-success-ink">
               {t('activityUI.wordBuilder.perfect')}
             </Text>
-            <Text variant="body" className="text-green-600">
+            <Text variant="body" className="text-success-ink">
               {data.word} = {data.translation}
             </Text>
           </motion.div>

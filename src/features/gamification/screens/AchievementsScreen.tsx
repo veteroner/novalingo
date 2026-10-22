@@ -1,3 +1,5 @@
+import { FeatureHeader } from '@components/molecules/FeatureHeader';
+import { MedalIcon } from '@phosphor-icons/react';
 /**
  * AchievementsScreen
  *
@@ -40,7 +42,7 @@ interface AchievementItem {
 }
 
 const rarityStyles: Record<string, string> = {
-  common: 'border-gray-200',
+  common: 'border-border',
   rare: 'border-nova-blue/50',
   epic: 'border-nova-purple/50',
   legendary: 'border-nova-orange/50',
@@ -78,16 +80,14 @@ export default function AchievementsScreen() {
   return (
     <MainLayout>
       <div className="space-y-6 px-4 py-6">
-        {/* Header */}
-        <div>
-          <Text variant="h3">{t('achievements.title')}</Text>
-          <Text variant="bodySmall" className="text-text-secondary">
-            {t('achievements.unlockedCount', {
-              unlocked: unlockedCount,
-              total: achievements.length,
-            })}
-          </Text>
-        </div>
+        <FeatureHeader
+          title={t('achievements.title')}
+          description={t('achievements.unlockedCount', {
+            unlocked: unlockedCount,
+            total: achievements.length,
+          })}
+          icon={<MedalIcon size={28} weight="duotone" />}
+        />
 
         {/* Category Filter */}
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
@@ -96,8 +96,8 @@ export default function AchievementsScreen() {
               key={cat.id}
               className={`rounded-full px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
-                  ? 'bg-nova-blue text-white'
-                  : 'text-text-secondary bg-gray-100'
+                  ? 'bg-primary-dark text-white'
+                  : 'text-text-secondary bg-surface-elevated'
               }`}
               onClick={() => {
                 setActiveCategory(cat.id);

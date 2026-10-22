@@ -5,14 +5,12 @@
  * - Android geri butonu → navigate back / confirm exit
  * - App pause/resume → audio durdur / sync tetikle
  * - SplashScreen → uygulama hazır olunca gizle
- * - StatusBar → tema rengi ayarla
  * - Deep link → URL routing
  */
 
 import { stopSpeaking } from '@/services/speech/speechService';
-import { isAndroid, isNative } from '@/utils/platform';
+import { isNative } from '@/utils/platform';
 import { App } from '@capacitor/app';
-import { StatusBar, Style } from '@capacitor/status-bar';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -22,18 +20,6 @@ export function useCapacitorLifecycle(): void {
 
   useEffect(() => {
     if (!isNative()) return;
-
-    // ─── StatusBar: başlangıç stili ───
-    StatusBar.setStyle({ style: Style.Light }).catch(() => {
-      // Stil ayarlanamazsa varsayılan kalır; kullanıcıya etkisi yok.
-    });
-    // setBackgroundColor yalnızca Android'de var; iOS'ta UNIMPLEMENTED ile reddeder ve
-    // yakalanmadığında her rota değişiminde unhandledrejection üretip gerçek hataları gizler.
-    if (isAndroid()) {
-      StatusBar.setBackgroundColor({ color: '#6c5ce7' }).catch(() => {
-        // Eski Android sürümlerinde desteklenmeyebilir.
-      });
-    }
 
     // ─── Android Back Button ───
     const backHandler = App.addListener('backButton', ({ canGoBack }) => {

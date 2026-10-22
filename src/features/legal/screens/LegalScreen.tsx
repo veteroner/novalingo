@@ -30,11 +30,11 @@ const CONTACT_EMAIL = 'privacy@novalingo.app';
 // çeviriyle yerelleştirilmelidir. Ekran çerçevesi (başlık, sekmeler, geri) i18n'lidir.
 function PrivacyPolicy() {
   return (
-    <div className="space-y-6 text-sm leading-relaxed text-gray-700">
-      <p className="text-xs text-gray-500">Son güncelleme: {LAST_UPDATED}</p>
+    <div className="text-text space-y-6 text-sm leading-relaxed">
+      <p className="text-text-secondary text-xs">Son güncelleme: {LAST_UPDATED}</p>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">1. Veri Sorumlusu</h2>
+        <h2 className="text-text mb-2 text-base font-bold">1. Veri Sorumlusu</h2>
         <p>
           {APP_NAME} uygulamasının veri sorumlusu {COMPANY}&apos;dur. Bu gizlilik politikası, 6698
           sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve AB Genel Veri Koruma Yönetmeliği
@@ -46,7 +46,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">2. Çocuk Gizliliği (COPPA)</h2>
+        <h2 className="text-text mb-2 text-base font-bold">2. Çocuk Gizliliği (COPPA)</h2>
         <p>
           {APP_NAME}, 13 yaş altı çocuklar için tasarlanmıştır. Çocukların kişisel verilerini
           korumayı en yüksek öncelik olarak kabul ediyoruz.
@@ -60,10 +60,10 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">3. Topladığımız Veriler</h2>
+        <h2 className="text-text mb-2 text-base font-bold">3. Topladığımız Veriler</h2>
         <div className="space-y-3">
           <div>
-            <h3 className="font-semibold text-gray-800">Ebeveyn Hesabı</h3>
+            <h3 className="text-text font-semibold">Ebeveyn Hesabı</h3>
             <ul className="mt-1 list-disc space-y-1 pl-5">
               <li>E-posta adresi (kimlik doğrulama için)</li>
               <li>Şifreli ebeveyn PIN (SHA-256 hash + salt, asla düz metin saklanmaz)</li>
@@ -71,7 +71,7 @@ function PrivacyPolicy() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-800">Çocuk Profili</h3>
+            <h3 className="text-text font-semibold">Çocuk Profili</h3>
             <ul className="mt-1 list-disc space-y-1 pl-5">
               <li>Profil adı (takma ad, gerçek isim zorunlu değil)</li>
               <li>Yaş (seviye kişiselleştirme için)</li>
@@ -85,12 +85,14 @@ function PrivacyPolicy() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-800">Otomatik Toplanan Veriler</h3>
+            <h3 className="text-text font-semibold">Otomatik Toplanan Veriler</h3>
             <ul className="mt-1 list-disc space-y-1 pl-5">
               <li>Ders tamamlama istatistikleri ve oturum süreleri</li>
               <li>Firebase Analytics ve Sentry oturum/hata aktarımı devre dışıdır.</li>
               <li>
-                Doğum tarihi saklanmaz veya gönderilmez; erişim sınıfı yalnızca cihazda tutulur.
+                Doğum tarihi saklanmaz veya gönderilmez. Erişim sınıfı ve ilk profil için önerilen
+                ders grubu yalnızca cihazda tutulur; ders grubu önerisi profil oluşturulunca
+                silinir.
               </li>
             </ul>
           </div>
@@ -98,7 +100,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">4. Verilerin Kullanımı</h2>
+        <h2 className="text-text mb-2 text-base font-bold">4. Verilerin Kullanımı</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>Kişiselleştirilmiş öğrenme deneyimi sunmak</li>
           <li>Tekrarlı öğrenme (SRS) algoritmasını çalıştırmak</li>
@@ -106,14 +108,14 @@ function PrivacyPolicy() {
           <li>Uygulama hatalarını tespit etmek ve düzeltmek</li>
           <li>Yasal yükümlülükleri yerine getirmek</li>
         </ul>
-        <p className="mt-2 font-medium text-gray-800">
+        <p className="text-text mt-2 font-medium">
           Verileriniz: reklam hedefleme, profil satışı veya üçüncü taraf pazarlama amacıyla
           kullanılmaz, paylaşılmaz veya satılmaz.
         </p>
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">5. Veri Saklama</h2>
+        <h2 className="text-text mb-2 text-base font-bold">5. Veri Saklama</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>Aktif hesap verileri: hesap silinene kadar saklanır</li>
           <li>Hesap silme sonrası tüm çocuk profilleri 30 gün içinde kalıcı olarak silinir</li>
@@ -123,7 +125,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">6. Üçüncü Taraf Hizmetler</h2>
+        <h2 className="text-text mb-2 text-base font-bold">6. Üçüncü Taraf Hizmetler</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>
             <strong>Google Firebase / Firestore:</strong> Kimlik doğrulama ve veri depolama. Google
@@ -146,9 +148,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">
-          7. Haklarınız (KVKK Madde 11 & GDPR)
-        </h2>
+        <h2 className="text-text mb-2 text-base font-bold">7. Haklarınız (KVKK Madde 11 & GDPR)</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>Verilerinizin işlenip işlenmediğini öğrenme</li>
           <li>Verilerinize erişim ve kopyasını talep etme</li>
@@ -165,7 +165,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">8. Güvenlik</h2>
+        <h2 className="text-text mb-2 text-base font-bold">8. Güvenlik</h2>
         <p>
           Verileriniz Firebase güvenlik kuralları, App Check (uygulama doğrulama) ve şifreli
           iletişim (HTTPS/TLS) ile korunmaktadır. Ebeveyn PIN&apos;i asla düz metin olarak
@@ -174,7 +174,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">9. Politika Değişiklikleri</h2>
+        <h2 className="text-text mb-2 text-base font-bold">9. Politika Değişiklikleri</h2>
         <p>
           Bu politikada önemli değişiklikler yapıldığında uygulama içi bildirim ve/veya e-posta ile
           bilgilendirileceksiniz. Güncel versiyon her zaman bu sayfada yayınlanır.
@@ -182,7 +182,7 @@ function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">10. İletişim</h2>
+        <h2 className="text-text mb-2 text-base font-bold">10. İletişim</h2>
         <p>
           Gizlilik ile ilgili her türlü soru ve talepleriniz için:
           <br />
@@ -195,19 +195,19 @@ function PrivacyPolicy() {
 
 function TermsOfService() {
   return (
-    <div className="space-y-6 text-sm leading-relaxed text-gray-700">
-      <p className="text-xs text-gray-500">Son güncelleme: {LAST_UPDATED}</p>
+    <div className="text-text space-y-6 text-sm leading-relaxed">
+      <p className="text-text-secondary text-xs">Son güncelleme: {LAST_UPDATED}</p>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">1. Hizmet Tanımı</h2>
+        <h2 className="text-text mb-2 text-base font-bold">1. Hizmet Tanımı</h2>
         <p>
-          {APP_NAME}, 3-8 yaş çocuklar için İngilizce öğretme uygulamasıdır. Uygulamayı indirerek
+          {APP_NAME}, 4-12 yaş çocuklar için İngilizce öğretme uygulamasıdır. Uygulamayı indirerek
           veya kullanarak bu Kullanım Koşulları&apos;nı kabul etmiş sayılırsınız.
         </p>
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">2. Hesap Gereksinimleri</h2>
+        <h2 className="text-text mb-2 text-base font-bold">2. Hesap Gereksinimleri</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>Ebeveyn/vasi hesabı için 18 yaş veya üzeri olunması gerekir.</li>
           <li>Çocuk profilleri yalnızca ebeveyn hesabı altında oluşturulabilir.</li>
@@ -217,11 +217,11 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">3. Ücretlendirme</h2>
+        <h2 className="text-text mb-2 text-base font-bold">3. Ücretlendirme</h2>
         <p>
-          {APP_NAME} ücretsiz indirilebilir; ek özellikler isteğe bağlı Premium abonelikle sunulur.
-          Satın alma işlemleri Apple App Store veya Google Play Store aracılığıyla gerçekleştirilir
-          ve yalnızca ebeveyn doğrulamasından sonra yapılabilir.
+          {APP_NAME} ücretsiz indirilebilir; ek özellikler isteğe bağlı NovaLingo Plus aboneliğiyle
+          sunulur. Satın alma işlemleri Apple App Store veya Google Play Store aracılığıyla
+          gerçekleştirilir ve yalnızca ebeveyn doğrulamasından sonra yapılabilir.
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>Tüm satın almalar platform mağazasının iade politikasına tabidir.</li>
@@ -232,7 +232,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">4. Kullanım Kuralları</h2>
+        <h2 className="text-text mb-2 text-base font-bold">4. Kullanım Kuralları</h2>
         <p>Aşağıdaki kullanımlar yasaktır:</p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>Uygulamayı tersine mühendislik veya kaynak kodu çıkarma</li>
@@ -244,7 +244,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">5. Fikri Mülkiyet</h2>
+        <h2 className="text-text mb-2 text-base font-bold">5. Fikri Mülkiyet</h2>
         <p>
           Tüm içerik, tasarım, ses dosyaları, karakterler ve kod {COMPANY}&apos;ya aittir.
           Uygulamanın satın alınması, içeriklerin mülkiyetini devretmez; yalnızca kişisel, ticari
@@ -253,7 +253,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">6. Sorumluluk Sınırlandırması</h2>
+        <h2 className="text-text mb-2 text-base font-bold">6. Sorumluluk Sınırlandırması</h2>
         <p>
           {APP_NAME}, makul özen göstererek hizmet sunmayı taahhüt eder. Ancak teknik aksaklıklar,
           veri kaybı veya kesintilerden doğabilecek zararlardan doğrudan sorumlu tutulamaz. Uygulama
@@ -262,7 +262,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">7. Hizmet Değişiklikleri</h2>
+        <h2 className="text-text mb-2 text-base font-bold">7. Hizmet Değişiklikleri</h2>
         <p>
           {COMPANY}, önceden bildiri yaparak hizmetlerin içeriğini, fiyatlandırmasını veya
           özelliklerini değiştirme hakkını saklı tutar. Önemli değişikliklerde en az 30 gün
@@ -271,7 +271,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">8. Hesap Feshi</h2>
+        <h2 className="text-text mb-2 text-base font-bold">8. Hesap Feshi</h2>
         <p>
           Koşulların ihlali durumunda hesabınız askıya alınabilir veya sonlandırılabilir. Hesabınızı
           istediğiniz zaman Ebeveyn Ayarları → Hesabı Sil seçeneğiyle silebilirsiniz.
@@ -279,7 +279,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">9. Uygulanacak Hukuk</h2>
+        <h2 className="text-text mb-2 text-base font-bold">9. Uygulanacak Hukuk</h2>
         <p>
           Bu koşullar Türkiye Cumhuriyeti kanunlarına tabidir. Uyuşmazlıklar İstanbul mahkemelerinde
           çözümlenir.
@@ -287,7 +287,7 @@ function TermsOfService() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">10. İletişim</h2>
+        <h2 className="text-text mb-2 text-base font-bold">10. İletişim</h2>
         <p>
           Kullanım koşullarıyla ilgili sorularınız için:
           <br />
@@ -300,11 +300,11 @@ function TermsOfService() {
 
 function AccountDeletion() {
   return (
-    <div className="space-y-6 text-sm leading-relaxed text-gray-700">
-      <p className="text-xs text-gray-500">Son güncelleme: {LAST_UPDATED}</p>
+    <div className="text-text space-y-6 text-sm leading-relaxed">
+      <p className="text-text-secondary text-xs">Son güncelleme: {LAST_UPDATED}</p>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">Hesabınızı Silme</h2>
+        <h2 className="text-text mb-2 text-base font-bold">Hesabınızı Silme</h2>
         <p>
           {APP_NAME} hesabınızı ve hesaba bağlı tüm çocuk profillerini istediğiniz zaman
           silebilirsiniz. Silme işlemi geri alınamaz.
@@ -312,7 +312,7 @@ function AccountDeletion() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">Uygulama İçinden</h2>
+        <h2 className="text-text mb-2 text-base font-bold">Uygulama İçinden</h2>
         <p>
           Uygulamada <strong>Ebeveyn Paneli → Ayarlar → Hesabı Sil</strong> adımlarını izleyin.
           Ebeveyn kapısını geçtikten sonra silme işlemi anında başlatılır.
@@ -320,7 +320,7 @@ function AccountDeletion() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">Uygulamayı Kurmadan</h2>
+        <h2 className="text-text mb-2 text-base font-bold">Uygulamayı Kurmadan</h2>
         <p>
           Uygulamaya erişiminiz yoksa hesabınızın kayıtlı e-posta adresinden{' '}
           <strong>{CONTACT_EMAIL}</strong> adresine &quot;Hesap silme talebi&quot; konulu bir
@@ -330,7 +330,7 @@ function AccountDeletion() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">Silinen Veriler</h2>
+        <h2 className="text-text mb-2 text-base font-bold">Silinen Veriler</h2>
         <ul className="list-inside list-disc space-y-1">
           <li>Ebeveyn hesabı ve kimlik doğrulama kaydı</li>
           <li>Tüm çocuk profilleri, ilerleme, kelime ve konuşma kayıtları</li>
@@ -340,7 +340,7 @@ function AccountDeletion() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-bold text-gray-900">Saklanan Veriler</h2>
+        <h2 className="text-text mb-2 text-base font-bold">Saklanan Veriler</h2>
         <p>
           Yasal yükümlülükler gereği satın alma ve fatura kayıtları, kimliğinizle
           ilişkilendirilmeden, ilgili mevzuatın öngördüğü süre boyunca saklanır. Aboneliğiniz varsa
@@ -364,21 +364,21 @@ export default function LegalScreen() {
   const isDeleteAccount = legalType === 'delete-account';
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="bg-surface flex min-h-screen flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-gray-100 bg-white px-4 py-4">
+      <div className="border-border bg-surface sticky top-0 z-10 flex items-center gap-3 border-b px-4 py-4">
         <button
           onClick={() => navigate(-1)}
-          className="rounded-full p-2 transition-colors hover:bg-gray-100"
+          className="hover:bg-surface-elevated rounded-full p-2 transition-colors"
           aria-label={t('legal.back')}
         >
-          <ArrowLeft size={20} weight="bold" className="text-gray-700" />
+          <ArrowLeft size={20} weight="bold" className="text-text" />
         </button>
         <div className="flex items-center gap-2">
           {isPrivacy && <ShieldCheck size={20} className="text-nova-blue" />}
           {isTerms && <BookOpen size={20} className="text-nova-blue" />}
           {isDeleteAccount && <Trash size={20} className="text-nova-blue" />}
-          <h1 className="text-base font-bold text-gray-900">
+          <h1 className="text-text text-base font-bold">
             {isPrivacy && t('legal.privacy')}
             {isTerms && t('legal.terms')}
             {isDeleteAccount && t('legal.deleteAccount')}
@@ -387,13 +387,13 @@ export default function LegalScreen() {
       </div>
 
       {/* Tab Switch */}
-      <div className="flex border-b border-gray-100">
+      <div className="border-border flex border-b">
         <button
           onClick={() => navigate('/legal/privacy', { replace: true })}
           className={`flex-1 py-3 text-sm font-semibold transition-colors ${
             isPrivacy
               ? 'text-nova-blue border-nova-blue border-b-2'
-              : 'text-gray-400 hover:text-gray-600'
+              : 'text-text-secondary hover:text-text-secondary'
           }`}
         >
           {t('legal.privacy')}
@@ -403,7 +403,7 @@ export default function LegalScreen() {
           className={`flex-1 py-3 text-sm font-semibold transition-colors ${
             isTerms
               ? 'text-nova-blue border-nova-blue border-b-2'
-              : 'text-gray-400 hover:text-gray-600'
+              : 'text-text-secondary hover:text-text-secondary'
           }`}
         >
           {t('legal.terms')}
@@ -413,7 +413,7 @@ export default function LegalScreen() {
           className={`flex-1 py-3 text-sm font-semibold transition-colors ${
             isDeleteAccount
               ? 'text-nova-blue border-nova-blue border-b-2'
-              : 'text-gray-400 hover:text-gray-600'
+              : 'text-text-secondary hover:text-text-secondary'
           }`}
         >
           {t('legal.deleteAccount')}
@@ -428,8 +428,8 @@ export default function LegalScreen() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
-        <p className="text-center text-xs text-gray-400">
+      <div className="border-border bg-surface-elevated border-t px-5 py-4">
+        <p className="text-text-secondary text-center text-xs">
           {APP_NAME} · {CONTACT_EMAIL}
         </p>
       </div>

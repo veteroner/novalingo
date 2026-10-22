@@ -6,8 +6,9 @@
  */
 
 import { isAdultSession } from '@services/ageScreen/ageScreenPolicy';
-import novaMascot from '@assets/images/nova-mascot.svg';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { AppleSignInButton } from '@components/atoms/AppleSignInButton';
+import { GoogleSignInButton } from '@components/atoms/GoogleSignInButton';
 import { Button } from '@components/atoms/Button';
 import { Spinner } from '@components/atoms/Spinner';
 import { Text } from '@components/atoms/Text';
@@ -32,13 +33,30 @@ export default function LoginScreen() {
   const setError = useAuthStore((s) => s.setError);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [kvkkAccepted, setKvkkAccepted] = useState(false);
+  const [consentMissing, setConsentMissing] = useState(false);
+
+  /**
+   * Koşullar kabul edilmeden giriş başlatılmaz. Düğmeler devre dışı (gri)
+   * gösterilmez: Apple HIG, Apple ile Giriş düğmesinin rengini değiştirmeyi
+   * yasaklar. Onun yerine onay kutusunun altında uyarı gösterilir.
+   */
+  const requireConsent = useCallback(
+    (action: () => Promise<void>) => () => {
+      if (!kvkkAccepted) {
+        setConsentMissing(true);
+        return;
+      }
+      void action();
+    },
+    [kvkkAccepted],
+  );
 
   const handleGoogleLogin = useCallback(async () => {
     try {
       setIsLoggingIn(true);
       setLoading(true);
       await signInWithGoogle();
-      void navigate('/onboarding');
+      void navigate('/home', { replace: true });
     } catch (err) {
       // Kullanıcı hesap seçiciyi kapattıysa hata gösterme.
       if (isSignInCancelled(err)) return;
@@ -54,7 +72,7 @@ export default function LoginScreen() {
       setIsLoggingIn(true);
       setLoading(true);
       await signInWithApple();
-      void navigate('/onboarding');
+      void navigate('/home', { replace: true });
     } catch (err) {
       // Kullanıcı hesap seçiciyi kapattıysa hata gösterme.
       if (isSignInCancelled(err)) return;
@@ -70,7 +88,7 @@ export default function LoginScreen() {
       setIsLoggingIn(true);
       setLoading(true);
       await signInAnonymousUser();
-      void navigate('/onboarding');
+      void navigate('/home', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('login.error'));
     } finally {
@@ -80,7 +98,7 @@ export default function LoginScreen() {
   }, [navigate, setLoading, setError, t]);
 
   return (
-    <div className="from-nova-sky flex min-h-screen flex-col items-center justify-center bg-linear-to-b to-white px-6">
+    <div className="nova-page flex min-h-screen flex-col items-center justify-center px-6">
       {/* Logo & Mascot */}
       <motion.div
         className="mb-8 text-center"
@@ -89,11 +107,11 @@ export default function LoginScreen() {
         transition={{ type: 'spring', stiffness: 200 }}
       >
         <motion.div
-          className="mb-4"
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="mb-4 flex justify-center"
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2, ease: 'easeInOut' }}
         >
-          <img src={novaMascot} alt="Nova" className="mx-auto h-20 w-20" />
+          <NovaCharacter size="xl" />
         </motion.div>
         <Text variant="h1" align="center" className="text-nova-blue">
           NovaLingo
@@ -116,38 +134,29 @@ export default function LoginScreen() {
           </div>
         ) : (
           <>
-            {allowSocialLogin && (
-              <Button
-                variant="primary"
-                size="xl"
-                fullWidth
-                onClick={handleGoogleLogin}
-                icon={<span>🔵</span>}
-                disabled={!kvkkAccepted}
-              >
-                {t('login.withGoogle')}
-              </Button>
-            )}
-
-            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable).
-                Düğme Apple HIG'e uyar; emoji/üçüncü taraf logo kullanılmaz. */}
+            {/* Apple ile Giriş yalnızca iOS'ta (bkz. isAppleSignInAvailable). Düğme
+                Apple HIG'e uyar ve diğer giriş düğmeleriyle aynı boyda, en üsttedir. */}
             {allowSocialLogin && isAppleSignInAvailable() && (
               <AppleSignInButton
                 label={t('login.withApple')}
-                onClick={() => {
-                  void handleAppleLogin();
-                }}
-                disabled={!kvkkAccepted}
+                onClick={requireConsent(handleAppleLogin)}
+              />
+            )}
+
+            {allowSocialLogin && (
+              <GoogleSignInButton
+                label={t('login.withGoogle')}
+                onClick={requireConsent(handleGoogleLogin)}
               />
             )}
 
             {allowSocialLogin && (
               <div className="relative py-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200" />
+                  <div className="border-border w-full border-t" />
                 </div>
                 <div className="relative flex justify-center">
-                  <Text variant="caption" className="text-text-secondary bg-white px-4">
+                  <Text variant="caption" className="text-text-secondary bg-surface px-4">
                     {t('login.or')}
                   </Text>
                 </div>
@@ -158,8 +167,7 @@ export default function LoginScreen() {
               variant="secondary"
               size="lg"
               fullWidth
-              onClick={handleAnonymousLogin}
-              disabled={!kvkkAccepted}
+              onClick={requireConsent(handleAnonymousLogin)}
             >
               {t('login.asGuest')}
             </Button>
@@ -170,6 +178,7 @@ export default function LoginScreen() {
                 checked={kvkkAccepted}
                 onChange={(e) => {
                   setKvkkAccepted(e.target.checked);
+                  if (e.target.checked) setConsentMissing(false);
                 }}
                 className="accent-nova-blue mt-1 h-5 w-5 shrink-0 rounded"
               />
@@ -200,6 +209,11 @@ export default function LoginScreen() {
                 />
               </Text>
             </label>
+            {consentMissing && (
+              <Text variant="caption" align="center" className="text-error" role="alert">
+                {t('login.consentRequired')}
+              </Text>
+            )}
           </>
         )}
       </motion.div>
