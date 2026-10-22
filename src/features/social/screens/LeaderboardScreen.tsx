@@ -110,6 +110,7 @@ export default function LeaderboardScreen() {
             entries={entries}
             currentUserId={child?.id ?? 'current'}
             currentUserName={child?.name}
+            currentUserAvatarId={child?.avatarId}
           />
         )}
       </div>

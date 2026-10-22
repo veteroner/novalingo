@@ -36,27 +36,6 @@ const ageGroups: AgeGroupOption[] = [
   { id: 'legends', emoji: '🏆' },
 ];
 
-interface AvatarOption {
-  id: string;
-  emoji: string;
-}
-
-// Etiket i18n'den gelir (auth.createProfile.avatar, id'ye göre).
-const avatars: AvatarOption[] = [
-  { id: 'fox', emoji: '🦊' },
-  { id: 'panda', emoji: '🐼' },
-  { id: 'unicorn', emoji: '🦄' },
-  { id: 'lion', emoji: '🦁' },
-  { id: 'owl', emoji: '🦉' },
-  { id: 'rabbit', emoji: '🐰' },
-  { id: 'cat', emoji: '🐱' },
-  { id: 'dog', emoji: '🐶' },
-  { id: 'dragon', emoji: '🐉' },
-  { id: 'astronaut', emoji: '🧑‍🚀' },
-  { id: 'robot', emoji: '🤖' },
-  { id: 'star', emoji: '🌟' },
-];
-
 // Allow Unicode letters, spaces, and emoji only
 const NAME_PATTERN = /^[\p{L}\p{Extended_Pictographic}\s]+$/u;
 
@@ -80,7 +59,6 @@ export default function CreateProfileScreen() {
   const [suggestedAge] = useState(() => (hasProfiles ? null : getLearnerAgeGroup()));
   const [selectedAge, setSelectedAge] = useState<AgeGroup | null>(suggestedAge);
   const [chooseAge, setChooseAge] = useState(!suggestedAge);
-  const [selectedAvatar, setSelectedAvatar] = useState('owl');
   const [consentPassed, setConsentPassed] = useState(isProfileConsentPassed);
   const [error, setError] = useState<string | null>(null);
 
@@ -110,7 +88,7 @@ export default function CreateProfileScreen() {
     }
     setError(null);
     createChildMutation.mutate(
-      { name: profileName, ageGroup: selectedAge, avatarId: selectedAvatar },
+      { name: profileName, ageGroup: selectedAge, avatarId: 'owl' },
       {
         onSuccess: () => {
           clearLearnerAgeGroup();
@@ -248,34 +226,6 @@ export default function CreateProfileScreen() {
             </button>
           </div>
         )}
-        <fieldset disabled={isCreating} className="space-y-3">
-          <legend className="font-bold">{t('createProfile.avatarTitle')}</legend>
-          <div className="grid grid-cols-4 gap-2">
-            {avatars.map((avatar) => (
-              <label
-                key={avatar.id}
-                className={`has-focus-visible:ring-primary cursor-pointer rounded-2xl border-2 p-2 text-center has-focus-visible:ring-2 has-focus-visible:ring-offset-2 ${selectedAvatar === avatar.id ? 'border-primary bg-primary-soft' : 'border-border bg-surface'}`}
-              >
-                <input
-                  type="radio"
-                  name="avatar"
-                  value={avatar.id}
-                  checked={selectedAvatar === avatar.id}
-                  onChange={() => {
-                    setSelectedAvatar(avatar.id);
-                  }}
-                  className="sr-only"
-                />
-                <span className="block text-3xl" aria-hidden="true">
-                  {avatar.emoji}
-                </span>
-                <span className="text-text-secondary block text-xs">
-                  {t(`createProfile.avatar.${avatar.id}`)}
-                </span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
         {error && (
           <p role="alert" className="text-error-ink text-center text-sm">
             {error}

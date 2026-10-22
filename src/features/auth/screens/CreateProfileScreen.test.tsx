@@ -73,7 +73,6 @@ describe('CreateProfileScreen — ad tekrar sorulmaz', () => {
 
     expect(screen.getByRole('button', { name: 'createProfile.start' })).toBeDisabled();
     fireEvent.click(screen.getByText('createProfile.age.stars'));
-    fireEvent.click(screen.getByText('createProfile.avatar.fox'));
     fireEvent.click(screen.getByRole('button', { name: 'createProfile.start' }));
 
     expect(mutate).toHaveBeenCalledWith(
@@ -113,7 +112,8 @@ describe('tek form ve ebeveyn koruması', () => {
     rememberAgeBand('minor', 'stars');
     markProfileConsentPassed();
     renderScreen();
-    expect(screen.queryByRole('radio', { name: /createProfile.age/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument();
+    expect(screen.queryByText('createProfile.avatarTitle')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'createProfile.start' }));
     expect(mutate).toHaveBeenCalledWith(
       { name: 'createProfile.defaultName', ageGroup: 'stars', avatarId: 'owl' },

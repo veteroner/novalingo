@@ -12,7 +12,7 @@
 | Mevcut çocuk listesi, aktif seçim yok | Yeniden profil oluşturmaya yönlenebilir | İlk mevcut profil seçilir, yeni profil istenmez |
 | Profil adresini doğrudan açma | Tanıtımdaki ebeveyn kapısı atlanabilir | Profil formu da ebeveyn kapısı ve iki onay kutusunu gerektirir |
 
-Profilde takma ad isteğe bağlı kalır; Apple/Google sağlayıcısının verdiği geçerli ilk ad önceden doldurulur. Baykuş avatarı varsayılan seçilidir; kullanıcı değiştirmek zorunda değildir. Ders grubu önerisi “Değiştir” ile aynı formda düzenlenebilir. Avatar ve grup seçenekleri etiketli radyo alanlarıdır; kayıt sırasında devre dışıdır.
+Profilde takma ad isteğe bağlı kalır; Apple/Google sağlayıcısının verdiği geçerli ilk ad önceden doldurulur. İlk kurulum avatar sormaz; varsayılan baykuş ile devam eder. İsteğe bağlı avatar seçimi profil ekranına taşındı. Ders grubu önerisi “Değiştir” ile aynı formda düzenlenebilir. Ders grubu seçenekleri etiketli radyo alanlarıdır; kayıt sırasında devre dışıdır.
 
 Doğum tarihi veya tam yaş tutulmaz/gönderilmez. Mevcut yerel erişim kaydına yalnızca ilk profil için kaba `cubs / stars / legends` önerisi eklenir. Eski kayıtlar uyumludur; eski veya yetişkin kaydında olmayan bir grup uydurulmaz. Öneri ilk başarılı profil kaydından sonra silinir; hata olursa korunur. Ek çocuklar ilk çocuğun grubunu otomatik devralmaz. Erişim sınıfı ile ders grubu bağımsızdır; grup değiştirmek yetişkin erişimi açmaz. TR/EN gizlilik açıklaması buna hizalandı.
 
@@ -37,3 +37,5 @@ DEV önizleme `visual-preview.html?setup=fresh`, `?setup=child` veya `?setup=adu
 ![Tekrarsız ders grubu](screenshots/nova-setup-ios-profile-group.png)
 ![Aynı formda düzenleme ve kayıt düğmesi](screenshots/nova-setup-ios-profile-edited.png)
 ![Yetişkin için çocuk grubu, EN, 320px](screenshots/nova-setup-browser-adult-en.png)
+
+Son avatar düzenlemesi ve güncel doğrulama: [Profil avatarları](2026-10-22-profile-avatars.md). Yukarıdaki başlangıç ekranları avatar seçimi taşınmadan önceki akışın kayıtlarıdır.

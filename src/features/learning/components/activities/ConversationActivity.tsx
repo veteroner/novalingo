@@ -15,8 +15,9 @@ import {
 import type { ConversationScenario } from '@/features/learning/data/conversations/types/conversationScenario';
 import type { ConversationSuccessCriteriaData } from '@/types/content';
 import { createLogger } from '@/utils/logger';
-import { NovaCharacter } from '@components/molecules/NovaCharacter';
+import { Avatar } from '@components/atoms/Avatar';
 import { Text } from '@components/atoms/Text';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { useHaptic } from '@hooks/useHaptic';
 import {
   trackConversationCompleted,
@@ -213,25 +214,6 @@ function interpolateTemplate(
   return fallback ?? template;
 }
 
-/**
- * Senaryo temasına göre canlı arka plan gradyanı (UX spec: chat-first redesign).
- * Metinler her zaman beyaz/açık kartlar üzerinde durur — kontrast gradyana bağlı değildir.
- */
-const AVATAR_EMOJIS: Record<string, string> = {
-  fox: '🦊',
-  panda: '🐼',
-  unicorn: '🦄',
-  lion: '🦁',
-  owl: '🦉',
-  rabbit: '🐰',
-  cat: '🐱',
-  dog: '🐶',
-  dragon: '🐉',
-  astronaut: '🧑‍🚀',
-  robot: '🤖',
-  star: '🌟',
-};
-
 /* ─── Nova Header Avatar — kompakt (64px) mood animasyonlu avatar (chat-first redesign) ─── */
 
 function NovaHeaderAvatar({ mood }: { mood: NovaMood }) {
@@ -269,7 +251,6 @@ export default function ConversationActivity({
 }: ConversationActivityProps) {
   const { t } = useTranslation('lesson');
   const activeChild = useChildStore((s) => s.activeChild);
-  const childAvatarEmoji = AVATAR_EMOJIS[activeChild?.avatarId ?? ''] ?? '🧒';
   const haptic = useHaptic();
 
   const [bubbles, setBubbles] = useState<ChatBubble[]>([]);
@@ -1485,12 +1466,11 @@ export default function ConversationActivity({
                 {bubble.speaker === 'nova' ? (
                   <NovaCharacter size="sm" className="h-8 w-8" decorative />
                 ) : (
-                  <span
-                    aria-hidden="true"
-                    className="bg-surface/80 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm shadow-sm"
-                  >
-                    {childAvatarEmoji}
-                  </span>
+                  <Avatar
+                    avatarId={activeChild?.avatarId ?? 'owl'}
+                    name={activeChild?.name}
+                    size="xs"
+                  />
                 )}
 
                 <div

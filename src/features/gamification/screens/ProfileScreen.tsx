@@ -18,17 +18,41 @@ import { MainLayout } from '@components/templates/MainLayout';
 import { useChildStore } from '@stores/childStore';
 import { useUIStore } from '@stores/uiStore';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { AvatarEditor } from '../components/AvatarEditor';
 
 export default function ProfileScreen() {
   const child = useChildStore((s) => s.activeChild);
   const openModal = useUIStore((s) => s.openModal);
   const navigate = useNavigate();
   const { t } = useTranslation('gamification');
+  const [editingAvatar, setEditingAvatar] = useState(false);
+  const [avatarSaved, setAvatarSaved] = useState(false);
+  const editButton = useRef<HTMLButtonElement>(null);
 
   if (!child) return null;
+
+  if (editingAvatar) {
+    return (
+      <MainLayout>
+        <div className="px-4 py-6">
+          <AvatarEditor
+            key={child.id}
+            childId={child.id}
+            avatarId={child.avatarId}
+            name={child.name}
+            onClose={(saved) => {
+              setEditingAvatar(false);
+              setAvatarSaved(saved);
+              requestAnimationFrame(() => editButton.current?.focus());
+            }}
+          />
+        </div>
+      </MainLayout>
+    );
+  }
 
   const stats = [
     { label: t('profile.stats.completedLessons'), value: child.completedLessons, emoji: '📚' },
@@ -46,13 +70,29 @@ export default function ProfileScreen() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Avatar name={child.name} src={child.avatarId} size="xl" showLevel={child.level} />
+          <Avatar name={child.name} avatarId={child.avatarId} size="xl" showLevel={child.level} />
           <Text variant="h3" className="mt-3">
             {child.name}
           </Text>
           <Badge variant="level" size="lg" className="mt-1">
             {t('profile.level', { level: child.level })}
           </Badge>
+          <button
+            ref={editButton}
+            type="button"
+            onClick={() => {
+              setEditingAvatar(true);
+              setAvatarSaved(false);
+            }}
+            className="text-primary focus-visible:ring-primary mt-4 min-h-11 rounded-xl px-4 text-sm font-bold focus-visible:ring-2"
+          >
+            {t('profile.avatar.change')}
+          </button>
+          {avatarSaved && (
+            <p role="status" className="text-success-ink mt-3 text-sm">
+              {t('profile.avatar.saved')}
+            </p>
+          )}
         </motion.div>
 
         {/* XP Progress */}

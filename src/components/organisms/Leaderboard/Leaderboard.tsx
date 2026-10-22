@@ -22,6 +22,7 @@ interface LeaderboardProps {
   currentUserId: string;
   /** Oturumdaki çocuğun adı — yalnızca kendi satırında gösterilir. */
   currentUserName?: string;
+  currentUserAvatarId?: string;
   className?: string;
 }
 
@@ -35,6 +36,7 @@ export function Leaderboard({
   entries,
   currentUserId,
   currentUserName,
+  currentUserAvatarId,
   className,
 }: LeaderboardProps) {
   const { t } = useTranslation('common');
@@ -75,7 +77,12 @@ export function Leaderboard({
             </div>
 
             {/* Avatar */}
-            <Avatar name={label} src={entry.avatarId} size="sm" showLevel={entry.level} />
+            <Avatar
+              name={label}
+              avatarId={isCurrentUser ? (currentUserAvatarId ?? entry.avatarId) : entry.avatarId}
+              size="sm"
+              showLevel={entry.level}
+            />
 
             {/* Name */}
             <div className="min-w-0 flex-1">
