@@ -14,6 +14,10 @@ import StoryLibraryScreen from '../src/features/learning/screens/StoryLibraryScr
 import StoryViewerScreen from '../src/features/learning/screens/StoryViewerScreen';
 import LessonResultScreen from '../src/features/learning/screens/LessonResultScreen';
 import ReviewScreen from '../src/features/learning/screens/ReviewScreen';
+import CreateProfileScreen from '../src/features/auth/screens/CreateProfileScreen';
+import { AgeScreenGate } from '../src/features/auth/screens/AgeScreenGate';
+import { AGE_SCREEN_STORAGE_KEY, rememberAgeBand } from '../src/services/ageScreen/ageScreenPolicy';
+import { markProfileConsentPassed } from '../src/services/parentGate/parentGateSession';
 import OnboardingScreen from '../src/features/auth/screens/OnboardingScreen';
 import ConversationTopicsScreen from '../src/features/conversation/screens/ConversationTopicsScreen';
 import { createRoot } from 'react-dom/client';
@@ -151,7 +155,17 @@ for (const category of ['avatars', 'themes', 'boosters', 'frames', 'effects', 'n
 for (const query of queryClient.getQueryCache().getAll())
   queryClient.setQueryData(query.queryKey, query.state.data, { updatedAt: Date.now() + 86400000 });
 const story = getStory('story-w2-nova-is-happy');
-const view = params.get('view') ?? 'home';
+const setupMode = params.get('setup');
+if (setupMode) {
+  useChildStore.getState().reset();
+  if (setupMode === 'fresh') localStorage.setItem(AGE_SCREEN_STORAGE_KEY, '{"version":0}');
+  else
+    rememberAgeBand(
+      setupMode === 'adult' ? 'adult' : 'minor',
+      setupMode === 'adult' ? undefined : 'stars',
+    );
+}
+const view = params.get('view') ?? (setupMode ? 'onboarding' : 'home');
 
 function Fixture() {
   const { toggleColorMode, colorMode } = useTheme();
@@ -180,6 +194,11 @@ function Fixture() {
         <Link to="/stories">Kütüphane</Link>
         <Link to="/practice">Oyun</Link>
         <Link to="/onboarding">Tanıtım</Link>
+        {setupMode && (
+          <Link to="/setup-profile-preview" onClick={() => markProfileConsentPassed()}>
+            Form testi (sunucuya yazılmaz)
+          </Link>
+        )}
       </aside>
       <Routes>
         <Route path="/home" element={<HomeScreen />} />
@@ -198,6 +217,11 @@ function Fixture() {
         <Route path="/lesson-result" element={<LessonResultScreen />} />
         <Route path="/review" element={<ReviewScreen />} />
         <Route path="/onboarding" element={<OnboardingScreen />} />
+        <Route path="/create-profile" element={<CreateProfileScreen key="setup-gated" />} />
+        <Route
+          path="/setup-profile-preview"
+          element={<CreateProfileScreen key="setup-preview" />}
+        />
         <Route
           path="/story"
           element={
@@ -244,7 +268,13 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={['/' + view]}>
         <ThemeProvider>
-          <Fixture />
+          {setupMode ? (
+            <AgeScreenGate>
+              <Fixture />
+            </AgeScreenGate>
+          ) : (
+            <Fixture />
+          )}
         </ThemeProvider>
       </MemoryRouter>
     </QueryClientProvider>

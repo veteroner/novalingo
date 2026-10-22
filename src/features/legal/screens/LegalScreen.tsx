@@ -90,7 +90,9 @@ function PrivacyPolicy() {
               <li>Ders tamamlama istatistikleri ve oturum süreleri</li>
               <li>Firebase Analytics ve Sentry oturum/hata aktarımı devre dışıdır.</li>
               <li>
-                Doğum tarihi saklanmaz veya gönderilmez; erişim sınıfı yalnızca cihazda tutulur.
+                Doğum tarihi saklanmaz veya gönderilmez. Erişim sınıfı ve ilk profil için önerilen
+                ders grubu yalnızca cihazda tutulur; ders grubu önerisi profil oluşturulunca
+                silinir.
               </li>
             </ul>
           </div>

@@ -1,11 +1,7 @@
 import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import { Button } from '@components/atoms/Button';
 import { SplashScreen } from '@capacitor/splash-screen';
-import {
-  classifyBirthDate,
-  getAgeBand,
-  rememberAgeBand,
-} from '@services/ageScreen/ageScreenPolicy';
+import { assessBirthDate, getAgeBand, rememberAgeBand } from '@services/ageScreen/ageScreenPolicy';
 import { isNative } from '@utils/platform';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,16 +28,16 @@ export function AgeScreenGate({ children }: { children: ReactNode }) {
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          const result = classifyBirthDate(day, month, year);
+          const result = assessBirthDate(day, month, year);
           if (!result) {
             setInvalid(true);
             return;
           }
-          rememberAgeBand(result);
+          rememberAgeBand(result.band, result.learnerAgeGroup);
           setDay('');
           setMonth('');
           setYear('');
-          setBand(result);
+          setBand(result.band);
         }}
       >
         <div className="flex justify-center">

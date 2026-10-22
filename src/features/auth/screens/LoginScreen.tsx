@@ -38,7 +38,7 @@ export default function LoginScreen() {
       setIsLoggingIn(true);
       setLoading(true);
       await signInWithGoogle();
-      void navigate('/onboarding');
+      void navigate('/home', { replace: true });
     } catch (err) {
       // Kullanıcı hesap seçiciyi kapattıysa hata gösterme.
       if (isSignInCancelled(err)) return;
@@ -54,7 +54,7 @@ export default function LoginScreen() {
       setIsLoggingIn(true);
       setLoading(true);
       await signInWithApple();
-      void navigate('/onboarding');
+      void navigate('/home', { replace: true });
     } catch (err) {
       // Kullanıcı hesap seçiciyi kapattıysa hata gösterme.
       if (isSignInCancelled(err)) return;
@@ -70,7 +70,7 @@ export default function LoginScreen() {
       setIsLoggingIn(true);
       setLoading(true);
       await signInAnonymousUser();
-      void navigate('/onboarding');
+      void navigate('/home', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('login.error'));
     } finally {

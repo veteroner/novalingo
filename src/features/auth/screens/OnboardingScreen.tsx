@@ -1,135 +1,47 @@
-import { NovaCharacter } from '@components/molecules/NovaCharacter';
-/**
- * OnboardingScreen
- *
- * 4 sayfalık onboarding akışı — Nova karakteri rehberlik eder.
- * Yaş grubu seçimi, günlük hedef, izin tercihleri.
- */
-
 import { Button } from '@components/atoms/Button';
-import { ProgressBar } from '@components/atoms/ProgressBar';
 import { Text } from '@components/atoms/Text';
-import { ParentalGate } from '@components/organisms/ParentalGate';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
+import { useChildStore } from '@stores/childStore';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-// Sayfa görselleri sabit; başlık/açıklama metinleri i18n'den gelir (auth.onboarding.pageN*).
-const pageEmojis = ['👋', '🎮', '⏰', '🚀'];
-const PAGE_COUNT = pageEmojis.length;
-
+/** One welcome screen; profile setup owns the parental gate and consent. */
 export default function OnboardingScreen() {
   const navigate = useNavigate();
+  const child = useChildStore((s) => s.activeChild);
+  const children = useChildStore((s) => s.children);
   const { t } = useTranslation('auth');
-  const [currentPage, setCurrentPage] = useState(0);
-  const [showParentalGate, setShowParentalGate] = useState(false);
-
-  const handleNext = useCallback(() => {
-    if (currentPage < PAGE_COUNT - 1) {
-      setCurrentPage((p) => p + 1);
-    } else {
-      // Son sayfada ebeveyn kapısını göster
-      setShowParentalGate(true);
-    }
-  }, [currentPage]);
-
-  const handleSkip = useCallback(() => {
-    setShowParentalGate(true);
-  }, []);
-
-  const handleParentalGatePass = useCallback(() => {
-    void navigate('/create-profile');
-  }, [navigate]);
-
-  const handleParentalGateCancel = useCallback(() => {
-    setShowParentalGate(false);
-  }, []);
-
-  const emoji = pageEmojis[currentPage];
-  if (!emoji) return null;
-  const pageNum = currentPage + 1;
+  if (child || children.length > 0) return <Navigate to="/home" replace />;
 
   return (
-    <div className="safe-area-top safe-area-bottom nova-page flex min-h-screen flex-col">
-      {/* Progress */}
-      <div className="px-6 pt-4">
-        <ProgressBar value={(currentPage + 1) / PAGE_COUNT} variant="lesson" size="xs" />
-      </div>
-
-      {/* Skip */}
-      <div className="flex justify-end px-6 pt-2">
-        <button onClick={handleSkip} className="text-text-secondary text-sm font-semibold">
-          {t('onboarding.skip')}
-        </button>
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentPage}
-            className="text-center"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          >
-            <div className="mb-6 flex justify-center">
-              <NovaCharacter
-                size="hero"
-                mood={
-                  currentPage === PAGE_COUNT - 1
-                    ? 'happy'
-                    : currentPage === 2
-                      ? 'listening'
-                      : 'idle'
-                }
-                decorative
-              />
-            </div>
-
-            <Text variant="h2" align="center" className="mb-3">
-              {t(`onboarding.page${pageNum}Title`)}
-            </Text>
-
-            <Text variant="body" align="center" className="text-text-secondary mx-auto max-w-xs">
-              {t(`onboarding.page${pageNum}Desc`)}
-            </Text>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Navigation */}
-      <div className="space-y-3 px-6 pb-8">
-        {/* Dots */}
-        <div className="flex justify-center gap-2">
-          {pageEmojis.map((_, i) => (
-            <motion.div
-              key={i}
-              className="h-2 rounded-full"
-              animate={{
-                width: i === currentPage ? 24 : 8,
-                backgroundColor: i === currentPage ? 'var(--color-primary)' : 'var(--color-border)',
-              }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            />
-          ))}
+    <main className="safe-area-top safe-area-bottom nova-page flex min-h-screen items-center justify-center px-6 py-6">
+      <div className="mx-auto w-full max-w-md space-y-5 text-center">
+        <div className="flex justify-center">
+          <NovaCharacter size="lg" className="sm:h-44 sm:w-44" decorative />
         </div>
-
-        <Button variant="primary" size="xl" fullWidth onClick={handleNext}>
-          {currentPage < PAGE_COUNT - 1 ? t('onboarding.next') : t('onboarding.start')}
+        <Text variant="h2">{t('onboarding.page1Title')}</Text>
+        <Text variant="body" className="text-text-secondary">
+          {t('onboarding.page1Desc')}
+        </Text>
+        <ul className="bg-surface border-border space-y-4 rounded-3xl border p-5 text-left">
+          <li>
+            <Text variant="h4">{t('onboarding.page2Title')}</Text>
+            <Text className="text-text-secondary">{t('onboarding.page2Desc')}</Text>
+          </li>
+          <li>
+            <Text variant="h4">{t('onboarding.page3Title')}</Text>
+            <Text className="text-text-secondary">{t('onboarding.page3Desc')}</Text>
+          </li>
+        </ul>
+        <Button
+          variant="primary"
+          size="xl"
+          fullWidth
+          onClick={() => void navigate('/create-profile', { replace: true })}
+        >
+          {t('onboarding.start')}
         </Button>
       </div>
-
-      {/* Ebeveyn Kapısı */}
-      {showParentalGate && (
-        <ParentalGate
-          requireConsent
-          onPass={handleParentalGatePass}
-          onCancel={handleParentalGateCancel}
-        />
-      )}
-    </div>
+    </main>
   );
 }

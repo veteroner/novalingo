@@ -4,6 +4,7 @@
  * Ana sayfa — streak, günlük hedef, dünyalar, Nova maskotu, hızlı aksiyonlar.
  */
 
+import { LoadingScreen } from '@components/atoms/Spinner/LoadingScreen';
 import { FREE_TIER } from '@/config/constants';
 import type { World } from '@/types/content';
 import { Badge } from '@components/atoms/Badge';
@@ -97,16 +98,17 @@ export default function HomeScreen() {
   // "Nova ile Konuş" artık standalone /conversation route'una yönlenir.
   // Lesson hack (conversationLessonId) kaldırıldı.
 
+  // A cached children list can be available one render before the active selection.
+  useEffect(() => {
+    if (!child && children.length > 0) useChildStore.getState().setActiveChild(children[0] ?? null);
+  }, [child, children]);
+
   // Authenticated but no children → create profile first
   if (!child && children.length === 0) {
-    return <Navigate to="/create-profile" replace />;
+    return <Navigate to="/onboarding" replace />;
   }
 
-  if (!child) {
-    // children loaded but none selected → this shouldn't persist long
-    // (ChildDataProvider auto-selects, but guard against race)
-    return <Navigate to="/create-profile" replace />;
-  }
+  if (!child) return <LoadingScreen />;
 
   const currentWorldOrder = curriculum.find((w) => w.id === child.currentWorldId)?.order ?? 1;
 

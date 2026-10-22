@@ -38,14 +38,16 @@ describe('ilk açılış yaş ekranı', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('ageScreen.invalid');
     expect(mounted).not.toHaveBeenCalled();
   });
-  it('çocuk tarihi tamamlanınca uygulamayı açar ve yalnızca erişim sınıfını saklar', async () => {
+  it('çocuk tarihi tamamlanınca uygulamayı açar ve erişim sınıfı ve ders grubunu tarihsiz saklar', async () => {
     renderGate();
     await userEvent.type(screen.getByLabelText('ageScreen.day'), '1');
     await userEvent.type(screen.getByLabelText('ageScreen.month'), '1');
     await userEvent.type(screen.getByLabelText('ageScreen.year'), '2018');
     await userEvent.click(screen.getByRole('button'));
     expect(screen.getByText('application')).toBeInTheDocument();
-    expect(localStorage.getItem(AGE_SCREEN_STORAGE_KEY)).toBe('{"version":1,"band":"minor"}');
+    expect(localStorage.getItem(AGE_SCREEN_STORAGE_KEY)).toBe(
+      '{"version":1,"band":"minor","learnerAgeGroup":"stars"}',
+    );
   });
   it('yeni açılışta doğrulanmış sınıfı korur', () => {
     localStorage.setItem(AGE_SCREEN_STORAGE_KEY, '{"version":1,"band":"minor"}');
