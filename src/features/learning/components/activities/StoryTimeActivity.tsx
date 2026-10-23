@@ -395,7 +395,9 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
             {/* ── TEXT RENDERING by interactionType ── */}
 
             {/* === TAP-WORD (default) === */}
-            {(page.interactionType === 'tap-word' || page.interactionType === 'none') && (
+            {(page.interactionType === 'tap-word' ||
+              page.interactionType === 'none' ||
+              page.interactionType === 'choose-image') && (
               <div className="flex flex-wrap gap-1 leading-relaxed">
                 {pageWords.map((word, idx) => {
                   const clean = cleanWord(word);

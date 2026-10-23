@@ -20,3 +20,5 @@ Dünya filtresi 12 dünyayı kapsar. Dünya ID ayrıştırması `w10/w11/w12` de
 Üretim aracı ve tam prompt seti: [Kapak promptları](2026-10-23-story-cover-prompts.json).
 
 ![İlk altı kapak sahnesi](../../public/story/covers-v1/early-learning.webp)
+
+Sonraki ekleme: [Çiftlik hikâyesinin beş iç sayfa çizimi ve simülatör kontrolü](2026-10-23-farm-story-illustrations.md).
