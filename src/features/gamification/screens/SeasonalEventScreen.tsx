@@ -38,8 +38,9 @@ export default function SeasonalEventScreen() {
     <div className="bg-surface-elevated min-h-screen">
       {/* Header */}
       <div
-        className="relative px-4 pt-12 pb-6"
+        className="relative px-4 pb-6"
         style={{
+          paddingTop: 'calc(var(--spacing-safe-top) + 1.5rem)',
           background: `linear-gradient(135deg, ${event.colors[0]}, ${event.colors[1]})`,
         }}
       >

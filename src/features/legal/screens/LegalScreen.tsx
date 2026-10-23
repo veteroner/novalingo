@@ -366,7 +366,10 @@ export default function LegalScreen() {
   return (
     <div className="bg-surface flex min-h-screen flex-col">
       {/* Header */}
-      <div className="border-border bg-surface sticky top-0 z-10 flex items-center gap-3 border-b px-4 py-4">
+      <div
+        className="border-border bg-surface sticky top-0 z-10 flex items-center gap-3 border-b px-4 pb-4"
+        style={{ paddingTop: 'calc(var(--spacing-safe-top) + 1rem)' }}
+      >
         <button
           onClick={() => navigate(-1)}
           className="hover:bg-surface-elevated rounded-full p-2 transition-colors"
