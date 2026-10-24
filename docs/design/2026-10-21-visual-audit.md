@@ -1,5 +1,7 @@
 # NovaLingo görsel inceleme ve Nova v2 yönü
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 Tarih: 21 Ekim 2026. Tasarım değerlendirmesi; ürün kodunda veya canlı yayında değişiklik yapılmadı.
 
 ## Karar önerisi

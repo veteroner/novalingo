@@ -1,5 +1,7 @@
 # Nova genel görsel uygulaması ve iOS simülatör kontrolü
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 21 Ekim 2026 — `codex/nova-visual-v2`, PR #19.
 
 ## Genel uygulama

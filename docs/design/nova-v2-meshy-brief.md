@@ -1,5 +1,7 @@
 # Nova v2 — 3D üretim brifi
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 Durum: öneri. Bu brif bir GLB dosyası veya sipariş değildir. Görsel referans: [konsept panosu](nova-v2-direction.png). Panodaki arayüzleri/çevreyi modele dahil etme.
 
 ## Kimlik ve model
@@ -39,6 +41,6 @@ Bu istem, tutarlı tek karakter referansı hazırlandıktan sonra kullanılmalı
 
 ## Uygulamaya bağlama
 
-Ortak karakter arayüzü için öneri: `NovaCharacter({ mood, stage, size, motionEnabled })`. Bu henüz uygulanmadı.
+Ortak `NovaCharacter({ mood, stage, size, motionEnabled })` arayüzü raster sürüm için uygulandı. GLB renderer ve rig/klip desteği uygulanmadı; modelin hesapta kalması kararı geçerlidir.
 
 İlk sürüm: ana sayfa ve sohbet için aynı modelden hazırlanmış hafif varlıklar. Gerçek zamanlı GLB yalnızca karakter ekranında prototip olarak denenir. Performans ve etkileşim değeri ölçüldükten sonra kullanım alanı genişletilir.

@@ -1,5 +1,7 @@
 # NovaLingo öğrenme yolu
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 21 Ekim 2026. Kullanıcının Duolingo ekran görüntüsündeki öğrenme yolunu NovaLingo'nun mevcut müfredatına uyarlayan değişiklik.
 
 ## Davranış

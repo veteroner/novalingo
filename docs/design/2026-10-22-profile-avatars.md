@@ -1,5 +1,7 @@
 # Profil avatarları
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 22 Ekim 2026 — PR #19, `codex/nova-visual-v2`.
 
 İlk kurulumdan 12 seçenekli avatar alanı kaldırıldı; yeni profil `owl` ile oluşturulur. Profil ekranındaki “Avatarını değiştir” aynı sayfada sade bir düzenleme görünümü açar. Seçim, Kaydet ve Vazgeç dışında ek adım yoktur. Geçerli avatar seçili gelir; aynı seçimi yeniden kaydetmek gerekmez.

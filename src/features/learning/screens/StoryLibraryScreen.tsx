@@ -7,6 +7,7 @@
 
 import type { MicroStory } from '@/features/learning/data/storyBank';
 import { storyBank } from '@/features/learning/data/storyBank';
+import { getStoryCover, getStoryWorldId } from '@/features/learning/data/storyCovers';
 import { Text } from '@components/atoms/Text';
 import { MainLayout } from '@components/templates/MainLayout';
 import { trackStoryLibraryOpened, trackStoryOpened } from '@services/analytics/analyticsService';
@@ -23,14 +24,15 @@ const WORLD_EMOJIS: Record<string, string> = {
   w4: '🏙️',
   w5: '🔬',
   w6: '🚀',
+  w7: '🏖️',
+  w8: '🍳',
+  w9: '🎨',
+  w10: '🏥',
+  w11: '🌍',
+  w12: '⏳',
 };
 
-function getWorldFromStoryId(storyId: string): string {
-  const match = /^story-(w\d)/.exec(storyId);
-  return match?.[1] ?? 'w1';
-}
-
-const ALL_WORLDS = ['all', 'w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
+const ALL_WORLDS = ['all', ...Object.keys(WORLD_EMOJIS)];
 
 export default function StoryLibraryScreen() {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ export default function StoryLibraryScreen() {
 
   const filteredStories = useMemo(() => {
     if (filterWorld === 'all') return storyBank;
-    return storyBank.filter((s) => getWorldFromStoryId(s.id) === filterWorld);
+    return storyBank.filter((s) => getStoryWorldId(s.id) === filterWorld);
   }, [filterWorld]);
 
   return (
@@ -77,6 +79,8 @@ export default function StoryLibraryScreen() {
           return (
             <button
               key={wid}
+              type="button"
+              aria-pressed={filterWorld === wid}
               onClick={() => {
                 setFilterWorld(wid);
               }}
@@ -109,7 +113,7 @@ export default function StoryLibraryScreen() {
             story={story}
             index={index}
             onOpen={() => {
-              trackStoryOpened({ storyId: story.id, worldId: getWorldFromStoryId(story.id) });
+              trackStoryOpened({ storyId: story.id, worldId: getStoryWorldId(story.id) });
               void navigate(`/stories/${story.id}`);
             }}
           />
@@ -128,27 +132,50 @@ function StoryCard({
   index: number;
   onOpen: () => void;
 }) {
-  const { t } = useTranslation('lesson');
-  const worldId = getWorldFromStoryId(story.id);
+  const { t, i18n } = useTranslation('lesson');
+  const cover = getStoryCover(story);
+  const [failedCover, setFailedCover] = useState<string | null>(null);
+  const worldId = getStoryWorldId(story.id);
   const worldEmoji = WORLD_EMOJIS[worldId];
   const pageCount = story.data.pages.length;
 
   return (
     <motion.button
+      type="button"
       onClick={onOpen}
       className="border-border bg-surface flex min-w-0 flex-col items-start rounded-2xl border p-3 text-left shadow-sm active:scale-95"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
     >
-      {/* Theme Emoji area */}
-      <div className="bg-primary-soft mb-3 flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded-xl text-4xl">
-        {story.data.pages[0]?.imageUrl.startsWith('/story/nova-v2/') ? (
+      {/* Fixed square viewport shows one cell of the shared cover atlas. */}
+      <div
+        aria-hidden="true"
+        className="bg-primary-soft relative mb-3 flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl text-4xl"
+      >
+        {failedCover !== cover.src ? (
           <img
-            src={story.data.pages[0].imageUrl}
+            src={cover.src}
             alt=""
-            className="h-full w-full object-cover"
-            loading="lazy"
+            width={cover.tile == null ? 512 : 1536}
+            height={cover.tile == null ? 512 : 1024}
+            className={cover.tile == null ? 'h-full w-full object-cover' : 'absolute max-w-none'}
+            style={
+              cover.tile == null
+                ? undefined
+                : {
+                    width: '300%',
+                    height: '200%',
+                    left: `${-(cover.tile % 3) * 100}%`,
+                    top: `${-Math.floor(cover.tile / 3) * 100}%`,
+                  }
+            }
+            loading={index < 4 ? 'eager' : 'lazy'}
+            decoding="async"
+            draggable={false}
+            onError={() => {
+              setFailedCover(cover.src);
+            }}
           />
         ) : (
           (worldEmoji ?? '📖')
@@ -157,7 +184,7 @@ function StoryCard({
 
       {/* Title */}
       <Text variant="caption" weight="bold" className="text-text line-clamp-2">
-        {story.titleTr}
+        {i18n.language.startsWith('tr') ? story.titleTr : story.title}
       </Text>
 
       {/* Meta */}

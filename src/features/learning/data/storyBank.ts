@@ -69,7 +69,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'Nova wakes up early. Today she is going to the farm!',
           translation: 'Nova erken uyanır. Bugün çiftliğe gidecek!',
-          imageUrl: '/story/story-w1-farm-visit-p1.jpg',
+          imageUrl: '/story/farm-v2/page-1.webp',
           audioUrl: '/audio/tts/132f7d88fe44e513.mp3',
           highlightWords: ['farm'],
           interactionType: 'none',
@@ -77,7 +77,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'On the farm there is a big dog. The dog says WOOF!',
           translation: 'Çiftlikte büyük bir köpek var. Köpek HAVO diye sesleniyor!',
-          imageUrl: '/story/story-w1-farm-visit-p2.jpg',
+          imageUrl: '/story/farm-v2/page-2.webp',
           audioUrl: '/audio/tts/ffae7f64b1117e08.mp3',
           highlightWords: ['dog'],
           interactionType: 'tap-word',
@@ -85,7 +85,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'Nova sees a cat, a horse, and a bird too.',
           translation: 'Nova ayrıca bir kedi, at ve kuş görüyor.',
-          imageUrl: '/story/story-w1-farm-visit-p3.jpg',
+          imageUrl: '/story/farm-v2/page-3.webp',
           audioUrl: '/audio/tts/f69a02469647d7be.mp3',
           highlightWords: ['cat', 'horse', 'bird'],
           interactionType: 'tap-word',
@@ -93,7 +93,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'The bird sings a happy song. Nova claps her hands.',
           translation: 'Kuş neşeli bir şarkı söylüyor. Nova ellerini çırpıyor.',
-          imageUrl: '/story/story-w1-farm-visit-p4.jpg',
+          imageUrl: '/story/farm-v2/page-4.webp',
           audioUrl: '/audio/tts/1f82e8c03d433805.mp3',
           highlightWords: ['bird'],
           interactionType: 'none',
@@ -101,7 +101,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: '"I love animals!" says Nova. Do you love animals too?',
           translation: '"Hayvanları seviyorum!" diyor Nova. Sen de hayvanları seviyor musun?',
-          imageUrl: '/story/story-w1-farm-visit-p5.jpg',
+          imageUrl: '/story/farm-v2/page-5.webp',
           audioUrl: '/audio/tts/7618dd6ac1e8735f.mp3',
           highlightWords: ['animals'],
           interactionType: 'choose-image',
