@@ -1,0 +1,602 @@
+{
+  "story-w1-bedroom": [
+    "/story/interiors-v3/story-w1-bedroom/page-1.webp",
+    "/story/interiors-v3/story-w1-bedroom/page-2.webp",
+    "/story/interiors-v3/story-w1-bedroom/page-3.webp",
+    "/story/interiors-v3/story-w1-bedroom/page-4.webp"
+  ],
+  "story-w1-chain-nova-adventure": [
+    "/story/interiors-v3/story-w1-chain-nova-adventure/page-1.webp",
+    "/story/interiors-v3/story-w1-chain-nova-adventure/page-2.webp",
+    "/story/interiors-v3/story-w1-chain-nova-adventure/page-3.webp",
+    "/story/interiors-v3/story-w1-chain-nova-adventure/page-4.webp",
+    "/story/interiors-v3/story-w1-chain-nova-adventure/page-5.webp"
+  ],
+  "story-w1-counting-stars": [
+    "/story/interiors-v3/story-w1-counting-stars/page-1.webp",
+    "/story/interiors-v3/story-w1-counting-stars/page-2.webp",
+    "/story/interiors-v3/story-w1-counting-stars/page-3.webp",
+    "/story/interiors-v3/story-w1-counting-stars/page-4.webp"
+  ],
+  "story-w1-fruit-salad": [
+    "/story/interiors-v3/story-w1-fruit-salad/page-1.webp",
+    "/story/interiors-v3/story-w1-fruit-salad/page-2.webp",
+    "/story/interiors-v3/story-w1-fruit-salad/page-3.webp",
+    "/story/interiors-v3/story-w1-fruit-salad/page-4.webp",
+    "/story/interiors-v3/story-w1-fruit-salad/page-5.webp"
+  ],
+  "story-w1-night-sounds": [
+    "/story/interiors-v3/story-w1-night-sounds/page-1.webp",
+    "/story/interiors-v3/story-w1-night-sounds/page-2.webp",
+    "/story/interiors-v3/story-w1-night-sounds/page-3.webp"
+  ],
+  "story-w1-ocean": [
+    "/story/interiors-v3/story-w1-ocean/page-1.webp",
+    "/story/interiors-v3/story-w1-ocean/page-2.webp",
+    "/story/interiors-v3/story-w1-ocean/page-3.webp",
+    "/story/interiors-v3/story-w1-ocean/page-4.webp"
+  ],
+  "story-w1-perfect-day": [
+    "/story/interiors-v3/story-w1-perfect-day/page-1.webp",
+    "/story/interiors-v3/story-w1-perfect-day/page-2.webp",
+    "/story/interiors-v3/story-w1-perfect-day/page-3.webp",
+    "/story/interiors-v3/story-w1-perfect-day/page-4.webp",
+    "/story/interiors-v3/story-w1-perfect-day/page-5.webp"
+  ],
+  "story-w1-rainbow": [
+    "/story/interiors-v3/story-w1-rainbow/page-1.webp",
+    "/story/interiors-v3/story-w1-rainbow/page-2.webp",
+    "/story/interiors-v3/story-w1-rainbow/page-3.webp",
+    "/story/interiors-v3/story-w1-rainbow/page-4.webp",
+    "/story/interiors-v3/story-w1-rainbow/page-5.webp"
+  ],
+  "story-w1-toy-box": [
+    "/story/interiors-v3/story-w1-toy-box/page-1.webp",
+    "/story/interiors-v3/story-w1-toy-box/page-2.webp",
+    "/story/interiors-v3/story-w1-toy-box/page-3.webp",
+    "/story/interiors-v3/story-w1-toy-box/page-4.webp"
+  ],
+  "story-w10-body-stretch": [
+    "/story/interiors-v3/story-w10-body-stretch/page-1.webp",
+    "/story/interiors-v3/story-w10-body-stretch/page-2.webp",
+    "/story/interiors-v3/story-w10-body-stretch/page-3.webp",
+    "/story/interiors-v3/story-w10-body-stretch/page-4.webp"
+  ],
+  "story-w10-clinic-sticker": [
+    "/story/interiors-v3/story-w10-clinic-sticker/page-1.webp",
+    "/story/interiors-v3/story-w10-clinic-sticker/page-2.webp",
+    "/story/interiors-v3/story-w10-clinic-sticker/page-3.webp",
+    "/story/interiors-v3/story-w10-clinic-sticker/page-4.webp"
+  ],
+  "story-w10-habit-stars": [
+    "/story/interiors-v3/story-w10-habit-stars/page-1.webp",
+    "/story/interiors-v3/story-w10-habit-stars/page-2.webp",
+    "/story/interiors-v3/story-w10-habit-stars/page-3.webp",
+    "/story/interiors-v3/story-w10-habit-stars/page-4.webp"
+  ],
+  "story-w10-picture-beach-day": [
+    "/story/interiors-v3/story-w10-picture-beach-day/page-1.webp",
+    "/story/interiors-v3/story-w10-picture-beach-day/page-2.webp",
+    "/story/interiors-v3/story-w10-picture-beach-day/page-3.webp",
+    "/story/interiors-v3/story-w10-picture-beach-day/page-4.webp"
+  ],
+  "story-w10-restful-cloud": [
+    "/story/interiors-v3/story-w10-restful-cloud/page-1.webp",
+    "/story/interiors-v3/story-w10-restful-cloud/page-2.webp",
+    "/story/interiors-v3/story-w10-restful-cloud/page-3.webp",
+    "/story/interiors-v3/story-w10-restful-cloud/page-4.webp"
+  ],
+  "story-w10-safety-path": [
+    "/story/interiors-v3/story-w10-safety-path/page-1.webp",
+    "/story/interiors-v3/story-w10-safety-path/page-2.webp",
+    "/story/interiors-v3/story-w10-safety-path/page-3.webp",
+    "/story/interiors-v3/story-w10-safety-path/page-4.webp"
+  ],
+  "story-w11-chain-emotions-day": [
+    "/story/interiors-v3/story-w11-chain-emotions-day/page-1.webp",
+    "/story/interiors-v3/story-w11-chain-emotions-day/page-2.webp",
+    "/story/interiors-v3/story-w11-chain-emotions-day/page-3.webp",
+    "/story/interiors-v3/story-w11-chain-emotions-day/page-4.webp",
+    "/story/interiors-v3/story-w11-chain-emotions-day/page-5.webp"
+  ],
+  "story-w11-habitat-hike": [
+    "/story/interiors-v3/story-w11-habitat-hike/page-1.webp",
+    "/story/interiors-v3/story-w11-habitat-hike/page-2.webp",
+    "/story/interiors-v3/story-w11-habitat-hike/page-3.webp",
+    "/story/interiors-v3/story-w11-habitat-hike/page-4.webp"
+  ],
+  "story-w11-rainbow-garden": [
+    "/story/interiors-v3/story-w11-rainbow-garden/page-1.webp",
+    "/story/interiors-v3/story-w11-rainbow-garden/page-2.webp",
+    "/story/interiors-v3/story-w11-rainbow-garden/page-3.webp",
+    "/story/interiors-v3/story-w11-rainbow-garden/page-4.webp"
+  ],
+  "story-w11-recycle-park": [
+    "/story/interiors-v3/story-w11-recycle-park/page-1.webp",
+    "/story/interiors-v3/story-w11-recycle-park/page-2.webp",
+    "/story/interiors-v3/story-w11-recycle-park/page-3.webp",
+    "/story/interiors-v3/story-w11-recycle-park/page-4.webp"
+  ],
+  "story-w11-river-rescue": [
+    "/story/interiors-v3/story-w11-river-rescue/page-1.webp",
+    "/story/interiors-v3/story-w11-river-rescue/page-2.webp",
+    "/story/interiors-v3/story-w11-river-rescue/page-3.webp",
+    "/story/interiors-v3/story-w11-river-rescue/page-4.webp"
+  ],
+  "story-w11-tree-roots": [
+    "/story/interiors-v3/story-w11-tree-roots/page-1.webp",
+    "/story/interiors-v3/story-w11-tree-roots/page-2.webp",
+    "/story/interiors-v3/story-w11-tree-roots/page-3.webp",
+    "/story/interiors-v3/story-w11-tree-roots/page-4.webp"
+  ],
+  "story-w12-calendar-party": [
+    "/story/interiors-v3/story-w12-calendar-party/page-1.webp",
+    "/story/interiors-v3/story-w12-calendar-party/page-2.webp",
+    "/story/interiors-v3/story-w12-calendar-party/page-3.webp",
+    "/story/interiors-v3/story-w12-calendar-party/page-4.webp"
+  ],
+  "story-w12-clock-class": [
+    "/story/interiors-v3/story-w12-clock-class/page-1.webp",
+    "/story/interiors-v3/story-w12-clock-class/page-2.webp",
+    "/story/interiors-v3/story-w12-clock-class/page-3.webp",
+    "/story/interiors-v3/story-w12-clock-class/page-4.webp"
+  ],
+  "story-w12-day-schedule": [
+    "/story/interiors-v3/story-w12-day-schedule/page-1.webp",
+    "/story/interiors-v3/story-w12-day-schedule/page-2.webp",
+    "/story/interiors-v3/story-w12-day-schedule/page-3.webp",
+    "/story/interiors-v3/story-w12-day-schedule/page-4.webp"
+  ],
+  "story-w12-hundred-race": [
+    "/story/interiors-v3/story-w12-hundred-race/page-1.webp",
+    "/story/interiors-v3/story-w12-hundred-race/page-2.webp",
+    "/story/interiors-v3/story-w12-hundred-race/page-3.webp",
+    "/story/interiors-v3/story-w12-hundred-race/page-4.webp"
+  ],
+  "story-w12-picture-space-window": [
+    "/story/interiors-v3/story-w12-picture-space-window/page-1.webp",
+    "/story/interiors-v3/story-w12-picture-space-window/page-2.webp",
+    "/story/interiors-v3/story-w12-picture-space-window/page-3.webp",
+    "/story/interiors-v3/story-w12-picture-space-window/page-4.webp"
+  ],
+  "story-w12-timeline-box": [
+    "/story/interiors-v3/story-w12-timeline-box/page-1.webp",
+    "/story/interiors-v3/story-w12-timeline-box/page-2.webp",
+    "/story/interiors-v3/story-w12-timeline-box/page-3.webp",
+    "/story/interiors-v3/story-w12-timeline-box/page-4.webp"
+  ],
+  "story-w2-at-the-market": [
+    "/story/interiors-v3/story-w2-at-the-market/page-1.webp",
+    "/story/interiors-v3/story-w2-at-the-market/page-2.webp",
+    "/story/interiors-v3/story-w2-at-the-market/page-3.webp",
+    "/story/interiors-v3/story-w2-at-the-market/page-4.webp"
+  ],
+  "story-w2-big-and-small": [
+    "/story/interiors-v3/story-w2-big-and-small/page-1.webp",
+    "/story/interiors-v3/story-w2-big-and-small/page-2.webp",
+    "/story/interiors-v3/story-w2-big-and-small/page-3.webp",
+    "/story/interiors-v3/story-w2-big-and-small/page-4.webp"
+  ],
+  "story-w2-castle-party": [
+    "/story/interiors-v3/story-w2-castle-party/page-1.webp",
+    "/story/interiors-v3/story-w2-castle-party/page-2.webp",
+    "/story/interiors-v3/story-w2-castle-party/page-3.webp",
+    "/story/interiors-v3/story-w2-castle-party/page-4.webp"
+  ],
+  "story-w2-grammar-champion": [
+    "/story/interiors-v3/story-w2-grammar-champion/page-1.webp",
+    "/story/interiors-v3/story-w2-grammar-champion/page-2.webp",
+    "/story/interiors-v3/story-w2-grammar-champion/page-3.webp",
+    "/story/interiors-v3/story-w2-grammar-champion/page-4.webp"
+  ],
+  "story-w2-hello-friend": [
+    "/story/interiors-v3/story-w2-hello-friend/page-1.webp",
+    "/story/interiors-v3/story-w2-hello-friend/page-2.webp",
+    "/story/interiors-v3/story-w2-hello-friend/page-3.webp",
+    "/story/interiors-v3/story-w2-hello-friend/page-4.webp"
+  ],
+  "story-w2-jump-and-run": [
+    "/story/interiors-v3/story-w2-jump-and-run/page-1.webp",
+    "/story/interiors-v3/story-w2-jump-and-run/page-2.webp",
+    "/story/interiors-v3/story-w2-jump-and-run/page-3.webp",
+    "/story/interiors-v3/story-w2-jump-and-run/page-4.webp"
+  ],
+  "story-w2-meet-my-family": [
+    "/story/interiors-v3/story-w2-meet-my-family/page-1.webp",
+    "/story/interiors-v3/story-w2-meet-my-family/page-2.webp",
+    "/story/interiors-v3/story-w2-meet-my-family/page-3.webp",
+    "/story/interiors-v3/story-w2-meet-my-family/page-4.webp"
+  ],
+  "story-w2-mystery-picnic": [
+    "/story/interiors-v3/story-w2-mystery-picnic/page-1.webp",
+    "/story/interiors-v3/story-w2-mystery-picnic/page-2.webp",
+    "/story/interiors-v3/story-w2-mystery-picnic/page-3.webp",
+    "/story/interiors-v3/story-w2-mystery-picnic/page-4.webp"
+  ],
+  "story-w2-picture-farm-morning": [
+    "/story/interiors-v3/story-w2-picture-farm-morning/page-1.webp",
+    "/story/interiors-v3/story-w2-picture-farm-morning/page-2.webp",
+    "/story/interiors-v3/story-w2-picture-farm-morning/page-3.webp",
+    "/story/interiors-v3/story-w2-picture-farm-morning/page-4.webp"
+  ],
+  "story-w2-please-and-thank-you": [
+    "/story/interiors-v3/story-w2-please-and-thank-you/page-1.webp",
+    "/story/interiors-v3/story-w2-please-and-thank-you/page-2.webp",
+    "/story/interiors-v3/story-w2-please-and-thank-you/page-3.webp",
+    "/story/interiors-v3/story-w2-please-and-thank-you/page-4.webp"
+  ],
+  "story-w2-rhyme-cat-hat": [
+    "/story/interiors-v3/story-w2-rhyme-cat-hat/page-1.webp",
+    "/story/interiors-v3/story-w2-rhyme-cat-hat/page-2.webp",
+    "/story/interiors-v3/story-w2-rhyme-cat-hat/page-3.webp"
+  ],
+  "story-w2-yummy-breakfast": [
+    "/story/interiors-v3/story-w2-yummy-breakfast/page-1.webp",
+    "/story/interiors-v3/story-w2-yummy-breakfast/page-2.webp",
+    "/story/interiors-v3/story-w2-yummy-breakfast/page-3.webp",
+    "/story/interiors-v3/story-w2-yummy-breakfast/page-4.webp"
+  ],
+  "story-w3-chain-forest-path": [
+    "/story/interiors-v3/story-w3-chain-forest-path/page-1.webp",
+    "/story/interiors-v3/story-w3-chain-forest-path/page-2.webp",
+    "/story/interiors-v3/story-w3-chain-forest-path/page-3.webp",
+    "/story/interiors-v3/story-w3-chain-forest-path/page-4.webp",
+    "/story/interiors-v3/story-w3-chain-forest-path/page-5.webp"
+  ],
+  "story-w3-first-day": [
+    "/story/interiors-v3/story-w3-first-day/page-1.webp",
+    "/story/interiors-v3/story-w3-first-day/page-2.webp",
+    "/story/interiors-v3/story-w3-first-day/page-3.webp",
+    "/story/interiors-v3/story-w3-first-day/page-4.webp"
+  ],
+  "story-w3-forest-adventure": [
+    "/story/interiors-v3/story-w3-forest-adventure/page-1.webp",
+    "/story/interiors-v3/story-w3-forest-adventure/page-2.webp",
+    "/story/interiors-v3/story-w3-forest-adventure/page-3.webp",
+    "/story/interiors-v3/story-w3-forest-adventure/page-4.webp"
+  ],
+  "story-w3-four-seasons": [
+    "/story/interiors-v3/story-w3-four-seasons/page-1.webp",
+    "/story/interiors-v3/story-w3-four-seasons/page-2.webp",
+    "/story/interiors-v3/story-w3-four-seasons/page-3.webp",
+    "/story/interiors-v3/story-w3-four-seasons/page-4.webp"
+  ],
+  "story-w3-getting-around": [
+    "/story/interiors-v3/story-w3-getting-around/page-1.webp",
+    "/story/interiors-v3/story-w3-getting-around/page-2.webp",
+    "/story/interiors-v3/story-w3-getting-around/page-3.webp",
+    "/story/interiors-v3/story-w3-getting-around/page-4.webp"
+  ],
+  "story-w3-house-tour": [
+    "/story/interiors-v3/story-w3-house-tour/page-1.webp",
+    "/story/interiors-v3/story-w3-house-tour/page-2.webp",
+    "/story/interiors-v3/story-w3-house-tour/page-3.webp",
+    "/story/interiors-v3/story-w3-house-tour/page-4.webp"
+  ],
+  "story-w3-missing-words": [
+    "/story/interiors-v3/story-w3-missing-words/page-1.webp",
+    "/story/interiors-v3/story-w3-missing-words/page-2.webp",
+    "/story/interiors-v3/story-w3-missing-words/page-3.webp",
+    "/story/interiors-v3/story-w3-missing-words/page-4.webp"
+  ],
+  "story-w3-my-morning": [
+    "/story/interiors-v3/story-w3-my-morning/page-1.webp",
+    "/story/interiors-v3/story-w3-my-morning/page-2.webp",
+    "/story/interiors-v3/story-w3-my-morning/page-3.webp",
+    "/story/interiors-v3/story-w3-my-morning/page-4.webp"
+  ],
+  "story-w3-party-outfit": [
+    "/story/interiors-v3/story-w3-party-outfit/page-1.webp",
+    "/story/interiors-v3/story-w3-party-outfit/page-2.webp",
+    "/story/interiors-v3/story-w3-party-outfit/page-3.webp",
+    "/story/interiors-v3/story-w3-party-outfit/page-4.webp"
+  ],
+  "story-w3-rainy-day": [
+    "/story/interiors-v3/story-w3-rainy-day/page-1.webp",
+    "/story/interiors-v3/story-w3-rainy-day/page-2.webp",
+    "/story/interiors-v3/story-w3-rainy-day/page-3.webp",
+    "/story/interiors-v3/story-w3-rainy-day/page-4.webp"
+  ],
+  "story-w3-seeds": [
+    "/story/interiors-v3/story-w3-seeds/page-1.webp",
+    "/story/interiors-v3/story-w3-seeds/page-2.webp",
+    "/story/interiors-v3/story-w3-seeds/page-3.webp",
+    "/story/interiors-v3/story-w3-seeds/page-4.webp"
+  ],
+  "story-w3-train-ride": [
+    "/story/interiors-v3/story-w3-train-ride/page-1.webp",
+    "/story/interiors-v3/story-w3-train-ride/page-2.webp",
+    "/story/interiors-v3/story-w3-train-ride/page-3.webp",
+    "/story/interiors-v3/story-w3-train-ride/page-4.webp"
+  ],
+  "story-w3-what-to-wear": [
+    "/story/interiors-v3/story-w3-what-to-wear/page-1.webp",
+    "/story/interiors-v3/story-w3-what-to-wear/page-2.webp",
+    "/story/interiors-v3/story-w3-what-to-wear/page-3.webp",
+    "/story/interiors-v3/story-w3-what-to-wear/page-4.webp"
+  ],
+  "story-w3-wonderful-day": [
+    "/story/interiors-v3/story-w3-wonderful-day/page-1.webp",
+    "/story/interiors-v3/story-w3-wonderful-day/page-2.webp",
+    "/story/interiors-v3/story-w3-wonderful-day/page-3.webp",
+    "/story/interiors-v3/story-w3-wonderful-day/page-4.webp"
+  ],
+  "story-w4-adventure-in-the-city": [
+    "/story/interiors-v3/story-w4-adventure-in-the-city/page-1.webp",
+    "/story/interiors-v3/story-w4-adventure-in-the-city/page-2.webp",
+    "/story/interiors-v3/story-w4-adventure-in-the-city/page-3.webp",
+    "/story/interiors-v3/story-w4-adventure-in-the-city/page-4.webp"
+  ],
+  "story-w4-big-city-map": [
+    "/story/interiors-v3/story-w4-big-city-map/page-1.webp",
+    "/story/interiors-v3/story-w4-big-city-map/page-2.webp",
+    "/story/interiors-v3/story-w4-big-city-map/page-3.webp",
+    "/story/interiors-v3/story-w4-big-city-map/page-4.webp"
+  ],
+  "story-w4-game-day": [
+    "/story/interiors-v3/story-w4-game-day/page-1.webp",
+    "/story/interiors-v3/story-w4-game-day/page-2.webp",
+    "/story/interiors-v3/story-w4-game-day/page-3.webp",
+    "/story/interiors-v3/story-w4-game-day/page-4.webp"
+  ],
+  "story-w4-helpers-in-our-town": [
+    "/story/interiors-v3/story-w4-helpers-in-our-town/page-1.webp",
+    "/story/interiors-v3/story-w4-helpers-in-our-town/page-2.webp",
+    "/story/interiors-v3/story-w4-helpers-in-our-town/page-3.webp",
+    "/story/interiors-v3/story-w4-helpers-in-our-town/page-4.webp"
+  ],
+  "story-w4-my-favourite-sport": [
+    "/story/interiors-v3/story-w4-my-favourite-sport/page-1.webp",
+    "/story/interiors-v3/story-w4-my-favourite-sport/page-2.webp",
+    "/story/interiors-v3/story-w4-my-favourite-sport/page-3.webp",
+    "/story/interiors-v3/story-w4-my-favourite-sport/page-4.webp"
+  ],
+  "story-w4-nova-goes-to-town": [
+    "/story/interiors-v3/story-w4-nova-goes-to-town/page-1.webp",
+    "/story/interiors-v3/story-w4-nova-goes-to-town/page-2.webp",
+    "/story/interiors-v3/story-w4-nova-goes-to-town/page-3.webp",
+    "/story/interiors-v3/story-w4-nova-goes-to-town/page-4.webp"
+  ],
+  "story-w4-novas-busy-day": [
+    "/story/interiors-v3/story-w4-novas-busy-day/page-1.webp",
+    "/story/interiors-v3/story-w4-novas-busy-day/page-2.webp",
+    "/story/interiors-v3/story-w4-novas-busy-day/page-3.webp",
+    "/story/interiors-v3/story-w4-novas-busy-day/page-4.webp"
+  ],
+  "story-w4-two-paths": [
+    "/story/interiors-v3/story-w4-two-paths/page-1.webp",
+    "/story/interiors-v3/story-w4-two-paths/page-2.webp",
+    "/story/interiors-v3/story-w4-two-paths/page-3.webp"
+  ],
+  "story-w4-what-time-is-it": [
+    "/story/interiors-v3/story-w4-what-time-is-it/page-1.webp",
+    "/story/interiors-v3/story-w4-what-time-is-it/page-2.webp",
+    "/story/interiors-v3/story-w4-what-time-is-it/page-3.webp",
+    "/story/interiors-v3/story-w4-what-time-is-it/page-4.webp"
+  ],
+  "story-w4-when-i-grow-up": [
+    "/story/interiors-v3/story-w4-when-i-grow-up/page-1.webp",
+    "/story/interiors-v3/story-w4-when-i-grow-up/page-2.webp",
+    "/story/interiors-v3/story-w4-when-i-grow-up/page-3.webp",
+    "/story/interiors-v3/story-w4-when-i-grow-up/page-4.webp"
+  ],
+  "story-w5-chain-school-day": [
+    "/story/interiors-v3/story-w5-chain-school-day/page-1.webp",
+    "/story/interiors-v3/story-w5-chain-school-day/page-2.webp",
+    "/story/interiors-v3/story-w5-chain-school-day/page-3.webp",
+    "/story/interiors-v3/story-w5-chain-school-day/page-4.webp",
+    "/story/interiors-v3/story-w5-chain-school-day/page-5.webp"
+  ],
+  "story-w5-code-with-nova": [
+    "/story/interiors-v3/story-w5-code-with-nova/page-1.webp",
+    "/story/interiors-v3/story-w5-code-with-nova/page-2.webp",
+    "/story/interiors-v3/story-w5-code-with-nova/page-3.webp"
+  ],
+  "story-w5-how-plants-grow": [
+    "/story/interiors-v3/story-w5-how-plants-grow/page-1.webp",
+    "/story/interiors-v3/story-w5-how-plants-grow/page-2.webp",
+    "/story/interiors-v3/story-w5-how-plants-grow/page-3.webp",
+    "/story/interiors-v3/story-w5-how-plants-grow/page-4.webp"
+  ],
+  "story-w5-lab-experiment": [
+    "/story/interiors-v3/story-w5-lab-experiment/page-1.webp",
+    "/story/interiors-v3/story-w5-lab-experiment/page-2.webp",
+    "/story/interiors-v3/story-w5-lab-experiment/page-3.webp",
+    "/story/interiors-v3/story-w5-lab-experiment/page-4.webp"
+  ],
+  "story-w5-nova-in-the-lab": [
+    "/story/interiors-v3/story-w5-nova-in-the-lab/page-1.webp",
+    "/story/interiors-v3/story-w5-nova-in-the-lab/page-2.webp",
+    "/story/interiors-v3/story-w5-nova-in-the-lab/page-3.webp",
+    "/story/interiors-v3/story-w5-nova-in-the-lab/page-4.webp"
+  ],
+  "story-w5-space-explorer": [
+    "/story/interiors-v3/story-w5-space-explorer/page-1.webp",
+    "/story/interiors-v3/story-w5-space-explorer/page-2.webp",
+    "/story/interiors-v3/story-w5-space-explorer/page-3.webp"
+  ],
+  "story-w5-the-magnet-mystery": [
+    "/story/interiors-v3/story-w5-the-magnet-mystery/page-1.webp",
+    "/story/interiors-v3/story-w5-the-magnet-mystery/page-2.webp",
+    "/story/interiors-v3/story-w5-the-magnet-mystery/page-3.webp"
+  ],
+  "story-w5-the-robot-helper": [
+    "/story/interiors-v3/story-w5-the-robot-helper/page-1.webp",
+    "/story/interiors-v3/story-w5-the-robot-helper/page-2.webp",
+    "/story/interiors-v3/story-w5-the-robot-helper/page-3.webp"
+  ],
+  "story-w5-the-water-cycle": [
+    "/story/interiors-v3/story-w5-the-water-cycle/page-1.webp",
+    "/story/interiors-v3/story-w5-the-water-cycle/page-2.webp",
+    "/story/interiors-v3/story-w5-the-water-cycle/page-3.webp"
+  ],
+  "story-w5-the-weather-chart": [
+    "/story/interiors-v3/story-w5-the-weather-chart/page-1.webp",
+    "/story/interiors-v3/story-w5-the-weather-chart/page-2.webp",
+    "/story/interiors-v3/story-w5-the-weather-chart/page-3.webp"
+  ],
+  "story-w6-design-a-planet": [
+    "/story/interiors-v3/story-w6-design-a-planet/page-1.webp",
+    "/story/interiors-v3/story-w6-design-a-planet/page-2.webp",
+    "/story/interiors-v3/story-w6-design-a-planet/page-3.webp"
+  ],
+  "story-w6-gravity-game": [
+    "/story/interiors-v3/story-w6-gravity-game/page-1.webp",
+    "/story/interiors-v3/story-w6-gravity-game/page-2.webp",
+    "/story/interiors-v3/story-w6-gravity-game/page-3.webp"
+  ],
+  "story-w6-journey-to-the-stars": [
+    "/story/interiors-v3/story-w6-journey-to-the-stars/page-1.webp",
+    "/story/interiors-v3/story-w6-journey-to-the-stars/page-2.webp",
+    "/story/interiors-v3/story-w6-journey-to-the-stars/page-3.webp",
+    "/story/interiors-v3/story-w6-journey-to-the-stars/page-4.webp"
+  ],
+  "story-w6-mission-complete": [
+    "/story/interiors-v3/story-w6-mission-complete/page-1.webp",
+    "/story/interiors-v3/story-w6-mission-complete/page-2.webp",
+    "/story/interiors-v3/story-w6-mission-complete/page-3.webp"
+  ],
+  "story-w6-satellite-mission": [
+    "/story/interiors-v3/story-w6-satellite-mission/page-1.webp",
+    "/story/interiors-v3/story-w6-satellite-mission/page-2.webp",
+    "/story/interiors-v3/story-w6-satellite-mission/page-3.webp"
+  ],
+  "story-w6-the-alien-friend": [
+    "/story/interiors-v3/story-w6-the-alien-friend/page-1.webp",
+    "/story/interiors-v3/story-w6-the-alien-friend/page-2.webp",
+    "/story/interiors-v3/story-w6-the-alien-friend/page-3.webp"
+  ],
+  "story-w6-the-black-hole": [
+    "/story/interiors-v3/story-w6-the-black-hole/page-1.webp",
+    "/story/interiors-v3/story-w6-the-black-hole/page-2.webp",
+    "/story/interiors-v3/story-w6-the-black-hole/page-3.webp"
+  ],
+  "story-w6-time-traveller": [
+    "/story/interiors-v3/story-w6-time-traveller/page-1.webp",
+    "/story/interiors-v3/story-w6-time-traveller/page-2.webp",
+    "/story/interiors-v3/story-w6-time-traveller/page-3.webp",
+    "/story/interiors-v3/story-w6-time-traveller/page-4.webp"
+  ],
+  "story-w7-airport-lost-tag": [
+    "/story/interiors-v3/story-w7-airport-lost-tag/page-1.webp",
+    "/story/interiors-v3/story-w7-airport-lost-tag/page-2.webp",
+    "/story/interiors-v3/story-w7-airport-lost-tag/page-3.webp",
+    "/story/interiors-v3/story-w7-airport-lost-tag/page-4.webp"
+  ],
+  "story-w7-beach-treasure": [
+    "/story/interiors-v3/story-w7-beach-treasure/page-1.webp",
+    "/story/interiors-v3/story-w7-beach-treasure/page-2.webp",
+    "/story/interiors-v3/story-w7-beach-treasure/page-3.webp",
+    "/story/interiors-v3/story-w7-beach-treasure/page-4.webp"
+  ],
+  "story-w7-camping-owl": [
+    "/story/interiors-v3/story-w7-camping-owl/page-1.webp",
+    "/story/interiors-v3/story-w7-camping-owl/page-2.webp",
+    "/story/interiors-v3/story-w7-camping-owl/page-3.webp",
+    "/story/interiors-v3/story-w7-camping-owl/page-4.webp"
+  ],
+  "story-w7-chain-city-ride": [
+    "/story/interiors-v3/story-w7-chain-city-ride/page-1.webp",
+    "/story/interiors-v3/story-w7-chain-city-ride/page-2.webp",
+    "/story/interiors-v3/story-w7-chain-city-ride/page-3.webp",
+    "/story/interiors-v3/story-w7-chain-city-ride/page-4.webp",
+    "/story/interiors-v3/story-w7-chain-city-ride/page-5.webp"
+  ],
+  "story-w7-hotel-balcony": [
+    "/story/interiors-v3/story-w7-hotel-balcony/page-1.webp",
+    "/story/interiors-v3/story-w7-hotel-balcony/page-2.webp",
+    "/story/interiors-v3/story-w7-hotel-balcony/page-3.webp",
+    "/story/interiors-v3/story-w7-hotel-balcony/page-4.webp"
+  ],
+  "story-w7-picture-busy-city": [
+    "/story/interiors-v3/story-w7-picture-busy-city/page-1.webp",
+    "/story/interiors-v3/story-w7-picture-busy-city/page-2.webp",
+    "/story/interiors-v3/story-w7-picture-busy-city/page-3.webp",
+    "/story/interiors-v3/story-w7-picture-busy-city/page-4.webp"
+  ],
+  "story-w7-roadtrip-postcard": [
+    "/story/interiors-v3/story-w7-roadtrip-postcard/page-1.webp",
+    "/story/interiors-v3/story-w7-roadtrip-postcard/page-2.webp",
+    "/story/interiors-v3/story-w7-roadtrip-postcard/page-3.webp",
+    "/story/interiors-v3/story-w7-roadtrip-postcard/page-4.webp"
+  ],
+  "story-w8-birthday-bakery": [
+    "/story/interiors-v3/story-w8-birthday-bakery/page-1.webp",
+    "/story/interiors-v3/story-w8-birthday-bakery/page-2.webp",
+    "/story/interiors-v3/story-w8-birthday-bakery/page-3.webp",
+    "/story/interiors-v3/story-w8-birthday-bakery/page-4.webp"
+  ],
+  "story-w8-breakfast-rhyme": [
+    "/story/interiors-v3/story-w8-breakfast-rhyme/page-1.webp",
+    "/story/interiors-v3/story-w8-breakfast-rhyme/page-2.webp",
+    "/story/interiors-v3/story-w8-breakfast-rhyme/page-3.webp",
+    "/story/interiors-v3/story-w8-breakfast-rhyme/page-4.webp"
+  ],
+  "story-w8-chain-cooking-magic": [
+    "/story/interiors-v3/story-w8-chain-cooking-magic/page-1.webp",
+    "/story/interiors-v3/story-w8-chain-cooking-magic/page-2.webp",
+    "/story/interiors-v3/story-w8-chain-cooking-magic/page-3.webp",
+    "/story/interiors-v3/story-w8-chain-cooking-magic/page-4.webp",
+    "/story/interiors-v3/story-w8-chain-cooking-magic/page-5.webp"
+  ],
+  "story-w8-kitchen-helper": [
+    "/story/interiors-v3/story-w8-kitchen-helper/page-1.webp",
+    "/story/interiors-v3/story-w8-kitchen-helper/page-2.webp",
+    "/story/interiors-v3/story-w8-kitchen-helper/page-3.webp",
+    "/story/interiors-v3/story-w8-kitchen-helper/page-4.webp"
+  ],
+  "story-w8-market-list": [
+    "/story/interiors-v3/story-w8-market-list/page-1.webp",
+    "/story/interiors-v3/story-w8-market-list/page-2.webp",
+    "/story/interiors-v3/story-w8-market-list/page-3.webp",
+    "/story/interiors-v3/story-w8-market-list/page-4.webp"
+  ],
+  "story-w8-picture-market-day": [
+    "/story/interiors-v3/story-w8-picture-market-day/page-1.webp",
+    "/story/interiors-v3/story-w8-picture-market-day/page-2.webp",
+    "/story/interiors-v3/story-w8-picture-market-day/page-3.webp",
+    "/story/interiors-v3/story-w8-picture-market-day/page-4.webp"
+  ],
+  "story-w8-recipe-rainbow": [
+    "/story/interiors-v3/story-w8-recipe-rainbow/page-1.webp",
+    "/story/interiors-v3/story-w8-recipe-rainbow/page-2.webp",
+    "/story/interiors-v3/story-w8-recipe-rainbow/page-3.webp",
+    "/story/interiors-v3/story-w8-recipe-rainbow/page-4.webp"
+  ],
+  "story-w9-band-room": [
+    "/story/interiors-v3/story-w9-band-room/page-1.webp",
+    "/story/interiors-v3/story-w9-band-room/page-2.webp",
+    "/story/interiors-v3/story-w9-band-room/page-3.webp",
+    "/story/interiors-v3/story-w9-band-room/page-4.webp"
+  ],
+  "story-w9-museum-map": [
+    "/story/interiors-v3/story-w9-museum-map/page-1.webp",
+    "/story/interiors-v3/story-w9-museum-map/page-2.webp",
+    "/story/interiors-v3/story-w9-museum-map/page-3.webp",
+    "/story/interiors-v3/story-w9-museum-map/page-4.webp"
+  ],
+  "story-w9-picture-art-studio": [
+    "/story/interiors-v3/story-w9-picture-art-studio/page-1.webp",
+    "/story/interiors-v3/story-w9-picture-art-studio/page-2.webp",
+    "/story/interiors-v3/story-w9-picture-art-studio/page-3.webp",
+    "/story/interiors-v3/story-w9-picture-art-studio/page-4.webp"
+  ],
+  "story-w9-puppet-light": [
+    "/story/interiors-v3/story-w9-puppet-light/page-1.webp",
+    "/story/interiors-v3/story-w9-puppet-light/page-2.webp",
+    "/story/interiors-v3/story-w9-puppet-light/page-3.webp",
+    "/story/interiors-v3/story-w9-puppet-light/page-4.webp"
+  ],
+  "story-w9-studio-colors": [
+    "/story/interiors-v3/story-w9-studio-colors/page-1.webp",
+    "/story/interiors-v3/story-w9-studio-colors/page-2.webp",
+    "/story/interiors-v3/story-w9-studio-colors/page-3.webp",
+    "/story/interiors-v3/story-w9-studio-colors/page-4.webp"
+  ],
+  "story-w9-talent-ribbon": [
+    "/story/interiors-v3/story-w9-talent-ribbon/page-1.webp",
+    "/story/interiors-v3/story-w9-talent-ribbon/page-2.webp",
+    "/story/interiors-v3/story-w9-talent-ribbon/page-3.webp",
+    "/story/interiors-v3/story-w9-talent-ribbon/page-4.webp"
+  ]
+}
