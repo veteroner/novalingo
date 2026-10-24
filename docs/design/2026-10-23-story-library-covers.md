@@ -1,5 +1,7 @@
 # Resimli hikâye kütüphanesi
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 23 Ekim 2026.
 
 Kütüphane daha önce yalnız `/story/nova-v2/` altındaki özel hikâyenin görselini gösteriyor, diğer kartlarda dünya emojisi kullanıyordu. Eski sayfa JPEG'lerinin çoğu metinli yer tutucuydu. Yeni kapaklar sayfa medyasından bağımsızdır; hikâye içeriği veya sesleri değiştirilmedi.

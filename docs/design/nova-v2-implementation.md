@@ -1,5 +1,7 @@
 # Nova v2 görsel pilotu
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 21 Ekim 2026. Uygulanan kapsam: ortak Nova karakteri, ana ekran, sohbet, ortak tema/buton/kart/navigasyon sistemi ve `story-w2-nova-is-happy` hikâyesinin dört sayfası.
 
 ## Çalışan değişiklikler

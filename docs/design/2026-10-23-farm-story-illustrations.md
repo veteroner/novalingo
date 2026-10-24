@@ -1,5 +1,7 @@
 # Çiftlik hikâyesinin beş sahnesi
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 23 Ekim 2026.
 
 `story-w1-farm-visit` içindeki metinli yer tutucuların yerine beş ayrı, metinsiz çizim eklendi. Sıra: Nova sabah uyanır; köpekle tanışır; kedi, at ve kuşu görür; şarkı söyleyen kuşu alkışlar; hayvanlarla vedalaşır. Aynı Nova, köpek, kedi, at, kuş ve çiftlik görünümü referans görsellerle korundu. İlk tanışılan hayvanın köpek olması soru verisiyle uyumludur.

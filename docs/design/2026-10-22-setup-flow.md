@@ -1,5 +1,7 @@
 # İlk başlangıç ve profil akışının sadeleştirilmesi
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 22 Ekim 2026 — PR #19, `codex/nova-visual-v2`.
 
 ## Önce / sonra

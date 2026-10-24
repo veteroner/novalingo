@@ -1,5 +1,7 @@
 # Nova v2 üretim istemleri
 
+> 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.
+
 Yöntem: yerleşik `image_gen.imagegen`. Karakter kimlik referansı: `nova-v2-direction.png` içindeki büyük soldaki baykuş. Sonraki görsellerin kimlik referansı üretilen nötr Nova kesiti; uygulamada `public/nova/nova-idle.webp`.
 
 Aşağıdaki istem seti üretimde kullanılan sahne ve poz koşullarını kaydeder. Bütün üretimler tek karakter kimliği, aynı indigo/krem/amber/mint paleti, yumuşak mat 3D çizgi film görünümü ve özgün yüz oranlarını korumayı ister. Tüketilen çıktılar WebP olarak kodlanmıştır; kaynak PNG'ler ImageGen çıktılarında korunmuştur.

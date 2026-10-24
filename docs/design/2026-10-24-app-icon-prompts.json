@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "icon": {
+    "prompt": "Use case: logo-brand. Asset type: production NovaLingo app icon, square 1024x1024, fully opaque edge-to-edge background, no rounded corners baked in. Reference image: existing NEW Nova mascot identity only, preserve this exact friendly indigo/purple owl, warm cream facial discs, large dark blue violet eyes, small amber beak, subtle teal ear and wing feather accents. Create a polished close-up portrait with head and upper chest centered, symmetrical welcoming face and slight natural head tilt, both ear tufts visible, simple sculpted feather shapes readable at 32px. The face is the focus, no feet, no hands. Soft three-dimensional illustrated materials matching reference, not flat clip art. Background: quiet deep indigo #5145C8 with a subtle lighter violet glow behind the cream face, strong clean silhouette. Face and eyes inside central 65% so circular masks retain identity; outer feathers may occupy 80%. No graduation cap, no letters, no text, no border, no stars, no scenery, no tiny decorative objects, no platform/device mockup. Keep friendly original Nova identity and crisp small-scale readability.",
+    "asset": "assets/branding/nova-app-icon-v2.png"
+  },
+  "adaptive": {
+    "prompt": "Use case: background-extraction. Edit target: the attached Nova app icon. Make the Android adaptive foreground asset of this EXACT same illustrated owl portrait. Remove the indigo/violet background to genuine transparency, keeping the owl identity, pose, face, colors, feather details, eye highlights and gentle expression unchanged. Square canvas. Scale the entire isolated portrait down uniformly so its complete silhouette is comfortably contained inside the central 58% width AND central 58% height of the canvas, centered. Transparent empty padding on all four sides; no feather touches an edge. Keep upper-chest/bust silhouette with a clean curved feather edge at its bottom, no artificial rectangular crop. Do not introduce feet or new objects. No background, halo, cast shadow, border, letters or extra character. This is a technical adaptive foreground layer, not an icon mockup. Preserve the supplied owl design.",
+    "asset": "assets/branding/nova-adaptive-foreground-v2.png"
+  }
+}
