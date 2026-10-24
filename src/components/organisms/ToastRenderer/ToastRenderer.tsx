@@ -25,7 +25,11 @@ export function ToastRenderer() {
   const removeToast = useUIStore((s) => s.removeToast);
 
   return (
-    <div className="pointer-events-none fixed top-4 right-0 left-0 z-100 flex flex-col items-center gap-2 px-4">
+    <div
+      className="pointer-events-none fixed right-0 left-0 z-100 flex flex-col items-center gap-2 px-4"
+      // Çentik/ada altında kalmasın: güvenli alan + 16px.
+      style={{ top: 'calc(var(--spacing-safe-top) + 1rem)' }}
+    >
       <AnimatePresence mode="popLayout">
         {toasts.map((toast) => {
           const style = typeStyles[toast.type] ?? defaultStyle;
