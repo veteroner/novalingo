@@ -47,7 +47,7 @@ export function ChildNameCard({ childId, currentName }: ChildNameCardProps) {
             setName(e.target.value);
             setSaved(false);
           }}
-          className="focus:border-nova-blue h-12 min-w-0 flex-1 rounded-xl border-2 border-gray-200 bg-white px-3 font-semibold focus:outline-none"
+          className="border-border bg-surface text-text focus:border-primary h-12 min-w-0 flex-1 rounded-xl border-2 px-3 font-semibold focus:outline-none"
         />
         <Button
           variant="primary"

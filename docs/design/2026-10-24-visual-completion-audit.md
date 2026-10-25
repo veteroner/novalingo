@@ -1,5 +1,17 @@
 # NovaLingo görsel çalışmalarının güncel durumu
 
+## Güncel durum — 25 Ekim 2026
+
+Aşağıdaki ilk tablolar **24 Ekim tarihindeki inceleme kaydıdır**. Güncel sonuçlar:
+
+- 104 hikâyenin 412 iç sahnesi ve seçimli hikâyelerin 36 devam resmi tamamlandı. [Hikâye kapsamı ve örnek iOS kontrolleri](2026-10-25-all-story-interiors.md).
+- Nova sekiz ayrı görselle on durumu gösterir; ortak yeni PNG hata yedeği vardır. [İfadeler](2026-10-25-nova-expressions.md). Android açılışı güncellendi ve evrim ilk andan geçilebilir. [Akış/başlangıç](2026-10-25-nova-flow-polish.md).
+- Mağaza/ödül ikonları, ortak küçük etiketler ve etkinlik ödül izolasyonu tamamlandı. [Ödül/mağaza](2026-10-25-reward-shop-polish.md). Sürekli hareketler belge/native arka planı ve OS hareket tercihini izler. [Hareket](2026-10-25-motion-lifecycle.md).
+- Kütüphane/sohbetin kalan 10px etiketleri, özel yardımcı yazı renkleri, ana ekran etkinlik kartı ve günlük çark okunabilirliği düzeltildi. Çarkın seri dondurma birimi ve tekrarlanan dönüşte yanlış dilimde durması da düzeltildi. [Son okunabilirlik kontrolü](2026-10-25-readability-followup.md).
+- **Açık:** gerçek 3D/rig (kullanıcı kararıyla ertelendi), gerçek göz kırpma/nefes/gaga-ses eşlemesi, her dünyaya ayrı tam arka plan sahnesi, bütün özel durumların kontrast ve ekran okuyucu envanteri; Android manuel/fiziksel/düşük donanım, performans ve gerçek hesap/ödeme/ses uçtan uca doğrulaması. Kod/PR durumu mağaza yayını anlamına gelmez.
+
+## 24 Ekim tarihli denetim kaydı
+
 24 Ekim 2026. **Hayır, ilk incelemedeki bütün hedefler tamamlanmadı.** Ortak görsel dil, öğrenme yolu ve sade başlangıç akışı uygulandı; ileri karakter animasyonu, katalogdaki tüm iç çizimler ve tam cihaz doğrulaması açık kaldı.
 
 Bu karşılaştırma bu sohbette hazırlanan `docs/design/` altındaki önceki **10 Markdown dosyasını** kapsar. Eski belgeler tarihli uygulama/inceleme kayıtlarıdır; içlerindeki eski test sayıları güncel toplam değildir. Ürün mimarisi, ödeme, müfredat ve konuşma için depoda bulunan diğer ekip planlarının tümünün bittiği iddia edilmez. İnceleme dalı `codex/story-library-covers`, başlangıç commit'i `ddeca50`.
@@ -103,3 +115,7 @@ Mağaza/koleksiyon kategori ikonları, ürün vektörleri ve bakiye/seviye/başa
 ## 25 Ekim 2026 — arka plan hareketleri ve hareket azaltma
 
 Auth dahil ortak kökte belge görünürlüğü/native etkinlik ve OS hareket tercihi izlenir. Sürekli Framer/CSS döngüleri arka planda veya hareket azaltmada sabitlenir; kartın arkası açıkken ön yüz nabzı durur. Yanıt/kart durumu korunur; ders ve ses sayaçları değiştirilmez. Evrim ortasında hareketi kapatma ve XP sayacının dönüşte baştan sayması da ele alındı. Gerçek iOS arka plan→dönüş ve OS tercihi açıkken kart tamamlama kanıtları, 36 ilgili test ve kapsam sınırları [hareket raporunda](2026-10-25-motion-lifecycle.md). Android manuel/fiziksel cihaz, performans ölçümü ve bütün sonlu varyantların canlı yeniden planlanması açık; önceki tarihli tablolar güncel tamamlanma iddiası değildir.
+
+## 25 Ekim 2026 — kalan etiketler, etkinlik kartı ve çark
+
+Kütüphane/sohbetin 10px etiketleri 12px'e, dünya filtreleri 44px dokunma hedefine taşındı. Özel ipucu/hata yazıları ve ebeveyn ad alanı tema renklerini kullanır. Etkinlik ana ekran kartı, sayfayla aynı koyu kaplama ve yerelleştirmeyi kullanır. Çark yazıları büyütüldü/koyulaştırıldı; seri dondurma birimi ve ikinci dönüşün yanlış konumu düzeltildi. [77 ilgili test, renk ölçümleri, iOS kanıtları ve sınırlar](2026-10-25-readability-followup.md). Her metin/durumun veya fiziksel cihaz denetiminin bittiği iddia edilmez.

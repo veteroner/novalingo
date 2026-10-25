@@ -1,6 +1,9 @@
 // Local visual QA entry. Vite only builds index.html; this file is not a production route.
 import '../src/styles/globals.css';
 import '../src/i18n';
+import { SeasonalEventBanner } from '../src/features/gamification/components/SeasonalEventBanner';
+import { DailyWheel } from '../src/components/organisms/DailyWheel';
+import { ChildNameCard } from '../src/features/parent/components/ChildNameCard';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Capacitor } from '@capacitor/core';
 import { AppMotionProvider } from '../src/app/providers/AppMotionProvider';
@@ -258,6 +261,48 @@ function RewardFixture() {
   );
 }
 
+function ReadabilityFixture() {
+  const rewards = [
+    ['10 ⭐', 'stars', 10],
+    ['25 ⭐', 'stars', 25],
+    ['50 ⭐', 'stars', 50],
+    ['20 XP', 'xp', 20],
+    ['50 XP', 'xp', 50],
+    ['5 💎', 'gems', 5],
+    ['10 💎', 'gems', 10],
+    ['1 🧊', 'streak_freeze', 1],
+  ] as const;
+  const [spins, setSpins] = useState(0);
+  return (
+    <div className="mx-auto max-w-md space-y-6 p-4">
+      <SeasonalEventBanner />
+      <section className="bg-surface border-border rounded-2xl border p-4">
+        <p className="text-text-secondary mb-3 text-sm">Yerel çark testi · bakiye değişmez</p>
+        <DailyWheel
+          slices={rewards.map(([label, type, amount], i) => ({
+            id: String(i),
+            label,
+            reward: { type, amount },
+            weight: 1,
+            color: '#4ECDC4',
+            iconUrl: '',
+          }))}
+          canSpin
+          onSpin={async () => {
+            const index = spins % 2 === 0 ? 7 : 0;
+            setSpins((count) => count + 1);
+            return {
+              sliceIndex: index,
+              reward: { type: rewards[index]![1], amount: rewards[index]![2] },
+            };
+          }}
+        />
+      </section>
+      <ChildNameCard childId="visual-fixture" currentName="Kâşif" />
+    </div>
+  );
+}
+
 function MotionFixture() {
   const policy = useMotionPolicy();
   const [history, setHistory] = useState<string[]>([]);
@@ -332,6 +377,7 @@ function Fixture() {
         )}
       </aside>
       <Routes>
+        <Route path="/readability" element={<ReadabilityFixture />} />
         <Route path="/motion" element={<MotionFixture />} />
         <Route path="/rewards" element={<RewardFixture />} />
         <Route path="/event/:eventId" element={<SeasonalEventScreen />} />

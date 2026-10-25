@@ -155,12 +155,13 @@ export default function ConversationScreen() {
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between px-4 py-3">
         <button
-          className="bg-surface-elevated flex h-10 w-10 items-center justify-center rounded-full"
+          className="bg-surface-elevated text-text flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          aria-label={t('close', { ns: 'common' })}
           onClick={handleClose}
         >
           <span className="text-lg">✕</span>
         </button>
-        <div className="flex flex-col items-center text-center">
+        <div className="min-w-0 flex-1 px-2 text-center">
           <Text variant="bodySmall" weight="bold">
             {scenario.sceneEmoji} {t('activities.conversationScreenTitle')}
           </Text>
@@ -169,7 +170,7 @@ export default function ConversationScreen() {
           </Text>
           {scenario.series && (
             <div className="bg-primary-soft mt-0.5 flex items-center gap-1 rounded-full px-2 py-0.5">
-              <Text variant="caption" className="text-primary text-[10px] font-semibold">
+              <Text variant="caption" className="text-primary text-xs font-semibold">
                 📖 {scenario.series.seriesTitleTr} ·{' '}
                 {t('activities.conversationScreenEpisode', {
                   episode: scenario.series.episodeNumber,
@@ -179,7 +180,7 @@ export default function ConversationScreen() {
             </div>
           )}
         </div>
-        <div className="w-10" /> {/* Spacer for centering */}
+        <div className="w-11 shrink-0" /> {/* Spacer for centering */}
       </div>
 
       {/* Conversation Activity */}

@@ -5,6 +5,7 @@
  * Fizik bazlı dönüş animasyonu, ödül popup'ı.
  */
 
+import { NovaCharacter } from '@components/molecules/NovaCharacter';
 import type { WheelSlice } from '@/types';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
@@ -39,7 +40,7 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
   const currentRotation = useRef(0);
 
   const handleSpin = useCallback(async () => {
-    if (isSpinning || !canSpin) return;
+    if (isSpinning || !canSpin || slices.length === 0) return;
 
     setIsSpinning(true);
     setResult(null);
@@ -51,7 +52,10 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
       const sliceAngle = 360 / slices.length;
       const targetAngle = sliceAngle * sliceIndex + sliceAngle / 2;
       // Pointer is at top (12 o'clock = 270° in SVG coords), rotate to align target slice
-      const totalRotation = currentRotation.current + 360 * 5 + ((270 - targetAngle + 360) % 360);
+      const totalRotation =
+        currentRotation.current +
+        360 * 5 +
+        ((270 - targetAngle - (currentRotation.current % 360) + 720) % 360);
 
       await controls.start({
         rotate: totalRotation,
@@ -71,6 +75,19 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
   }, [isSpinning, canSpin, onSpin, slices.length, controls]);
 
   const sliceAngle = 360 / slices.length;
+  function rewardName(type: string) {
+    return t(
+      type === 'xp'
+        ? 'reward.xp'
+        : type === 'stars'
+          ? 'reward.stars'
+          : type === 'gems'
+            ? 'reward.gems'
+            : type === 'streak_freeze'
+              ? 'reward.streakFreeze'
+              : 'reward.generic',
+    );
+  }
 
   return (
     <div className={clsx('flex flex-col items-center', className)}>
@@ -80,13 +97,13 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
       </div>
 
       {/* Wheel */}
-      <div className="relative">
+      <div className="relative w-64 max-w-full">
         <motion.div
-          className="h-64 w-64 overflow-hidden rounded-full border-4 border-white shadow-2xl"
+          className="aspect-square w-full overflow-hidden rounded-full border-4 border-white shadow-2xl"
           animate={controls}
           style={{ rotate: currentRotation.current }}
         >
-          <svg viewBox="0 0 200 200" className="h-full w-full">
+          <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true">
             {slices.map((slice, i) => {
               const startAngle = i * sliceAngle;
               const endAngle = startAngle + sliceAngle;
@@ -121,8 +138,9 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
                     textAnchor="middle"
                     dominantBaseline="central"
                     transform={`rotate(${labelRotation}, ${labelX}, ${labelY})`}
-                    className="fill-white text-[8px] font-bold"
-                    style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
+                    fill="#25314C"
+                    fontSize={12}
+                    fontWeight={800}
                   >
                     {slice.label}
                   </text>
@@ -131,29 +149,31 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
             })}
             {/* Center circle */}
             <circle cx="100" cy="100" r="15" fill="white" stroke="#e5e7eb" strokeWidth="2" />
-            <text
-              x="100"
-              y="100"
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="text-[10px]"
-            >
-              🦉
-            </text>
           </svg>
         </motion.div>
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <NovaCharacter size="sm" motionEnabled={false} decorative className="h-8 w-8" />
+        </span>
       </div>
+
+      <ul className="sr-only" aria-label={t('dailyWheelButton.rewards')}>
+        {slices.map((slice) => (
+          <li key={slice.id}>
+            {slice.reward.amount} {rewardName(slice.reward.type)}
+          </li>
+        ))}
+      </ul>
 
       {/* Result */}
       {result && (
         <motion.div
+          role="status"
           className="mt-4 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <Text variant="h4" className="text-success-ink">
-            🎉 +{result.amount}{' '}
-            {result.type === 'xp' ? 'XP' : result.type === 'stars' ? '⭐' : '💎'}
+            +{result.amount} {rewardName(result.type)}
           </Text>
         </motion.div>
       )}
@@ -165,7 +185,7 @@ export function DailyWheel({ slices, canSpin, onSpin, className }: DailyWheelPro
         className="mt-4"
         onClick={handleSpin}
         isLoading={isSpinning}
-        disabled={!canSpin}
+        disabled={!canSpin || slices.length === 0}
       >
         {canSpin ? t('dailyWheelButton.spin') : t('dailyWheelButton.comeBack')}
       </Button>
