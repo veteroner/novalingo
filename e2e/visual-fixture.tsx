@@ -7,6 +7,9 @@ import { MotionConfig } from 'framer-motion';
 import { PracticeFixture } from './visual-practice';
 import ProfileScreen from '../src/features/gamification/screens/ProfileScreen';
 import DailyQuestsScreen from '../src/features/gamification/screens/DailyQuestsScreen';
+import SeasonalEventScreen from '../src/features/gamification/screens/SeasonalEventScreen';
+import { LevelUpModal } from '../src/components/organisms/LevelUpModal';
+import { AchievementPopup } from '../src/components/organisms/AchievementPopup';
 import ShopScreen from '../src/features/gamification/screens/ShopScreen';
 import AchievementsScreen from '../src/features/gamification/screens/AchievementsScreen';
 import CollectionScreen from '../src/features/gamification/screens/CollectionScreen';
@@ -166,6 +169,34 @@ if (setupMode) {
       setupMode === 'adult' ? undefined : 'stars',
     );
 }
+if (params.get('shop') === 'media') {
+  queryClient.setQueryData(
+    ['shopItems', 'avatars'],
+    [
+      {
+        id: 'avatar_fox',
+        name: 'Tilki',
+        nameEn: 'Fox',
+        category: 'avatars',
+        price: 100,
+        currency: 'stars',
+        imageUrl: '/story/farm-v2/page-1.webp',
+        isPremium: false,
+      },
+      {
+        id: 'avatar_robot',
+        name: 'Robot',
+        nameEn: 'Robot',
+        category: 'avatars',
+        price: 250,
+        currency: 'stars',
+        imageUrl: '/missing-test-image.webp',
+        isPremium: false,
+      },
+    ],
+  );
+}
+
 const view = params.get('view') ?? (setupMode ? 'onboarding' : 'home');
 
 function EvolutionFixture() {
@@ -182,6 +213,45 @@ function EvolutionFixture() {
         onClose={() => setOpen(false)}
       />
       {!open && <p className="mt-4">Kutlama kapandı; öğrenmeye devam edebilirsin.</p>}
+    </div>
+  );
+}
+
+function RewardFixture() {
+  const [levelOpen, setLevelOpen] = useState(true);
+  const [achievementOpen, setAchievementOpen] = useState(false);
+  return (
+    <div className="p-6">
+      <button className="rounded-xl border p-3" onClick={() => setLevelOpen(true)}>
+        Seviye ödülü
+      </button>
+      <button className="rounded-xl border p-3" onClick={() => setAchievementOpen(true)}>
+        Başarım ödülü
+      </button>
+      <LevelUpModal
+        isOpen={levelOpen}
+        level={5}
+        rewards={{ stars: 150, gems: 20 }}
+        onClose={() => setLevelOpen(false)}
+      />
+      <AchievementPopup
+        isOpen={achievementOpen}
+        onClose={() => setAchievementOpen(false)}
+        achievement={{
+          id: 'qa',
+          name: 'İlk keşif',
+          nameEn: 'First discovery',
+          description: 'İlk dersini tamamladın.',
+          descriptionEn: 'You completed your first lesson.',
+          category: 'learning',
+          rarity: 'rare',
+          iconUrl: '',
+          condition: { type: 'lessons', target: 1 },
+          reward: { xp: 50, stars: 20, gems: 5 },
+          isHidden: false,
+          order: 0,
+        }}
+      />
     </div>
   );
 }
@@ -220,6 +290,8 @@ function Fixture() {
         )}
       </aside>
       <Routes>
+        <Route path="/rewards" element={<RewardFixture />} />
+        <Route path="/event/:eventId" element={<SeasonalEventScreen />} />
         <Route path="/evolution" element={<EvolutionFixture />} />
         <Route path="/home" element={<HomeScreen />} />
         <Route path="/world/:worldId" element={<WorldMapScreen />} />

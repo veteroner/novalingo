@@ -1,5 +1,16 @@
 import { FeatureHeader } from '@components/molecules/FeatureHeader';
-import { TreasureChestIcon } from '@phosphor-icons/react';
+import {
+  BirdIcon,
+  BuildingsIcon,
+  FlagIcon,
+  PackageIcon,
+  PawPrintIcon,
+  PizzaIcon,
+  QuestionIcon,
+  RocketIcon,
+  StickerIcon,
+  TreasureChestIcon,
+} from '@phosphor-icons/react';
 /**
  * CollectionScreen
  *
@@ -25,16 +36,15 @@ type CollectionCategory =
   | 'foods'
   | 'vehicles';
 
-// Etiketler i18n'den gelir (gamification.collection.categories, id'ye göre); burada yalnızca emoji.
-const categories: { id: CollectionCategory; emoji: string }[] = [
-  { id: 'animals', emoji: '🐾' },
-  { id: 'flags', emoji: '🏳️' },
-  { id: 'stickers', emoji: '⭐' },
-  { id: 'characters', emoji: '🧙' },
-  { id: 'landmarks', emoji: '🏛️' },
-  { id: 'foods', emoji: '🍕' },
-  { id: 'vehicles', emoji: '🚀' },
-];
+const categories = [
+  { id: 'animals', icon: PawPrintIcon },
+  { id: 'flags', icon: FlagIcon },
+  { id: 'stickers', icon: StickerIcon },
+  { id: 'characters', icon: BirdIcon },
+  { id: 'landmarks', icon: BuildingsIcon },
+  { id: 'foods', icon: PizzaIcon },
+  { id: 'vehicles', icon: RocketIcon },
+] as const;
 
 interface Collectible {
   id: string;
@@ -89,16 +99,17 @@ export default function CollectionScreen() {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-colors ${
+              className={`flex min-h-11 items-center gap-1.5 rounded-full px-3 py-2 text-sm font-bold whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
                   ? 'bg-primary-dark text-white'
                   : 'text-text-secondary bg-surface-elevated'
               }`}
+              aria-pressed={activeCategory === cat.id}
               onClick={() => {
                 setActiveCategory(cat.id);
               }}
             >
-              <span>{cat.emoji}</span>
+              <cat.icon size={20} weight="duotone" aria-hidden="true" />
               {t(`collection.categories.${cat.id}`)}
             </button>
           ))}
@@ -108,7 +119,12 @@ export default function CollectionScreen() {
         {items.length === 0 ? (
           <Card variant="filled" padding="lg">
             <div className="space-y-2 text-center">
-              <span className="text-4xl">📦</span>
+              <PackageIcon
+                size={48}
+                weight="duotone"
+                className="text-primary mx-auto"
+                aria-hidden="true"
+              />
               <Text variant="body" weight="bold">
                 {t('collection.empty')}
               </Text>
@@ -150,7 +166,9 @@ export default function CollectionScreen() {
                   }`}
                 >
                   <div className="text-center">
-                    <span className="text-4xl">{item.collected ? item.emoji : '❓'}</span>
+                    <span className="inline-flex text-4xl" aria-hidden="true">
+                      {item.collected ? item.emoji : <QuestionIcon size={40} weight="duotone" />}
+                    </span>
                     {item.collected && (
                       <Text variant="caption" weight="bold" className="mt-1 truncate">
                         {item.name}

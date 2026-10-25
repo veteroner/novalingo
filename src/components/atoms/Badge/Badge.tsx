@@ -31,7 +31,7 @@ const variantStyles: Record<BadgeVariant, string> = {
 };
 
 const sizeStyles: Record<BadgeSize, string> = {
-  sm: 'h-6 px-2 text-[0.625rem] gap-1',
+  sm: 'min-h-6 px-2 text-xs gap-1',
   md: 'h-7 px-3 text-xs gap-1.5',
   lg: 'h-8 px-4 text-sm gap-2',
 };

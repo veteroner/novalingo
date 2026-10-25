@@ -1,5 +1,9 @@
 import {
   ArrowLeftIcon as ArrowLeft,
+  BookOpenIcon,
+  QuestionIcon,
+  TrophyIcon,
+  TranslateIcon,
   CalendarDotsIcon as CalendarDots,
   CheckCircleIcon as CheckCircle,
   GiftIcon as Gift,
@@ -17,7 +21,8 @@ import type { SeasonalCollectible, SeasonalLesson } from '@/types/gamification';
 export default function SeasonalEventScreen() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation('gamification');
+  const { t, i18n } = useTranslation('gamification');
+  const english = i18n.language.startsWith('en');
   const { activeEvent, daysRemaining, progress, lessonsCompleted, totalLessons, isEventComplete } =
     useSeasonalEvent();
 
@@ -31,8 +36,8 @@ export default function SeasonalEventScreen() {
   }
 
   const isActive = activeEvent?.id === eventId;
-  const completedLessons = new Set(progress?.lessonsCompleted ?? []);
-  const earnedCollectibles = new Set(progress?.collectiblesEarned ?? []);
+  const completedLessons = new Set(isActive ? (progress?.lessonsCompleted ?? []) : []);
+  const earnedCollectibles = new Set(isActive ? (progress?.collectiblesEarned ?? []) : []);
 
   return (
     <div className="bg-surface-elevated min-h-screen">
@@ -41,12 +46,12 @@ export default function SeasonalEventScreen() {
         className="relative px-4 pb-6"
         style={{
           paddingTop: 'calc(var(--spacing-safe-top) + 1.5rem)',
-          background: `linear-gradient(135deg, ${event.colors[0]}, ${event.colors[1]})`,
+          background: `linear-gradient(#0008, #0008), linear-gradient(135deg, ${event.colors[0]}, ${event.colors[1]})`,
         }}
       >
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center gap-1 text-white/80 hover:text-white"
+          className="mb-4 flex items-center gap-1 text-white hover:text-white"
         >
           <ArrowLeft className="h-5 w-5" />
           <span className="text-sm">{t('event.back')}</span>
@@ -55,20 +60,22 @@ export default function SeasonalEventScreen() {
         <div className="flex items-center gap-3">
           <span className="text-4xl">{event.emoji}</span>
           <div>
-            <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-            <p className="text-sm text-white/80">{event.description}</p>
+            <h1 className="text-2xl font-bold text-white">{english ? event.nameEn : event.name}</h1>
+            <p className="text-sm text-white">
+              {english ? event.descriptionEn : event.description}
+            </p>
           </div>
         </div>
 
         {/* Stats row */}
-        <div className="mt-4 flex gap-4">
+        <div className="mt-4 flex flex-wrap gap-2">
           <div className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white">
             <CalendarDots className="h-4 w-4" />
             {isActive ? t('event.daysLeft', { count: daysRemaining }) : t('event.soon')}
           </div>
           <div className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white">
             <Sparkle className="h-4 w-4" />
-            {event.xpMultiplier}x XP Bonus
+            {t('event.xpBonus', { multiplier: event.xpMultiplier })}
           </div>
           <div className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white">
             <Gift className="h-4 w-4" />
@@ -79,7 +86,7 @@ export default function SeasonalEventScreen() {
         {/* Progress */}
         {isActive && (
           <div className="mt-4">
-            <div className="mb-1 flex justify-between text-xs text-white/70">
+            <div className="mb-1 flex justify-between text-xs text-white">
               <span>{t('event.progress')}</span>
               <span>
                 {lessonsCompleted}/{totalLessons}
@@ -102,7 +109,10 @@ export default function SeasonalEventScreen() {
       {/* Content */}
       <div className="px-4 py-6">
         {/* Lessons */}
-        <h2 className="text-text mb-3 text-lg font-bold">📖 Dersler ({event.lessons.length})</h2>
+        <h2 className="text-text mb-3 flex items-center gap-2 text-lg font-bold">
+          <BookOpenIcon size={24} weight="duotone" aria-hidden="true" />
+          {t('event.lessons', { count: event.lessons.length })}
+        </h2>
         <div className="space-y-2">
           {event.lessons.map((lesson, index) => (
             <LessonCard
@@ -116,15 +126,21 @@ export default function SeasonalEventScreen() {
         </div>
 
         {/* Collectibles */}
-        <h2 className="text-text mt-8 mb-3 text-lg font-bold">{t('event.limitedRewards')}</h2>
-        <div className="grid grid-cols-3 gap-3">
+        <h2 className="text-text mt-8 mb-3 flex items-center gap-2 text-lg font-bold">
+          <Gift size={24} weight="duotone" aria-hidden="true" />
+          {t('event.limitedRewards')}
+        </h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {event.collectibles.map((item) => (
             <CollectibleCard key={item.id} item={item} isEarned={earnedCollectibles.has(item.id)} />
           ))}
         </div>
 
         {/* Vocabulary preview */}
-        <h2 className="text-text mt-8 mb-3 text-lg font-bold">{t('event.wordsToLearn')}</h2>
+        <h2 className="text-text mt-8 mb-3 flex items-center gap-2 text-lg font-bold">
+          <TranslateIcon size={24} weight="duotone" aria-hidden="true" />
+          {t('event.wordsToLearn')}
+        </h2>
         <div className="flex flex-wrap gap-2">
           {event.lessons
             .flatMap((l) => l.vocabulary)
@@ -139,13 +155,13 @@ export default function SeasonalEventScreen() {
         </div>
 
         {/* Complete state */}
-        {isEventComplete && (
+        {isActive && isEventComplete && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="border-success/30 bg-success-soft mt-8 rounded-2xl border-2 p-6 text-center dark:border-green-800 dark:bg-green-900/20"
           >
-            <span className="text-4xl">🏆</span>
+            <TrophyIcon size={48} weight="duotone" className="mx-auto" aria-hidden="true" />
             <h3 className="text-success-ink dark:text-success-ink mt-2 text-lg font-bold">
               {t('event.congrats')}
             </h3>
@@ -171,6 +187,7 @@ function LessonCard({
   isCompleted: boolean;
   isLocked: boolean;
 }) {
+  const { i18n } = useTranslation('gamification');
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
@@ -180,7 +197,7 @@ function LessonCard({
         isCompleted
           ? 'border-success/30 bg-success-soft dark:border-green-800 dark:bg-green-900/20'
           : isLocked
-            ? 'border-border bg-surface-elevated opacity-60'
+            ? 'border-border bg-surface-elevated'
             : 'border-border bg-surface'
       }`}
     >
@@ -194,15 +211,15 @@ function LessonCard({
       </div>
 
       {/* Content */}
-      <div className="flex-1">
-        <h4 className="text-text text-sm font-semibold">{lesson.title}</h4>
+      <div className="min-w-0 flex-1">
+        <h4 className="text-text text-sm font-semibold">
+          {i18n.language.startsWith('en') ? lesson.titleEn : lesson.title}
+        </h4>
         <p className="text-text-secondary text-xs">{lesson.description}</p>
       </div>
 
       {/* XP badge */}
-      <div className="text-xs font-medium text-amber-600 dark:text-amber-400">
-        +{lesson.xpReward} XP
-      </div>
+      <div className="text-reward-ink shrink-0 text-xs font-bold">+{lesson.xpReward} XP</div>
 
       {isLocked && <Lock className="text-text-secondary h-4 w-4" />}
     </motion.div>
@@ -211,6 +228,7 @@ function LessonCard({
 
 // ── Collectible Card ─────────────────────────────────────────
 function CollectibleCard({ item, isEarned }: { item: SeasonalCollectible; isEarned: boolean }) {
+  const { t, i18n } = useTranslation('gamification');
   const rarityColors: Record<string, string> = {
     common: 'border-border',
     uncommon: 'border-success/50',
@@ -224,11 +242,21 @@ function CollectibleCard({ item, isEarned }: { item: SeasonalCollectible; isEarn
       whileHover={{ scale: 1.05 }}
       className={`flex flex-col items-center rounded-xl border-2 p-3 text-center ${
         rarityColors[item.rarity] ?? 'border-border'
-      } ${isEarned ? 'bg-surface' : 'bg-surface-elevated opacity-60'}`}
+      } ${isEarned ? 'bg-surface' : 'bg-surface-elevated'}`}
     >
-      <span className="text-3xl">{isEarned ? item.emoji : '❓'}</span>
-      <p className="text-text mt-1 text-xs font-medium">{isEarned ? item.name : '???'}</p>
-      <p className="text-text-secondary text-[10px] capitalize">{item.rarity}</p>
+      <span className="text-3xl">
+        {isEarned ? item.emoji : <QuestionIcon size={32} weight="duotone" aria-hidden="true" />}
+      </span>
+      <p className="text-text mt-1 text-xs font-medium">
+        {isEarned
+          ? i18n.language.startsWith('en')
+            ? item.nameEn
+            : item.name
+          : t('event.lockedReward')}
+      </p>
+      <p className="text-text-secondary text-xs leading-normal">
+        {t(`rarity.${item.rarity}`, { defaultValue: item.rarity })}
+      </p>
     </motion.div>
   );
 }

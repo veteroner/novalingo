@@ -95,3 +95,7 @@ Android eski açılış PNG'leri yeni Nova kaynağına bağlı XML düzeniyle de
 ## 25 Ekim 2026 — Nova ifadeleri ve görsel hata yedeği
 
 Düşünme, uyku, cesaretlendirme, konuşma ve üzgün için beş ayrı Nova pozu eklendi. Mevcut üç pozla birlikte sekiz görsel / on durum ortak bileşenden kullanılır; eski SVG hata yedeği yerine aynı Nova'nın JS'e gömülü PNG'si var. Görsel hatasının sonraki ifadeleri kalıcı olarak etkilemesi düzeltildi; webde daha önce açılmış WebP görselleri için çevrimdışı önbellek kapsamı tamamlandı. iOS açık/koyu galeri ve tarayıcı 404→toparlanma kanıtları, testler ve açık kalan ileri animasyon/cihaz işleri [güncel ifade raporunda](2026-10-25-nova-expressions.md). Önceki tarihli tablolar geçmiş kayıtlarıdır.
+
+## 25 Ekim 2026 — mağaza, ödül ikonları ve küçük etiketler
+
+Mağaza/koleksiyon kategori ikonları, ürün vektörleri ve bakiye/seviye/başarım ödülleri ortak çizgiye taşındı. Ürün resim URL'sinin yazı olarak görünmesi ve başka etkinliğin tamamlanma/ödül bilgisinin yanlış sayfaya taşınması düzeltildi. Ortak küçük rozet/üst etiket/avatar seviye yazıları en az 12px; mağaza/koleksiyon kategori düğmeleri en az 44px oldu. iOS açık/koyu mağaza, resim/yedek, EN etkinlik ve ödül kutlamaları kontrol edildi. [Kesin kapsam, ekran kanıtları ve kalan işler](2026-10-25-reward-shop-polish.md). Tüm özel ikon/etiketlerin veya gerçek satın alma testlerinin bittiği iddia edilmez.

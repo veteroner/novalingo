@@ -183,10 +183,13 @@
       "rare": "Nadir",
       "epic": "Epik",
       "legendary": "Efsanevi"
-    }
+    },
+    "dismiss": "Harika!"
   },
   "levelUpModal": {
-    "title": "Seviye Atladın!"
+    "title": "Seviye Atladın!",
+    "encouragement": "Harika ilerliyorsun!",
+    "continue": "Devam et"
   },
   "conversationTopics": {
     "title": "Nova ile Konuş 🎭",

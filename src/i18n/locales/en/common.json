@@ -183,10 +183,13 @@
       "rare": "Rare",
       "epic": "Epic",
       "legendary": "Legendary"
-    }
+    },
+    "dismiss": "Awesome!"
   },
   "levelUpModal": {
-    "title": "Level Up!"
+    "title": "Level Up!",
+    "encouragement": "You’re making great progress!",
+    "continue": "Continue"
   },
   "conversationTopics": {
     "title": "Talk with Nova 🎭",

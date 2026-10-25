@@ -89,10 +89,20 @@
     "soon": "Yakında",
     "rewardCount": "{{count}} Ödül",
     "progress": "İlerleme",
-    "limitedRewards": "🎁 Sınırlı Süreli Ödüller",
-    "wordsToLearn": "🔤 Öğrenilecek Kelimeler",
+    "limitedRewards": "Sınırlı Süreli Ödüller",
+    "wordsToLearn": "Öğrenilecek Kelimeler",
     "allComplete": "Bu etkinliğin tüm derslerini tamamladın!",
     "completed": "Tamamlandı!",
-    "upcoming": "Yakında: {{name}}"
+    "upcoming": "Yakında: {{name}}",
+    "xpBonus": "{{multiplier}}× XP bonusu",
+    "lessons": "Dersler ({{count}})",
+    "lockedReward": "Kilitli ödül"
+  },
+  "rarity": {
+    "common": "Yaygın",
+    "uncommon": "Sıra dışı",
+    "rare": "Nadir",
+    "epic": "Destansı",
+    "legendary": "Efsanevi"
   }
 }

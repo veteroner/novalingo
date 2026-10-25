@@ -1,5 +1,16 @@
 import { FeatureHeader } from '@components/molecules/FeatureHeader';
-import { StorefrontIcon } from '@phosphor-icons/react';
+import {
+  BirdIcon,
+  FrameCornersIcon,
+  LightningIcon,
+  PaletteIcon,
+  ShoppingCartIcon,
+  SparkleIcon,
+  StorefrontIcon,
+  UserCircleIcon,
+} from '@phosphor-icons/react';
+import { RewardIcon } from '@components/atoms/RewardIcon/RewardIcon';
+import { ShopArtwork } from '../components/ItemArtwork';
 /**
  * ShopScreen
  *
@@ -22,15 +33,14 @@ import { useTranslation } from 'react-i18next';
 
 type ShopCategory = 'avatars' | 'themes' | 'boosters' | 'frames' | 'effects' | 'nova';
 
-// Etiketler i18n'den gelir (shop.screenCategories, id'ye göre); burada yalnızca emoji.
-const categories: { id: ShopCategory; emoji: string }[] = [
-  { id: 'avatars', emoji: '👤' },
-  { id: 'themes', emoji: '🎨' },
-  { id: 'boosters', emoji: '⚡' },
-  { id: 'frames', emoji: '🖼️' },
-  { id: 'effects', emoji: '✨' },
-  { id: 'nova', emoji: '🦉' },
-];
+const categories = [
+  { id: 'avatars', icon: UserCircleIcon },
+  { id: 'themes', icon: PaletteIcon },
+  { id: 'boosters', icon: LightningIcon },
+  { id: 'frames', icon: FrameCornersIcon },
+  { id: 'effects', icon: SparkleIcon },
+  { id: 'nova', icon: BirdIcon },
+] as const;
 
 interface DisplayShopItem {
   id: string;
@@ -38,7 +48,7 @@ interface DisplayShopItem {
   category: string;
   price: number;
   currency: 'stars' | 'gems';
-  emoji: string;
+  imageUrl?: string;
   rarity: string;
 }
 
@@ -51,7 +61,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'avatars',
       price: 100,
       currency: 'stars',
-      emoji: '🦊',
       rarity: 'common',
     },
     {
@@ -60,7 +69,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'avatars',
       price: 150,
       currency: 'stars',
-      emoji: '🐼',
       rarity: 'common',
     },
     {
@@ -69,7 +77,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'avatars',
       price: 300,
       currency: 'gems',
-      emoji: '🦄',
       rarity: 'epic',
     },
     {
@@ -78,7 +85,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'avatars',
       price: 500,
       currency: 'gems',
-      emoji: '🐉',
       rarity: 'epic',
     },
     {
@@ -87,7 +93,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'avatars',
       price: 200,
       currency: 'stars',
-      emoji: '🧑‍🚀',
       rarity: 'common',
     },
     {
@@ -96,7 +101,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'avatars',
       price: 250,
       currency: 'stars',
-      emoji: '🤖',
       rarity: 'common',
     },
   ],
@@ -107,7 +111,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'themes',
       price: 200,
       currency: 'stars',
-      emoji: '🌊',
       rarity: 'common',
     },
     {
@@ -116,7 +119,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'themes',
       price: 300,
       currency: 'gems',
-      emoji: '🚀',
       rarity: 'epic',
     },
     {
@@ -125,7 +127,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'themes',
       price: 200,
       currency: 'stars',
-      emoji: '🌲',
       rarity: 'common',
     },
     {
@@ -134,7 +135,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'themes',
       price: 250,
       currency: 'stars',
-      emoji: '🍭',
       rarity: 'common',
     },
   ],
@@ -145,7 +145,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'boosters',
       price: 150,
       currency: 'gems',
-      emoji: '⚡',
       rarity: 'common',
     },
     {
@@ -154,7 +153,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'boosters',
       price: 100,
       currency: 'gems',
-      emoji: '🛡️',
       rarity: 'common',
     },
     {
@@ -163,7 +161,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'boosters',
       price: 80,
       currency: 'gems',
-      emoji: '💡',
       rarity: 'common',
     },
     {
@@ -172,7 +169,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'boosters',
       price: 200,
       currency: 'gems',
-      emoji: '🌟',
       rarity: 'epic',
     },
   ],
@@ -183,7 +179,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'frames',
       price: 200,
       currency: 'stars',
-      emoji: '🖼️',
       rarity: 'common',
     },
     {
@@ -192,7 +187,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'frames',
       price: 300,
       currency: 'gems',
-      emoji: '🌈',
       rarity: 'epic',
     },
     {
@@ -201,7 +195,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'frames',
       price: 150,
       currency: 'stars',
-      emoji: '⭐',
       rarity: 'common',
     },
     {
@@ -210,7 +203,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'frames',
       price: 400,
       currency: 'gems',
-      emoji: '👑',
       rarity: 'epic',
     },
   ],
@@ -221,7 +213,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'effects',
       price: 100,
       currency: 'stars',
-      emoji: '✨',
       rarity: 'common',
     },
     {
@@ -230,7 +221,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'effects',
       price: 150,
       currency: 'stars',
-      emoji: '🎊',
       rarity: 'common',
     },
     {
@@ -239,7 +229,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'effects',
       price: 250,
       currency: 'gems',
-      emoji: '🎆',
       rarity: 'epic',
     },
     {
@@ -248,7 +237,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'effects',
       price: 120,
       currency: 'stars',
-      emoji: '💖',
       rarity: 'common',
     },
   ],
@@ -259,7 +247,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'nova',
       price: 200,
       currency: 'stars',
-      emoji: '🧙',
       rarity: 'common',
     },
     {
@@ -268,7 +255,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'nova',
       price: 400,
       currency: 'gems',
-      emoji: '👑',
       rarity: 'epic',
     },
     {
@@ -277,7 +263,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'nova',
       price: 250,
       currency: 'stars',
-      emoji: '🦸',
       rarity: 'common',
     },
     {
@@ -286,7 +271,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'nova',
       price: 100,
       currency: 'stars',
-      emoji: '😎',
       rarity: 'common',
     },
     {
@@ -295,7 +279,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'nova',
       price: 500,
       currency: 'gems',
-      emoji: '😇',
       rarity: 'epic',
     },
     {
@@ -304,7 +287,6 @@ const defaultShopItems: Record<ShopCategory, DisplayShopItem[]> = {
       category: 'nova',
       price: 80,
       currency: 'stars',
-      emoji: '🧣',
       rarity: 'common',
     },
   ],
@@ -316,22 +298,22 @@ export default function ShopScreen() {
   const { data: serverItems } = useShopItems(activeCategory);
   const purchase = usePurchaseItem();
   const showToast = useUIStore((s) => s.showToast);
-  const { t } = useTranslation('shop');
+  const { t, i18n } = useTranslation('shop');
 
   const items: DisplayShopItem[] = useMemo(() => {
     if (serverItems && serverItems.length > 0) {
       return serverItems.map((si) => ({
         id: si.id,
-        name: si.name,
+        name: i18n.language.startsWith('en') ? si.nameEn || si.name : si.name,
         category: si.category,
         price: si.price,
         currency: si.currency,
-        emoji: si.imageUrl || '🛍️',
+        imageUrl: si.imageUrl,
         rarity: si.isPremium ? 'epic' : 'common',
       }));
     }
     return defaultShopItems[activeCategory];
-  }, [serverItems, activeCategory]);
+  }, [serverItems, activeCategory, i18n.language]);
 
   const handlePurchase = useCallback(
     (item: DisplayShopItem) => {
@@ -391,17 +373,18 @@ export default function ShopScreen() {
           {categories.map((cat) => (
             <motion.button
               key={cat.id}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors ${
+              className={`flex min-h-11 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
                   ? 'bg-primary-dark text-white'
                   : 'text-text-secondary bg-surface-elevated'
               }`}
+              aria-pressed={activeCategory === cat.id}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 setActiveCategory(cat.id);
               }}
             >
-              <span>{cat.emoji}</span>
+              <cat.icon size={20} weight="duotone" aria-hidden="true" />
               {t(`screenCategories.${cat.id}`)}
             </motion.button>
           ))}
@@ -411,7 +394,12 @@ export default function ShopScreen() {
         {items.length === 0 ? (
           <Card variant="filled" padding="lg">
             <div className="space-y-2 text-center">
-              <span className="text-4xl">🛒</span>
+              <ShoppingCartIcon
+                size={48}
+                weight="duotone"
+                className="text-primary mx-auto"
+                aria-hidden="true"
+              />
               <Text variant="body" weight="bold">
                 {t('screen.emptyTitle')}
               </Text>
@@ -431,13 +419,18 @@ export default function ShopScreen() {
                 <Card key={item.id} variant="elevated" padding="sm">
                   <div className="space-y-2 text-center">
                     <div className="bg-surface-elevated mx-auto flex h-20 w-20 items-center justify-center rounded-2xl text-3xl">
-                      {item.emoji}
+                      <ShopArtwork id={item.id} category={item.category} source={item.imageUrl} />
                     </div>
-                    <Text variant="bodySmall" weight="bold" truncate>
+                    <Text variant="bodySmall" weight="bold" className="min-h-10 break-words">
                       {t(`items.${item.id}`, { defaultValue: item.name })}
                     </Text>
-                    <Badge variant={item.currency === 'gems' ? 'gem' : 'star'} size="sm">
-                      {item.price} {item.currency === 'gems' ? '💎' : '⭐'}
+                    <Badge
+                      variant={item.currency === 'gems' ? 'gem' : 'star'}
+                      size="md"
+                      icon={<RewardIcon kind={item.currency} size={18} />}
+                    >
+                      {item.price}
+                      <span className="sr-only"> {t(`screen.${item.currency}`)}</span>
                     </Badge>
                     <Button
                       variant={canAfford ? 'primary' : 'secondary'}

@@ -112,7 +112,7 @@ export function Avatar({
         <span
           className={clsx(
             'absolute -bottom-1 left-1/2 -translate-x-1/2',
-            'bg-nova-purple text-[0.5rem] font-bold text-white',
+            'bg-nova-purple text-xs font-bold text-white',
             'rounded-full border-2 border-white px-1.5 py-0.5 shadow',
           )}
         >

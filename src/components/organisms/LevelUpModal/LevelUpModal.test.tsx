@@ -53,7 +53,7 @@ describe('LevelUpModal', () => {
     render(
       <LevelUpModal isOpen={true} level={1} rewards={{ stars: 0, gems: 0 }} onClose={vi.fn()} />,
     );
-    expect(screen.getByText(/Harika ilerliyorsun/)).toBeInTheDocument();
+    expect(screen.getByText(/levelUpModal\.encouragement/)).toBeInTheDocument();
   });
 
   it('calls onClose when button is clicked', () => {
@@ -61,7 +61,7 @@ describe('LevelUpModal', () => {
     render(
       <LevelUpModal isOpen={true} level={5} rewards={{ stars: 50, gems: 0 }} onClose={onClose} />,
     );
-    fireEvent.click(screen.getByText(/Devam Et/));
+    fireEvent.click(screen.getByText(/levelUpModal\.continue/));
     expect(onClose).toHaveBeenCalled();
   });
 

@@ -5,6 +5,9 @@
  * Konfeti, parıltı, Nova maskotu ve ses efekti.
  */
 
+import { TrophyIcon } from '@phosphor-icons/react';
+import { RewardIcon } from '@components/atoms/RewardIcon/RewardIcon';
+import { CatalogArtwork } from '@components/molecules/CatalogArtwork/CatalogArtwork';
 import type { AchievementDefinition } from '@/types';
 import { Badge } from '@components/atoms/Badge';
 import { Button } from '@components/atoms/Button';
@@ -27,7 +30,7 @@ const rarityColors: Record<string, string> = {
 };
 
 export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPopupProps) {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
   if (!achievement) return null;
 
   return (
@@ -64,7 +67,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
 
             {/* Trophy emoji - bouncing */}
             <motion.div
-              className="relative mb-4 text-6xl"
+              className="relative mx-auto mb-4 flex h-20 w-20 items-center justify-center text-6xl"
               animate={{
                 scale: [1, 1.2, 1],
                 rotate: [0, -10, 10, 0],
@@ -74,7 +77,17 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
                 delay: 0.3,
               }}
             >
-              {achievement.iconUrl || '🏆'}
+              <CatalogArtwork
+                source={achievement.iconUrl}
+                fallback={
+                  <TrophyIcon
+                    size={64}
+                    weight="duotone"
+                    className="text-reward-ink"
+                    aria-hidden="true"
+                  />
+                }
+              />
             </motion.div>
 
             {/* Header */}
@@ -87,10 +100,14 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
                 {t('achievement.title')}
               </Text>
               <Text variant="h3" className="mb-2">
-                {achievement.name}
+                {i18n.language.startsWith('en')
+                  ? achievement.nameEn || achievement.name
+                  : achievement.name}
               </Text>
               <Text variant="bodySmall" className="text-text-secondary mb-3">
-                {achievement.description}
+                {i18n.language.startsWith('en')
+                  ? achievement.descriptionEn || achievement.description
+                  : achievement.description}
               </Text>
             </motion.div>
 
@@ -113,7 +130,7 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
 
             {/* Reward */}
             <motion.div
-              className="mb-6 flex items-center justify-center gap-3"
+              className="mb-6 flex flex-wrap items-center justify-center gap-3"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, type: 'spring' }}
@@ -124,20 +141,22 @@ export function AchievementPopup({ achievement, isOpen, onClose }: AchievementPo
                 </Badge>
               )}
               {achievement.reward.stars > 0 && (
-                <Badge variant="xp" size="lg">
-                  +{achievement.reward.stars} ⭐
+                <Badge variant="star" size="lg" icon={<RewardIcon kind="stars" />}>
+                  +{achievement.reward.stars}
+                  <span className="sr-only"> {t('currency.stars')}</span>
                 </Badge>
               )}
               {achievement.reward.gems > 0 && (
-                <Badge variant="xp" size="lg">
-                  +{achievement.reward.gems} 💎
+                <Badge variant="gem" size="lg" icon={<RewardIcon kind="gems" />}>
+                  +{achievement.reward.gems}
+                  <span className="sr-only"> {t('currency.gems')}</span>
                 </Badge>
               )}
             </motion.div>
 
             {/* Button */}
             <Button variant="primary" size="lg" fullWidth onClick={onClose}>
-              Harika! 🎊
+              {t('achievement.dismiss')}
             </Button>
           </motion.div>
         </motion.div>

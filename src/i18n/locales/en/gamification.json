@@ -89,10 +89,20 @@
     "soon": "Soon",
     "rewardCount": "{{count}} Rewards",
     "progress": "Progress",
-    "limitedRewards": "🎁 Limited-Time Rewards",
-    "wordsToLearn": "🔤 Words to Learn",
+    "limitedRewards": "Limited-Time Rewards",
+    "wordsToLearn": "Words to Learn",
     "allComplete": "You completed all lessons in this event!",
     "completed": "Completed!",
-    "upcoming": "Coming soon: {{name}}"
+    "upcoming": "Coming soon: {{name}}",
+    "xpBonus": "{{multiplier}}× XP bonus",
+    "lessons": "Lessons ({{count}})",
+    "lockedReward": "Locked reward"
+  },
+  "rarity": {
+    "common": "Common",
+    "uncommon": "Uncommon",
+    "rare": "Rare",
+    "epic": "Epic",
+    "legendary": "Legendary"
   }
 }
