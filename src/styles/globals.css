@@ -427,6 +427,19 @@
  * neredeyse anlık yap (işlevsellik korunur, hareket kalkar). framer-motion
  * tarafı AppProviders'taki <MotionConfig reducedMotion="user"> ile kapsanır.
  * Çocuklarda vestibüler güvenlik için kritik. */
+/* Stop CSS loops (including pseudo elements) while the app is inactive.
+   Reduced motion also covers a live OS preference change. */
+[data-motion-active='false'],
+[data-motion-active='false'] *,
+[data-motion-active='false'] *::before,
+[data-motion-active='false'] *::after,
+[data-motion-reduced='true'],
+[data-motion-reduced='true'] *,
+[data-motion-reduced='true'] *::before,
+[data-motion-reduced='true'] *::after {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

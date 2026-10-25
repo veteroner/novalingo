@@ -6,6 +6,7 @@
  * Her aktivite kendi interaktif bileşeniyle render edilir.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import { LESSON } from '@/config/constants';
 import type { ActivityOutcome } from '@/features/learning/components/activities';
 import { ActivityRenderer } from '@/features/learning/components/activities';
@@ -46,6 +47,7 @@ export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation('lesson');
+  const { canAnimate } = useMotionPolicy();
 
   const {
     currentActivityIndex,
@@ -450,8 +452,8 @@ export default function LessonScreen() {
       >
         <div className="flex flex-1 flex-col items-center justify-center">
           <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            animate={{ scale: canAnimate ? [1, 1.1, 1] : 1 }}
+            transition={canAnimate ? { duration: 1.5, repeat: Infinity } : { duration: 0 }}
             className="mb-4 text-6xl"
           >
             📚
@@ -489,10 +491,13 @@ export default function LessonScreen() {
                   <motion.span
                     key={i}
                     className="text-2xl"
-                    animate={i < bossLives ? { scale: [1, 1.15, 1] } : { opacity: 0.2 }}
+                    animate={{
+                      scale: canAnimate && i < bossLives ? [1, 1.15, 1] : 1,
+                      opacity: i < bossLives ? 1 : 0.2,
+                    }}
                     transition={{
-                      duration: 0.6,
-                      repeat: i < bossLives ? Infinity : 0,
+                      duration: canAnimate ? 0.6 : 0,
+                      repeat: canAnimate && i < bossLives ? Infinity : 0,
                       repeatDelay: 1,
                     }}
                   >
@@ -506,8 +511,12 @@ export default function LessonScreen() {
                     ? 'bg-error-soft text-error-ink'
                     : 'bg-orange-100 text-orange-600'
                 }`}
-                animate={bossTimeLeft <= 5 ? { scale: [1, 1.1, 1] } : {}}
-                transition={{ duration: 0.5, repeat: Infinity }}
+                animate={{ scale: canAnimate && bossTimeLeft <= 5 ? [1, 1.1, 1] : 1 }}
+                transition={
+                  canAnimate && bossTimeLeft <= 5
+                    ? { duration: 0.5, repeat: Infinity }
+                    : { duration: 0 }
+                }
               >
                 ⏱ {bossTimeLeft}s
               </motion.div>

@@ -6,11 +6,12 @@
  * Parıltı, parçacık efektleri ve aşama açıklaması.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { NovaStage } from '@/types/user';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { NovaStageAvatar, STAGE_CONFIG } from '@components/molecules/NovaStageAvatar';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -64,7 +65,8 @@ function EvolutionCelebration({
   onClose,
 }: Omit<NovaEvolutionModalProps, 'isOpen'>) {
   const { t } = useTranslation('common');
-  const reducedMotion = useReducedMotion();
+  const { canAnimate } = useMotionPolicy();
+  const reducedMotion = !canAnimate;
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<'old' | 'transform' | 'new'>('old');
@@ -72,13 +74,17 @@ function EvolutionCelebration({
 
   useEffect(() => {
     if (phase !== 'transform') return;
+    if (reducedMotion) {
+      setPhase('new');
+      return;
+    }
     const timer = setTimeout(() => {
       setPhase('new');
     }, 1200);
     return () => {
       clearTimeout(timer);
     };
-  }, [phase]);
+  }, [phase, reducedMotion]);
 
   useEffect(() => {
     const previousFocus = document.activeElement;

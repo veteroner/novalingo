@@ -5,6 +5,7 @@
  * Kutlama animasyonu ve paylaşım.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import { Badge } from '@components/atoms/Badge';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
@@ -45,6 +46,7 @@ export default function LessonResultScreen() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation('lesson');
+  const { canAnimate } = useMotionPolicy();
   const state = location.state as {
     summary?: LessonSummary;
     backendResult?: SubmitLessonResultRes;
@@ -405,8 +407,8 @@ export default function LessonResultScreen() {
           <div className="bg-surface/95 rounded-xl px-5 py-4 text-center">
             <motion.span
               className="inline-block text-5xl"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ delay: 2.2, duration: 0.6, repeat: 2 }}
+              animate={{ scale: canAnimate ? [1, 1.2, 1] : 1 }}
+              transition={canAnimate ? { delay: 2.2, duration: 0.6, repeat: 2 } : { duration: 0 }}
             >
               {backendResult.collectibleGranted.emoji}
             </motion.span>

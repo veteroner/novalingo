@@ -1,3 +1,4 @@
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { NovaStage } from '@/types/user';
 import { clsx } from 'clsx';
 import { useState } from 'react';
@@ -76,6 +77,7 @@ export function NovaCharacter({
   className,
 }: NovaCharacterProps) {
   const pose = poses[mood];
+  const { canAnimate } = useMotionPolicy();
 
   return (
     <span
@@ -87,7 +89,7 @@ export function NovaCharacter({
       data-mood={mood}
       data-pose={pose}
       data-stage={stage}
-      data-motion={motionEnabled ? 'on' : 'off'}
+      data-motion={motionEnabled && canAnimate ? 'on' : 'off'}
       aria-hidden={decorative || undefined}
     >
       <span className="nova-contact-shadow" aria-hidden="true" />

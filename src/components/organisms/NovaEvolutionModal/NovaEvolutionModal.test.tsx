@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { useReducedMotion } from 'framer-motion';
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NovaEvolutionModal } from './NovaEvolutionModal';
@@ -7,7 +7,10 @@ import { NovaEvolutionModal } from './NovaEvolutionModal';
 vi.mock('framer-motion', async () => ({
   ...(await vi.importActual('framer-motion')),
   AnimatePresence: ({ children }: { children: ReactNode }) => children,
-  useReducedMotion: vi.fn(() => false),
+}));
+
+vi.mock('@hooks/useMotionPolicy', () => ({
+  useMotionPolicy: vi.fn(() => ({ isActive: true, reducedMotion: false, canAnimate: true })),
 }));
 
 const props = { oldStage: 'child' as const, newStage: 'teen' as const };
@@ -16,7 +19,11 @@ const button = (action: string) => screen.getByRole('button', { name: `novaEvolu
 describe('NovaEvolutionModal', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.mocked(useReducedMotion).mockReturnValue(false);
+    vi.mocked(useMotionPolicy).mockReturnValue({
+      isActive: true,
+      reducedMotion: false,
+      canAnimate: true,
+    });
   });
 
   afterEach(() => {
@@ -71,11 +78,34 @@ describe('NovaEvolutionModal', () => {
   });
 
   it('does not make reduced-motion users wait through the transformation', () => {
-    vi.mocked(useReducedMotion).mockReturnValue(true);
+    vi.mocked(useMotionPolicy).mockReturnValue({
+      isActive: true,
+      reducedMotion: true,
+      canAnimate: false,
+    });
     render(<NovaEvolutionModal {...props} isOpen onClose={vi.fn()} />);
     fireEvent.click(button('evolve'));
     expect(button('dismiss')).toBeInTheDocument();
   });
+
+  it.each(['background', 'reduced motion'])(
+    'finishes an in-flight transformation on %s without a stale timer',
+    async (reason) => {
+      const { rerender } = render(<NovaEvolutionModal {...props} isOpen onClose={vi.fn()} />);
+      fireEvent.click(button('evolve'));
+      vi.mocked(useMotionPolicy).mockReturnValue({
+        isActive: reason !== 'background',
+        reducedMotion: reason === 'reduced motion',
+        canAnimate: false,
+      });
+      rerender(<NovaEvolutionModal {...props} isOpen onClose={vi.fn()} />);
+      expect(button('dismiss')).toBeInTheDocument();
+      await act(async () => {
+        vi.advanceTimersByTime(1500);
+      });
+      expect(button('dismiss')).toBeInTheDocument();
+    },
+  );
 
   it('disposes the old transformation when a different stage opens', async () => {
     const { rerender } = render(<NovaEvolutionModal {...props} isOpen onClose={vi.fn()} />);

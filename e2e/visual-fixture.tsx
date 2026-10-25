@@ -3,7 +3,7 @@ import '../src/styles/globals.css';
 import '../src/i18n';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Capacitor } from '@capacitor/core';
-import { MotionConfig } from 'framer-motion';
+import { AppMotionProvider } from '../src/app/providers/AppMotionProvider';
 import { PracticeFixture } from './visual-practice';
 import ProfileScreen from '../src/features/gamification/screens/ProfileScreen';
 import DailyQuestsScreen from '../src/features/gamification/screens/DailyQuestsScreen';
@@ -27,7 +27,9 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, MutationCache } from '@tanstack/react-query';
 import { Timestamp } from 'firebase/firestore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useMotionPolicy } from '../src/hooks/useMotionPolicy';
+import FlashCardActivity from '../src/features/learning/components/activities/FlashCardActivity';
 import { useTranslation } from 'react-i18next';
 import { ThemeProvider, useTheme } from '../src/app/providers/ThemeProvider';
 import { NovaEvolutionModal } from '../src/components/organisms/NovaEvolutionModal';
@@ -256,6 +258,46 @@ function RewardFixture() {
   );
 }
 
+function MotionFixture() {
+  const policy = useMotionPolicy();
+  const [history, setHistory] = useState<string[]>([]);
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    setHistory((current) => [
+      ...current.slice(-5),
+      `${new Date().toLocaleTimeString()} active=${policy.isActive} reduced=${policy.reducedMotion}`,
+    ]);
+  }, [policy.isActive, policy.reducedMotion]);
+  return (
+    <div className="p-4">
+      <div className="bg-surface border-border mb-4 rounded-xl border p-3 text-sm">
+        <p>
+          Gerçek yaşam döngüsü · active={String(policy.isActive)} · reduced=
+          {String(policy.reducedMotion)} · animate={String(policy.canAnimate)}
+        </p>
+        <pre className="my-2 text-xs">{history.join('\n')}</pre>
+        <div className="flex items-center gap-3">
+          <NovaCharacter mood="celebrating" size="sm" />
+          <span className="border-primary h-6 w-6 animate-spin rounded-full border-4 border-t-transparent" />
+          <span>{done ? 'Kart tamamlandı' : 'Kart tamamlanmadı'}</span>
+        </div>
+      </div>
+      <FlashCardActivity
+        data={{
+          type: 'flash-card',
+          word: 'dog',
+          translation: 'köpek',
+          exampleSentence: 'A dog runs.',
+          exampleTranslation: 'Bir köpek koşar.',
+          audioUrl: '',
+          imageUrl: '',
+        }}
+        onComplete={() => setDone(true)}
+      />
+    </div>
+  );
+}
+
 function Fixture() {
   const { toggleColorMode, colorMode } = useTheme();
   const { i18n } = useTranslation();
@@ -290,6 +332,7 @@ function Fixture() {
         )}
       </aside>
       <Routes>
+        <Route path="/motion" element={<MotionFixture />} />
         <Route path="/rewards" element={<RewardFixture />} />
         <Route path="/event/:eventId" element={<SeasonalEventScreen />} />
         <Route path="/evolution" element={<EvolutionFixture />} />
@@ -370,7 +413,7 @@ function Fixture() {
   );
 }
 createRoot(document.getElementById('root')!).render(
-  <MotionConfig reducedMotion="user">
+  <AppMotionProvider>
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={['/' + view]}>
         <ThemeProvider>
@@ -384,5 +427,5 @@ createRoot(document.getElementById('root')!).render(
         </ThemeProvider>
       </MemoryRouter>
     </QueryClientProvider>
-  </MotionConfig>,
+  </AppMotionProvider>,
 );

@@ -99,3 +99,7 @@ Düşünme, uyku, cesaretlendirme, konuşma ve üzgün için beş ayrı Nova poz
 ## 25 Ekim 2026 — mağaza, ödül ikonları ve küçük etiketler
 
 Mağaza/koleksiyon kategori ikonları, ürün vektörleri ve bakiye/seviye/başarım ödülleri ortak çizgiye taşındı. Ürün resim URL'sinin yazı olarak görünmesi ve başka etkinliğin tamamlanma/ödül bilgisinin yanlış sayfaya taşınması düzeltildi. Ortak küçük rozet/üst etiket/avatar seviye yazıları en az 12px; mağaza/koleksiyon kategori düğmeleri en az 44px oldu. iOS açık/koyu mağaza, resim/yedek, EN etkinlik ve ödül kutlamaları kontrol edildi. [Kesin kapsam, ekran kanıtları ve kalan işler](2026-10-25-reward-shop-polish.md). Tüm özel ikon/etiketlerin veya gerçek satın alma testlerinin bittiği iddia edilmez.
+
+## 25 Ekim 2026 — arka plan hareketleri ve hareket azaltma
+
+Auth dahil ortak kökte belge görünürlüğü/native etkinlik ve OS hareket tercihi izlenir. Sürekli Framer/CSS döngüleri arka planda veya hareket azaltmada sabitlenir; kartın arkası açıkken ön yüz nabzı durur. Yanıt/kart durumu korunur; ders ve ses sayaçları değiştirilmez. Evrim ortasında hareketi kapatma ve XP sayacının dönüşte baştan sayması da ele alındı. Gerçek iOS arka plan→dönüş ve OS tercihi açıkken kart tamamlama kanıtları, 36 ilgili test ve kapsam sınırları [hareket raporunda](2026-10-25-motion-lifecycle.md). Android manuel/fiziksel cihaz, performans ölçümü ve bütün sonlu varyantların canlı yeniden planlanması açık; önceki tarihli tablolar güncel tamamlanma iddiası değildir.
