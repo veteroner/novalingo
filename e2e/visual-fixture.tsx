@@ -27,6 +27,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeProvider, useTheme } from '../src/app/providers/ThemeProvider';
+import { NovaEvolutionModal } from '../src/components/organisms/NovaEvolutionModal';
 import { NovaCharacter } from '../src/components/molecules/NovaCharacter';
 import HomeScreen from '../src/features/home/screens/HomeScreen';
 import WorldMapScreen from '../src/features/home/screens/WorldMapScreen';
@@ -167,6 +168,24 @@ if (setupMode) {
 }
 const view = params.get('view') ?? (setupMode ? 'onboarding' : 'home');
 
+function EvolutionFixture() {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="p-6 text-center">
+      <button className="rounded-xl border p-4" onClick={() => setOpen(true)}>
+        Kutlamayı tekrar aç
+      </button>
+      <NovaEvolutionModal
+        isOpen={open}
+        oldStage="child"
+        newStage="teen"
+        onClose={() => setOpen(false)}
+      />
+      {!open && <p className="mt-4">Kutlama kapandı; öğrenmeye devam edebilirsin.</p>}
+    </div>
+  );
+}
+
 function Fixture() {
   const { toggleColorMode, colorMode } = useTheme();
   const { i18n } = useTranslation();
@@ -201,6 +220,7 @@ function Fixture() {
         )}
       </aside>
       <Routes>
+        <Route path="/evolution" element={<EvolutionFixture />} />
         <Route path="/home" element={<HomeScreen />} />
         <Route path="/world/:worldId" element={<WorldMapScreen />} />
         <Route path="/conversation" element={<ConversationScreen />} />

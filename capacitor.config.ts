@@ -23,14 +23,15 @@ const config: CapacitorConfig = {
   },
   android: {
     allowMixedContent: false,
-    backgroundColor: '#5145c8',
+    backgroundColor: '#f5f7fc',
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
       launchAutoHide: false, // We hide manually after app is ready
-      backgroundColor: '#5145c8',
+      backgroundColor: '#f5f7fc',
       androidSplashResourceName: 'splash',
+      androidScaleType: 'CENTER_INSIDE',
       iosSplashResourceName: 'Default',
       showSpinner: false,
       splashFullScreen: true,

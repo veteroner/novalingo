@@ -87,3 +87,7 @@ PR #23 ana dala birleşti. Kullanıcının açtığı “Nova Dans Ediyor!” hi
 ## 25 Ekim 2026 — simülatör kontrolünün devamı
 
 Mac kilidi açıldı. Dansın beş sayfası ve geri geçiş, kütüphaneden okyanus, son dünya resim hikâyesi ve seçimli hikâye örnekleri gerçek iOS WKWebView içinde kontrol edildi. Seçim sonrası `{WORD}` kalması hatası düzeltildi; altı hikâye için 36 seçim resmi eklendi. [Güncel kanıtlar ve doğrulama kapsamı](2026-10-25-all-story-interiors.md).
+
+## 25 Ekim 2026 — açılış ve evrim devamı
+
+Android eski açılış PNG'leri yeni Nova kaynağına bağlı XML düzeniyle değiştirildi; Android 12+ açılış ikonu ve zemini açıkça tanımlandı. Evrim kutlaması ilk andan itibaren geçilebilir; kapanan kutlamanın zamanlayıcısı temizlenir, hareket azaltmada bekleme kalkar. iOS örnek akışları ve Android debug derlemesi doğrulandı; Android manuel görsel kontrolü açık. [Değişiklikler, kanıtlar ve kalan işler](2026-10-25-nova-flow-polish.md). Yukarıdaki tarihli tablolar geçmiş durum kayıtlarıdır.
