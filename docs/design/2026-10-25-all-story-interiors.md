@@ -43,4 +43,14 @@ Altı hikâyedeki iki tur için **36 ayrı seçim sahnesi** `public/story/choice
 
 Yeni regresyonlar altı hikâyenin her iki turunda seçim→metin→resim→ses, geri geçiş, seçim değiştirme ve sonraki seçimin sıfırlanmasını denetler.
 
-Seçim düzeltmesinin doğrulaması: yeni 7 regresyon ve mevcut katalog/çiftlik regresyonları (11 test) geçti; tam proje lint, `tsc -b` ve kaynak Prettier kontrolleri geçti. Üretim Vite + Capacitor sync ve Xcode simülatör derlemesi yeniden başarılı; güncel uygulama veriler silinmeden simülatöre yüklendi. 36 ek dosyanın kaynak/web/iOS/native paket SHA-256 değerleri eşleşti. Mac tekrar kilitlendiğinden düzeltme sonrası son seçim ekranı henüz yeniden görüntülenemedi; kullanıcıdan kilidi yeniden açması istendi. Önceki ekran kanıtları bu sınırlamayla değerlendirilmelidir.
+Seçim düzeltmesinin doğrulaması: yeni 7 regresyon ve mevcut katalog/çiftlik regresyonları (11 test) geçti; tam proje lint, `tsc -b` ve kaynak Prettier kontrolleri geçti. Üretim Vite + Capacitor sync ve Xcode simülatör derlemesi yeniden başarılı; güncel uygulama veriler silinmeden simülatöre yüklendi. 36 ek dosyanın kaynak/web/iOS/native paket SHA-256 değerleri eşleşti. Düzeltme sonrası son görsel kontrol de Mac kilidi açılınca tamamlandı: aşağıdaki ekran kanıtları güncel okuyucudan alındı.
+
+## Seçim düzeltmesinin son iOS kanıtı
+
+Aynı iPhone 18 Pro Max / iOS 27 QA okuyucusunda `story-w1-chain-nova-adventure` baştan denendi. “beach” seçimi üçüncü sayfada `Nova went to the beach` cümlesini ve sahil resmini açtı. Geri dönüşte seçim korundu; “forest” olarak değiştirildiğinde cümle ve resim ormana geçti. İkinci turda “a bunny” seçilerek beşinci sayfada `Nova found a bunny!` ve tavşanlı son sahne doğrulandı. İki tur birbirini ezmedi.
+
+- [Sahil seçimi](screenshots/nova-catalog-ios-choice-beach.png)
+- [Geri dönüp orman seçimi](screenshots/nova-catalog-ios-choice-forest.png)
+- [İkinci tur — tavşan](screenshots/nova-catalog-ios-choice-bunny.png)
+
+Seslendirmeye gönderilen çözülmüş metin otomatik regresyonlarla doğrulandı; bu oturumda cihaz ses çıkışı dinlenmedi. Bütün 412 sayfanın tek tek manuel turu yerine katalog testleri ile temsilî iOS görsel kontrolü birlikte kullanıldı.
