@@ -16,4 +16,4 @@ Bu ilk aşama üç tam hikâye / 14 iç sahneydi. Aynı gün devam eden çalış
 
 - Mevcut hikâye medya/okuyucu regresyonlarından altı test geçti. Beş dosyanın gerçek WebP olması ve değişikliğin yalnız resim yollarıyla sınırlı olduğu ayrıca doğrulandı.
 - TypeScript, değişen dosyanın lint/biçim kontrolü ve üretim Vite derlemesi geçti. `cap sync ios` başarılı; beş kaynak ile Xcode `App/public` kopyaları SHA-256 eşleşir. Mevcut büyük JS parçası uyarıları sürer.
-- iPhone 18 Pro Max / iOS 27'de ayrı `com.novalingo.visualqa` kabuğunun gerçek WKWebView'ında ilk dört sayfa sırayla açıldı; yeni resimler, metinler ve düğmeler kontrol edildi. Beşinci sayfa ekran kaydı HMR sıfırlaması nedeniyle doğrulanamadı; beşinci görselin paket içinde bulunduğu dosya kontrolüyle doğrulandı. Bu önizleme örnek profildir, sunucu yazımları engellenir.
+- iPhone 18 Pro Max / iOS 27'de ayrı `com.novalingo.visualqa` kabuğunun gerçek WKWebView'ında beş sayfa sırayla açıldı; yeni resimler, metinler, düğmeler ve 5→4 geri geçişi kontrol edildi. Beşinci sayfanın ekran kanıtı `screenshots/nova-catalog-ios-dance-5.png` altında kaydedildi. Bu önizleme örnek profildir, sunucu yazımları engellenir.

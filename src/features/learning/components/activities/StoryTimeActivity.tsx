@@ -76,14 +76,29 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
   const [choiceMade, setChoiceMade] = useState<string | null>(null);
 
   // ── Word-select (chain stories) state ──
-  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const [selectedWords, setSelectedWords] = useState<Record<number, string>>({});
+  const selectedWord = selectedWords[currentPage] ?? null;
 
   // ── Speak-it (picture stories) state ──
   const [speakItDone, setSpeakItDone] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const pages = data.pages;
-  const page = pages[currentPage];
+  const sourcePage = pages[currentPage];
+  const priorChoiceIndex = pages
+    .slice(0, currentPage)
+    .reduce((last, item, index) => (item.interactionType === 'word-select' ? index : last), -1);
+  const storyWord = selectedWords[priorChoiceIndex];
+  const page = useMemo(() => {
+    if (!sourcePage || !storyWord || !sourcePage.text.includes('{WORD}')) return sourcePage;
+    return {
+      ...sourcePage,
+      text: sourcePage.text.replaceAll('{WORD}', storyWord),
+      imageUrl: sourcePage.choiceImageUrls?.[storyWord] ?? sourcePage.imageUrl,
+      // A recording of the template cannot narrate the child's chosen word.
+      audioUrl: STORY_TTS_FALLBACK_MARKER,
+    };
+  }, [sourcePage, storyWord]);
   const totalPages = pages.length;
   const isRhyme = data.variant === 'rhyme';
   const isChain = data.variant === 'chain';
@@ -230,12 +245,20 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
   // Word-select: chain story kelime seçimi
   const handleWordSelect = useCallback(
     (word: string) => {
-      if (selectedWord) return;
-      setSelectedWord(word);
-      setTotalTapped((prev) => prev + 1);
+      if (selectedWord === word) return;
+      setSelectedWords((previous) => {
+        // Revisiting a choice starts a new continuation; later choices must be made again.
+        return {
+          ...Object.fromEntries(
+            Object.entries(previous).filter(([index]) => Number(index) < currentPage),
+          ),
+          [currentPage]: word,
+        };
+      });
+      if (!selectedWord) setTotalTapped((prev) => prev + 1);
       speak(word);
     },
-    [selectedWord],
+    [currentPage, selectedWord],
   );
 
   // Speak-it: çocuk resmi tarif etti
@@ -261,7 +284,6 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
       setFilledBlanks(new Map());
       setDraggedWord(null);
       setChoiceMade(null);
-      setSelectedWord(null);
       setSpeakItDone(false);
       setIsSpeaking(false);
     } else {
@@ -290,7 +312,6 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
       setFilledBlanks(new Map());
       setDraggedWord(null);
       setChoiceMade(null);
-      setSelectedWord(null);
       setSpeakItDone(false);
       setIsSpeaking(false);
     }
@@ -644,11 +665,11 @@ export default function StoryTimeActivity({ data, onComplete }: StoryTimeActivit
                                     ? 'text-text-secondary bg-surface-elevated'
                                     : 'bg-surface text-teal-700 shadow-sm'
                               }`}
-                              whileTap={!selectedWord ? { scale: 0.95 } : {}}
+                              whileTap={{ scale: 0.95 }}
                               onClick={() => {
-                                if (!selectedWord) handleWordSelect(opt);
+                                handleWordSelect(opt);
                               }}
-                              disabled={!!selectedWord}
+                              aria-pressed={isSelected}
                             >
                               {opt}
                             </motion.button>

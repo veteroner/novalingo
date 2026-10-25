@@ -18,6 +18,7 @@ import { getPreRecordedUrl } from '@/services/speech/audioManifest';
 import type { StoryTimeData } from '@/types/content';
 import { resolveImageUrl } from '@/utils/mediaFallback';
 import storyIllustrations from './storyIllustrations.json';
+import storyChoiceIllustrations from './storyChoiceIllustrations.json';
 
 export interface MicroStory {
   id: string;
@@ -4162,6 +4163,10 @@ const priority7StorySpecs: ExpansionStorySpec[] = [
 const priority7Stories = priority7StorySpecs.map(buildExpansionStory);
 
 const illustratedStoryPages: Record<string, string[]> = storyIllustrations;
+const illustratedChoicePages: Record<
+  string,
+  Record<string, Record<string, string>>
+> = storyChoiceIllustrations;
 
 function enrichStoryData(storyId: string, theme: string, data: StoryTimeData): StoryTimeData {
   return {
@@ -4172,6 +4177,7 @@ function enrichStoryData(storyId: string, theme: string, data: StoryTimeData): S
         theme,
         pageIndex,
       }),
+      choiceImageUrls: illustratedChoicePages[storyId]?.[String(pageIndex + 1)],
       audioUrl: resolveStoryAudioUrl(page.text, page.audioUrl),
     })),
   };

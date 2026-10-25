@@ -196,6 +196,8 @@ export interface StoryTimeData {
       | 'speak-it'
       | 'none';
     interactionData?: Record<string, unknown>;
+    /** Scene variants keyed by the preceding word choice in a chain story. */
+    choiceImageUrls?: Record<string, string>;
     /** Optional ambient sound URL for the page */
     ambientSound?: string;
     /** Rhyme words to highlight with a different color (for rhyme stories) */

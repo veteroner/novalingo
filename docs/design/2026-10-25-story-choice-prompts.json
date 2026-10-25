@@ -1,0 +1,227 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "stories": [
+    {
+      "id": "story-w1-chain-nova-adventure",
+      "prompt": "Use case: illustration-story. Asset type: SIX alternative interior scenes for the interactive children's story \"Nova's Big Adventure\". ONE atlas, EXACT TWO COLUMNS THREE ROWS, six equal landscape 3:2 cells on a square canvas. Straight evenly spaced seams at x50%, y33.333%,y66.666%; NO gutters, borders, titles, captions, labels or written words. Read left to right then next row. Each cell is standalone and fills its rectangle. Reference image role: EXACT Nova identity, indigo-purple feather owl, cream face and chest, blue-violet eyes, amber beak/feet, teal feather accents; premium friendly dimensional animated-film illustration. Consistent anatomy exactly TWO feather wings and TWO feet, no human hands/gloves/extra limbs. Each cell illustrates ONLY its own choice; no mixed alternative objects. Other context can be simple and neutral. Cooking uses small blunt child-safe utensils, no large knives. No written text, panel numbers, speech bubbles or UI. Individual scenes:\nCELL 1: Chosen word \"park\". VISUALIZE: Nova went to the park. It was wonderful there!\nCELL 2: Chosen word \"beach\". VISUALIZE: Nova went to the beach. It was wonderful there!\nCELL 3: Chosen word \"forest\". VISUALIZE: Nova went to the forest. It was wonderful there!\nCELL 4: Chosen word \"a butterfly\". VISUALIZE: Nova found a butterfly! They played together until sunset. What a great day!\nCELL 5: Chosen word \"a turtle\". VISUALIZE: Nova found a turtle! They played together until sunset. What a great day!\nCELL 6: Chosen word \"a bunny\". VISUALIZE: Nova found a bunny! They played together until sunset. What a great day!\nKeep main subjects safely within each individual panel; mobile-readable full-color scenes, warm appealing lighting. Main request: the actual choice changes the picture, each option gets a visibly distinct appropriate action/object/setting.",
+      "variants": [
+        {
+          "page": 3,
+          "choice": "park",
+          "text": "Nova went to the park. It was wonderful there!"
+        },
+        {
+          "page": 3,
+          "choice": "beach",
+          "text": "Nova went to the beach. It was wonderful there!"
+        },
+        {
+          "page": 3,
+          "choice": "forest",
+          "text": "Nova went to the forest. It was wonderful there!"
+        },
+        {
+          "page": 5,
+          "choice": "a butterfly",
+          "text": "Nova found a butterfly! They played together until sunset. What a great day!"
+        },
+        {
+          "page": 5,
+          "choice": "a turtle",
+          "text": "Nova found a turtle! They played together until sunset. What a great day!"
+        },
+        {
+          "page": 5,
+          "choice": "a bunny",
+          "text": "Nova found a bunny! They played together until sunset. What a great day!"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "id": "story-w11-chain-emotions-day",
+      "prompt": "Use case: illustration-story. Asset type: SIX alternative interior scenes for the interactive children's story \"Nova's Feelings Today\". ONE atlas, EXACT TWO COLUMNS THREE ROWS, six equal landscape 3:2 cells on a square canvas. Straight evenly spaced seams at x50%, y33.333%,y66.666%; NO gutters, borders, titles, captions, labels or written words. Read left to right then next row. Each cell is standalone and fills its rectangle. Reference image role: EXACT Nova identity, indigo-purple feather owl, cream face and chest, blue-violet eyes, amber beak/feet, teal feather accents; premium friendly dimensional animated-film illustration. Consistent anatomy exactly TWO feather wings and TWO feet, no human hands/gloves/extra limbs. Each cell illustrates ONLY its own choice; no mixed alternative objects. Other context can be simple and neutral. Cooking uses small blunt child-safe utensils, no large knives. No written text, panel numbers, speech bubbles or UI. Individual scenes:\nCELL 1: Chosen word \"happy\". VISUALIZE: Feeling happy, Nova stretched and smiled at the morning sun.\nCELL 2: Chosen word \"curious\". VISUALIZE: Feeling curious, Nova stretched and smiled at the morning sun.\nCELL 3: Chosen word \"sleepy\". VISUALIZE: Feeling sleepy, Nova stretched and smiled at the morning sun.\nCELL 4: Chosen word \"a hug\". VISUALIZE: Nova chose a hug. The whole day felt warm and kind!\nCELL 5: Chosen word \"a song\". VISUALIZE: Nova chose a song. The whole day felt warm and kind!\nCELL 6: Chosen word \"a walk\". VISUALIZE: Nova chose a walk. The whole day felt warm and kind!\nKeep main subjects safely within each individual panel; mobile-readable full-color scenes, warm appealing lighting. Main request: the actual choice changes the picture, each option gets a visibly distinct appropriate action/object/setting.",
+      "variants": [
+        {
+          "page": 3,
+          "choice": "happy",
+          "text": "Feeling happy, Nova stretched and smiled at the morning sun."
+        },
+        {
+          "page": 3,
+          "choice": "curious",
+          "text": "Feeling curious, Nova stretched and smiled at the morning sun."
+        },
+        {
+          "page": 3,
+          "choice": "sleepy",
+          "text": "Feeling sleepy, Nova stretched and smiled at the morning sun."
+        },
+        {
+          "page": 5,
+          "choice": "a hug",
+          "text": "Nova chose a hug. The whole day felt warm and kind!"
+        },
+        {
+          "page": 5,
+          "choice": "a song",
+          "text": "Nova chose a song. The whole day felt warm and kind!"
+        },
+        {
+          "page": 5,
+          "choice": "a walk",
+          "text": "Nova chose a walk. The whole day felt warm and kind!"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "id": "story-w3-chain-forest-path",
+      "prompt": "Use case: illustration-story. Asset type: SIX alternative interior scenes for the interactive children's story \"Nova's Forest Path\". ONE atlas, EXACT TWO COLUMNS THREE ROWS, six equal landscape 3:2 cells on a square canvas. Straight evenly spaced seams at x50%, y33.333%,y66.666%; NO gutters, borders, titles, captions, labels or written words. Read left to right then next row. Each cell is standalone and fills its rectangle. Reference image role: EXACT Nova identity, indigo-purple feather owl, cream face and chest, blue-violet eyes, amber beak/feet, teal feather accents; premium friendly dimensional animated-film illustration. Consistent anatomy exactly TWO feather wings and TWO feet, no human hands/gloves/extra limbs. Each cell illustrates ONLY its own choice; no mixed alternative objects. Other context can be simple and neutral. Cooking uses small blunt child-safe utensils, no large knives. No written text, panel numbers, speech bubbles or UI. Individual scenes:\nCELL 1: Chosen word \"river\". VISUALIZE: Nova walked toward the river. The air felt fresh and cool.\nCELL 2: Chosen word \"hill\". VISUALIZE: Nova walked toward the hill. The air felt fresh and cool.\nCELL 3: Chosen word \"meadow\". VISUALIZE: Nova walked toward the meadow. The air felt fresh and cool.\nCELL 4: Chosen word \"a frog\". VISUALIZE: It was a frog! Nova smiled and kept exploring the forest.\nCELL 5: Chosen word \"a deer\". VISUALIZE: It was a deer! Nova smiled and kept exploring the forest.\nCELL 6: Chosen word \"the wind\". VISUALIZE: It was the wind! Nova smiled and kept exploring the forest.\nKeep main subjects safely within each individual panel; mobile-readable full-color scenes, warm appealing lighting. Main request: the actual choice changes the picture, each option gets a visibly distinct appropriate action/object/setting.",
+      "variants": [
+        {
+          "page": 3,
+          "choice": "river",
+          "text": "Nova walked toward the river. The air felt fresh and cool."
+        },
+        {
+          "page": 3,
+          "choice": "hill",
+          "text": "Nova walked toward the hill. The air felt fresh and cool."
+        },
+        {
+          "page": 3,
+          "choice": "meadow",
+          "text": "Nova walked toward the meadow. The air felt fresh and cool."
+        },
+        {
+          "page": 5,
+          "choice": "a frog",
+          "text": "It was a frog! Nova smiled and kept exploring the forest."
+        },
+        {
+          "page": 5,
+          "choice": "a deer",
+          "text": "It was a deer! Nova smiled and kept exploring the forest."
+        },
+        {
+          "page": 5,
+          "choice": "the wind",
+          "text": "It was the wind! Nova smiled and kept exploring the forest."
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "id": "story-w5-chain-school-day",
+      "prompt": "Use case: illustration-story. Asset type: SIX alternative interior scenes for the interactive children's story \"Nova's First Day at School\". ONE atlas, EXACT TWO COLUMNS THREE ROWS, six equal landscape 3:2 cells on a square canvas. Straight evenly spaced seams at x50%, y33.333%,y66.666%; NO gutters, borders, titles, captions, labels or written words. Read left to right then next row. Each cell is standalone and fills its rectangle. Reference image role: EXACT Nova identity, indigo-purple feather owl, cream face and chest, blue-violet eyes, amber beak/feet, teal feather accents; premium friendly dimensional animated-film illustration. Consistent anatomy exactly TWO feather wings and TWO feet, no human hands/gloves/extra limbs. Each cell illustrates ONLY its own choice; no mixed alternative objects. Other context can be simple and neutral. Cooking uses small blunt child-safe utensils, no large knives. No written text, panel numbers, speech bubbles or UI. Individual scenes:\nCELL 1: Chosen word \"math\". VISUALIZE: In math class, Nova worked hard and smiled a lot.\nCELL 2: Chosen word \"art\". VISUALIZE: In art class, Nova worked hard and smiled a lot.\nCELL 3: Chosen word \"music\". VISUALIZE: In music class, Nova worked hard and smiled a lot.\nCELL 4: Chosen word \"tag\". VISUALIZE: Nova played tag with new friends. What a happy day!\nCELL 5: Chosen word \"hopscotch\". VISUALIZE: Nova played hopscotch with new friends. What a happy day!\nCELL 6: Chosen word \"soccer\". VISUALIZE: Nova played soccer with new friends. What a happy day!\nKeep main subjects safely within each individual panel; mobile-readable full-color scenes, warm appealing lighting. Main request: the actual choice changes the picture, each option gets a visibly distinct appropriate action/object/setting.",
+      "variants": [
+        {
+          "page": 3,
+          "choice": "math",
+          "text": "In math class, Nova worked hard and smiled a lot."
+        },
+        {
+          "page": 3,
+          "choice": "art",
+          "text": "In art class, Nova worked hard and smiled a lot."
+        },
+        {
+          "page": 3,
+          "choice": "music",
+          "text": "In music class, Nova worked hard and smiled a lot."
+        },
+        {
+          "page": 5,
+          "choice": "tag",
+          "text": "Nova played tag with new friends. What a happy day!"
+        },
+        {
+          "page": 5,
+          "choice": "hopscotch",
+          "text": "Nova played hopscotch with new friends. What a happy day!"
+        },
+        {
+          "page": 5,
+          "choice": "soccer",
+          "text": "Nova played soccer with new friends. What a happy day!"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "id": "story-w7-chain-city-ride",
+      "prompt": "Use case: illustration-story. Asset type: SIX alternative interior scenes for the interactive children's story \"Nova's City Ride\". ONE atlas, EXACT TWO COLUMNS THREE ROWS, six equal landscape 3:2 cells on a square canvas. Straight evenly spaced seams at x50%, y33.333%,y66.666%; NO gutters, borders, titles, captions, labels or written words. Read left to right then next row. Each cell is standalone and fills its rectangle. Reference image role: EXACT Nova identity, indigo-purple feather owl, cream face and chest, blue-violet eyes, amber beak/feet, teal feather accents; premium friendly dimensional animated-film illustration. Consistent anatomy exactly TWO feather wings and TWO feet, no human hands/gloves/extra limbs. Each cell illustrates ONLY its own choice; no mixed alternative objects. Other context can be simple and neutral. Cooking uses small blunt child-safe utensils, no large knives. No written text, panel numbers, speech bubbles or UI. Individual scenes:\nCELL 1: Chosen word \"bus\". VISUALIZE: Nova got on the bus and watched the city go by.\nCELL 2: Chosen word \"train\". VISUALIZE: Nova got on the train and watched the city go by.\nCELL 3: Chosen word \"taxi\". VISUALIZE: Nova got on the taxi and watched the city go by.\nCELL 4: Chosen word \"museum\". VISUALIZE: Nova stopped at the museum and had a wonderful afternoon!\nCELL 5: Chosen word \"park\". VISUALIZE: Nova stopped at the park and had a wonderful afternoon!\nCELL 6: Chosen word \"market\". VISUALIZE: Nova stopped at the market and had a wonderful afternoon!\nKeep main subjects safely within each individual panel; mobile-readable full-color scenes, warm appealing lighting. Main request: the actual choice changes the picture, each option gets a visibly distinct appropriate action/object/setting.",
+      "variants": [
+        {
+          "page": 3,
+          "choice": "bus",
+          "text": "Nova got on the bus and watched the city go by."
+        },
+        {
+          "page": 3,
+          "choice": "train",
+          "text": "Nova got on the train and watched the city go by."
+        },
+        {
+          "page": 3,
+          "choice": "taxi",
+          "text": "Nova got on the taxi and watched the city go by."
+        },
+        {
+          "page": 5,
+          "choice": "museum",
+          "text": "Nova stopped at the museum and had a wonderful afternoon!"
+        },
+        {
+          "page": 5,
+          "choice": "park",
+          "text": "Nova stopped at the park and had a wonderful afternoon!"
+        },
+        {
+          "page": 5,
+          "choice": "market",
+          "text": "Nova stopped at the market and had a wonderful afternoon!"
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "id": "story-w8-chain-cooking-magic",
+      "prompt": "Use case: illustration-story. Asset type: SIX alternative interior scenes for the interactive children's story \"Nova's Cooking Magic\". ONE atlas, EXACT TWO COLUMNS THREE ROWS, six equal landscape 3:2 cells on a square canvas. Straight evenly spaced seams at x50%, y33.333%,y66.666%; NO gutters, borders, titles, captions, labels or written words. Read left to right then next row. Each cell is standalone and fills its rectangle. Reference image role: EXACT Nova identity, indigo-purple feather owl, cream face and chest, blue-violet eyes, amber beak/feet, teal feather accents; premium friendly dimensional animated-film illustration. Consistent anatomy exactly TWO feather wings and TWO feet, no human hands/gloves/extra limbs. Each cell illustrates ONLY its own choice; no mixed alternative objects. Other context can be simple and neutral. Cooking uses small blunt child-safe utensils, no large knives. No written text, panel numbers, speech bubbles or UI. Individual scenes:\nCELL 1: Chosen word \"eggs\". VISUALIZE: Nova started making eggs. Mix, stir, and cook!\nCELL 2: Chosen word \"pasta\". VISUALIZE: Nova started making pasta. Mix, stir, and cook!\nCELL 3: Chosen word \"soup\". VISUALIZE: Nova started making soup. Mix, stir, and cook!\nCELL 4: Chosen word \"cheese\". VISUALIZE: Nova added cheese on top. Dinner is ready! Yummy!\nCELL 5: Chosen word \"tomato\". VISUALIZE: Nova added tomato on top. Dinner is ready! Yummy!\nCELL 6: Chosen word \"herbs\". VISUALIZE: Nova added herbs on top. Dinner is ready! Yummy!\nKeep main subjects safely within each individual panel; mobile-readable full-color scenes, warm appealing lighting. Main request: the actual choice changes the picture, each option gets a visibly distinct appropriate action/object/setting.",
+      "variants": [
+        {
+          "page": 3,
+          "choice": "eggs",
+          "text": "Nova started making eggs. Mix, stir, and cook!"
+        },
+        {
+          "page": 3,
+          "choice": "pasta",
+          "text": "Nova started making pasta. Mix, stir, and cook!"
+        },
+        {
+          "page": 3,
+          "choice": "soup",
+          "text": "Nova started making soup. Mix, stir, and cook!"
+        },
+        {
+          "page": 5,
+          "choice": "cheese",
+          "text": "Nova added cheese on top. Dinner is ready! Yummy!"
+        },
+        {
+          "page": 5,
+          "choice": "tomato",
+          "text": "Nova added tomato on top. Dinner is ready! Yummy!"
+        },
+        {
+          "page": 5,
+          "choice": "herbs",
+          "text": "Nova added herbs on top. Dinner is ready! Yummy!"
+        }
+      ],
+      "reviewed": true
+    }
+  ]
+}

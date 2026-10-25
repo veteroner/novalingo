@@ -1,0 +1,74 @@
+{
+  "story-w1-chain-nova-adventure": {
+    "3": {
+      "park": "/story/choices-v1/story-w1-chain-nova-adventure/page-3-choice-1.webp",
+      "beach": "/story/choices-v1/story-w1-chain-nova-adventure/page-3-choice-2.webp",
+      "forest": "/story/choices-v1/story-w1-chain-nova-adventure/page-3-choice-3.webp"
+    },
+    "5": {
+      "a butterfly": "/story/choices-v1/story-w1-chain-nova-adventure/page-5-choice-1.webp",
+      "a turtle": "/story/choices-v1/story-w1-chain-nova-adventure/page-5-choice-2.webp",
+      "a bunny": "/story/choices-v1/story-w1-chain-nova-adventure/page-5-choice-3.webp"
+    }
+  },
+  "story-w11-chain-emotions-day": {
+    "3": {
+      "happy": "/story/choices-v1/story-w11-chain-emotions-day/page-3-choice-1.webp",
+      "curious": "/story/choices-v1/story-w11-chain-emotions-day/page-3-choice-2.webp",
+      "sleepy": "/story/choices-v1/story-w11-chain-emotions-day/page-3-choice-3.webp"
+    },
+    "5": {
+      "a hug": "/story/choices-v1/story-w11-chain-emotions-day/page-5-choice-1.webp",
+      "a song": "/story/choices-v1/story-w11-chain-emotions-day/page-5-choice-2.webp",
+      "a walk": "/story/choices-v1/story-w11-chain-emotions-day/page-5-choice-3.webp"
+    }
+  },
+  "story-w3-chain-forest-path": {
+    "3": {
+      "river": "/story/choices-v1/story-w3-chain-forest-path/page-3-choice-1.webp",
+      "hill": "/story/choices-v1/story-w3-chain-forest-path/page-3-choice-2.webp",
+      "meadow": "/story/choices-v1/story-w3-chain-forest-path/page-3-choice-3.webp"
+    },
+    "5": {
+      "a frog": "/story/choices-v1/story-w3-chain-forest-path/page-5-choice-1.webp",
+      "a deer": "/story/choices-v1/story-w3-chain-forest-path/page-5-choice-2.webp",
+      "the wind": "/story/choices-v1/story-w3-chain-forest-path/page-5-choice-3.webp"
+    }
+  },
+  "story-w5-chain-school-day": {
+    "3": {
+      "math": "/story/choices-v1/story-w5-chain-school-day/page-3-choice-1.webp",
+      "art": "/story/choices-v1/story-w5-chain-school-day/page-3-choice-2.webp",
+      "music": "/story/choices-v1/story-w5-chain-school-day/page-3-choice-3.webp"
+    },
+    "5": {
+      "tag": "/story/choices-v1/story-w5-chain-school-day/page-5-choice-1.webp",
+      "hopscotch": "/story/choices-v1/story-w5-chain-school-day/page-5-choice-2.webp",
+      "soccer": "/story/choices-v1/story-w5-chain-school-day/page-5-choice-3.webp"
+    }
+  },
+  "story-w7-chain-city-ride": {
+    "3": {
+      "bus": "/story/choices-v1/story-w7-chain-city-ride/page-3-choice-1.webp",
+      "train": "/story/choices-v1/story-w7-chain-city-ride/page-3-choice-2.webp",
+      "taxi": "/story/choices-v1/story-w7-chain-city-ride/page-3-choice-3.webp"
+    },
+    "5": {
+      "museum": "/story/choices-v1/story-w7-chain-city-ride/page-5-choice-1.webp",
+      "park": "/story/choices-v1/story-w7-chain-city-ride/page-5-choice-2.webp",
+      "market": "/story/choices-v1/story-w7-chain-city-ride/page-5-choice-3.webp"
+    }
+  },
+  "story-w8-chain-cooking-magic": {
+    "3": {
+      "eggs": "/story/choices-v1/story-w8-chain-cooking-magic/page-3-choice-1.webp",
+      "pasta": "/story/choices-v1/story-w8-chain-cooking-magic/page-3-choice-2.webp",
+      "soup": "/story/choices-v1/story-w8-chain-cooking-magic/page-3-choice-3.webp"
+    },
+    "5": {
+      "cheese": "/story/choices-v1/story-w8-chain-cooking-magic/page-5-choice-1.webp",
+      "tomato": "/story/choices-v1/story-w8-chain-cooking-magic/page-5-choice-2.webp",
+      "herbs": "/story/choices-v1/story-w8-chain-cooking-magic/page-5-choice-3.webp"
+    }
+  }
+}

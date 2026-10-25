@@ -83,3 +83,7 @@ PR #23 ana dala birleşti. Kullanıcının açtığı “Nova Dans Ediyor!” hi
 ## 25 Ekim 2026 — tüm hikâye içleri
 
 Önceki üç hikâye / 14 sayfa ara durumu tamamlandı. Katalog artık 104 hikâye / 412 ayrı iç sahne içeriyor. Dosya/dekoder, eşleme, paket kopyası ve iOS derleme kontrolleri geçti. Son görsel simülatör kontrolü Mac kilidi nedeniyle bekliyor. [Güncel kapsam ve kanıt sınırları](2026-10-25-all-story-interiors.md).
+
+## 25 Ekim 2026 — simülatör kontrolünün devamı
+
+Mac kilidi açıldı. Dansın beş sayfası ve geri geçiş, kütüphaneden okyanus, son dünya resim hikâyesi ve seçimli hikâye örnekleri gerçek iOS WKWebView içinde kontrol edildi. Seçim sonrası `{WORD}` kalması hatası düzeltildi; altı hikâye için 36 seçim resmi eklendi. [Güncel kanıtlar ve doğrulama kapsamı](2026-10-25-all-story-interiors.md).
