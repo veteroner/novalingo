@@ -91,3 +91,7 @@ Mac kilidi açıldı. Dansın beş sayfası ve geri geçiş, kütüphaneden okya
 ## 25 Ekim 2026 — açılış ve evrim devamı
 
 Android eski açılış PNG'leri yeni Nova kaynağına bağlı XML düzeniyle değiştirildi; Android 12+ açılış ikonu ve zemini açıkça tanımlandı. Evrim kutlaması ilk andan itibaren geçilebilir; kapanan kutlamanın zamanlayıcısı temizlenir, hareket azaltmada bekleme kalkar. iOS örnek akışları ve Android debug derlemesi doğrulandı; Android manuel görsel kontrolü açık. [Değişiklikler, kanıtlar ve kalan işler](2026-10-25-nova-flow-polish.md). Yukarıdaki tarihli tablolar geçmiş durum kayıtlarıdır.
+
+## 25 Ekim 2026 — Nova ifadeleri ve görsel hata yedeği
+
+Düşünme, uyku, cesaretlendirme, konuşma ve üzgün için beş ayrı Nova pozu eklendi. Mevcut üç pozla birlikte sekiz görsel / on durum ortak bileşenden kullanılır; eski SVG hata yedeği yerine aynı Nova'nın JS'e gömülü PNG'si var. Görsel hatasının sonraki ifadeleri kalıcı olarak etkilemesi düzeltildi; webde daha önce açılmış WebP görselleri için çevrimdışı önbellek kapsamı tamamlandı. iOS açık/koyu galeri ve tarayıcı 404→toparlanma kanıtları, testler ve açık kalan ileri animasyon/cihaz işleri [güncel ifade raporunda](2026-10-25-nova-expressions.md). Önceki tarihli tablolar geçmiş kayıtlarıdır.

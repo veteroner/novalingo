@@ -85,23 +85,27 @@ self.addEventListener('fetch', (event) => {
   // Static assets (JS/CSS/images) — stale-while-revalidate
   // Serve from cache immediately (avoids offline crash for lazy-loaded chunks),
   // then update cache in the background for next visit.
-  if (url.pathname.startsWith('/assets/') || url.pathname.match(/\.(png|jpg|svg|ico|woff2?)$/)) {
+  if (
+    url.pathname.startsWith('/assets/') ||
+    url.pathname.match(/\.(png|jpg|webp|svg|ico|woff2?)$/)
+  ) {
+    const cachePromise = caches.open(CACHE_NAME);
+    // Register background work during the fetch event, before returning cached media.
+    const networkFetch = cachePromise
+      .then(async (cache) => {
+        const response = await fetch(request);
+        if (response.status === 200 && response.type !== 'opaque') {
+          await cache.put(request, response.clone()).catch(() => {
+            // Ignore cache put failures (partial/opaque responses, quota).
+          });
+        }
+        return response;
+      })
+      .catch(() => null);
+    event.waitUntil(networkFetch.then(() => undefined));
     event.respondWith(
-      caches.open(CACHE_NAME).then(async (cache) => {
+      cachePromise.then(async (cache) => {
         const cached = await cache.match(request);
-        // Kick off a background network fetch to keep the cache fresh
-        const networkFetch = fetch(request)
-          .then((response) => {
-            if (response.status === 200 && response.type !== 'opaque') {
-              cache.put(request, response.clone()).catch(() => {
-                // Ignore cache put failures (partial/opaque responses, quota)
-              });
-            }
-            return response;
-          })
-          .catch(() => null); // swallow offline errors for background update
-
-        // Return cached version immediately if available; otherwise wait for network
         return cached ?? (await networkFetch) ?? Response.error();
       }),
     );

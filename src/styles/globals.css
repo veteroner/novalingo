@@ -455,9 +455,6 @@
 .nova-character[data-stage='baby'] .nova-character-art {
   transform: scale(0.88);
 }
-.nova-character[data-mood='sleeping'] .nova-character-art {
-  opacity: 0.8;
-}
 .nova-character[data-motion='on'][data-mood='celebrating'] .nova-character-art,
 .nova-character[data-motion='on'][data-mood='excited'] .nova-character-art {
   animation: nova-celebrate 0.7s ease-out 1;

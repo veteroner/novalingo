@@ -28,7 +28,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeProvider, useTheme } from '../src/app/providers/ThemeProvider';
 import { NovaEvolutionModal } from '../src/components/organisms/NovaEvolutionModal';
-import { NovaCharacter } from '../src/components/molecules/NovaCharacter';
+import { NovaCharacter, type NovaMood } from '../src/components/molecules/NovaCharacter';
 import HomeScreen from '../src/features/home/screens/HomeScreen';
 import WorldMapScreen from '../src/features/home/screens/WorldMapScreen';
 import ConversationScreen from '../src/features/conversation/screens/ConversationScreen';
@@ -189,7 +189,7 @@ function EvolutionFixture() {
 function Fixture() {
   const { toggleColorMode, colorMode } = useTheme();
   const { i18n } = useTranslation();
-  const [mood, setMood] = useState<'idle' | 'listening' | 'celebrating'>('idle');
+  const [mood, setMood] = useState<NovaMood>('idle');
   return (
     <>
       <aside
@@ -258,12 +258,26 @@ function Fixture() {
               <h1 className="font-heading text-2xl">Nova</h1>
               <NovaCharacter size="hero" mood={mood} />
               <div className="flex flex-wrap justify-center gap-4">
-                {(['idle', 'listening', 'celebrating'] as const).map((m) => (
+                {(
+                  [
+                    'idle',
+                    'listening',
+                    'thinking',
+                    'speaking',
+                    'encouraging',
+                    'sleeping',
+                    'sad',
+                    'celebrating',
+                  ] as const
+                ).map((m) => (
                   <button
                     key={m}
-                    className="border-border rounded-xl border p-3"
+                    aria-label={m}
+                    className="border-border flex flex-col items-center rounded-xl border p-2 text-xs"
+                    aria-pressed={mood === m}
                     onClick={() => setMood(m)}
                   >
+                    <NovaCharacter mood={m} size="sm" motionEnabled={false} decorative />
                     {m}
                   </button>
                 ))}

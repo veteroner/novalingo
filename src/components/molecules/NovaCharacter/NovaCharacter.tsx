@@ -1,7 +1,7 @@
 import type { NovaStage } from '@/types/user';
 import { clsx } from 'clsx';
 import { useState } from 'react';
-import fallbackNova from '@assets/images/nova-mascot.svg';
+import fallbackNova from '@assets/images/nova-fallback-v2.png?inline';
 
 export type NovaMood =
   | 'idle'
@@ -32,6 +32,37 @@ const sizes = {
   hero: 'h-56 w-52',
 };
 
+const poses: Record<NovaMood, string> = {
+  idle: 'idle',
+  happy: 'celebrate',
+  excited: 'celebrate',
+  thinking: 'thinking',
+  sleeping: 'sleeping',
+  encouraging: 'encouraging',
+  celebrating: 'celebrate',
+  listening: 'listen',
+  speaking: 'speaking',
+  sad: 'sad',
+};
+
+// A new pose gets a new image lifecycle; a previous error must not hide later moods.
+function NovaPoseImage({ pose, decorative }: { pose: string; decorative: boolean }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <img
+      src={failed ? fallbackNova : `/nova/poses-v3/${pose}.webp`}
+      onError={() => {
+        if (!failed) setFailed(true);
+      }}
+      alt={decorative ? '' : 'Nova'}
+      width={320}
+      height={320}
+      decoding="async"
+      className="nova-character-art relative z-10 h-full w-full object-contain"
+    />
+  );
+}
+
 /** One visual source for Nova across home, lessons, conversation and rewards.
  * Raster poses keep the learning UI independent of WebGL/model loading.
  * Expressions are event-driven; no perpetual whole-body floating animation.
@@ -44,17 +75,7 @@ export function NovaCharacter({
   decorative = false,
   className,
 }: NovaCharacterProps) {
-  const [failed, setFailed] = useState(false);
-  const pose =
-    mood === 'celebrating' || mood === 'excited' || mood === 'happy'
-      ? 'celebrate'
-      : mood === 'listening' ||
-          mood === 'thinking' ||
-          mood === 'encouraging' ||
-          mood === 'sad' ||
-          mood === 'sleeping'
-        ? 'listen'
-        : 'idle';
+  const pose = poses[mood];
 
   return (
     <span
@@ -64,22 +85,13 @@ export function NovaCharacter({
         className,
       )}
       data-mood={mood}
+      data-pose={pose}
       data-stage={stage}
       data-motion={motionEnabled ? 'on' : 'off'}
       aria-hidden={decorative || undefined}
     >
       <span className="nova-contact-shadow" aria-hidden="true" />
-      <img
-        src={failed ? fallbackNova : `/nova/nova-${pose}.webp`}
-        onError={() => {
-          setFailed(true);
-        }}
-        alt={decorative ? '' : 'Nova'}
-        width={320}
-        height={320}
-        decoding="async"
-        className="nova-character-art relative z-10 h-full w-full object-contain"
-      />
+      <NovaPoseImage key={pose} pose={pose} decorative={decorative} />
       {stage === 'legendary' && (
         <span className="nova-stage-star" aria-hidden="true">
           ✦
