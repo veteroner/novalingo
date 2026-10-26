@@ -6,6 +6,11 @@ import { NovaCharacter, type NovaMood } from './NovaCharacter';
 const nova = () => screen.getByRole('img', { name: 'Nova' });
 
 describe('NovaCharacter', () => {
+  it('keeps approved art by default while the 3D candidate is under review', () => {
+    const { container } = render(<NovaCharacter size="hero" />);
+    expect(nova()).toHaveAttribute('src', '/nova/poses-v3/idle.webp');
+    expect(container.querySelector('canvas')).toBeNull();
+  });
   it('changes expression as a conversation listens, thinks, speaks and celebrates', () => {
     const { rerender } = render(<NovaCharacter mood="idle" />);
     const seen = new Set([nova().getAttribute('src')]);

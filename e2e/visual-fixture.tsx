@@ -1,5 +1,6 @@
 // Local visual QA entry. Vite only builds index.html; this file is not a production route.
 import '../src/styles/globals.css';
+import { TripoNovaPreview } from './TripoNovaPreview';
 import '../src/i18n';
 import { SeasonalEventBanner } from '../src/features/gamification/components/SeasonalEventBanner';
 import { DailyWheel } from '../src/components/organisms/DailyWheel';
@@ -431,12 +432,13 @@ function Fixture() {
             </div>
           }
         />
+        <Route path="/tripo" element={<TripoNovaPreview />} />
         <Route
           path="/poses"
           element={
             <div className="mx-auto max-w-md p-6 text-center">
               <h1 className="font-heading text-2xl">Nova</h1>
-              <NovaCharacter size="hero" mood={mood} />
+              <NovaCharacter size="hero" mood={mood} renderMode="3d" className="h-80 w-80" />
               <div className="flex flex-wrap justify-center gap-4">
                 {(
                   [

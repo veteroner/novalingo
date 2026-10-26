@@ -91,3 +91,6 @@ yarn-error.log*
 
 # Android release imzalama
 android/keystore.properties
+
+# Local-only third-party model trials; excluded from source and release artifacts.
+e2e/.local-assets/

@@ -10,10 +10,10 @@ Aşağıdaki ilk tablolar **24 Ekim tarihindeki inceleme kaydıdır**. Güncel s
 - Kütüphane/sohbetin kalan 10px etiketleri, özel yardımcı yazı renkleri, ana ekran etkinlik kartı ve günlük çark okunabilirliği düzeltildi. Çarkın seri dondurma birimi ve tekrarlanan dönüşte yanlış dilimde durması da düzeltildi. [Son okunabilirlik kontrolü](2026-10-25-readability-followup.md).
 - 12 dünyanın her birine ayrı 1200×800 çevre çizimi eklendi; harita ve ana ekranın mevcut dünya kartı ortak resmi kullanır. iOS şifreleme beyanı da pakete eklendi. [Dünya sahneleri ve iOS beyanı](2026-10-26-world-scenes-encryption.md).
 - Web açılışı bütün JS/font parçalarıyla sürümlü önbelleğe alındı; üretim paketi yerel sunucu kapalıyken yeniden açıldı. 320px ders kartının alt menü arkasında kalan düğmesi düzeltildi. [Çevrimdışı açılış/küçük ekran kanıtları](2026-10-26-offline-small-screens.md).
-- **Açık:** gerçek 3D/rig (kullanıcı kararıyla ertelendi), gerçek göz kırpma/nefes/gaga-ses eşlemesi, bütün özel durumların kontrast ve ekran okuyucu envanteri; Android manuel/fiziksel/düşük donanım, performans ve gerçek hesap/ödeme/ses uçtan uca doğrulaması. Kod/PR durumu mağaza yayını anlamına gelmez.
+- Gerçek 3D prototip ve indirilebilir Tripo H2.5 denemesi hazırlandı; hafifletilmiş model web/iOS’ta incelendi. Tripo varlığı yalnız yerel QA’da; ticari lisans ve iskeletleme açık. [3D deneme ve sınırlar](2026-10-26-nova-3d-trial.md).
+- **Açık:** üretimde onaylı 3D varlık/rig ve ticari hak, gerçek göz kırpma/nefes/gaga-ses eşlemesi, bütün özel durumların kontrast ve ekran okuyucu envanteri; Android manuel/fiziksel/düşük donanım, performans ve gerçek hesap/ödeme/ses uçtan uca doğrulaması. Kod/PR durumu mağaza yayını anlamına gelmez.
 
 ## 24 Ekim tarihli denetim kaydı
-
 
 24 Ekim 2026. **Hayır, ilk incelemedeki bütün hedefler tamamlanmadı.** Ortak görsel dil, öğrenme yolu ve sade başlangıç akışı uygulandı; ileri karakter animasyonu, katalogdaki tüm iç çizimler ve tam cihaz doğrulaması açık kaldı.
 
@@ -119,11 +119,9 @@ Mağaza/koleksiyon kategori ikonları, ürün vektörleri ve bakiye/seviye/başa
 
 Auth dahil ortak kökte belge görünürlüğü/native etkinlik ve OS hareket tercihi izlenir. Sürekli Framer/CSS döngüleri arka planda veya hareket azaltmada sabitlenir; kartın arkası açıkken ön yüz nabzı durur. Yanıt/kart durumu korunur; ders ve ses sayaçları değiştirilmez. Evrim ortasında hareketi kapatma ve XP sayacının dönüşte baştan sayması da ele alındı. Gerçek iOS arka plan→dönüş ve OS tercihi açıkken kart tamamlama kanıtları, 36 ilgili test ve kapsam sınırları [hareket raporunda](2026-10-25-motion-lifecycle.md). Android manuel/fiziksel cihaz, performans ölçümü ve bütün sonlu varyantların canlı yeniden planlanması açık; önceki tarihli tablolar güncel tamamlanma iddiası değildir.
 
-
 ## 25 Ekim 2026 — kalan etiketler, etkinlik kartı ve çark
 
 Kütüphane/sohbetin 10px etiketleri 12px'e, dünya filtreleri 44px dokunma hedefine taşındı. Özel ipucu/hata yazıları ve ebeveyn ad alanı tema renklerini kullanır. Etkinlik ana ekran kartı, sayfayla aynı koyu kaplama ve yerelleştirmeyi kullanır. Çark yazıları büyütüldü/koyulaştırıldı; seri dondurma birimi ve ikinci dönüşün yanlış konumu düzeltildi. [77 ilgili test, renk ölçümleri, iOS kanıtları ve sınırlar](2026-10-25-readability-followup.md). Her metin/durumun veya fiziksel cihaz denetiminin bittiği iddia edilmez.
-
 
 ## 26 Ekim 2026 — 12 dünya sahnesi ve iOS beyanı
 

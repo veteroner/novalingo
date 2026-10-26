@@ -1,8 +1,11 @@
 import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { NovaStage } from '@/types/user';
 import { clsx } from 'clsx';
-import { useState } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
+
 import fallbackNova from '@assets/images/nova-fallback-v2.png?inline';
+
+const Nova3D = lazy(() => import('./three/Nova3D').catch(() => ({ default: () => <></> })));
 
 export type NovaMood =
   | 'idle'
@@ -23,6 +26,8 @@ interface NovaCharacterProps {
   motionEnabled?: boolean;
   decorative?: boolean;
   className?: string;
+  /** Opt-in prototype; approved raster art remains the default during model review. */
+  renderMode?: 'auto' | '3d' | 'image';
 }
 
 const sizes = {
@@ -65,7 +70,7 @@ function NovaPoseImage({ pose, decorative }: { pose: string; decorative: boolean
 }
 
 /** One visual source for Nova across home, lessons, conversation and rewards.
- * Raster poses keep the learning UI independent of WebGL/model loading.
+ * Opt-in 3D rig retains raster art during loading or graphics failure.
  * Expressions are event-driven; no perpetual whole-body floating animation.
  */
 export function NovaCharacter({
@@ -75,9 +80,18 @@ export function NovaCharacter({
   motionEnabled = true,
   decorative = false,
   className,
+  renderMode = 'auto',
 }: NovaCharacterProps) {
   const pose = poses[mood];
-  const { canAnimate } = useMotionPolicy();
+  const { canAnimate, isActive } = useMotionPolicy();
+  const [ready, setReady] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const unavailable = useCallback(() => {
+    setFailed(true);
+    setReady(false);
+  }, []);
+  const use3D = !failed && renderMode === '3d';
+  const show3D = use3D && ready;
 
   return (
     <span
@@ -86,6 +100,9 @@ export function NovaCharacter({
         sizes[size],
         className,
       )}
+      role={show3D && !decorative ? 'img' : undefined}
+      aria-label={show3D && !decorative ? 'Nova' : undefined}
+      data-renderer={show3D ? 'webgl' : 'image'}
       data-mood={mood}
       data-pose={pose}
       data-stage={stage}
@@ -93,7 +110,24 @@ export function NovaCharacter({
       aria-hidden={decorative || undefined}
     >
       <span className="nova-contact-shadow" aria-hidden="true" />
-      <NovaPoseImage key={pose} pose={pose} decorative={decorative} />
+      <span
+        className={clsx('h-full w-full', show3D && 'invisible')}
+        aria-hidden={show3D || undefined}
+      >
+        <NovaPoseImage key={pose} pose={pose} decorative={decorative} />
+      </span>
+      {use3D && (
+        <Suspense fallback={null}>
+          <Nova3D
+            mood={mood}
+            stage={stage}
+            canAnimate={motionEnabled && canAnimate}
+            isActive={isActive}
+            onReady={setReady}
+            onUnavailable={unavailable}
+          />
+        </Suspense>
+      )}
       {stage === 'legendary' && (
         <span className="nova-stage-star" aria-hidden="true">
           ✦
