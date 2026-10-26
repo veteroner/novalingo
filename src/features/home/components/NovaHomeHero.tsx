@@ -1,3 +1,4 @@
+import { WorldScene } from './WorldScene';
 import type { NovaStage } from '@/types/user';
 import { Button } from '@components/atoms/Button';
 import { NovaCharacter } from '@components/molecules/NovaCharacter';
@@ -7,11 +8,18 @@ import { useTranslation } from 'react-i18next';
 interface NovaHomeHeroProps {
   stage: NovaStage;
   worldName: string;
+  worldId: string;
   onContinue: () => void;
   onVisitNova: () => void;
 }
 
-export function NovaHomeHero({ stage, worldName, onContinue, onVisitNova }: NovaHomeHeroProps) {
+export function NovaHomeHero({
+  stage,
+  worldName,
+  worldId,
+  onContinue,
+  onVisitNova,
+}: NovaHomeHeroProps) {
   const { t } = useTranslation('home');
   return (
     <section
@@ -19,14 +27,7 @@ export function NovaHomeHero({ stage, worldName, onContinue, onVisitNova }: Nova
       aria-label={t('hero.label')}
     >
       <div className="relative isolate min-h-64 overflow-hidden bg-[#e6efe2]">
-        <img
-          src="/scenes/forest-clearing.webp"
-          alt=""
-          width={1536}
-          height={1024}
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-center"
-          fetchPriority="high"
-        />
+        <WorldScene worldId={worldId} className="absolute inset-0 -z-10" />
         <div className="relative z-20 m-4 inline-flex max-w-[65%] items-center gap-1.5 rounded-full bg-[#fffaf0]/95 px-3 py-1.5 text-xs font-extrabold text-[#25314c]">
           <SparkleIcon
             size={16}

@@ -307,10 +307,10 @@ export default function ConversationResultScreen() {
           </div>
         ) : saveError ? (
           <div className="bg-reward-soft rounded-2xl border border-orange-200 p-4 text-center">
-            <Text variant="bodySmall" className="font-semibold text-orange-600">
+            <Text variant="bodySmall" className="text-reward-ink font-semibold">
               {saveError === 'offline' ? '⚡️ İnternet bağlantısı kesildi' : '⚠️ Kaydedilemedi'}
             </Text>
-            <Text variant="caption" className="mt-0.5 block text-orange-400">
+            <Text variant="caption" className="text-reward-ink mt-0.5 block">
               {saveError === 'offline'
                 ? 'XP bağlantı geri geldiğinde otomatik kaydedilecek.'
                 : 'Bir sorun oluştu. Sonucun yerel olarak saklandı.'}

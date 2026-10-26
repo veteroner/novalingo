@@ -75,7 +75,7 @@ export default function GrammarTransformActivity({
     <div className="mx-auto w-full max-w-md space-y-4">
       {/* Header */}
       <div className="text-center">
-        <Text variant="overline" className="text-orange-500">
+        <Text variant="overline" className="text-reward-ink">
           {t('activityUI.grammar.title')}
         </Text>
       </div>
@@ -86,10 +86,10 @@ export default function GrammarTransformActivity({
         animate={{ opacity: 1, y: 0 }}
         className="bg-reward-soft rounded-2xl p-4 text-center"
       >
-        <Text variant="h4" className="text-orange-700">
+        <Text variant="h4" className="text-reward-ink">
           {data.instruction}
         </Text>
-        <Text variant="caption" className="mt-1 text-orange-400">
+        <Text variant="caption" className="text-reward-ink mt-1">
           {data.instructionTr}
         </Text>
       </motion.div>

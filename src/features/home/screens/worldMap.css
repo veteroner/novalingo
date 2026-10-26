@@ -85,7 +85,7 @@
 }
 .learning-world-list small {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-text-secondary);
 }
 .learning-world-number {
@@ -116,7 +116,7 @@
   display: flex;
   gap: 6px;
   align-items: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -402,7 +402,7 @@
   border: 2px solid var(--color-border);
   color: var(--color-primary);
   background: var(--color-surface);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   white-space: nowrap;
 }
@@ -434,7 +434,7 @@
   pointer-events: none;
 }
 .learning-nova-rest > span:last-child {
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 900;
@@ -649,9 +649,18 @@
   .learning-resume {
     max-width: 104px;
     padding: 8px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .learning-nova-rest {
     right: 0;
   }
+}
+
+/* Reserve space before artwork decodes; keep reading surfaces outside the art. */
+.learning-world-scene {
+  width: 100%;
+  height: clamp(176px, 28vw, 300px);
+  margin-top: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
 }

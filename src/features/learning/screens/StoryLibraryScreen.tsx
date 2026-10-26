@@ -84,7 +84,7 @@ export default function StoryLibraryScreen() {
               onClick={() => {
                 setFilterWorld(wid);
               }}
-              className={`flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold transition-all ${
+              className={`flex min-h-11 shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold transition-all ${
                 filterWorld === wid
                   ? 'bg-primary-dark text-white shadow-md'
                   : 'bg-surface-elevated text-text-secondary hover:bg-border'
@@ -189,10 +189,10 @@ function StoryCard({
 
       {/* Meta */}
       <div className="mt-1 flex flex-wrap items-center gap-1">
-        <span className="bg-primary-soft text-primary rounded-full px-2 py-0.5 text-[10px] font-semibold">
+        <span className="bg-primary-soft text-primary rounded-full px-2 py-0.5 text-xs font-semibold">
           {story.theme}
         </span>
-        <span className="text-text-secondary text-[10px]">
+        <span className="text-text-secondary text-xs">
           {t('storyLibrary.pageCount', { count: pageCount })}
         </span>
       </div>

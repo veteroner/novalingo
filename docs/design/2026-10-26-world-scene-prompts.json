@@ -1,0 +1,139 @@
+{
+  "created": "2026-10-26",
+  "method": "built-in image_gen (one generation per world)",
+  "scenes": [
+    {
+      "id": "w1",
+      "name": "Beginner Garden",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A welcoming spring garden, curved low wooden gate, tulips, stepping stones, rounded fruit tree and distant small hills. Sage green and warm butter yellow.",
+      "source": "exec-4444ab3e-95c9-4903-ab57-d4181f081ae1.png",
+      "output": "public/scenes/worlds-v1/w1.webp",
+      "bytes": 223062,
+      "sha256": "65ce31e05171802279e8147e1e921ecd0abda551f2931319ac1f376d4ae36436",
+      "worldNameTr": "Başlangıç Bahçesi",
+      "worldNameEn": "Beginner Garden"
+    },
+    {
+      "id": "w2",
+      "name": "Grammar Castle",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A friendly fairytale stone castle with lavender roofs, arched entrance, a short bridge and clipped shrubs. Lavender, cream and soft turquoise.",
+      "source": "exec-4455a3ab-09dd-4376-9bd1-33fe804fbee7.png",
+      "output": "public/scenes/worlds-v1/w2.webp",
+      "bytes": 178618,
+      "sha256": "3c7b5c5fd972daa4a2814d7e40c921b5de3a37a7984fd44ed82372783d3908d0",
+      "worldNameTr": "Gramer Kalesi",
+      "worldNameEn": "Grammar Castle"
+    },
+    {
+      "id": "w3",
+      "name": "Story Forest",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A peaceful storybook forest with layered rounded trees, fern banks, a tiny wooden footbridge over a creek, warm sunbeams. Deep teal, moss green and amber.",
+      "source": "exec-1975c736-e0ae-40e1-8bc2-ad59d7fb2f32.png",
+      "output": "public/scenes/worlds-v1/w3.webp",
+      "bytes": 214846,
+      "sha256": "5d42c4145cb7fb64e35acac7ee975890874baf0b17dbb2b08b00a1c8348d616f",
+      "worldNameTr": "Hikaye Ormanı",
+      "worldNameEn": "Story Forest"
+    },
+    {
+      "id": "w4",
+      "name": "City Square",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A friendly pedestrian town square with colorful small shopfronts without signs, central fountain, benches and potted trees. Brick coral, slate blue and cream.",
+      "source": "exec-3b7fc5c8-550d-4881-a112-33303bffed04.png",
+      "output": "public/scenes/worlds-v1/w4.webp",
+      "bytes": 187230,
+      "sha256": "f5e3bcc5a828f76a235923955e1067face89b7d50d06b077efe33b4c352a72e7",
+      "worldNameTr": "Şehir Meydanı",
+      "worldNameEn": "City Square"
+    },
+    {
+      "id": "w5",
+      "name": "Science Island",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A floating-looking coastal science island with a charming dome observatory, small greenhouse, safe whimsical laboratory architecture and a distant sea. Aqua, sky blue and ivory.",
+      "source": "exec-20e79dbf-44b3-42c6-9797-09e549e97b1a.png",
+      "output": "public/scenes/worlds-v1/w5.webp",
+      "bytes": 170846,
+      "sha256": "d77292553246642935df0e36c4cf0e4b757fa145fb9ad2e3c8a73140d35592f4",
+      "worldNameTr": "Bilim Adası",
+      "worldNameEn": "Science Island"
+    },
+    {
+      "id": "w6",
+      "name": "Adventure Galaxy",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A wondrous quiet alien planet with lilac rocks, pale ringed planet in the sky, rounded distant space observatory and softly glowing stars. Indigo, violet and warm peach.",
+      "source": "exec-905046d7-f682-4baf-954e-2b1e5d61186b.png",
+      "output": "public/scenes/worlds-v1/w6.webp",
+      "bytes": 153014,
+      "sha256": "0357269e7988fef88dabc9aa035a12b4679fa5874b8d451a991b0e0ecae2b95c",
+      "worldNameTr": "Macera Galaksisi",
+      "worldNameEn": "Adventure Galaxy"
+    },
+    {
+      "id": "w7",
+      "name": "Beach World",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A calm tropical beach with turquoise water, pale sand, shells, a small sailboat far out and rounded palm trees. Turquoise, warm sand and coral.",
+      "source": "exec-5a4bdbc2-7a4a-4e06-9173-11bc6a40b2cd.png",
+      "output": "public/scenes/worlds-v1/w7.webp",
+      "bytes": 136700,
+      "sha256": "4be02ab40817962cf4b043cf0d200a25936bfce4ad45a865ae9649360e4852ee",
+      "worldNameTr": "Tatil Limanı",
+      "worldNameEn": "Holiday Harbor"
+    },
+    {
+      "id": "w8",
+      "name": "Kitchen World",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A sunlit cozy cooking workshop with a wooden counter, tasteful fruit bowl, herbs and rounded tiled oven, no sharp utensils. Warm terracotta, mint and cream.",
+      "source": "exec-cc211412-08f4-4072-ba9d-ff3f9ca84505.png",
+      "output": "public/scenes/worlds-v1/w8.webp",
+      "bytes": 178308,
+      "sha256": "d2d49e8d27209b88e57872d8ea19b6e25041396afad201719876de0a485c92a6",
+      "worldNameTr": "Lezzet Mutfağı",
+      "worldNameEn": "Kitchen Kingdom"
+    },
+    {
+      "id": "w9",
+      "name": "Art World",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A magical open-air artist garden with an easel holding a blank canvas, clay pots, rainbow flowers and pastel paint shapes. Rose, lavender, peach and sage.",
+      "source": "exec-669fe3ee-0f11-4582-9401-7e06d7a3d975.png",
+      "output": "public/scenes/worlds-v1/w9.webp",
+      "bytes": 220126,
+      "sha256": "91851769e58ea10c8ee17fbb5b567a9d402d357a6f1b74250c888faea381a98e",
+      "worldNameTr": "Yaratıcı Stüdyo",
+      "worldNameEn": "Creative Studio"
+    },
+    {
+      "id": "w10",
+      "name": "Health World",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A friendly community health garden beside a small cheerful clinic without signs, leafy trees, window boxes, a bicycle and clean walking path. Soft coral, mint and cream.",
+      "source": "exec-c329b40e-2801-4fe9-a338-e3a10f112e7f.png",
+      "output": "public/scenes/worlds-v1/w10.webp",
+      "bytes": 227924,
+      "sha256": "7013146786ac71fd1e7b53b6d33ead0cd698636ed35954dd4d836194a64a12f3",
+      "worldNameTr": "Sağlık Merkezi",
+      "worldNameEn": "Health Hub"
+    },
+    {
+      "id": "w11",
+      "name": "World Journey",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A peaceful international travel landscape, small globe-like island with a few original stylized towers, bridge, windmill, hills and balloon far away. Olive green, sky blue and terracotta.",
+      "source": "exec-2c8290df-95fb-4322-92a8-21baad61cdad.png",
+      "output": "public/scenes/worlds-v1/w11.webp",
+      "bytes": 198914,
+      "sha256": "190643894b6309e6fd1aba7451d2cf3979458e3a9341ad1d4c2b7dd16890c34f",
+      "worldNameTr": "Dünya Kaşifleri",
+      "worldNameEn": "Earth Explorers"
+    },
+    {
+      "id": "w12",
+      "name": "Time World",
+      "prompt": "Use case: illustration-story. Asset type: original NovaLingo language-learning game's decorative world environment, landscape wide 3:2 illustration. Primary request: one complete, polished children’s picture-book environment with soft dimensional painted materials, rounded welcoming shapes, gentle cinematic daylight, consistent premium game illustration style. Composition: scenery on outer sides and distant horizon, a calm open clearing in the lower middle, broad view, all major landmark silhouettes remain visible when cropped to 2:1. No people, no animals, no mascot, no UI, no buttons, no letters, no numerals, no captions, no signage, no watermark, no logos. Not an interface mockup. Scene: A serene whimsical time garden with an ornate clock tower showing only hands, seasonal trees, a curved stone path and distant golden hills. Honey gold, soft teal and dusty blue.",
+      "source": "exec-36b343d4-94b1-4a91-8423-f8c4db8104e3.png",
+      "output": "public/scenes/worlds-v1/w12.webp",
+      "bytes": 171298,
+      "sha256": "e02eee49d8aed84ecd30b94a9032339c3f40992e741b6619d39f08f1c8db4872",
+      "worldNameTr": "Zaman Kulesi",
+      "worldNameEn": "Time Tower"
+    }
+  ],
+  "totalBytes": 2260886
+}

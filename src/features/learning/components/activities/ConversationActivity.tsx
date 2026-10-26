@@ -1405,7 +1405,7 @@ export default function ConversationActivity({
               <span aria-hidden="true" className="text-sm">
                 {data.sceneEmoji}
               </span>
-              <Text variant="overline" className="text-primary text-[10px]">
+              <Text variant="overline" className="text-primary">
                 {t('activities.conversationHeader')}
               </Text>
             </div>
@@ -1565,15 +1565,15 @@ export default function ConversationActivity({
                 💡
               </span>
               <div className="bg-reward-soft max-w-[80%] rounded-3xl rounded-tl-md border border-amber-200 px-4 py-2.5 shadow-md">
-                <p className="text-xs text-amber-500">{t('activities.conversationTryThis')}</p>
-                <p className="text-base font-semibold text-amber-700">{options[0].text}</p>
-                {showTranslation && <p className="text-xs text-amber-400">{options[0].textTr}</p>}
+                <p className="text-reward-ink text-xs">{t('activities.conversationTryThis')}</p>
+                <p className="text-reward-ink text-base font-semibold">{options[0].text}</p>
+                {showTranslation && <p className="text-reward-ink text-xs">{options[0].textTr}</p>}
                 {data.targetPatterns && data.targetPatterns.length > 0 && (
                   <div className="mt-1.5 flex flex-wrap gap-1">
                     {data.targetPatterns.map((p) => (
                       <span
                         key={p}
-                        className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-600"
+                        className="bg-surface text-reward-ink rounded-full px-2 py-0.5 text-xs font-medium"
                       >
                         {p}
                       </span>

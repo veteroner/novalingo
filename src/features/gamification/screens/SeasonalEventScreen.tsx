@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { eventBackground } from '@/features/gamification/data/eventAppearance';
 import { SEASONAL_EVENTS } from '@/features/gamification/data/seasonalEvents';
 import { useSeasonalEvent } from '@/hooks/useSeasonalEvent';
 import type { SeasonalCollectible, SeasonalLesson } from '@/types/gamification';
@@ -46,7 +47,7 @@ export default function SeasonalEventScreen() {
         className="relative px-4 pb-6"
         style={{
           paddingTop: 'calc(var(--spacing-safe-top) + 1.5rem)',
-          background: `linear-gradient(#0008, #0008), linear-gradient(135deg, ${event.colors[0]}, ${event.colors[1]})`,
+          background: eventBackground(event.colors),
         }}
       >
         <button
