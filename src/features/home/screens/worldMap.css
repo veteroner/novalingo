@@ -589,6 +589,18 @@
   text-align: center;
   padding: 24px;
 }
+/* Keep the action above the tab bar even when a stop is near the viewport edge. */
+@media (max-width: 767px) {
+  .learning-lesson-detail {
+    position: fixed;
+    top: auto;
+    bottom: calc(var(--spacing-nav-height) + var(--spacing-safe-bottom) + 12px);
+    width: min(360px, calc(100% - 24px));
+    max-height: calc(100dvh - var(--spacing-nav-height) - var(--spacing-safe-bottom) - 36px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 @media (min-width: 768px) {
   .learning-map {
     padding: 12px 28px 40px;

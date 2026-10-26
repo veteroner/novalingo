@@ -9,6 +9,7 @@ Aşağıdaki ilk tablolar **24 Ekim tarihindeki inceleme kaydıdır**. Güncel s
 - Mağaza/ödül ikonları, ortak küçük etiketler ve etkinlik ödül izolasyonu tamamlandı. [Ödül/mağaza](2026-10-25-reward-shop-polish.md). Sürekli hareketler belge/native arka planı ve OS hareket tercihini izler. [Hareket](2026-10-25-motion-lifecycle.md).
 - Kütüphane/sohbetin kalan 10px etiketleri, özel yardımcı yazı renkleri, ana ekran etkinlik kartı ve günlük çark okunabilirliği düzeltildi. Çarkın seri dondurma birimi ve tekrarlanan dönüşte yanlış dilimde durması da düzeltildi. [Son okunabilirlik kontrolü](2026-10-25-readability-followup.md).
 - 12 dünyanın her birine ayrı 1200×800 çevre çizimi eklendi; harita ve ana ekranın mevcut dünya kartı ortak resmi kullanır. iOS şifreleme beyanı da pakete eklendi. [Dünya sahneleri ve iOS beyanı](2026-10-26-world-scenes-encryption.md).
+- Web açılışı bütün JS/font parçalarıyla sürümlü önbelleğe alındı; üretim paketi yerel sunucu kapalıyken yeniden açıldı. 320px ders kartının alt menü arkasında kalan düğmesi düzeltildi. [Çevrimdışı açılış/küçük ekran kanıtları](2026-10-26-offline-small-screens.md).
 - **Açık:** gerçek 3D/rig (kullanıcı kararıyla ertelendi), gerçek göz kırpma/nefes/gaga-ses eşlemesi, bütün özel durumların kontrast ve ekran okuyucu envanteri; Android manuel/fiziksel/düşük donanım, performans ve gerçek hesap/ödeme/ses uçtan uca doğrulaması. Kod/PR durumu mağaza yayını anlamına gelmez.
 
 ## 24 Ekim tarihli denetim kaydı

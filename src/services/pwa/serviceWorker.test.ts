@@ -23,6 +23,7 @@ function startWorker(cached?: Response, write?: () => Promise<void>) {
   const fetch = vi.fn();
   runInNewContext(worker, {
     self: {
+      location: { origin: 'https://novalingo.test' },
       addEventListener: (type: string, listener: (event: FetchEvent) => void) =>
         listeners.set(type, listener),
     },

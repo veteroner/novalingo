@@ -1,6 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react-swc';
-import { cpSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { cpSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
@@ -111,6 +112,43 @@ function copyFilteredPublicAssetsPlugin(bundleTtsAudio: boolean): Plugin {
   };
 }
 
+/** Freeze HTML, every lazy JS/CSS chunk and local fonts into one offline shell.
+ * Run after public copying, including the native build's filtered-public path. */
+function offlineShellPlugin(): Plugin {
+  return {
+    name: 'novalingo-offline-shell',
+    apply: 'build',
+    closeBundle() {
+      const outDir = resolve(__dirname, 'dist');
+      const files = ['/index.html', '/manifest.json'];
+      function collect(dir: string, prefix: string) {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+          if (entry.name.startsWith('.')) continue;
+          const path = join(dir, entry.name);
+          const url = `${prefix}/${entry.name}`;
+          if (entry.isDirectory()) collect(path, url);
+          else if (/\.(js|css|woff2?|ttf)$/.test(entry.name)) files.push(url);
+        }
+      }
+      collect(join(outDir, 'assets'), '/assets');
+      collect(join(outDir, 'fonts'), '/fonts');
+      files.sort();
+      const hash = createHash('sha256');
+      for (const file of files) {
+        hash.update(file);
+        hash.update(readFileSync(join(outDir, file.slice(1))));
+      }
+      const template = readFileSync(join(__dirname, 'public/sw.js'), 'utf8');
+      if (!template.includes('/* APP_SHELL_FILES */ []'))
+        throw new Error('Missing offline shell marker');
+      const worker = template
+        .replace("'development-shell'", JSON.stringify(hash.digest('hex').slice(0, 20)))
+        .replace('/* APP_SHELL_FILES */ []', JSON.stringify(files));
+      writeFileSync(join(outDir, 'sw.js'), worker);
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -149,6 +187,7 @@ export default defineConfig(({ mode, command }) => {
       stripBundledTtsPlugin(bundleTtsAudio),
       react(),
       tailwindcss(),
+      offlineShellPlugin(),
     ],
 
     resolve: {

@@ -94,6 +94,15 @@ describe('WorldMapScreen', () => {
     expect(mockUnlockAudioPlayback).toHaveBeenCalledOnce();
     expect(navigateMock).toHaveBeenCalledWith('/lesson/lesson-1');
   });
+  it('closes lesson details with Escape and restores focus to the selected stop', () => {
+    render(<WorldMapScreen />);
+    selectFirstLesson();
+    const close = screen.getByRole('button', { name: 'path.closeDetails' });
+    close.focus();
+    fireEvent.keyDown(close, { key: 'Escape' });
+    expect(screen.queryByRole('region', { name: 'path.lessonDetails' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Animals' })).toHaveFocus();
+  });
   it('redirects free users to subscription when the daily lesson limit is reached', () => {
     authState.user = { isPremium: false };
     const now = Date.now();
