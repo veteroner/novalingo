@@ -75,7 +75,7 @@ describe('Nova detailed 3D rendering', () => {
       '/nova/poses-v3/thinking.webp',
     );
   });
-  it('keeps compact avatars and the closed-eye sleeping expression on artwork', async () => {
+  it('keeps compact avatars on artwork and renders sleeping Nova with authored eyelids', async () => {
     render(
       <>
         <NovaCharacter size="sm" />
@@ -85,8 +85,9 @@ describe('Nova detailed 3D rendering', () => {
       </>,
     );
     visible();
-    expect(callbacks).toHaveLength(0);
-    expect(screen.queryByTestId('nova-webgl')).toBeNull();
+    await waitFor(() => {
+      expect(screen.getAllByTestId('nova-webgl')).toHaveLength(2);
+    });
     expect(screen.getAllByRole('img', { name: 'Nova' })).toHaveLength(4);
   });
 });

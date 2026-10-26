@@ -34,6 +34,7 @@ vi.mock('./novaAsset', () => ({
   disposeNovaAsset: mocks.assetDispose,
 }));
 vi.mock('@services/speech/speechService', () => ({
+  getSpeechMouthFrame: () => ({ shape: 'X', open: 0, round: 0, wide: 0 }),
   isSpeakingNow: () => false,
   onSpeakingStateChange: (listener: (active: boolean) => void) => {
     mocks.speaking = listener;
@@ -133,6 +134,25 @@ describe('Nova 3D lifecycle', () => {
     expect(mocks.lose).toHaveBeenCalledOnce();
     expect(mocks.unsubscribe).toHaveBeenCalledOnce();
     expect(disconnected).toHaveBeenCalledTimes(2);
+  });
+  it('keeps blink time advancing through frequent parent and callback updates', async () => {
+    const view = render(<Nova3D {...initial} />);
+    await waitFor(() => {
+      expect(ready).toHaveBeenCalledWith(true);
+    });
+    for (let n = 0; n < 65; n++) {
+      const entry = [...frames.entries()][0];
+      expect(entry).toBeDefined();
+      if (!entry) throw new Error('Missing animation frame');
+      frames.delete(entry[0]);
+      act(() => {
+        entry[1](100 + n * 50);
+      });
+      view.rerender(<Nova3D {...initial} onReady={(value) => ready(value)} />);
+    }
+    expect(mocks.pose.mock.lastCall?.[1].time).toBeGreaterThan(3);
+    expect(frames.size).toBe(1);
+    expect(mocks.load).toHaveBeenCalledOnce();
   });
   it('renders a static expression with motion disabled, then reacts without recreating the context', async () => {
     const view = render(<Nova3D {...initial} canAnimate={false} />);

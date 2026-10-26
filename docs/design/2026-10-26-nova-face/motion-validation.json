@@ -1,0 +1,9 @@
+{
+  "videoFrames": 421,
+  "fps": 30,
+  "eyeBluePixelsMin": 1462,
+  "eyeBluePixelsMax": 3350,
+  "closedFrameSeconds": 12.5,
+  "minToMax": 0.4364179104477612,
+  "audioTrack": "none; native simulator screen recording"
+}

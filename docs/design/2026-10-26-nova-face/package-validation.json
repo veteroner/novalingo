@@ -1,0 +1,26 @@
+[
+  {
+    "root": "dist",
+    "files": 261,
+    "bytes": 9073633,
+    "hashes": "match",
+    "offlineShell": "complete",
+    "tts": "configured CDN"
+  },
+  {
+    "root": "ios/App/App/public",
+    "files": 261,
+    "bytes": 9073633,
+    "hashes": "match",
+    "offlineShell": "complete",
+    "tts": "configured CDN"
+  },
+  {
+    "root": "android/app/src/main/assets/public",
+    "files": 261,
+    "bytes": 9073633,
+    "hashes": "match",
+    "offlineShell": "complete",
+    "tts": "configured CDN"
+  }
+]

@@ -1,5 +1,6 @@
 // Local visual QA entry. Vite only builds index.html; this file is not a production route.
 import '../src/styles/globals.css';
+import { getSpeechMouthFrame, speak, stopSpeaking } from '../src/services/speech/speechService';
 import { TripoNovaPreview } from './TripoNovaPreview';
 import '../src/i18n';
 import { SeasonalEventBanner } from '../src/features/gamification/components/SeasonalEventBanner';
@@ -223,6 +224,81 @@ function NovaRenderStatus() {
     <p className="text-xs" role="status">
       Yerel 3D kontrol: {status}
     </p>
+  );
+}
+
+function FaceFixture() {
+  const [mood, setMood] = useState<NovaMood>('idle');
+  const [status, setStatus] = useState('Hazır');
+  const [mouth, setMouth] = useState('X · 0.00');
+  const [seen, setSeen] = useState('');
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const value = getSpeechMouthFrame();
+      setMouth(`${value.shape} · ${value.open.toFixed(2)}`);
+      const rendered = document.querySelector('.nova-webgl canvas')?.getAttribute('data-viseme');
+      if (rendered)
+        setSeen((previous) =>
+          previous.split(' ').at(-1) === rendered
+            ? previous
+            : [...previous.split(' ').filter(Boolean), rendered].slice(-48).join(' '),
+        );
+    }, 50);
+    return () => {
+      clearInterval(timer);
+      stopSpeaking();
+    };
+  }, []);
+  const samples = [
+    ['000b37cac4153427', 'Me too! We want the same things. Best friends!'],
+    ['007eb3f60cf70572', "Don't forget your shoes! Say: put on your shoes."],
+    ['', 'Hello! I am Nova. What is your name?'],
+  ];
+  return (
+    <div className="mx-auto max-w-md space-y-4 p-6 text-center">
+      <h1 className="font-heading text-2xl">Nova · yüz ve gerçek ses</h1>
+      <NovaCharacter size="hero" mood={mood} renderMode="3d" className="h-80 w-80" />
+      <NovaRenderStatus />
+      <p role="status">
+        {status} · Ağız: {mouth}
+      </p>
+      <p className="text-xs break-words">Çizilen ağız şekilleri: {seen}</p>
+      {samples.map(([id, text]) => (
+        <button
+          key={id}
+          className="block w-full rounded-xl border p-3"
+          onClick={() => {
+            setStatus('Ses çalıyor');
+            setMood('speaking');
+            void speak(text!, id ? { audioUrl: `/audio/tts/${id}.mp3` } : {}).then((played) => {
+              setStatus(played ? 'Ses tamamlandı' : 'Ses durdu / çalınamadı');
+              setMood('idle');
+            });
+          }}
+        >
+          {text}
+        </button>
+      ))}
+      <button
+        className="rounded-xl border p-3"
+        onClick={() => {
+          stopSpeaking();
+          setMood('idle');
+          setStatus('Durduruldu');
+        }}
+      >
+        Sesi durdur
+      </button>{' '}
+      <button
+        className="rounded-xl border p-3"
+        onClick={() => {
+          stopSpeaking();
+          setMood(mood === 'sleeping' ? 'idle' : 'sleeping');
+        }}
+      >
+        Uyut / uyandır
+      </button>
+    </div>
   );
 }
 
@@ -452,6 +528,7 @@ function Fixture() {
             </div>
           }
         />
+        <Route path="/face" element={<FaceFixture />} />
         <Route path="/tripo" element={<TripoNovaPreview />} />
         <Route
           path="/poses"

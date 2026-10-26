@@ -1,5 +1,7 @@
 # Ücretsiz 3D Nova — 26 Ekim 2026
 
+Güncel yüz çalışması: [kapaklar, ses saati ve fonetik eşleme](../2026-10-26-nova-face/BUILD_NOTES.md). Aşağıdaki metin ilk v4 teslimini kaydeder.
+
 Durum: detaylı model uygulamaya bağlandı. Web/iOS/Android derlemeleri geçti; PR kontrolü sürüyor. Canlı/mağaza yayını yapılmadı.
 
 ## Sonuç

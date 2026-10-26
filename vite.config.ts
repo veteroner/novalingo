@@ -127,13 +127,18 @@ function offlineShellPlugin(): Plugin {
           const path = join(dir, entry.name);
           const url = `${prefix}/${entry.name}`;
           if (entry.isDirectory()) collect(path, url);
-          else if (/\.(js|css|woff2?|ttf)$/.test(entry.name) || prefix.startsWith('/nova/model-v4'))
+          else if (
+            /\.(js|css|woff2?|ttf)$/.test(entry.name) ||
+            prefix.startsWith('/nova/model-v5') ||
+            prefix.startsWith('/speech-sync')
+          )
             files.push(url);
         }
       }
       collect(join(outDir, 'assets'), '/assets');
       collect(join(outDir, 'fonts'), '/fonts');
-      collect(join(outDir, 'nova/model-v4'), '/nova/model-v4');
+      collect(join(outDir, 'nova/model-v5'), '/nova/model-v5');
+      collect(join(outDir, 'speech-sync'), '/speech-sync');
       files.sort();
       const hash = createHash('sha256');
       for (const file of files) {
@@ -155,6 +160,16 @@ function offlineShellPlugin(): Plugin {
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const bundleTtsAudio = env.VITE_BUNDLE_TTS_AUDIO !== 'false';
+
+  // A native build without bundled MP3s must have its existing recording host.
+  // Otherwise speech (and audio-clock facial animation) silently disappears.
+  const ttsBaseUrl = (env as Record<string, string | undefined>).VITE_TTS_AUDIO_BASE_URL;
+  if (command === 'build' && !bundleTtsAudio && !ttsBaseUrl?.trim()) {
+    throw new Error(
+      '[build] Ses dosyaları paketten çıkarılıyor ancak VITE_TTS_AUDIO_BASE_URL eksik. ' +
+        'Mevcut ses sunucusunu belirtin veya VITE_BUNDLE_TTS_AUDIO=true kullanın.',
+    );
+  }
 
   // Firebase config'i olmadan üretilen bir üretim/staging bundle'ı, açılışta
   // `auth undefined` ile tüm uygulamayı çökertir. Bunu build anında sert durdur —

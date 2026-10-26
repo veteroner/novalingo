@@ -128,3 +128,7 @@ Kütüphane/sohbetin 10px etiketleri 12px'e, dünya filtreleri 44px dokunma hede
 ## 26 Ekim 2026 — 12 dünya sahnesi ve iOS beyanı
 
 Her dünya için ayrı metinsiz ortam çizimi üretildi; toplam 2,16 MiB WebP, harita girişinde ve ana ekranın mevcut dünya kartında kullanılır. Yol metinleri resmin dışındaki sakin yüzeylerde kalır; görsel hatası ders erişimini engellemez. `ITSAppUsesNonExemptEncryption = false` mevcut OS/HTTPS/auth kullanımına göre eklendi; etkisi yeni yüklenen build'dedir. Gerçek 3D/rig/gaga senkronu tamamlanmadı. [Üretim istemleri, doğrulama, cihaz kanıtları ve kesin kapsam](2026-10-26-world-scenes-encryption.md).
+
+## 26 Ekim — Nova kapak ve ses eşleme devamı
+
+Gerçek kapak yüzeyleri, ayrı alt gaga ve ses oynatma saatinden okunan fonetik hareket eklendi. 6.859 kayıt için zamanlı ağız durumu üretimi ve son web/iOS/Android paket doğrulaması tamamlandı. [Güncel kapsam, kanıt ve otomatik fonetik çözümlemenin sınırları](2026-10-26-nova-face/BUILD_NOTES.md).

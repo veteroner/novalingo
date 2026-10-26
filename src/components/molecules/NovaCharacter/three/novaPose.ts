@@ -1,3 +1,4 @@
+import type { MouthFrame } from '@services/speech/lipSync';
 import type { NovaMood } from '../NovaCharacter';
 import type { NovaRig } from './novaModel';
 
@@ -6,6 +7,7 @@ export interface NovaPoseInput {
   time: number;
   animate: boolean;
   speechActive?: boolean;
+  mouth?: Readonly<MouthFrame>;
   lookX?: number;
   lookY?: number;
 }

@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import type { NovaMood } from '../NovaCharacter';
 import type { NovaStage } from '@/types/user';
-import { isSpeakingNow, onSpeakingStateChange } from '@services/speech/speechService';
+import {
+  getSpeechMouthFrame,
+  isSpeakingNow,
+  onSpeakingStateChange,
+} from '@services/speech/speechService';
 import { loadNovaAsset, disposeNovaAsset, poseNovaAsset, type NovaAssetRig } from './novaAsset';
 
 interface Props {
@@ -21,8 +25,11 @@ export default function Nova3D(props: Props) {
   const update = useRef<(() => void) | undefined>(undefined);
   useEffect(() => {
     state.current = props;
-    update.current?.();
   }, [props]);
+  // Parent counters and callback identities must not restart the animation clock.
+  useEffect(() => {
+    update.current?.();
+  }, [props.mood, props.stage, props.canAnimate, props.isActive]);
 
   useEffect(() => {
     const element = host.current;
@@ -127,9 +134,15 @@ export default function Nova3D(props: Props) {
           time,
           animate: current.canAnimate,
           speechActive,
+          mouth: getSpeechMouthFrame(),
           lookX,
           lookY,
         });
+        if (import.meta.env.DEV) {
+          const mouth = getSpeechMouthFrame();
+          canvas.dataset.viseme = mouth.shape;
+          canvas.dataset.mouthOpen = String(mouth.open);
+        }
         renderer.render(scene, camera);
         canvas.dataset.triangles = String(renderer.info.render.triangles);
         canvas.dataset.drawCalls = String(renderer.info.render.calls);

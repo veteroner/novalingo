@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import type { NovaPoseInput } from './novaPose';
+import { novaBlinkAt, lidWeights } from './novaFace';
+import { REST_MOUTH } from '@services/speech/lipSync';
 
 export interface NovaAssetRig {
   root: THREE.Group;
@@ -9,7 +11,9 @@ export interface NovaAssetRig {
   leftWing: THREE.Bone;
   rightWing: THREE.Bone;
   mesh: THREE.SkinnedMesh;
-  beakIndex: number;
+  mouth: THREE.SkinnedMesh[];
+  lids: THREE.SkinnedMesh[];
+  lashes: THREE.SkinnedMesh[];
   rest: Map<THREE.Bone, THREE.Quaternion>;
 }
 
@@ -17,7 +21,7 @@ export interface NovaAssetRig {
  * External JPEG avoids embedded GLB image decoding stalls in WKWebView.
  */
 export async function loadNovaAsset(): Promise<NovaAssetRig> {
-  const gltf = await new GLTFLoader().loadAsync('/nova/model-v4/nova.gltf');
+  const gltf = await new GLTFLoader().loadAsync('/nova/model-v5/nova.gltf');
   const root = gltf.scene;
   const joint = (name: string) => {
     const value = root.getObjectByName(name);
@@ -32,8 +36,24 @@ export async function loadNovaAsset(): Promise<NovaAssetRig> {
     const candidate = root.getObjectByName('Nova_Feathers');
     if (!(candidate instanceof THREE.SkinnedMesh)) throw new Error('Missing Nova skin');
     const mesh = candidate as THREE.SkinnedMesh;
-    if (mesh.morphTargetDictionary?.Beak_Open === undefined || !mesh.morphTargetInfluences)
-      throw new Error('Incomplete Nova face controls');
+    function facial(name: string, keys: string[]): THREE.SkinnedMesh {
+      const part = root.getObjectByName(name);
+      if (!(part instanceof THREE.SkinnedMesh)) throw new Error(`Missing Nova face part: ${name}`);
+      const skin = part as THREE.SkinnedMesh;
+      if (
+        !skin.morphTargetInfluences ||
+        keys.some((key) => skin.morphTargetDictionary?.[key] === undefined)
+      )
+        throw new Error(`Incomplete Nova face controls: ${name}`);
+      return skin;
+    }
+    const mouth = ['Nova_LowerBill', 'Nova_OralWall'].map((name) =>
+      facial(name, ['Beak_Open', 'Beak_Round', 'Beak_Wide']),
+    );
+    const lids = ['Lid_L', 'Lid_R'].map((name) =>
+      facial(name, ['Blink_Quarter', 'Blink_Half', 'Blink_ThreeQuarter', 'Blink_Closed']),
+    );
+    const lashes = ['Lash_L', 'Lash_R'].map((name) => facial(name, ['Blink_Closed']));
     return {
       root,
       head,
@@ -41,7 +61,9 @@ export async function loadNovaAsset(): Promise<NovaAssetRig> {
       leftWing,
       rightWing,
       mesh,
-      beakIndex: mesh.morphTargetDictionary.Beak_Open,
+      mouth,
+      lids,
+      lashes,
       rest: new Map(
         [head, body, leftWing, rightWing].map((bone) => [bone, bone.quaternion.clone()]),
       ),
@@ -61,8 +83,13 @@ function turn(rig: NovaAssetRig, bone: THREE.Bone, x: number, y: number, z: numb
   bone.quaternion.copy(rest).multiply(rotation);
 }
 
+function setMorph(mesh: THREE.SkinnedMesh, name: string, amount: number) {
+  const index = mesh.morphTargetDictionary?.[name];
+  if (index !== undefined && mesh.morphTargetInfluences) mesh.morphTargetInfluences[index] = amount;
+}
+
 /** Restrained deformation preserves feather volumes and keeps feet grounded.
- * Playback gates the beak; this is speech-state animation, not phoneme lip sync.
+ * The bill uses audio-clock visemes; eyelids use portable, conformed GLTF morphs.
  */
 export function poseNovaAsset(rig: NovaAssetRig, input: NovaPoseInput) {
   const t = input.animate ? input.time : 0;
@@ -73,11 +100,12 @@ export function poseNovaAsset(rig: NovaAssetRig, input: NovaPoseInput) {
   const thinking = input.mood === 'thinking';
   const listening = input.mood === 'listening';
   const sad = input.mood === 'sad';
+  const sleeping = input.mood === 'sleeping';
   rig.root.rotation.set(0, 0.12, 0);
   turn(
     rig,
     rig.head,
-    lookY * 0.045 + (sad ? 0.08 : 0),
+    lookY * 0.045 + (sleeping ? 0.1 : sad ? 0.08 : 0),
     lookX * 0.1 + (thinking ? 0.075 : 0),
     (thinking ? -0.065 : listening ? 0.06 : encouraging ? 0.045 : 0) +
       (input.animate ? Math.sin(t * 0.85) * 0.012 : 0),
@@ -90,9 +118,22 @@ export function poseNovaAsset(rig: NovaAssetRig, input: NovaPoseInput) {
   turn(rig, rig.leftWing, 0, 0, happy ? -0.12 : 0);
   turn(rig, rig.rightWing, 0, 0, wave);
   rig.body.scale.set(1, 1 + (input.animate ? Math.sin(t * 1.5) * 0.004 : 0), 1);
-  const jaw = input.animate && input.speechActive ? 0.25 + Math.abs(Math.sin(t * 12)) * 0.65 : 0;
-  const weights = rig.mesh.morphTargetInfluences;
-  if (weights) weights[rig.beakIndex] = jaw;
+  const mouth =
+    input.animate && input.speechActive && !sleeping ? (input.mouth ?? REST_MOUTH) : REST_MOUTH;
+  for (const mesh of rig.mouth) {
+    setMorph(mesh, 'Beak_Open', mouth.open);
+    setMorph(mesh, 'Beak_Round', mouth.round);
+    setMorph(mesh, 'Beak_Wide', mouth.wide);
+  }
+  const closed = sleeping ? 1 : input.animate ? novaBlinkAt(t) : 0;
+  const weights = lidWeights(closed);
+  const keys = ['Blink_Quarter', 'Blink_Half', 'Blink_ThreeQuarter', 'Blink_Closed'];
+  for (const mesh of rig.lids)
+    keys.forEach((key, i) => {
+      setMorph(mesh, key, weights[i] ?? 0);
+    });
+  for (const mesh of rig.lashes)
+    setMorph(mesh, 'Blink_Closed', Math.max(0, (closed - 0.88) / 0.12));
 }
 
 /** Each canvas owns its decoded resources; dispose once, including skeleton textures. */

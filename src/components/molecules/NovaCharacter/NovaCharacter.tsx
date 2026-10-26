@@ -93,9 +93,8 @@ export function NovaCharacter({
   }, []);
   const host = useRef<HTMLSpanElement>(null);
   const prominent = size === 'lg' || size === 'xl' || size === 'hero';
-  // Closed eyelids are not yet authored on the detailed rig; preserve the real sleeping expression.
-  const requested =
-    mood !== 'sleeping' && (renderMode === '3d' || (renderMode === 'auto' && prominent));
+  // Prominent sleeping Nova uses authored eyelids; compact lists retain artwork.
+  const requested = renderMode === '3d' || (renderMode === 'auto' && prominent);
   const use3D = useNova3DVisibility(host, requested && !failed && isActive);
   const show3D = use3D && ready;
 
