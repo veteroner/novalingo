@@ -69,6 +69,22 @@ for name,cx,cz,rx,rz,tilt in [('L',-.537,1.90,.215,.285,-.18),('R',.207,1.705,.2
  skin(o);lashes.append(o)
 # Separate the textured lower bill. No cream facial vertices are stretched by speech.
 tex=next(n.image for n in obj.data.materials[0].node_tree.nodes if n.type=='TEX_IMAGE');pixels=np.array(tex.pixels[:]).reshape(tex.size[1],tex.size[0],4);uv=obj.data.uv_layers.active.data
+# The source's height-only skin weights placed the bill partly on the torso.
+# Keep the complete bill on Head, like its separate lower half, so larger turns
+# preserve the hinge. The surrounding feather/neck blend remains unchanged.
+bill_vertices=set()
+for poly in obj.data.polygons:
+ x,y,z=poly.center
+ if not(-.50<x<.02 and y<-.80 and 1.28<z<1.77):continue
+ colors=[]
+ for li in poly.loop_indices:
+  u,v=uv[li].uv;colors.append(pixels[min(tex.size[1]-1,int(v*tex.size[1])),min(tex.size[0]-1,int(u*tex.size[0])),:3])
+ r,g,b=np.mean(colors,axis=0)
+ if r>.36 and g>.15 and r>g*1.18 and g>b*1.5:bill_vertices.update(poly.vertices)
+assert len(bill_vertices)>20
+for group in obj.vertex_groups:group.remove(list(bill_vertices))
+obj.vertex_groups['Head'].add(list(bill_vertices),1,'REPLACE')
+print('HEAD_ATTACHED_BILL_VERTICES',len(bill_vertices),flush=True)
 selected=set()
 for p in obj.data.polygons:
  co=p.center;x,y,z=co;line=1.633+.658*x

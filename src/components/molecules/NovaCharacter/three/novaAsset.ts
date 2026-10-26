@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import type { NovaPoseInput } from './novaPose';
 import { novaBlinkAt, lidWeights } from './novaFace';
+import { novaHeadPose } from './novaHeadMotion';
 import { REST_MOUTH } from '@services/speech/lipSync';
 
 export interface NovaAssetRig {
@@ -93,23 +94,12 @@ function setMorph(mesh: THREE.SkinnedMesh, name: string, amount: number) {
  */
 export function poseNovaAsset(rig: NovaAssetRig, input: NovaPoseInput) {
   const t = input.animate ? input.time : 0;
-  const lookX = input.animate ? (input.lookX ?? 0) : 0;
-  const lookY = input.animate ? (input.lookY ?? 0) : 0;
   const happy = ['happy', 'excited', 'celebrating'].includes(input.mood);
   const encouraging = input.mood === 'encouraging';
-  const thinking = input.mood === 'thinking';
-  const listening = input.mood === 'listening';
-  const sad = input.mood === 'sad';
   const sleeping = input.mood === 'sleeping';
   rig.root.rotation.set(0, 0.12, 0);
-  turn(
-    rig,
-    rig.head,
-    lookY * 0.045 + (sleeping ? 0.1 : sad ? 0.08 : 0),
-    lookX * 0.1 + (thinking ? 0.075 : 0),
-    (thinking ? -0.065 : listening ? 0.06 : encouraging ? 0.045 : 0) +
-      (input.animate ? Math.sin(t * 0.85) * 0.012 : 0),
-  );
+  const head = novaHeadPose(input);
+  turn(rig, rig.head, head.pitch, head.yaw, head.roll);
   const wave = happy
     ? 0.18 + (input.animate ? Math.sin(t * 5) * 0.055 : 0)
     : encouraging

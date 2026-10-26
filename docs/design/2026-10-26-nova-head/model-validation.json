@@ -1,0 +1,13 @@
+{
+  "triangles": 86579,
+  "vertices": 71899,
+  "joints": 5,
+  "morphs": 16,
+  "drawCalls": 7,
+  "bytes": 6081119,
+  "clips": ["Celebrate", "Encourage", "Idle", "Listen", "Think"],
+  "weights": "pass",
+  "indices": "pass",
+  "finiteMorphs": "pass",
+  "localTextures": "pass"
+}

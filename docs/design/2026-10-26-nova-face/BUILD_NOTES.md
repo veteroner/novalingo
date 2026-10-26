@@ -45,3 +45,7 @@ Sesler native paketten çıkarılıyorsa mevcut ses sunucusunun adresi build sı
 - iPhone 18 Pro Max/iOS 27 WKWebView'de gerçek mevcut CDN sesi, manifestten sohbet cümlesi ve doğrudan URL örneği çalındı; çizilen ağız şekilleri değişti, kayıt bitişi ve durdurmada gaga kapandı. Uyku gerçek kapaklarla kapandı. `ios-face-demo.mp4`, `ios-blink.png`, `ios-sleep.png` ve önceki `ios-speech.png` kanıttır.
 - Kısa MP4, simülatörün doğal ekran kaydından alınmıştır; ses kanalı içermez. Sessiz video ses kalitesine dair kanıt sayılmaz. Tam kaynak kayıt yerel `.local-assets/qa/` altında korunur. `motion-validation.json` videodan açık/kapalı göz karelerinin değişimini ölçer; tek başına estetik/performans değerlendirmesi değildir.
 - Üretim JS parça boyutu, Xcode script çıktısı ve Gradle eski özellik uyarıları mevcut; hata yok. Fiziksel cihaz/ısınma ve her fonemin elle düzeltilmesi bu doğrulamanın kapsamında değildir.
+
+## Sonraki baş duruşu düzeltmesi
+
+Kullanıcının sol aşağı bakış geri bildirimi üzerine baş karşıya kalibre edildi; kısa dikkat hareketleri ve gerçek ses baş tepkileri eklendi. Gaga kemik ağırlıkları daha büyük dönüşlerle hizalandı. [Son durum ve yeni iPhone kanıtları](../2026-10-26-nova-head/BUILD_NOTES.md).
