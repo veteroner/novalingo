@@ -1,9 +1,13 @@
-import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Nova3D from './Nova3D';
+import { Group } from 'three';
 
 const mocks = vi.hoisted(() => ({
   render: vi.fn(),
+  load: vi.fn(),
+  pose: vi.fn(),
+  assetDispose: vi.fn(),
   dispose: vi.fn(),
   lose: vi.fn(),
   unsubscribe: vi.fn(),
@@ -24,6 +28,11 @@ vi.mock('three', async () => {
     },
   };
 });
+vi.mock('./novaAsset', () => ({
+  loadNovaAsset: mocks.load,
+  poseNovaAsset: mocks.pose,
+  disposeNovaAsset: mocks.assetDispose,
+}));
 vi.mock('@services/speech/speechService', () => ({
   isSpeakingNow: () => false,
   onSpeakingStateChange: (listener: (active: boolean) => void) => {
@@ -47,6 +56,7 @@ const initial = {
 };
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.load.mockResolvedValue({ root: new Group() });
   frames = new Map();
   nextFrame = 0;
   vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
@@ -94,9 +104,11 @@ afterEach(() => {
 });
 
 describe('Nova 3D lifecycle', () => {
-  it('pauses in the background and offscreen, resumes once, and disposes on exit', () => {
+  it('pauses in the background and offscreen, resumes once, and disposes on exit', async () => {
     const view = render(<Nova3D {...initial} />);
-    expect(ready).toHaveBeenCalledWith(true);
+    await waitFor(() => {
+      expect(ready).toHaveBeenCalledWith(true);
+    });
     expect(frames.size).toBe(1);
     view.rerender(<Nova3D {...initial} isActive={false} />);
     expect(frames.size).toBe(0);
@@ -122,8 +134,11 @@ describe('Nova 3D lifecycle', () => {
     expect(mocks.unsubscribe).toHaveBeenCalledOnce();
     expect(disconnected).toHaveBeenCalledTimes(2);
   });
-  it('renders a static expression with motion disabled, then reacts without recreating the context', () => {
+  it('renders a static expression with motion disabled, then reacts without recreating the context', async () => {
     const view = render(<Nova3D {...initial} canAnimate={false} />);
+    await waitFor(() => {
+      expect(ready).toHaveBeenCalledWith(true);
+    });
     expect(frames.size).toBe(0);
     const draws = mocks.render.mock.calls.length;
     view.rerender(<Nova3D {...initial} canAnimate={false} mood="thinking" />);
@@ -133,8 +148,11 @@ describe('Nova 3D lifecycle', () => {
     view.rerender(<Nova3D {...initial} />);
     expect(frames.size).toBe(1);
   });
-  it('falls back and cancels drawing if the graphics context is lost', () => {
+  it('falls back and cancels drawing if the graphics context is lost', async () => {
     const view = render(<Nova3D {...initial} />);
+    await waitFor(() => {
+      expect(ready).toHaveBeenCalledWith(true);
+    });
     fireEvent(
       view.container.querySelector('canvas')!,
       new Event('webglcontextlost', { cancelable: true }),
@@ -153,5 +171,33 @@ describe('Nova 3D lifecycle', () => {
     expect(view.container.querySelector('canvas')).toBeNull();
     view.unmount();
     expect(mocks.dispose).not.toHaveBeenCalled();
+  });
+  it('disposes a late asset after unmount without attaching it or restarting drawing', async () => {
+    let resolve!: (value: { root: Group }) => void;
+    mocks.load.mockImplementation(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const view = render(<Nova3D {...initial} />);
+    view.unmount();
+    const root = new Group();
+    await act(async () => {
+      resolve({ root });
+    });
+    expect(mocks.assetDispose).toHaveBeenCalledWith(root);
+    expect(ready).not.toHaveBeenCalledWith(true);
+    expect(frames.size).toBe(0);
+  });
+  it('restores artwork and frees graphics resources when the bundled model cannot load', async () => {
+    mocks.load.mockRejectedValue(new Error('missing model'));
+    const view = render(<Nova3D {...initial} />);
+    await waitFor(() => {
+      expect(unavailable).toHaveBeenCalledOnce();
+    });
+    expect(view.container.querySelector('canvas')).toBeNull();
+    expect(mocks.dispose).toHaveBeenCalledOnce();
+    expect(frames.size).toBe(0);
   });
 });

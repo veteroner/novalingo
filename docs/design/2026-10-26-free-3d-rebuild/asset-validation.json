@@ -1,0 +1,11 @@
+{
+  "triangles": 80000,
+  "vertices": 67707,
+  "joints": 5,
+  "morphs": 1,
+  "clips": ["Celebrate", "Encourage", "Idle", "Listen", "Think"],
+  "bytes": 5505896,
+  "weightNormalization": "pass",
+  "indexBounds": "pass",
+  "localTextures": "pass"
+}

@@ -206,6 +206,26 @@ if (params.get('shop') === 'media') {
 
 const view = params.get('view') ?? (setupMode ? 'onboarding' : 'home');
 
+function NovaRenderStatus() {
+  const [status, setStatus] = useState('yükleniyor');
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const nova = document.querySelector('.nova-character');
+      const host = nova?.querySelector('.nova-webgl');
+      const canvas = nova?.querySelector('canvas');
+      setStatus(
+        `${nova?.getAttribute('data-renderer') ?? '—'} · ${host?.getAttribute('data-load') ?? '—'} · ${nova?.getAttribute('data-mood') ?? '—'} · ${canvas?.getAttribute('data-triangles') ?? '0'} üçgen`,
+      );
+    }, 500);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <p className="text-xs" role="status">
+      Yerel 3D kontrol: {status}
+    </p>
+  );
+}
+
 function EvolutionFixture() {
   const [open, setOpen] = useState(true);
   return (
@@ -439,6 +459,7 @@ function Fixture() {
             <div className="mx-auto max-w-md p-6 text-center">
               <h1 className="font-heading text-2xl">Nova</h1>
               <NovaCharacter size="hero" mood={mood} renderMode="3d" className="h-80 w-80" />
+              <NovaRenderStatus />
               <div className="flex flex-wrap justify-center gap-4">
                 {(
                   [

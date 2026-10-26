@@ -127,11 +127,13 @@ function offlineShellPlugin(): Plugin {
           const path = join(dir, entry.name);
           const url = `${prefix}/${entry.name}`;
           if (entry.isDirectory()) collect(path, url);
-          else if (/\.(js|css|woff2?|ttf)$/.test(entry.name)) files.push(url);
+          else if (/\.(js|css|woff2?|ttf)$/.test(entry.name) || prefix.startsWith('/nova/model-v4'))
+            files.push(url);
         }
       }
       collect(join(outDir, 'assets'), '/assets');
       collect(join(outDir, 'fonts'), '/fonts');
+      collect(join(outDir, 'nova/model-v4'), '/nova/model-v4');
       files.sort();
       const hash = createHash('sha256');
       for (const file of files) {

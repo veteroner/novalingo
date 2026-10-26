@@ -3,8 +3,7 @@ import * as THREE from 'three';
 import type { NovaMood } from '../NovaCharacter';
 import type { NovaStage } from '@/types/user';
 import { isSpeakingNow, onSpeakingStateChange } from '@services/speech/speechService';
-import { createNovaModel, disposeNovaModel } from './novaModel';
-import { poseNova } from './novaPose';
+import { loadNovaAsset, disposeNovaAsset, poseNovaAsset, type NovaAssetRig } from './novaAsset';
 
 interface Props {
   mood: NovaMood;
@@ -34,11 +33,13 @@ export default function Nova3D(props: Props) {
     let frame = 0;
     let last = 0;
     let time = 0;
+    let interactionUntil = 0;
     let speechActive = isSpeakingNow();
     let lookX = 0,
       lookY = 0;
     let renderer: THREE.WebGLRenderer | undefined;
-    let rig: ReturnType<typeof createNovaModel> | undefined;
+    let rig: NovaAssetRig | undefined;
+    let loadTimer: ReturnType<typeof setTimeout> | undefined;
     let resize: ResizeObserver | undefined;
     let observer: IntersectionObserver | undefined;
     let unsubscribe: (() => void) | undefined;
@@ -61,8 +62,10 @@ export default function Nova3D(props: Props) {
       unsubscribe?.();
       element.removeEventListener('pointermove', pointer);
       element.removeEventListener('pointerleave', leave);
+      element.removeEventListener('pointerdown', greet);
       canvas.removeEventListener('webglcontextlost', lost);
-      if (rig) disposeNovaModel(rig);
+      clearTimeout(loadTimer);
+      if (rig) disposeNovaAsset(rig.root);
       renderer?.dispose();
       renderer?.forceContextLoss();
       canvas.remove();
@@ -75,6 +78,11 @@ export default function Nova3D(props: Props) {
       const bounds = element.getBoundingClientRect();
       lookX = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
       lookY = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - 0.5) * 2));
+    }
+    function greet() {
+      if (!state.current.canAnimate) return;
+      interactionUntil = time + 1.1;
+      update.current?.();
     }
     function leave() {
       lookX = 0;
@@ -94,11 +102,11 @@ export default function Nova3D(props: Props) {
       renderer.toneMappingExposure = 1.0;
       renderer.setClearColor(0x000000, 0);
       const scene = new THREE.Scene();
-      scene.add(new THREE.HemisphereLight('#fff8e8', '#63638f', 1.5));
-      const key = new THREE.DirectionalLight('#fff1db', 3.1);
+      scene.add(new THREE.HemisphereLight('#fff8e8', '#63638f', 1.6));
+      const key = new THREE.DirectionalLight('#fff1db', 2.4);
       key.position.set(-3, 5, 5);
       scene.add(key);
-      const rim = new THREE.DirectionalLight('#b9dcff', 2.6);
+      const rim = new THREE.DirectionalLight('#b9dcff', 1.5);
       rim.position.set(3, 3, -3);
       scene.add(rim);
       const fill = new THREE.DirectionalLight('#d1dbff', 0.7);
@@ -107,14 +115,15 @@ export default function Nova3D(props: Props) {
       const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 30);
       camera.position.set(0, 1.95, 7.4);
       camera.lookAt(0, 1.53, 0);
-      rig = createNovaModel();
-      scene.add(rig.root);
       function draw() {
         if (stopped || !rig || !renderer) return;
         const current = state.current;
         rig.root.scale.setScalar(current.stage === 'baby' ? 0.88 : 1);
-        poseNova(rig, {
-          mood: current.mood,
+        poseNovaAsset(rig, {
+          mood:
+            interactionUntil > time && (current.mood === 'idle' || current.mood === 'listening')
+              ? 'encouraging'
+              : current.mood,
           time,
           animate: current.canAnimate,
           speechActive,
@@ -142,7 +151,7 @@ export default function Nova3D(props: Props) {
         cancelAnimationFrame(frame);
         frame = 0;
         last = 0;
-        if (stopped || !state.current.isActive || !visible) return;
+        if (stopped || !rig || !state.current.isActive || !visible) return;
         draw();
         if (state.current.canAnimate) frame = requestAnimationFrame(loop);
       };
@@ -170,6 +179,7 @@ export default function Nova3D(props: Props) {
       canvas.addEventListener('webglcontextlost', lost);
       element.addEventListener('pointermove', pointer);
       element.addEventListener('pointerleave', leave);
+      element.addEventListener('pointerdown', greet);
       element.append(canvas);
       resize = new ResizeObserver(fit);
       resize.observe(element);
@@ -181,7 +191,32 @@ export default function Nova3D(props: Props) {
         observer.observe(element);
       }
       fit();
-      state.current.onReady(true);
+      if (import.meta.env.DEV) element.dataset.load = 'loading';
+      loadTimer = setTimeout(() => {
+        if (stopped || rig) return;
+        if (import.meta.env.DEV) element.dataset.load = 'timeout';
+        clean();
+        state.current.onUnavailable();
+      }, 15000);
+      void loadNovaAsset()
+        .then((loaded) => {
+          clearTimeout(loadTimer);
+          if (stopped) {
+            disposeNovaAsset(loaded.root);
+            return;
+          }
+          if (import.meta.env.DEV) element.dataset.load = 'ready';
+          rig = loaded;
+          scene.add(rig.root);
+          fit();
+          state.current.onReady(true);
+        })
+        .catch((error: unknown) => {
+          if (stopped) return;
+          if (import.meta.env.DEV) element.dataset.load = String(error);
+          clean();
+          state.current.onUnavailable();
+        });
     } catch {
       clean();
       state.current.onUnavailable();

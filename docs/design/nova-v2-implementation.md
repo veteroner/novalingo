@@ -1,3 +1,5 @@
+> 26 Ekim güncellemesi: [Ücretsiz detaylı 3D Nova ve gerçek kalan sınırlar](2026-10-26-free-3d-rebuild/BUILD_NOTES.md). Bu belge önceki denemenin tarihsel kaydıdır.
+
 # Nova v2 görsel pilotu
 
 > 24 Ekim 2026 güncel durum: [Tamamlananlar ve kalan işler](2026-10-24-visual-completion-audit.md). Bu belge kendi tarihindeki kapsamı/testleri kaydeder; tüm yol haritasının tamamlandığı anlamına gelmez.

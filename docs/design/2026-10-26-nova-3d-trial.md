@@ -1,3 +1,5 @@
+> 26 Ekim güncellemesi: [Ücretsiz detaylı 3D Nova ve gerçek kalan sınırlar](2026-10-26-free-3d-rebuild/BUILD_NOTES.md). Bu belge önceki denemenin tarihsel kaydıdır.
+
 # Nova 3D — Tripo denemesi ve görüntüleme altyapısı
 
 26 Ekim 2026. Kullanıcı gerçek 3D istedi; ardından Chrome'da açtığı Tripo AI'nin denenmesini istedi ve ücretsiz plandaki herkese açık model / hak koşulları açıklandıktan sonra **“Ücretsiz denemeyi yap”** diye onayladı. Bu kayıt çalışan bir yerel model denemesini anlatır; mağaza sürümüne ticari kullanım hakkı olmayan bir varlık eklenmez.

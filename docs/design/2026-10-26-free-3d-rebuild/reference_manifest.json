@@ -1,0 +1,135 @@
+{
+  "status": "integrated; web/iOS/Android builds passed; PR CI pending",
+  "source_files": [
+    {
+      "path": "public/nova/poses-v3/idle.webp",
+      "sha256": "50715971564a0b60245e809703ad7e01e4a206e27bdb69e7395070c4a9e1fc0e",
+      "role": "accepted character appearance, three-quarter tilted pose"
+    }
+  ],
+  "primary_view": "three-quarter; not an orthographic blueprint",
+  "feedback": "The procedural local model is visibly too simple compared with the Tripo result. Do not roll it out.",
+  "identity": [
+    "indigo layered feather volumes",
+    "warm ivory face and breast",
+    "large blue irises and dark pupils",
+    "short amber beak",
+    "swept ear tufts with restrained mint accents",
+    "separate amber toes",
+    "compact friendly owl proportions"
+  ],
+  "rejected_approach": "primitive-first character assembled from ellipsoids; passing tests and polygon budgets do not establish visual quality",
+  "candidate_pipeline": [
+    "Free Microsoft TRELLIS.2 demo from the accepted image, only after explicit permission for that upload",
+    "Blender for mesh inspection, cleanup, rigging, expressions and GLB optimization",
+    "Compare front, three-quarter, side and back renders before considering app rollout"
+  ],
+  "non_goals": [
+    "no payment",
+    "no paid credit usage",
+    "no Tripo trial mesh copied into shipping assets",
+    "no automatic rollout of the rejected prototype"
+  ],
+  "gates": {
+    "static_visual_check": "passed in browser and iOS WKWebView; user remains final judge of appearance",
+    "free_export": "passed for Tripo and Meshy through MakerLab, balance remains 50",
+    "texture_fidelity": "Tripo chosen; 80k retains more feather edges than 40k. Not an exact 1:1 reconstruction",
+    "rig": "5 joints and a beak morph authored locally; normalized weights and index bounds pass",
+    "mobile_budget": "one draw, 80k triangles, 5.25MiB runtime; iOS simulator verified. Physical low-end Android/thermal benchmark remains open",
+    "tts_and_lifecycle": "98 relevant tests pass; real speech-state gating, 30fps cap, <=2 contexts, offscreen/background cleanup",
+    "closed_eyelids": "not authored; sleeping intentionally uses accepted closed-eye image",
+    "phoneme_lip_sync": "not implemented"
+  },
+  "tools": {
+    "skills_repo": "https://github.com/RobLe3/cc-blender-skill",
+    "installed_skill_count": 30,
+    "blender_download": "https://download.blender.org/release/Blender5.2/blender-5.2.3-macos-arm64.dmg",
+    "generation_candidate": "https://huggingface.co/spaces/microsoft/TRELLIS.2",
+    "generation_license_source": "https://github.com/microsoft/TRELLIS.2/blob/main/LICENSE"
+  },
+  "pending_permission": null,
+  "upload_permission": "User explicitly approved accepted Nova image upload to Microsoft Hugging Face TRELLIS.2 and explicitly requested the linked MakerLab tool.",
+  "generation_trials": {
+    "trellis2": {
+      "resolution": 1024,
+      "seed": 1054951039,
+      "preview": "succeeded; significantly closer to accepted Nova art",
+      "export": "failed twice, including 100k triangles/1024 texture retry",
+      "source_issue": "https://huggingface.co/spaces/microsoft/TRELLIS.2/discussions/11"
+    },
+    "makerlab": {
+      "url": "https://makerworld.com/tr/makerlab/imageTo3d?from=makerlab",
+      "account_credit_balance": 50,
+      "free_trials_initial": 2,
+      "tripo_3_1_ultra": {
+        "status": "downloaded",
+        "file": "Downloads/result (1).glb",
+        "bytes": 57337264,
+        "triangles": 1949964,
+        "skins": 0,
+        "clips": 0,
+        "texture": "one 2048 JPEG",
+        "price_credits": 0,
+        "credit_balance_after": 50
+      },
+      "meshy_7_1_4k": {
+        "status": "downloaded, comparison candidate; not shipped",
+        "file": "Downloads/result (2).glb",
+        "bytes": 62493372,
+        "triangles": 1834100,
+        "skins": 0,
+        "clips": 0,
+        "price_credits": 0
+      },
+      "printmon": "official page confirms discontinued"
+    }
+  },
+  "tripo_downloads_checked": [
+    {
+      "file": "nova-tripo-h25-trial.glb",
+      "bytes": 15736288,
+      "triangles": 501774,
+      "skins": 0,
+      "clips": 0
+    },
+    {
+      "file": "nova-tripo-h25-mobile-trial.glb",
+      "bytes": 1599884,
+      "triangles": 29593,
+      "skins": 0,
+      "clips": 0
+    }
+  ],
+  "blender": "5.2.3 LTS installed, version confirmed; CLI test imported and rendered a local GLB successfully",
+  "license_checks": {
+    "makerlab_faq": {
+      "source": "https://makerworld.com/en/faq#MakerLab",
+      "finding": "MakerLab has no general commercial restriction on own tools, but third-party generators follow each provider licensing terms."
+    },
+    "meshy_free": {
+      "source": "https://help.meshy.ai/en/articles/15696428-what-is-included-on-the-free-plan",
+      "finding": "CC BY 4.0 permits commercial use with attribution. MakerLab partner output-specific terms still need checking before release."
+    },
+    "tripo_makerlab": "Specific partner license not yet established; do not silently ship trial output.",
+    "makerlab_output_export": {
+      "source": "https://makerworld.com/tr/makerlab/imageTo3d?from=makerlab",
+      "evidence": "makerlab-tripo-export-license.png",
+      "statement": "Your creations can be used for commercial purposes. If you share them publicly, please credit Image to 3D",
+      "attribution": "Powered by MakerWorld-Image-to-3D (https://makerworld.com/makerlab/imageTo3d)"
+    }
+  },
+  "selected_model": {
+    "generator": "MakerLab / Tripo 3.1 Ultra",
+    "raw_triangles": 1949964,
+    "raw_bytes": 57337264,
+    "mobile_triangles": 80000,
+    "runtime_bytes": 5505896,
+    "draw_calls": 1,
+    "joints": 5,
+    "morphs": ["Beak_Open"],
+    "clips": ["Idle", "Listen", "Think", "Encourage", "Celebrate"],
+    "glb": "e2e/assets/nova-v4-rig.glb",
+    "editable": "e2e/assets/nova-v4-rig.blend",
+    "textures": "one 2048 JPEG"
+  }
+}

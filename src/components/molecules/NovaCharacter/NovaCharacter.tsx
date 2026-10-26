@@ -1,8 +1,9 @@
 import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { NovaStage } from '@/types/user';
 import { clsx } from 'clsx';
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 
+import { useNova3DVisibility } from './useNova3DVisibility';
 import fallbackNova from '@assets/images/nova-fallback-v2.png?inline';
 
 const Nova3D = lazy(() => import('./three/Nova3D').catch(() => ({ default: () => <></> })));
@@ -26,7 +27,7 @@ interface NovaCharacterProps {
   motionEnabled?: boolean;
   decorative?: boolean;
   className?: string;
-  /** Opt-in prototype; approved raster art remains the default during model review. */
+  /** Prominent slots use the detailed local asset; compact lists keep lightweight artwork. */
   renderMode?: 'auto' | '3d' | 'image';
 }
 
@@ -70,7 +71,7 @@ function NovaPoseImage({ pose, decorative }: { pose: string; decorative: boolean
 }
 
 /** One visual source for Nova across home, lessons, conversation and rewards.
- * Opt-in 3D rig retains raster art during loading or graphics failure.
+ * Detailed 3D in prominent scenes, with raster expressions and a bounded GPU budget.
  * Expressions are event-driven; no perpetual whole-body floating animation.
  */
 export function NovaCharacter({
@@ -90,11 +91,17 @@ export function NovaCharacter({
     setFailed(true);
     setReady(false);
   }, []);
-  const use3D = !failed && renderMode === '3d';
+  const host = useRef<HTMLSpanElement>(null);
+  const prominent = size === 'lg' || size === 'xl' || size === 'hero';
+  // Closed eyelids are not yet authored on the detailed rig; preserve the real sleeping expression.
+  const requested =
+    mood !== 'sleeping' && (renderMode === '3d' || (renderMode === 'auto' && prominent));
+  const use3D = useNova3DVisibility(host, requested && !failed && isActive);
   const show3D = use3D && ready;
 
   return (
     <span
+      ref={host}
       className={clsx(
         'nova-character relative inline-flex shrink-0 items-end justify-center',
         sizes[size],

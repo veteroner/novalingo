@@ -1,3 +1,5 @@
+> 26 Ekim 2026 güncel 3D sonucu: [Ücretsiz detaylı Nova, rig ve kalan sınırlar](2026-10-26-free-3d-rebuild/BUILD_NOTES.md). Önceki yerel primitif deneme reddedildi; bu raporun eski açık 3D maddeleri bu yeni kayıtla birlikte okunmalı.
+
 # NovaLingo görsel çalışmalarının güncel durumu
 
 ## Güncel durum — 26 Ekim 2026

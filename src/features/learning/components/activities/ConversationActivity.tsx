@@ -218,7 +218,7 @@ function interpolateTemplate(
 /* ─── Nova Header Avatar — kompakt (64px) mood animasyonlu avatar (chat-first redesign) ─── */
 
 function NovaHeaderAvatar({ mood }: { mood: NovaMood }) {
-  return <NovaCharacter mood={mood} size="sm" />;
+  return <NovaCharacter mood={mood} size="sm" renderMode="3d" />;
 }
 
 function ProgressDots({ current, total }: { current: number; total: number }) {
