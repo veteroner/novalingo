@@ -325,5 +325,15 @@
       "cancel": "Cancel",
       "complete": "You found all the words!"
     }
+  },
+  "dailyLimit": {
+    "title": "Great job today!",
+    "message": "You finished today's {{count}} lessons. New lessons are waiting for you tomorrow. Meanwhile, you can read a story or talk with Nova.",
+    "stories": "📖 Read a story",
+    "conversation": "🦉 Talk with Nova",
+    "home": "Back to home",
+    "parentTitle": "For parents",
+    "parentMessage": "NovaLingo Plus unlocks unlimited daily lessons and all 12 worlds.",
+    "parentCta": "See Plus"
   }
 }

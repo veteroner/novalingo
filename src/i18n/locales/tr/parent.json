@@ -52,7 +52,11 @@
     "trialCta": "{{days}} Gün Ücretsiz Dene",
     "subscribeCta": "Aboneliği Başlat",
     "renewalNotice": "Abonelik {{price}}/{{period}} olarak otomatik yenilenir. Yenilemeden en az 24 saat önce iptal etmezseniz dönem sonunda ücretlendirilirsiniz. İptali mağaza hesap ayarlarınızdan istediğiniz zaman yapabilirsiniz.",
-    "renewalNoticeTrial": "{{days}} günlük ücretsiz deneme sonunda abonelik {{price}}/{{period}} olarak otomatik yenilenir. Deneme bitmeden en az 24 saat önce iptal etmezseniz ücretlendirilirsiniz. İptali mağaza hesap ayarlarınızdan istediğiniz zaman yapabilirsiniz."
+    "renewalNoticeTrial": "{{days}} günlük ücretsiz deneme sonunda abonelik {{price}}/{{period}} olarak otomatik yenilenir. Deneme bitmeden en az 24 saat önce iptal etmezseniz ücretlendirilirsiniz. İptali mağaza hesap ayarlarınızdan istediğiniz zaman yapabilirsiniz.",
+    "redeemCta": "Hediye kodum var",
+    "redeemTitle": "Kod mağazada kullanılıyor",
+    "redeemMessage": "Kodu girdikten sonra uygulamaya dön; Plus birkaç saniye içinde açılır. Açılmazsa \"Satın alma geçmişini geri yükle\"ye dokun.",
+    "trialEligibility": "Ücretsiz deneme, bu aboneliği daha önce denememiş hesaplar içindir. Hesabın uygun değilse mağazanın ödeme ekranında gerçek tutar gösterilir."
   },
   "settings": {
     "title": "⚙️ Ayarlar",

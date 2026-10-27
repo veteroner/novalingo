@@ -37,6 +37,7 @@ const ShopScreen = lazy(() => import('@features/gamification/screens/ShopScreen'
 const AchievementsScreen = lazy(() => import('@features/gamification/screens/AchievementsScreen'));
 const CollectionScreen = lazy(() => import('@features/gamification/screens/CollectionScreen'));
 const DailyQuestsScreen = lazy(() => import('@features/gamification/screens/DailyQuestsScreen'));
+const DailyLimitScreen = lazy(() => import('@features/learning/screens/DailyLimitScreen'));
 const SeasonalEventScreen = lazy(
   () => import('@features/gamification/screens/SeasonalEventScreen'),
 );
@@ -247,6 +248,14 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <SeasonalEventScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/daily-limit"
+          element={
+            <ProtectedRoute>
+              <DailyLimitScreen />
             </ProtectedRoute>
           }
         />

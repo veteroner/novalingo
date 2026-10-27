@@ -136,13 +136,17 @@ export default function WorldMapScreen() {
 
   function launchLesson(lesson: PathLesson) {
     if (futureWorld || lesson.status === 'locked') return;
-    if (premiumLocked || dailyLimit) {
+    if (premiumLocked) {
       showToast({
         type: 'info',
-        title: t(premiumLocked ? 'premium.title' : 'worldMap.limitTitle'),
-        message: t(premiumLocked ? 'worldMap.premiumMessage' : 'worldMap.limitMessage'),
+        title: t('premium.title'),
+        message: t('worldMap.premiumMessage'),
       });
       void navigate('/subscription');
+      return;
+    }
+    if (dailyLimit) {
+      void navigate('/daily-limit');
       return;
     }
     void unlockAudioPlayback();

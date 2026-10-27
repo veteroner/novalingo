@@ -90,13 +90,8 @@ export default function LessonScreen() {
 
   useEffect(() => {
     if (!lessonId || !child || !hasReachedDailyLimit) return;
-    showToast({
-      type: 'info',
-      title: t('lessonScreen.limitTitle'),
-      message: t('lessonScreen.limitMessage'),
-    });
-    void navigate('/subscription');
-  }, [child, hasReachedDailyLimit, lessonId, navigate, showToast, t]);
+    void navigate('/daily-limit', { replace: true });
+  }, [child, hasReachedDailyLimit, lessonId, navigate]);
 
   // Compute lesson session ONCE per mount — never recompute mid-lesson
   if (!sessionRef.current && lessonId) {
@@ -386,12 +381,7 @@ export default function LessonScreen() {
                     message.includes('permission-denied') ||
                     message.includes('Missing or insufficient permissions')
                   ) {
-                    showToast({
-                      type: 'info',
-                      title: t('lessonScreen.limitTitle'),
-                      message: t('lessonScreen.limitMessage'),
-                    });
-                    void navigate('/subscription');
+                    void navigate('/daily-limit', { replace: true });
                     return;
                   }
 
