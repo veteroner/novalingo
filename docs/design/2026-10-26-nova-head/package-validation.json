@@ -1,0 +1,22 @@
+[
+  {
+    "root": "dist",
+    "files": 261,
+    "hashes": "match"
+  },
+  {
+    "root": "ios/App/App/public",
+    "files": 261,
+    "hashes": "match"
+  },
+  {
+    "root": "android/app/src/main/assets/public",
+    "files": 261,
+    "hashes": "match"
+  },
+  {
+    "root": "/tmp/novalingo-face-ios-build/Build/Products/Debug-iphonesimulator/App.app/public",
+    "files": 261,
+    "hashes": "match"
+  }
+]

@@ -146,6 +146,7 @@
   },
   "novaEvolution": {
     "title": "🌟 Nova is Evolving!",
+    "skip": "Skip and continue",
     "evolve": "Evolve! ✨",
     "dismiss": "Awesome! 🎉",
     "stage": {
@@ -172,6 +173,7 @@
     "profile": "Profile"
   },
   "dailyWheelButton": {
+    "rewards": "Wheel rewards",
     "spin": "🎰 Spin!",
     "comeBack": "Come Back Tomorrow!"
   },
@@ -182,10 +184,13 @@
       "rare": "Rare",
       "epic": "Epic",
       "legendary": "Legendary"
-    }
+    },
+    "dismiss": "Awesome!"
   },
   "levelUpModal": {
-    "title": "Level Up!"
+    "title": "Level Up!",
+    "encouragement": "You’re making great progress!",
+    "continue": "Continue"
   },
   "conversationTopics": {
     "title": "Talk with Nova 🎭",

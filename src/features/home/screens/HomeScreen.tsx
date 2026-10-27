@@ -128,6 +128,7 @@ export default function HomeScreen() {
 
         <NovaHomeHero
           stage={child.novaStage}
+          worldId={child.currentWorldId}
           worldName={
             curriculum.find((w) => w.id === child.currentWorldId)?.name ??
             t('worldMap.worldFallback')

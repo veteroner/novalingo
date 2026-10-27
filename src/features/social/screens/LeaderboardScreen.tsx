@@ -4,6 +4,7 @@
  * Haftalık liderlik tablosu — lig sistemi, sıralama.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { LeagueTier } from '@/types';
 import { Badge } from '@components/atoms/Badge';
 import { Text } from '@components/atoms/Text';
@@ -28,6 +29,7 @@ const leagueTiers: { id: LeagueTier; emoji: string; color: string }[] = [
 
 export default function LeaderboardScreen() {
   const { t } = useTranslation('common');
+  const { canAnimate } = useMotionPolicy();
   const child = useChildStore((s) => s.activeChild);
   const [currentLeague, setCurrentLeague] = useState<LeagueTier>(child?.leagueTier ?? 'silver');
   const defaultTier = { id: 'bronze' as LeagueTier, emoji: '🥉', color: 'text-amber-700' };
@@ -45,8 +47,8 @@ export default function LeaderboardScreen() {
           <Text variant="h3">{t('leaderboard.title')}</Text>
           <motion.div
             className="mt-2"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            animate={{ scale: canAnimate ? [1, 1.05, 1] : 1 }}
+            transition={canAnimate ? { duration: 2, repeat: Infinity } : { duration: 0 }}
           >
             <span className="text-4xl">{currentTier.emoji}</span>
           </motion.div>

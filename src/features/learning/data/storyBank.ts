@@ -17,6 +17,8 @@
 import { getPreRecordedUrl } from '@/services/speech/audioManifest';
 import type { StoryTimeData } from '@/types/content';
 import { resolveImageUrl } from '@/utils/mediaFallback';
+import storyIllustrations from './storyIllustrations.json';
+import storyChoiceIllustrations from './storyChoiceIllustrations.json';
 
 export interface MicroStory {
   id: string;
@@ -284,7 +286,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'The music starts and Nova begins to dance!',
           translation: 'Müzik başlıyor ve Nova dans etmeye başlıyor!',
-          imageUrl: '/story/story-w1-nova-dances-p1.jpg',
+          imageUrl: '/story/dance-v2/page-1.webp',
           audioUrl: '/audio/tts/fe469c35ab02e2a9.mp3',
           highlightWords: ['dance'],
           interactionType: 'none',
@@ -292,7 +294,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'She moves her arms up and down, up and down.',
           translation: 'Kollarını yukarı aşağı hareket ettiriyor, yukarı aşağı.',
-          imageUrl: '/story/story-w1-nova-dances-p2.jpg',
+          imageUrl: '/story/dance-v2/page-2.webp',
           audioUrl: '/audio/tts/6e5abdde8ad0f621.mp3',
           highlightWords: ['arms'],
           interactionType: 'tap-word',
@@ -300,7 +302,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'She stomps her feet on the ground — STOMP! STOMP!',
           translation: 'Ayaklarını yere vuruyor — STOMP! STOMP!',
-          imageUrl: '/story/story-w1-nova-dances-p3.jpg',
+          imageUrl: '/story/dance-v2/page-3.webp',
           audioUrl: '/audio/tts/d61edd4f329ce915.mp3',
           highlightWords: ['feet'],
           interactionType: 'tap-word',
@@ -308,7 +310,7 @@ const rawStoryBank: MicroStory[] = [
         {
           text: 'She shakes her head left and right. Her eyes are full of joy!',
           translation: 'Kafasını sağa sola sallıyor. Gözleri neşeyle dolup taşıyor!',
-          imageUrl: '/story/story-w1-nova-dances-p4.jpg',
+          imageUrl: '/story/dance-v2/page-4.webp',
           audioUrl: '/audio/tts/a99899dfc1491cc3.mp3',
           highlightWords: ['head', 'eyes'],
           interactionType: 'tap-word',
@@ -317,7 +319,7 @@ const rawStoryBank: MicroStory[] = [
           text: '"Dancing is the best!" laughs Nova. Can you dance like Nova?',
           translation:
             '"Dans etmek çok güzel!" diye gülen Nova. Sen de Nova gibi dans edebilir misin?',
-          imageUrl: '/story/story-w1-nova-dances-p5.jpg',
+          imageUrl: '/story/dance-v2/page-5.webp',
           audioUrl: '/audio/tts/97a0026c5002acc1.mp3',
           highlightWords: ['dance'],
           interactionType: 'none',
@@ -4160,12 +4162,22 @@ const priority7StorySpecs: ExpansionStorySpec[] = [
 
 const priority7Stories = priority7StorySpecs.map(buildExpansionStory);
 
-function enrichStoryData(theme: string, data: StoryTimeData): StoryTimeData {
+const illustratedStoryPages: Record<string, string[]> = storyIllustrations;
+const illustratedChoicePages: Record<
+  string,
+  Record<string, Record<string, string>>
+> = storyChoiceIllustrations;
+
+function enrichStoryData(storyId: string, theme: string, data: StoryTimeData): StoryTimeData {
   return {
     ...data,
     pages: data.pages.map((page, pageIndex) => ({
       ...page,
-      imageUrl: resolveImageUrl(page.imageUrl, { theme, pageIndex }),
+      imageUrl: resolveImageUrl(illustratedStoryPages[storyId]?.[pageIndex] ?? page.imageUrl, {
+        theme,
+        pageIndex,
+      }),
+      choiceImageUrls: illustratedChoicePages[storyId]?.[String(pageIndex + 1)],
       audioUrl: resolveStoryAudioUrl(page.text, page.audioUrl),
     })),
   };
@@ -4174,7 +4186,7 @@ function enrichStoryData(theme: string, data: StoryTimeData): StoryTimeData {
 function enrichMicroStory(story: MicroStory): MicroStory {
   return {
     ...story,
-    data: enrichStoryData(story.theme, story.data),
+    data: enrichStoryData(story.id, story.theme, story.data),
   };
 }
 

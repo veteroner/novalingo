@@ -5,6 +5,8 @@
  * Büyük seviye numarası, ödüller ve animasyonlu giriş.
  */
 
+import { ConfettiIcon } from '@phosphor-icons/react';
+import { RewardIcon } from '@components/atoms/RewardIcon/RewardIcon';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -57,7 +59,12 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
               }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              🎉
+              <ConfettiIcon
+                size={56}
+                weight="duotone"
+                className="text-primary mx-auto"
+                aria-hidden="true"
+              />
             </motion.div>
 
             {/* Title */}
@@ -95,23 +102,25 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
             >
               {rewards.stars > 0 && (
                 <div className="bg-reward-soft flex items-center gap-1.5 rounded-full px-4 py-2">
-                  <span className="text-xl">⭐</span>
-                  <Text variant="body" weight="bold" className="text-amber-600">
+                  <RewardIcon kind="stars" size={24} />
+                  <span className="sr-only">{t('currency.stars')}</span>
+                  <Text variant="body" weight="bold" className="text-reward-ink">
                     +{rewards.stars}
                   </Text>
                 </div>
               )}
               {rewards.gems > 0 && (
                 <div className="bg-primary-soft flex items-center gap-1.5 rounded-full px-4 py-2">
-                  <span className="text-xl">💎</span>
-                  <Text variant="body" weight="bold" className="text-purple-600">
+                  <RewardIcon kind="gems" size={24} />
+                  <span className="sr-only">{t('currency.gems')}</span>
+                  <Text variant="body" weight="bold" className="text-primary">
                     +{rewards.gems}
                   </Text>
                 </div>
               )}
               {rewards.stars === 0 && rewards.gems === 0 && (
                 <Text variant="bodySmall" className="text-text-secondary">
-                  Harika ilerliyorsun! 🌟
+                  {t('levelUpModal.encouragement')}
                 </Text>
               )}
             </motion.div>
@@ -124,7 +133,7 @@ export function LevelUpModal({ isOpen, level, rewards, onClose }: LevelUpModalPr
               transition={{ delay: 0.8 }}
             >
               <Button variant="primary" size="lg" fullWidth onClick={onClose}>
-                Devam Et! 🚀
+                {t('levelUpModal.continue')}
               </Button>
             </motion.div>
           </motion.div>

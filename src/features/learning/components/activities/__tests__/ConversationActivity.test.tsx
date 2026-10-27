@@ -29,8 +29,6 @@ vi.mock('@services/speech/speechService', () => ({
   onSpeakingStateChange: (...args: unknown[]) => mockOnSpeakingStateChange(...args),
 }));
 
-vi.mock('@assets/images/nova-mascot.svg', () => ({ default: 'nova-mascot.svg' }));
-
 vi.mock('@hooks/useHaptic', () => ({
   useHaptic: () => ({
     light: vi.fn(),
@@ -182,13 +180,21 @@ describe('ConversationActivity', () => {
     expect(mockSpeak).toHaveBeenCalledWith('Which pet do you want?', expect.any(Object));
   });
 
-  it('renders the shared Nova listening pose', () => {
+  it('shows distinct thinking, speaking and listening poses around TTS', () => {
     const onComplete = vi.fn();
     render(<ConversationActivity data={buildSimpleData()} onComplete={onComplete} />);
 
     const img = screen.getByAltText('Nova');
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', '/nova/nova-listen.webp');
+    expect(img).toHaveAttribute('src', '/nova/poses-v3/thinking.webp');
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    expect(screen.getByAltText('Nova')).toHaveAttribute('src', '/nova/poses-v3/speaking.webp');
+    act(() => {
+      speakingStateListener?.(false);
+    });
+    expect(screen.getByAltText('Nova')).toHaveAttribute('src', '/nova/poses-v3/listen.webp');
   });
 
   it('renders free-form text input instead of option buttons', () => {

@@ -9,7 +9,7 @@ import { useCapacitorLifecycle } from '@hooks/useCapacitorLifecycle';
 import { useAuthStore } from '@stores/authStore';
 import { useChildStore } from '@stores/childStore';
 import { Timestamp } from 'firebase/firestore';
-import { MotionConfig } from 'framer-motion';
+import { AppMotionProvider } from './AppMotionProvider';
 import { type ReactNode, useEffect, useRef } from 'react';
 import { ThemeProvider } from './ThemeProvider';
 
@@ -205,9 +205,7 @@ export function AppProviders({ children }: AppProvidersProps) {
   if (e2eSession) hydrateE2ETestSession(e2eSession);
 
   return (
-    // reducedMotion="user" — tüm framer-motion animasyonları OS "Hareketi Azalt"
-    // ayarına saygı gösterir (WCAG 2.1 AA · SC 2.3.3). Çocuklarda vestibüler güvenlik için kritik.
-    <MotionConfig reducedMotion="user">
+    <AppMotionProvider>
       <ThemeProvider>
         {e2eSession ? (
           <E2ETestSessionProvider>
@@ -225,6 +223,6 @@ export function AppProviders({ children }: AppProvidersProps) {
           </AuthProvider>
         )}
       </ThemeProvider>
-    </MotionConfig>
+    </AppMotionProvider>
   );
 }

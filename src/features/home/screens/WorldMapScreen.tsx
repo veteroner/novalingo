@@ -1,3 +1,4 @@
+import { WorldScene } from '../components/WorldScene';
 import { FREE_TIER } from '@/config/constants';
 import { Button } from '@components/atoms/Button';
 import { NovaCharacter } from '@components/molecules/NovaCharacter';
@@ -274,6 +275,8 @@ export default function WorldMapScreen() {
             ))}
           </section>
         )}
+
+        <WorldScene worldId={worldId} className="learning-world-scene" />
 
         <div className="learning-columns">
           <div className="learning-main">

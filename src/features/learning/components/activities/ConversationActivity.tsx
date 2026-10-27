@@ -6,6 +6,7 @@
  * Web Speech API STT + TTS kullanır; metinle de tam çalışır.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import {
   matchConversationResponseRule,
   openEndedConversationService,
@@ -217,10 +218,11 @@ function interpolateTemplate(
 /* ─── Nova Header Avatar — kompakt (64px) mood animasyonlu avatar (chat-first redesign) ─── */
 
 function NovaHeaderAvatar({ mood }: { mood: NovaMood }) {
-  return <NovaCharacter mood={mood} size="sm" />;
+  return <NovaCharacter mood={mood} size="sm" renderMode="3d" />;
 }
 
 function ProgressDots({ current, total }: { current: number; total: number }) {
+  const { canAnimate } = useMotionPolicy();
   if (total <= 0) return null;
   return (
     <div className="flex items-center gap-1">
@@ -234,8 +236,10 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
                 ? 'bg-primary-dark w-4'
                 : 'w-1.5 bg-gray-300'
           }`}
-          animate={i === current ? { scale: [1, 1.15, 1] } : {}}
-          transition={i === current ? { duration: 1.5, repeat: Infinity } : {}}
+          animate={{ scale: canAnimate && i === current ? [1, 1.15, 1] : 1 }}
+          transition={
+            canAnimate && i === current ? { duration: 1.5, repeat: Infinity } : { duration: 0 }
+          }
         />
       ))}
     </div>
@@ -250,6 +254,7 @@ export default function ConversationActivity({
   worldId,
 }: ConversationActivityProps) {
   const { t } = useTranslation('lesson');
+  const { canAnimate } = useMotionPolicy();
   const activeChild = useChildStore((s) => s.activeChild);
   const haptic = useHaptic();
 
@@ -1400,7 +1405,7 @@ export default function ConversationActivity({
               <span aria-hidden="true" className="text-sm">
                 {data.sceneEmoji}
               </span>
-              <Text variant="overline" className="text-primary text-[10px]">
+              <Text variant="overline" className="text-primary">
                 {t('activities.conversationHeader')}
               </Text>
             </div>
@@ -1464,7 +1469,7 @@ export default function ConversationActivity({
                 }`}
               >
                 {bubble.speaker === 'nova' ? (
-                  <NovaCharacter size="sm" className="h-8 w-8" decorative />
+                  <NovaCharacter mood="thinking" size="sm" className="h-8 w-8" decorative />
                 ) : (
                   <Avatar
                     avatarId={activeChild?.avatarId ?? 'owl'}
@@ -1502,8 +1507,12 @@ export default function ConversationActivity({
                           <motion.span
                             key={i}
                             className="bg-primary-dark w-1 rounded-full"
-                            animate={{ height: [4, 10, 4] }}
-                            transition={{ duration: 0.5, delay: i * 0.15, repeat: Infinity }}
+                            animate={{ height: canAnimate ? [4, 10, 4] : 4 + i * 3 }}
+                            transition={
+                              canAnimate
+                                ? { duration: 0.5, delay: i * 0.15, repeat: Infinity }
+                                : { duration: 0 }
+                            }
                           />
                         ))}
                       </span>
@@ -1556,15 +1565,15 @@ export default function ConversationActivity({
                 💡
               </span>
               <div className="bg-reward-soft max-w-[80%] rounded-3xl rounded-tl-md border border-amber-200 px-4 py-2.5 shadow-md">
-                <p className="text-xs text-amber-500">{t('activities.conversationTryThis')}</p>
-                <p className="text-base font-semibold text-amber-700">{options[0].text}</p>
-                {showTranslation && <p className="text-xs text-amber-400">{options[0].textTr}</p>}
+                <p className="text-reward-ink text-xs">{t('activities.conversationTryThis')}</p>
+                <p className="text-reward-ink text-base font-semibold">{options[0].text}</p>
+                {showTranslation && <p className="text-reward-ink text-xs">{options[0].textTr}</p>}
                 {data.targetPatterns && data.targetPatterns.length > 0 && (
                   <div className="mt-1.5 flex flex-wrap gap-1">
                     {data.targetPatterns.map((p) => (
                       <span
                         key={p}
-                        className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-600"
+                        className="bg-surface text-reward-ink rounded-full px-2 py-0.5 text-xs font-medium"
                       >
                         {p}
                       </span>
@@ -1585,7 +1594,7 @@ export default function ConversationActivity({
               exit={{ opacity: 0 }}
               className="flex items-start gap-1.5"
             >
-              <NovaCharacter size="sm" className="h-8 w-8" decorative />
+              <NovaCharacter mood="thinking" size="sm" className="h-8 w-8" decorative />
               <div
                 role="status"
                 aria-label={t('activities.conversationTypingIndicator')}
@@ -1595,8 +1604,14 @@ export default function ConversationActivity({
                   <motion.span
                     key={i}
                     className="h-2 w-2 rounded-full bg-indigo-300"
-                    animate={{ y: [0, -5, 0], opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
+                    animate={
+                      canAnimate ? { y: [0, -5, 0], opacity: [0.4, 1, 0.4] } : { y: 0, opacity: 1 }
+                    }
+                    transition={
+                      canAnimate
+                        ? { duration: 0.6, delay: i * 0.15, repeat: Infinity }
+                        : { duration: 0 }
+                    }
                   />
                 ))}
               </div>

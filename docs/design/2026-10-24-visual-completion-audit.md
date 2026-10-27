@@ -1,4 +1,21 @@
+> 26 Ekim 2026 güncel 3D sonucu: [Ücretsiz detaylı Nova, rig ve kalan sınırlar](2026-10-26-free-3d-rebuild/BUILD_NOTES.md). Önceki yerel primitif deneme reddedildi; bu raporun eski açık 3D maddeleri bu yeni kayıtla birlikte okunmalı.
+
 # NovaLingo görsel çalışmalarının güncel durumu
+
+## Güncel durum — 26 Ekim 2026
+
+Aşağıdaki ilk tablolar **24 Ekim tarihindeki inceleme kaydıdır**. Güncel sonuçlar:
+
+- 104 hikâyenin 412 iç sahnesi ve seçimli hikâyelerin 36 devam resmi tamamlandı. [Hikâye kapsamı ve örnek iOS kontrolleri](2026-10-25-all-story-interiors.md).
+- Nova sekiz ayrı görselle on durumu gösterir; ortak yeni PNG hata yedeği vardır. [İfadeler](2026-10-25-nova-expressions.md). Android açılışı güncellendi ve evrim ilk andan geçilebilir. [Akış/başlangıç](2026-10-25-nova-flow-polish.md).
+- Mağaza/ödül ikonları, ortak küçük etiketler ve etkinlik ödül izolasyonu tamamlandı. [Ödül/mağaza](2026-10-25-reward-shop-polish.md). Sürekli hareketler belge/native arka planı ve OS hareket tercihini izler. [Hareket](2026-10-25-motion-lifecycle.md).
+- Kütüphane/sohbetin kalan 10px etiketleri, özel yardımcı yazı renkleri, ana ekran etkinlik kartı ve günlük çark okunabilirliği düzeltildi. Çarkın seri dondurma birimi ve tekrarlanan dönüşte yanlış dilimde durması da düzeltildi. [Son okunabilirlik kontrolü](2026-10-25-readability-followup.md).
+- 12 dünyanın her birine ayrı 1200×800 çevre çizimi eklendi; harita ve ana ekranın mevcut dünya kartı ortak resmi kullanır. iOS şifreleme beyanı da pakete eklendi. [Dünya sahneleri ve iOS beyanı](2026-10-26-world-scenes-encryption.md).
+- Web açılışı bütün JS/font parçalarıyla sürümlü önbelleğe alındı; üretim paketi yerel sunucu kapalıyken yeniden açıldı. 320px ders kartının alt menü arkasında kalan düğmesi düzeltildi. [Çevrimdışı açılış/küçük ekran kanıtları](2026-10-26-offline-small-screens.md).
+- Gerçek 3D prototip ve indirilebilir Tripo H2.5 denemesi hazırlandı; hafifletilmiş model web/iOS’ta incelendi. Tripo varlığı yalnız yerel QA’da; ticari lisans ve iskeletleme açık. [3D deneme ve sınırlar](2026-10-26-nova-3d-trial.md).
+- **Açık:** üretimde onaylı 3D varlık/rig ve ticari hak, gerçek göz kırpma/nefes/gaga-ses eşlemesi, bütün özel durumların kontrast ve ekran okuyucu envanteri; Android manuel/fiziksel/düşük donanım, performans ve gerçek hesap/ödeme/ses uçtan uca doğrulaması. Kod/PR durumu mağaza yayını anlamına gelmez.
+
+## 24 Ekim tarihli denetim kaydı
 
 24 Ekim 2026. **Hayır, ilk incelemedeki bütün hedefler tamamlanmadı.** Ortak görsel dil, öğrenme yolu ve sade başlangıç akışı uygulandı; ileri karakter animasyonu, katalogdaki tüm iç çizimler ve tam cihaz doğrulaması açık kaldı.
 
@@ -12,37 +29,37 @@ Bu karşılaştırma bu sohbette hazırlanan `docs/design/` altındaki önceki *
 
 ## Belgelerin tek tek karşılığı
 
-| Belge | Durum | Kodda/çıktıda karşılığı ve açık sınır |
-|---|---|---|
-| [Görsel inceleme ve Nova v2 yönü](2026-10-21-visual-audit.md) | Kısmen tamam | Ortak kaynak, yüzen hareketin kaldırılması, tema/kontrast, ana ekran ve yol uygulandı. Aşağıdaki hareket, katalog, ikon ve cihaz maddeleri açık. |
-| [Meshy üretim brifi](nova-v2-meshy-brief.md) | Kullanıcı kararıyla ertelendi | Model veteroner hesabında üretildi. İndirme abonelik istedi; kullanıcı modelin hesapta kalmasını ve görsel sürümün bitirilmesini istedi. GLB/rig/klipler yok; yeni ödeme yapılmadı. Ortak `NovaCharacter` arayüzü ise artık var. |
-| [Görsel pilot uygulaması](nova-v2-implementation.md) | Belgedeki pilot tamam | Üç Nova pozu, orman, ortak bileşenler, ana ekran/sohbet ve dört sayfalık “Nova Mutlu!” var. Bu, yedi ayrı hareketin veya gerçek 3D'nin tamamlandığı anlamına gelmez. |
-| [Varlık üretim istemleri](nova-v2-asset-prompts.md) | Tamam | Üç Nova, orman ve dört hikâye sahnesi diskte ve tüketen bileşenlerde var. İstem kaydıdır; ilave uygulama kapsamı değildir. |
-| [Öğrenme yolu](2026-10-21-learning-path.md) | Belgedeki kapsam tamam | 12 dünya, ünite rehberi, ders bilgisi, mevcut derse gitme, ilerleme/kilit kuralları ve açık/koyu palet. Duolingo'nun bütün ürün özellikleri uygulanmadı ve bu belgede de vaat edilmedi. |
-| [Genel görseller ve simülatör](2026-10-21-global-visuals-simulator.md) | Arayüz kapsamı tamam, cihaz kapsamı kısmi | Ortak yüzeyler ekranlara yayıldı; iOS QA kabuğunda örnek ders tamamlandı. Android açılış varlıkları eski; Android çalışma zamanı, fiziksel cihaz ve canlı hesapla uçtan uca akış belgenin kapsamı dışında kalmıştı. |
-| [Başlangıç sadeleştirmesi](2026-10-22-setup-flow.md) | Belgedeki kapsam tamam | Yaş bilgisi aynı kişi için tekrar sorulmaz; ilk çocuk grubuna kaba öneri gelir. Yetişkinin tarihi çocuk grubuna çevrilmez; ebeveyn kapısı/onay korunur. İlk kurulumda avatar adımı yok. |
-| [Profil avatarları](2026-10-22-profile-avatars.md) | Belgedeki kapsam tamam | Profilde isteğe bağlı düzenleme, 12 SVG ve profil/puan tablosu/çocuk sohbet avatarının ortak çizimi. Başarı/hata/geç yanıt testleri var; gerçek hesapta kayıt testi yapılmış sayılmaz. |
-| [Kütüphane kapakları](2026-10-23-story-library-covers.md) | Belgedeki kapsam tamam, PR açık | 36 sahneyi paylaşan 104 kapak, 12 dünya filtresi, TR/EN ve yükleme hatası yedeği var. 104 ayrı sahne veya 104 hikâyenin bütün sayfaları üretilmedi. |
-| [Çiftlik iç çizimleri](2026-10-23-farm-story-illustrations.md) | Belgedeki kapsam tamam, PR açık | Beş ayrı çizim, İngilizce metnin son sayfada da görünmesi, ses/kelime koruması ve iOS QA ekran kanıtları. “Nova Mutlu!” ile birlikte toplam iki tam hikâye / dokuz iç sahne yenilendi. |
+| Belge                                                                  | Durum                                     | Kodda/çıktıda karşılığı ve açık sınır                                                                                                                                                                                            |
+| ---------------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Görsel inceleme ve Nova v2 yönü](2026-10-21-visual-audit.md)          | Kısmen tamam                              | Ortak kaynak, yüzen hareketin kaldırılması, tema/kontrast, ana ekran ve yol uygulandı. Aşağıdaki hareket, katalog, ikon ve cihaz maddeleri açık.                                                                                 |
+| [Meshy üretim brifi](nova-v2-meshy-brief.md)                           | Kullanıcı kararıyla ertelendi             | Model veteroner hesabında üretildi. İndirme abonelik istedi; kullanıcı modelin hesapta kalmasını ve görsel sürümün bitirilmesini istedi. GLB/rig/klipler yok; yeni ödeme yapılmadı. Ortak `NovaCharacter` arayüzü ise artık var. |
+| [Görsel pilot uygulaması](nova-v2-implementation.md)                   | Belgedeki pilot tamam                     | Üç Nova pozu, orman, ortak bileşenler, ana ekran/sohbet ve dört sayfalık “Nova Mutlu!” var. Bu, yedi ayrı hareketin veya gerçek 3D'nin tamamlandığı anlamına gelmez.                                                             |
+| [Varlık üretim istemleri](nova-v2-asset-prompts.md)                    | Tamam                                     | Üç Nova, orman ve dört hikâye sahnesi diskte ve tüketen bileşenlerde var. İstem kaydıdır; ilave uygulama kapsamı değildir.                                                                                                       |
+| [Öğrenme yolu](2026-10-21-learning-path.md)                            | Belgedeki kapsam tamam                    | 12 dünya, ünite rehberi, ders bilgisi, mevcut derse gitme, ilerleme/kilit kuralları ve açık/koyu palet. Duolingo'nun bütün ürün özellikleri uygulanmadı ve bu belgede de vaat edilmedi.                                          |
+| [Genel görseller ve simülatör](2026-10-21-global-visuals-simulator.md) | Arayüz kapsamı tamam, cihaz kapsamı kısmi | Ortak yüzeyler ekranlara yayıldı; iOS QA kabuğunda örnek ders tamamlandı. Android açılış varlıkları eski; Android çalışma zamanı, fiziksel cihaz ve canlı hesapla uçtan uca akış belgenin kapsamı dışında kalmıştı.              |
+| [Başlangıç sadeleştirmesi](2026-10-22-setup-flow.md)                   | Belgedeki kapsam tamam                    | Yaş bilgisi aynı kişi için tekrar sorulmaz; ilk çocuk grubuna kaba öneri gelir. Yetişkinin tarihi çocuk grubuna çevrilmez; ebeveyn kapısı/onay korunur. İlk kurulumda avatar adımı yok.                                          |
+| [Profil avatarları](2026-10-22-profile-avatars.md)                     | Belgedeki kapsam tamam                    | Profilde isteğe bağlı düzenleme, 12 SVG ve profil/puan tablosu/çocuk sohbet avatarının ortak çizimi. Başarı/hata/geç yanıt testleri var; gerçek hesapta kayıt testi yapılmış sayılmaz.                                           |
+| [Kütüphane kapakları](2026-10-23-story-library-covers.md)              | Belgedeki kapsam tamam, PR açık           | 36 sahneyi paylaşan 104 kapak, 12 dünya filtresi, TR/EN ve yükleme hatası yedeği var. 104 ayrı sahne veya 104 hikâyenin bütün sayfaları üretilmedi.                                                                              |
+| [Çiftlik iç çizimleri](2026-10-23-farm-story-illustrations.md)         | Belgedeki kapsam tamam, PR açık           | Beş ayrı çizim, İngilizce metnin son sayfada da görünmesi, ses/kelime koruması ve iOS QA ekran kanıtları. “Nova Mutlu!” ile birlikte toplam iki tam hikâye / dokuz iç sahne yenilendi.                                           |
 
 ## İlk incelemedeki bulguların karşılığı
 
-| İlk bulgu/hedef | Durum | Doğrulanan karşılık / kalan iş |
-|---|---|---|
-| Ekranlar farklı Nova kaynakları kullanıyor | Büyük ölçüde tamam | `NovaStageAvatar` ve `NovaCompanion`, `NovaCharacter` kullanır; giriş/sonuç/sohbet de ortak kaynağa bağlı. Görsel hatası yedeği eski SVG'dir; tamamen yeni bir karakter kaynağından üretilmiş bir yedek değildir. |
-| Tüm gövdenin sürekli yüzmesi | Tamam | Sürekli karakter salınımı yok; temas gölgesi ve olay anında 0,7 saniyelik tek kutlama var. |
-| Sarı butonda beyaz yazı | Ortak butonda tamam | `Button.secondary` koyu yazı; başarı/hata için koyu zemin. Tema testleri 3 yaş × 2 modda ortak renk çiftlerini kontrol eder. Her özel küçük etiketin ölçüldüğü iddia edilmez. |
-| Metinli hikâye kartları | Kısmi | İki hikâyenin dokuz iç sahnesi yeni. Kalan 102 hikâyenin iç sayfalarını tarama/yenileme bitmedi; tüm kapaklar mevcut. |
-| Semantik tema/yüzeylerin atlanması | Büyük ölçüde tamam | Tema renkleri, ortak navigasyon/butonlar ve yüzeyler bağlı. Yerel sabit renkler ve özel rozetler sürüyor; bütün ekran/durum kontrast envanteri yok. |
-| Eksik renk/font tokenları | Tamam | `background-primary`, `text-primary`, `nova-sky`, `font-heading` eşlemeleri `globals.css` içinde tanımlı. |
-| Duruma özel Nova ifadesi/hareketi | Kısmi | Yalnız `idle/listen/celebrate` görselleri var. `thinking/sleeping/encouraging/sad` aynı dinleme pozuna yönlenir; konuşma nötr pozu kullanır. Gerçek göz kırpma, nefes, bakış, gaga/TTS senkronu yok. |
-| Kompakt sohbet ve belirgin ana eylem | Tamam | Küçük ortak sohbet avatarı; ana ekranda mevcut derse odaklı `NovaHomeHero`. |
-| Bağlantılı dünya yolu ve mevcut ders | Tamam | `WorldMapScreen`, `learningPath` ve yol stilleri. Her dünya için ayrı tam arka plan sahnesi yok; renk ve yol düzeni var. |
-| Tek ikon ailesi ve özgün ödül varlıkları | Kısmi | Gezinme/ders düğümleri/başlıklarda Phosphor; profil avatarları özgün SVG. Mağaza, koleksiyon ve bazı etkinlik içerikleri hâlâ emoji kullanır. |
-| Daha okunaklı küçük etiketler | Kısmi | Başlık fontu düzeldi; `SeasonalEventScreen` gibi yerlerde `text-[10px]` ve küçük etiketler sürüyor. |
-| Geçilebilir evrim / dersi bloke etmeme | Kısmi | Aynı Nova yüzü korunur, aşamalar işaret/ölçekle ayrılır. `NovaEvolutionModal` ilk fazda yalnız “Evrimleş” gösterir; baştan atlama eylemi yok. |
-| Hareketi azalt / görünmeyen ekranda durma | Kısmi | CSS ve `MotionConfig reducedMotion="user"` var. Karakterde sürekli döngü yok; genel görünürlük/App arka planı duraklatma mekanizması bu çalışmada tamamlanmadı. |
-| iOS/Android, çevrimdışı ve düşük cihaz kontrolü | Kısmi | iOS simülatör örnek akışları ve dar web ekranları kontrol edildi. Android çalışma zamanı, fiziksel/düşük donanım, tam çevrimdışı açılış ve bellek/FPS ölçümleri eksik. |
+| İlk bulgu/hedef                                 | Durum               | Doğrulanan karşılık / kalan iş                                                                                                                                                                                    |
+| ----------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ekranlar farklı Nova kaynakları kullanıyor      | Büyük ölçüde tamam  | `NovaStageAvatar` ve `NovaCompanion`, `NovaCharacter` kullanır; giriş/sonuç/sohbet de ortak kaynağa bağlı. Görsel hatası yedeği eski SVG'dir; tamamen yeni bir karakter kaynağından üretilmiş bir yedek değildir. |
+| Tüm gövdenin sürekli yüzmesi                    | Tamam               | Sürekli karakter salınımı yok; temas gölgesi ve olay anında 0,7 saniyelik tek kutlama var.                                                                                                                        |
+| Sarı butonda beyaz yazı                         | Ortak butonda tamam | `Button.secondary` koyu yazı; başarı/hata için koyu zemin. Tema testleri 3 yaş × 2 modda ortak renk çiftlerini kontrol eder. Her özel küçük etiketin ölçüldüğü iddia edilmez.                                     |
+| Metinli hikâye kartları                         | Kısmi               | İki hikâyenin dokuz iç sahnesi yeni. Kalan 102 hikâyenin iç sayfalarını tarama/yenileme bitmedi; tüm kapaklar mevcut.                                                                                             |
+| Semantik tema/yüzeylerin atlanması              | Büyük ölçüde tamam  | Tema renkleri, ortak navigasyon/butonlar ve yüzeyler bağlı. Yerel sabit renkler ve özel rozetler sürüyor; bütün ekran/durum kontrast envanteri yok.                                                               |
+| Eksik renk/font tokenları                       | Tamam               | `background-primary`, `text-primary`, `nova-sky`, `font-heading` eşlemeleri `globals.css` içinde tanımlı.                                                                                                         |
+| Duruma özel Nova ifadesi/hareketi               | Kısmi               | Yalnız `idle/listen/celebrate` görselleri var. `thinking/sleeping/encouraging/sad` aynı dinleme pozuna yönlenir; konuşma nötr pozu kullanır. Gerçek göz kırpma, nefes, bakış, gaga/TTS senkronu yok.              |
+| Kompakt sohbet ve belirgin ana eylem            | Tamam               | Küçük ortak sohbet avatarı; ana ekranda mevcut derse odaklı `NovaHomeHero`.                                                                                                                                       |
+| Bağlantılı dünya yolu ve mevcut ders            | Tamam               | `WorldMapScreen`, `learningPath` ve yol stilleri. Her dünya için ayrı tam arka plan sahnesi yok; renk ve yol düzeni var.                                                                                          |
+| Tek ikon ailesi ve özgün ödül varlıkları        | Kısmi               | Gezinme/ders düğümleri/başlıklarda Phosphor; profil avatarları özgün SVG. Mağaza, koleksiyon ve bazı etkinlik içerikleri hâlâ emoji kullanır.                                                                     |
+| Daha okunaklı küçük etiketler                   | Kısmi               | Başlık fontu düzeldi; `SeasonalEventScreen` gibi yerlerde `text-[10px]` ve küçük etiketler sürüyor.                                                                                                               |
+| Geçilebilir evrim / dersi bloke etmeme          | Kısmi               | Aynı Nova yüzü korunur, aşamalar işaret/ölçekle ayrılır. `NovaEvolutionModal` ilk fazda yalnız “Evrimleş” gösterir; baştan atlama eylemi yok.                                                                     |
+| Hareketi azalt / görünmeyen ekranda durma       | Kısmi               | CSS ve `MotionConfig reducedMotion="user"` var. Karakterde sürekli döngü yok; genel görünürlük/App arka planı duraklatma mekanizması bu çalışmada tamamlanmadı.                                                   |
+| iOS/Android, çevrimdışı ve düşük cihaz kontrolü | Kısmi               | iOS simülatör örnek akışları ve dar web ekranları kontrol edildi. Android çalışma zamanı, fiziksel/düşük donanım, tam çevrimdışı açılış ve bellek/FPS ölçümleri eksik.                                            |
 
 Kod kanıtları: [NovaCharacter](../../src/components/molecules/NovaCharacter/NovaCharacter.tsx), [hareket ve tokenlar](../../src/styles/globals.css), [tema](../../src/config/theme.ts), [buton](../../src/components/atoms/Button/Button.tsx), [ana ekran](../../src/features/home/screens/HomeScreen.tsx), [yol](../../src/features/home/screens/WorldMapScreen.tsx), [kapak eşlemeleri](../../src/features/learning/data/storyCovers.ts), [hikâyeler](../../src/features/learning/data/storyBank.ts), [evrim](../../src/components/organisms/NovaEvolutionModal/NovaEvolutionModal.tsx), [mağaza](../../src/features/gamification/screens/ShopScreen.tsx), [küçük etiket örneği](../../src/features/gamification/screens/SeasonalEventScreen.tsx), [yaş politikası](../../src/services/ageScreen/ageScreenPolicy.ts).
 
@@ -75,3 +92,43 @@ Meshy dışa aktarma ve rig, kullanıcının modelin hesapta kalması kararına 
 - PR #23 kontrolleri son commit için ayrıca çalışır. Önceki `ddeca50` koşusunda 4.971 test, kapsam eşikleri, lint/tip kontrolü, üretim derlemesi ve Netlify önizleme geçmişti; son durum PR üzerinden okunmalıdır.
 
 ![Yeni Nova ikonunun iOS ana ekran kanıtı](screenshots/nova-icon-ios-home.png)
+
+## 25 Ekim 2026 eklemesi
+
+PR #23 ana dala birleşti. Kullanıcının açtığı “Nova Dans Ediyor!” hikâyesi eski JPEG yer tutucularındaydı; [beş sahnesi bu eklemeyle yenilendi](2026-10-25-dance-story-illustrations.md). Toplam üç tam hikâye / 14 iç sahne; kalan 101 hikâyenin iç çizimleri henüz tamamlanmadı. Yukarıdaki 24 Ekim tablosu kendi tarihindeki durumu kaydeder.
+
+## 25 Ekim 2026 — tüm hikâye içleri
+
+Önceki üç hikâye / 14 sayfa ara durumu tamamlandı. Katalog artık 104 hikâye / 412 ayrı iç sahne içeriyor. Dosya/dekoder, eşleme, paket kopyası ve iOS derleme kontrolleri geçti. Son görsel simülatör kontrolü Mac kilidi nedeniyle bekliyor. [Güncel kapsam ve kanıt sınırları](2026-10-25-all-story-interiors.md).
+
+## 25 Ekim 2026 — simülatör kontrolünün devamı
+
+Mac kilidi açıldı. Dansın beş sayfası ve geri geçiş, kütüphaneden okyanus, son dünya resim hikâyesi ve seçimli hikâye örnekleri gerçek iOS WKWebView içinde kontrol edildi. Seçim sonrası `{WORD}` kalması hatası düzeltildi; altı hikâye için 36 seçim resmi eklendi. [Güncel kanıtlar ve doğrulama kapsamı](2026-10-25-all-story-interiors.md).
+
+## 25 Ekim 2026 — açılış ve evrim devamı
+
+Android eski açılış PNG'leri yeni Nova kaynağına bağlı XML düzeniyle değiştirildi; Android 12+ açılış ikonu ve zemini açıkça tanımlandı. Evrim kutlaması ilk andan itibaren geçilebilir; kapanan kutlamanın zamanlayıcısı temizlenir, hareket azaltmada bekleme kalkar. iOS örnek akışları ve Android debug derlemesi doğrulandı; Android manuel görsel kontrolü açık. [Değişiklikler, kanıtlar ve kalan işler](2026-10-25-nova-flow-polish.md). Yukarıdaki tarihli tablolar geçmiş durum kayıtlarıdır.
+
+## 25 Ekim 2026 — Nova ifadeleri ve görsel hata yedeği
+
+Düşünme, uyku, cesaretlendirme, konuşma ve üzgün için beş ayrı Nova pozu eklendi. Mevcut üç pozla birlikte sekiz görsel / on durum ortak bileşenden kullanılır; eski SVG hata yedeği yerine aynı Nova'nın JS'e gömülü PNG'si var. Görsel hatasının sonraki ifadeleri kalıcı olarak etkilemesi düzeltildi; webde daha önce açılmış WebP görselleri için çevrimdışı önbellek kapsamı tamamlandı. iOS açık/koyu galeri ve tarayıcı 404→toparlanma kanıtları, testler ve açık kalan ileri animasyon/cihaz işleri [güncel ifade raporunda](2026-10-25-nova-expressions.md). Önceki tarihli tablolar geçmiş kayıtlarıdır.
+
+## 25 Ekim 2026 — mağaza, ödül ikonları ve küçük etiketler
+
+Mağaza/koleksiyon kategori ikonları, ürün vektörleri ve bakiye/seviye/başarım ödülleri ortak çizgiye taşındı. Ürün resim URL'sinin yazı olarak görünmesi ve başka etkinliğin tamamlanma/ödül bilgisinin yanlış sayfaya taşınması düzeltildi. Ortak küçük rozet/üst etiket/avatar seviye yazıları en az 12px; mağaza/koleksiyon kategori düğmeleri en az 44px oldu. iOS açık/koyu mağaza, resim/yedek, EN etkinlik ve ödül kutlamaları kontrol edildi. [Kesin kapsam, ekran kanıtları ve kalan işler](2026-10-25-reward-shop-polish.md). Tüm özel ikon/etiketlerin veya gerçek satın alma testlerinin bittiği iddia edilmez.
+
+## 25 Ekim 2026 — arka plan hareketleri ve hareket azaltma
+
+Auth dahil ortak kökte belge görünürlüğü/native etkinlik ve OS hareket tercihi izlenir. Sürekli Framer/CSS döngüleri arka planda veya hareket azaltmada sabitlenir; kartın arkası açıkken ön yüz nabzı durur. Yanıt/kart durumu korunur; ders ve ses sayaçları değiştirilmez. Evrim ortasında hareketi kapatma ve XP sayacının dönüşte baştan sayması da ele alındı. Gerçek iOS arka plan→dönüş ve OS tercihi açıkken kart tamamlama kanıtları, 36 ilgili test ve kapsam sınırları [hareket raporunda](2026-10-25-motion-lifecycle.md). Android manuel/fiziksel cihaz, performans ölçümü ve bütün sonlu varyantların canlı yeniden planlanması açık; önceki tarihli tablolar güncel tamamlanma iddiası değildir.
+
+## 25 Ekim 2026 — kalan etiketler, etkinlik kartı ve çark
+
+Kütüphane/sohbetin 10px etiketleri 12px'e, dünya filtreleri 44px dokunma hedefine taşındı. Özel ipucu/hata yazıları ve ebeveyn ad alanı tema renklerini kullanır. Etkinlik ana ekran kartı, sayfayla aynı koyu kaplama ve yerelleştirmeyi kullanır. Çark yazıları büyütüldü/koyulaştırıldı; seri dondurma birimi ve ikinci dönüşün yanlış konumu düzeltildi. [77 ilgili test, renk ölçümleri, iOS kanıtları ve sınırlar](2026-10-25-readability-followup.md). Her metin/durumun veya fiziksel cihaz denetiminin bittiği iddia edilmez.
+
+## 26 Ekim 2026 — 12 dünya sahnesi ve iOS beyanı
+
+Her dünya için ayrı metinsiz ortam çizimi üretildi; toplam 2,16 MiB WebP, harita girişinde ve ana ekranın mevcut dünya kartında kullanılır. Yol metinleri resmin dışındaki sakin yüzeylerde kalır; görsel hatası ders erişimini engellemez. `ITSAppUsesNonExemptEncryption = false` mevcut OS/HTTPS/auth kullanımına göre eklendi; etkisi yeni yüklenen build'dedir. Gerçek 3D/rig/gaga senkronu tamamlanmadı. [Üretim istemleri, doğrulama, cihaz kanıtları ve kesin kapsam](2026-10-26-world-scenes-encryption.md).
+
+## 26 Ekim — Nova kapak ve ses eşleme devamı
+
+Gerçek kapak yüzeyleri, ayrı alt gaga ve ses oynatma saatinden okunan fonetik hareket eklendi. 6.859 kayıt için zamanlı ağız durumu üretimi ve son web/iOS/Android paket doğrulaması tamamlandı. [Güncel kapsam, kanıt ve otomatik fonetik çözümlemenin sınırları](2026-10-26-nova-face/BUILD_NOTES.md).

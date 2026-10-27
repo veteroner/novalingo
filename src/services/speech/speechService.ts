@@ -1,7 +1,7 @@
 /**
  * Speech Service
  *
- * TTS (Pre-recorded MP3 + Web Speech API fallback) ve STT.
+ * TTS (önceden kayıtlı çocuk sesi MP3) ve STT.
  * Tüm ses verileri cihazda işlenir — COPPA uyumlu.
  *
  * Mobil tarayıcı/WebView'lerde autoplay policy nedeniyle
@@ -13,6 +13,13 @@ import { createLogger } from '@/utils/logger';
 import { resolveTtsAudioUrl } from './audioAssetUrl';
 import { getPreRecordedUrl } from './audioManifest';
 import { normalizeSpeechText } from './normalizeSpeechText';
+import {
+  loadLipSync,
+  sampleLipSync,
+  REST_MOUTH,
+  type LipSyncClip,
+  type MouthFrame,
+} from './lipSync';
 
 export { normalizeSpeechText } from './normalizeSpeechText';
 
@@ -97,6 +104,25 @@ interface SpeakOptions {
 
 /** Currently playing audio element — tracked for stop/cancel */
 let currentAudio: HTMLAudioElement | null = null;
+let finishCurrentAudio: ((played: boolean) => void) | null = null;
+let currentLipSync: LipSyncClip | null = null;
+let audioIsPlaying = false;
+
+/** Sample on every render from the audio element's actual playback clock.
+ * Buffering, pause, seek, cancellation, blocked playback and absent cues close the bill.
+ */
+export function getSpeechMouthFrame(): Readonly<MouthFrame> {
+  const audio = currentAudio;
+  if (!audio || !audioIsPlaying || audio.paused || audio.ended || audio.seeking || !currentLipSync)
+    return REST_MOUTH;
+  // A stale CDN recording must not be animated with a different-length local track.
+  if (
+    !Number.isFinite(audio.duration) ||
+    Math.abs(audio.duration * 1000 - currentLipSync.duration) > 120
+  )
+    return REST_MOUTH;
+  return sampleLipSync(currentLipSync, audio.currentTime);
+}
 const AUDIO_UNLOCK_TIMEOUT_MS = 1500;
 
 function isPlaybackBlockedError(error: unknown): boolean {
@@ -145,10 +171,7 @@ function releaseAudio(audio: HTMLAudioElement): void {
 }
 
 function stopCurrentAudio(): void {
-  if (currentAudio) {
-    releaseAudio(currentAudio);
-    currentAudio = null;
-  }
+  finishCurrentAudio?.(false);
 }
 
 /** Play audio from URL with tracking for stop/cancel. Returns true if played, false if blocked. */
@@ -158,17 +181,48 @@ function playAudio(src: string): Promise<boolean> {
     if (synthAvailable) window.speechSynthesis.cancel();
     const audio = new Audio(src);
     currentAudio = audio;
+    audioIsPlaying = false;
+    currentLipSync = null;
+    // Do not await fetch before play(): iOS must retain the user gesture.
+    void loadLipSync(src).then((clip) => {
+      if (currentAudio === audio) currentLipSync = clip;
+    });
 
     // `releaseAudio` içindeki load() yeni bir error olayı tetikleyebilir; tek sefer çözülsün.
     let settled = false;
     const finish = (played: boolean) => {
       if (settled) return;
       settled = true;
+      audio.onended =
+        audio.onerror =
+        audio.onplaying =
+        audio.onwaiting =
+        audio.onpause =
+        audio.onseeking =
+        audio.onseeked =
+          null;
+      if (currentAudio === audio) {
+        currentAudio = null;
+        finishCurrentAudio = null;
+        currentLipSync = null;
+        audioIsPlaying = false;
+      }
       releaseAudio(audio);
-      if (currentAudio === audio) currentAudio = null;
       resolve(played);
     };
 
+    finishCurrentAudio = finish;
+    audio.onplaying = () => {
+      if (currentAudio === audio) audioIsPlaying = true;
+    };
+    const suspendMouth = () => {
+      if (currentAudio === audio) audioIsPlaying = false;
+    };
+    audio.onwaiting = audio.onpause = audio.onseeking = suspendMouth;
+    audio.onseeked = () => {
+      if (currentAudio === audio && !audio.paused && !audio.ended && audio.readyState >= 3)
+        audioIsPlaying = true;
+    };
     audio.onended = () => {
       finish(true);
     };
@@ -206,6 +260,7 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<b
   // Claim a generation slot. If another speak() starts before this one finishes,
   // it will have a higher generation and our notifySpeaking(false) call will be skipped.
   const myGeneration = ++_speakGeneration;
+  stopCurrentAudio();
   notifySpeaking(true);
 
   const notifyDone = (result: boolean): boolean => {

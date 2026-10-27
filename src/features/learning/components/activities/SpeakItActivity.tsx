@@ -7,6 +7,7 @@
  * Fallback: hiçbiri yoksa "Manuel Onayla" butonu gösterilir.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import { getWordEmoji } from '@/features/learning/data/wordEmojiMap';
 import type { SpeakItData } from '@/types/content';
 import { Button } from '@components/atoms/Button';
@@ -28,6 +29,7 @@ interface SpeakItActivityProps extends ActivityCallbacks {
 
 export default function SpeakItActivity({ data, onComplete }: SpeakItActivityProps) {
   const { t } = useTranslation('lesson');
+  const { canAnimate } = useMotionPolicy();
   const [feedback, setFeedback] = useState<FeedbackState>('idle');
   const [isListening, setIsListening] = useState(false);
   const [spokenText, setSpokenText] = useState('');
@@ -219,9 +221,9 @@ export default function SpeakItActivity({ data, onComplete }: SpeakItActivityPro
                 onClick={startListening}
                 whileTap={{ scale: 0.9 }}
                 animate={
-                  isListening
+                  isListening && canAnimate
                     ? { scale: [1, 1.1, 1], transition: { repeat: Infinity, duration: 0.8 } }
-                    : {}
+                    : { scale: 1, transition: { duration: 0 } }
                 }
                 disabled={isListening}
               >

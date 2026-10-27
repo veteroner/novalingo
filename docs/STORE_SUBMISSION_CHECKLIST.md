@@ -92,6 +92,7 @@
 - ✅ Push entitlement dosyası (`ios/App/App/App.entitlements`) ve Xcode hedefine bağlandı
 - ✅ Gizlilik bildirimi (`PrivacyInfo.xcprivacy`) pakete dahil
 - ✅ ATS artık rastgele http yüklemelere izin vermiyor
+- ✅ 26 Ekim 2026: `ITSAppUsesNonExemptEncryption = NO` eklendi. Mevcut build OS HTTPS/TLS ve kimlik doğrulama servisleri kullanır; özel kripto uygulaması bulunmadı. Beyan yeni pakette taşınır; bu değişiklik mevcut yüklenmiş build'i geriye dönük güncellemez. [Teknik kapsam](design/2026-10-26-world-scenes-encryption.md).
 - ✅ CI imzalı arşiv + IPA export ediyor (`ios/ExportOptions.plist`)
 - ⬜ CI secret'ları: `IOS_DIST_CERT_P12`, `IOS_DIST_CERT_PASSWORD`,
   `IOS_PROVISIONING_PROFILE`, `APPLE_TEAM_ID`

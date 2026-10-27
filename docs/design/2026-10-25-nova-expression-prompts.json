@@ -1,0 +1,37 @@
+{
+  "method": "built-in image_gen.imagegen",
+  "reference": "public/nova/nova-idle.webp",
+  "transparentBackground": true,
+  "poses": [
+    {
+      "id": "thinking",
+      "prompt": "Use case: identity-preserve. Asset type: transparent production NovaLingo mascot pose. Input image 1 is the exact Nova owl identity and rendering reference; preserve this owl, not a new character. Indigo layered feather body, cream heart-shaped paired facial discs and chest, large deep-blue eyes, small amber hooked beak and two amber feet, swept ear tufts with mint accents. Soft matte dimensional animated-film render. One full-body owl, near-frontal three-quarter view, both feet grounded on the same horizontal baseline, centered, entire ear tufts, wings, and feet visible, generous transparent margins. Match reference proportions, palette, feather style, and gentle personality. Real transparent alpha, no background, scenery, ground plane, cast shadow, props, accessories, hats, clothing, text, symbols, letters, bubbles, UI or extra characters. Two wings and two feet only. Change only the expression and small grounded gesture as described. Thoughtful Nova: head subtly tilted, eyes looking upward toward viewer's right, one folded wing tip gently resting near lower cheek/beak as if considering an answer; curious calm face, beak closed. No thought bubble.",
+      "sourceFile": "exec-3e3be3a8-f0a3-495c-b83a-ff98ad03bb98.png",
+      "output": "public/nova/poses-v3/thinking.webp"
+    },
+    {
+      "id": "sleeping",
+      "prompt": "Use case: identity-preserve. Asset type: transparent production NovaLingo mascot pose. Input image 1 is the exact Nova owl identity and rendering reference; preserve this owl, not a new character. Indigo layered feather body, cream heart-shaped paired facial discs and chest, large deep-blue eyes, small amber hooked beak and two amber feet, swept ear tufts with mint accents. Soft matte dimensional animated-film render. One full-body owl, near-frontal three-quarter view, both feet grounded on the same horizontal baseline, centered, entire ear tufts, wings, and feet visible, generous transparent margins. Match reference proportions, palette, feather style, and gentle personality. Real transparent alpha, no background, scenery, ground plane, cast shadow, props, accessories, hats, clothing, text, symbols, letters, bubbles, UI or extra characters. Two wings and two feet only. Change only the expression and small grounded gesture as described. Peacefully sleeping Nova: both eyes fully closed, soft relaxed eyelids, head gently lowered and tucked a little toward chest, wings folded close around body; both feet visible and grounded. Clearly asleep, not celebrating. No bed, pillow, moon, stars, or sleep letters.",
+      "sourceFile": "exec-0e681afa-ed18-4859-907d-f9df3c52c5c1.png",
+      "output": "public/nova/poses-v3/sleeping.webp"
+    },
+    {
+      "id": "encouraging",
+      "prompt": "Use case: identity-preserve. Asset type: transparent production NovaLingo mascot pose. Input image 1 is the exact Nova owl identity and rendering reference; preserve this owl, not a new character. Indigo layered feather body, cream heart-shaped paired facial discs and chest, large deep-blue eyes, small amber hooked beak and two amber feet, swept ear tufts with mint accents. Soft matte dimensional animated-film render. One full-body owl, near-frontal three-quarter view, both feet grounded on the same horizontal baseline, centered, entire ear tufts, wings, and feet visible, generous transparent margins. Match reference proportions, palette, feather style, and gentle personality. Real transparent alpha, no background, scenery, ground plane, cast shadow, props, accessories, hats, clothing, text, symbols, letters, bubbles, UI or extra characters. Two wings and two feet only. Change only the expression and small grounded gesture as described. Encouraging Nova: warm reassuring smile, both blue eyes open and looking toward learner, head upright, one wing extended gently to the side and a little toward viewer in an inviting supportive gesture, the other wing folded. A friendly 'you can try again' expression. No thumbs, human hands, pointing finger, trophy or thumbs-up symbol.",
+      "sourceFile": "exec-dd273eda-1450-4732-b423-ec39c7a364ee.png",
+      "output": "public/nova/poses-v3/encouraging.webp"
+    },
+    {
+      "id": "speaking",
+      "prompt": "Use case: identity-preserve. Asset type: transparent production NovaLingo mascot pose. Input image 1 is the exact Nova owl identity and rendering reference; preserve this owl, not a new character. Indigo layered feather body, cream heart-shaped paired facial discs and chest, large deep-blue eyes, small amber hooked beak and two amber feet, swept ear tufts with mint accents. Soft matte dimensional animated-film render. One full-body owl, near-frontal three-quarter view, both feet grounded on the same horizontal baseline, centered, entire ear tufts, wings, and feet visible, generous transparent margins. Match reference proportions, palette, feather style, and gentle personality. Real transparent alpha, no background, scenery, ground plane, cast shadow, props, accessories, hats, clothing, text, symbols, letters, bubbles, UI or extra characters. Two wings and two feet only. Change only the expression and small grounded gesture as described. Nova talking gently to the learner: head upright, both eyes open and looking forward, amber beak visibly and slightly open naturally like an owl making a soft sound; one wing lightly lifted close to the body as an explanatory gesture. Not shouting or celebrating. No speech bubble, words or sound symbols.",
+      "sourceFile": "exec-1e3b875e-1959-4eff-bfdb-051c392d7c47.png",
+      "output": "public/nova/poses-v3/speaking.webp"
+    },
+    {
+      "id": "sad",
+      "prompt": "Use case: identity-preserve. Asset type: transparent production NovaLingo mascot pose. Input image 1 is the exact Nova owl identity and rendering reference; preserve this owl, not a new character. Indigo layered feather body, cream heart-shaped paired facial discs and chest, large deep-blue eyes, small amber hooked beak and two amber feet, swept ear tufts with mint accents. Soft matte dimensional animated-film render. One full-body owl, near-frontal three-quarter view, both feet grounded on the same horizontal baseline, centered, entire ear tufts, wings, and feet visible, generous transparent margins. Match reference proportions, palette, feather style, and gentle personality. Real transparent alpha, no background, scenery, ground plane, cast shadow, props, accessories, hats, clothing, text, symbols, letters, bubbles, UI or extra characters. Two wings and two feet only. Change only the expression and small grounded gesture as described. Nova after a small setback: gentle mildly disappointed expression, eyebrows/upper eyelids softly raised at inner corners, blue eyes looking slightly downward, head subtly lowered, wings resting folded at sides. Remains kind and approachable, never blaming or frightening. Beak closed. No tears, crying, anger, dramatic despair, broken-heart symbols or props.",
+      "sourceFile": "exec-7b544bde-a11f-4b47-80b1-f6c488325369.png",
+      "output": "public/nova/poses-v3/sad.webp"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy/programmatic splash; current Android launch uses the theme's safe-area icon. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle"><solid android:color="#F5F7FC" /></shape>
+    </item>
+    <item android:width="192dp" android:height="192dp" android:gravity="center">
+        <bitmap android:src="@drawable/nova_splash" android:gravity="fill" android:filter="true" />
+    </item>
+</layer-list>

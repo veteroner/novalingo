@@ -146,6 +146,7 @@
   },
   "novaEvolution": {
     "title": "🌟 Nova Evrimleşiyor!",
+    "skip": "Geç ve devam et",
     "evolve": "Evrimleştir! ✨",
     "dismiss": "Harika! 🎉",
     "stage": {
@@ -172,6 +173,7 @@
     "profile": "Profil"
   },
   "dailyWheelButton": {
+    "rewards": "Çarktaki ödüller",
     "spin": "🎰 Çevir!",
     "comeBack": "Yarın Tekrar Gel!"
   },
@@ -182,10 +184,13 @@
       "rare": "Nadir",
       "epic": "Epik",
       "legendary": "Efsanevi"
-    }
+    },
+    "dismiss": "Harika!"
   },
   "levelUpModal": {
-    "title": "Seviye Atladın!"
+    "title": "Seviye Atladın!",
+    "encouragement": "Harika ilerliyorsun!",
+    "continue": "Devam et"
   },
   "conversationTopics": {
     "title": "Nova ile Konuş 🎭",

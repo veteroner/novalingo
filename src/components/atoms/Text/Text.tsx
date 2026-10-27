@@ -51,7 +51,7 @@ const variantStyles: Record<TextVariant, string> = {
   bodySmall: 'font-body text-sm leading-relaxed',
   caption: 'font-body text-xs leading-normal',
   label: 'font-body text-sm font-semibold leading-normal uppercase tracking-wide',
-  overline: 'font-body text-[0.625rem] font-bold uppercase tracking-widest',
+  overline: 'font-body text-xs font-bold uppercase tracking-widest',
 };
 
 const alignStyles: Record<string, string> = {

@@ -427,6 +427,19 @@
  * neredeyse anlık yap (işlevsellik korunur, hareket kalkar). framer-motion
  * tarafı AppProviders'taki <MotionConfig reducedMotion="user"> ile kapsanır.
  * Çocuklarda vestibüler güvenlik için kritik. */
+/* Stop CSS loops (including pseudo elements) while the app is inactive.
+   Reduced motion also covers a live OS preference change. */
+[data-motion-active='false'],
+[data-motion-active='false'] *,
+[data-motion-active='false'] *::before,
+[data-motion-active='false'] *::after,
+[data-motion-reduced='true'],
+[data-motion-reduced='true'] *,
+[data-motion-reduced='true'] *::before,
+[data-motion-reduced='true'] *::after {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -454,9 +467,6 @@
 }
 .nova-character[data-stage='baby'] .nova-character-art {
   transform: scale(0.88);
-}
-.nova-character[data-mood='sleeping'] .nova-character-art {
-  opacity: 0.8;
 }
 .nova-character[data-motion='on'][data-mood='celebrating'] .nova-character-art,
 .nova-character[data-motion='on'][data-mood='excited'] .nova-character-art {
@@ -526,4 +536,17 @@
   max-width: 680px;
   width: 100%;
   margin-inline: auto;
+}
+
+/* Decorative world artwork also appears on the home hero. */
+.world-scene {
+  display: block;
+  overflow: hidden;
+  background: linear-gradient(150deg, #e6efe2, #cddfdf);
+}
+[data-mode='dark'] .world-scene {
+  background: linear-gradient(150deg, #223249, #19263b);
+}
+[data-mode='dark'] .world-scene img {
+  filter: brightness(0.76) saturate(0.9);
 }

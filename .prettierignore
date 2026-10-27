@@ -1,0 +1,3 @@
+# Generated compact playback tracks; whitespace increases the mobile/offline payload.
+# Rebuild with scripts/nova/generate-lip-sync.mjs; validated by lipSyncAssets.test.ts.
+public/speech-sync/

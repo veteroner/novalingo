@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-26",
+  "service": "Tripo",
+  "version": "H2.5",
+  "purpose": "user-authorized free trial; local QA only",
+  "task": "529481d4-4aad-4b3b-ad5d-185c17184120",
+  "taskUrl": "https://studio.tripo3d.ai/tr/workspace/generate/529481d4-4aad-4b3b-ad5d-185c17184120",
+  "creditsBefore": 200,
+  "generationCreditsUsed": 40,
+  "creditsAfter": 140,
+  "exportTextureSize": 1024,
+  "skins": 0,
+  "animations": 0,
+  "files": [
+    {
+      "filename": "nova-tripo-h25-trial.glb",
+      "role": "source",
+      "bytes": 15736288,
+      "sha256": "9ede601b8966dd8d8ad9f4dec688ea10c05f5656566ab7da257f35ee69b7a4a0",
+      "triangles": 501774
+    },
+    {
+      "filename": "nova-tripo-h25-mobile-trial.glb",
+      "role": "mobile trial",
+      "bytes": 1667004,
+      "sha256": "241a9c10656ab9511aa2b1ee99e1e08f71820e3d94ee46c8a11f09faf670f6bf",
+      "triangles": 29644
+    }
+  ],
+  "optimization": {
+    "tool": "@gltf-transform/functions 4.3.0",
+    "sequence": [
+      "dedup",
+      "weld",
+      "simplify ratio=0.05 error=0.002 MeshoptSimplifier 0.25.0",
+      "prune"
+    ],
+    "compressedGeometry": false
+  },
+  "licenseStatus": "commercial rights unresolved; excluded from release and version control",
+  "localPreview": "http://127.0.0.1:3003/visual-preview.html?view=tripo",
+  "rigCreditsUsed": 20,
+  "rig": {
+    "userAuthorized": true,
+    "type": "other/non-humanoid",
+    "status": "completed in Tripo account",
+    "task": "c071bd73-7cc8-484d-b1e8-c0dab40ced54",
+    "taskUrl": "https://studio.tripo3d.ai/tr/workspace/rigging/c071bd73-7cc8-484d-b1e8-c0dab40ced54",
+    "importYawDegrees": 90,
+    "serviceReportedTriangles": 29593,
+    "serviceReportedVertices": 21836,
+    "skeletonExport": "disabled; opens paid subscription dialog",
+    "localRigFileDownloaded": false
+  }
+}

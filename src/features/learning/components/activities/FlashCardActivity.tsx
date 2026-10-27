@@ -7,6 +7,7 @@
  * Tüm kartlar görüldükten sonra tamamlanır.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import { getWordEmoji } from '@/features/learning/data/wordEmojiMap';
 import type { FlashCardData } from '@/types/content';
 import { Button } from '@components/atoms/Button';
@@ -23,6 +24,7 @@ interface FlashCardActivityProps extends ActivityCallbacks {
 
 export default function FlashCardActivity({ data, onComplete }: FlashCardActivityProps) {
   const { t } = useTranslation('lesson');
+  const { canAnimate } = useMotionPolicy();
   const [isFlipped, setIsFlipped] = useState(false);
   const [hasSeenBack, setHasSeenBack] = useState(false);
   const startTime = useRef(Date.now());
@@ -82,7 +84,9 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
           className="absolute inset-0"
           style={{ transformStyle: 'preserve-3d' }}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+          transition={
+            canAnimate ? { type: 'spring', stiffness: 260, damping: 20 } : { duration: 0 }
+          }
         >
           {/* FRONT — English word + emoji */}
           <div
@@ -91,8 +95,12 @@ export default function FlashCardActivity({ data, onComplete }: FlashCardActivit
           >
             <motion.div
               className="text-8xl"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              animate={{ scale: canAnimate && !isFlipped ? [1, 1.1, 1] : 1 }}
+              transition={
+                canAnimate && !isFlipped
+                  ? { duration: 2, repeat: Infinity, repeatDelay: 3 }
+                  : { duration: 0 }
+              }
             >
               {emoji}
             </motion.div>

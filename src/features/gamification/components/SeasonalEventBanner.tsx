@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { eventBackground } from '@/features/gamification/data/eventAppearance';
 import { useSeasonalEvent } from '@/hooks/useSeasonalEvent';
 
 /**
@@ -18,23 +19,26 @@ import { useSeasonalEvent } from '@/hooks/useSeasonalEvent';
  */
 export function SeasonalEventBanner() {
   const navigate = useNavigate();
-  const { t } = useTranslation('gamification');
+  const { t, i18n } = useTranslation('gamification');
+  const english = i18n.language.startsWith('en');
   const { activeEvent, nextEvent, daysRemaining, lessonsCompleted, totalLessons, isEventComplete } =
     useSeasonalEvent();
 
   // ── Active event ────────────────────────────────────────────
   if (activeEvent) {
-    const progress = totalLessons > 0 ? lessonsCompleted / totalLessons : 0;
+    const progress =
+      totalLessons > 0 ? Math.min(1, Math.max(0, lessonsCompleted / totalLessons)) : 0;
 
     return (
-      <motion.div
+      <motion.button
+        type="button"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         onClick={() => navigate(`/event/${activeEvent.id}`)}
-        className="relative cursor-pointer overflow-hidden rounded-2xl p-4 shadow-lg"
+        className="relative w-full cursor-pointer overflow-hidden rounded-2xl p-4 text-left text-white shadow-lg"
         style={{
-          background: `linear-gradient(135deg, ${activeEvent.colors[0]}, ${activeEvent.colors[1]})`,
+          background: eventBackground(activeEvent.colors),
         }}
       >
         {/* Sparkle decoration */}
@@ -45,31 +49,35 @@ export function SeasonalEventBanner() {
         {/* Header */}
         <div className="flex items-center gap-2">
           <span className="text-2xl">{activeEvent.emoji}</span>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-white">{activeEvent.name}</h3>
-            <p className="text-sm text-white/80">{activeEvent.description}</p>
+          <div className="min-w-0 flex-1">
+            <span className="block text-lg font-bold">
+              {english ? activeEvent.nameEn : activeEvent.name}
+            </span>
+            <span className="block text-sm">
+              {english ? activeEvent.descriptionEn : activeEvent.description}
+            </span>
           </div>
-          <CaretRight className="h-5 w-5 text-white/60" />
+          <CaretRight className="h-5 w-5 shrink-0" aria-hidden="true" />
         </div>
 
         {/* Progress bar */}
         <div className="mt-3 flex items-center gap-3">
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/20">
             <motion.div
-              className="bg-surface h-full rounded-full"
+              className="h-full rounded-full bg-white"
               initial={{ width: 0 }}
               animate={{ width: `${progress * 100}%` }}
               transition={{ duration: 0.6, delay: 0.2 }}
             />
           </div>
-          <span className="text-xs font-medium text-white/90">
+          <span className="text-xs font-medium text-white">
             {lessonsCompleted}/{totalLessons}
           </span>
         </div>
 
         {/* Footer */}
-        <div className="mt-2 flex items-center justify-between">
-          <div className="flex items-center gap-1 text-xs text-white/70">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-1 text-xs text-white">
             <CalendarDots className="h-3.5 w-3.5" />
             <span>{t('event.daysLeft', { count: daysRemaining })}</span>
           </div>
@@ -79,13 +87,13 @@ export function SeasonalEventBanner() {
               {t('event.completed')}
             </div>
           ) : (
-            <div className="flex items-center gap-1 text-xs text-white/70">
+            <div className="flex items-center gap-1 text-xs text-white">
               <Sparkle className="h-3.5 w-3.5" />
-              {activeEvent.xpMultiplier}x XP
+              {t('event.xpBonus', { multiplier: activeEvent.xpMultiplier })}
             </div>
           )}
         </div>
-      </motion.div>
+      </motion.button>
     );
   }
 
@@ -99,11 +107,13 @@ export function SeasonalEventBanner() {
         className="border-border bg-surface-elevated flex items-center gap-3 rounded-xl border p-3"
       >
         <span className="text-xl">{nextEvent.emoji}</span>
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <p className="text-text text-sm font-medium">
-            {t('event.upcoming', { name: nextEvent.name })}
+            {t('event.upcoming', { name: english ? nextEvent.nameEn : nextEvent.name })}
           </p>
-          <p className="text-text-secondary text-xs">{nextEvent.description}</p>
+          <p className="text-text-secondary text-xs">
+            {english ? nextEvent.descriptionEn : nextEvent.description}
+          </p>
         </div>
         <CalendarDots className="text-text-secondary h-4 w-4" />
       </motion.div>

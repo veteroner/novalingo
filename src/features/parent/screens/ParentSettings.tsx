@@ -815,6 +815,9 @@ export default function ParentSettings() {
             {saveMutation.isPending ? t('settings.saving') : t('settings.save')}
           </Button>
 
+          <p className="text-text-secondary mt-5 text-center text-xs">
+            Powered by MakerWorld-Image-to-3D (https://makerworld.com/makerlab/imageTo3d)
+          </p>
           {/* Legal Links */}
           <div className="mt-4 flex justify-center gap-4">
             <button

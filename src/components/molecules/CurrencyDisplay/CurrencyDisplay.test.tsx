@@ -15,14 +15,10 @@ describe('CurrencyDisplay', () => {
     expect(screen.getByText('50')).toBeInTheDocument();
   });
 
-  it('renders star emoji', () => {
+  it('identifies both balances by currency without relying on emoji', () => {
     render(<CurrencyDisplay stars={10} gems={5} />);
-    expect(screen.getByText('⭐')).toBeInTheDocument();
-  });
-
-  it('renders gem emoji', () => {
-    render(<CurrencyDisplay stars={10} gems={5} />);
-    expect(screen.getByText('💎')).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'currency.stars' })).toHaveTextContent('10');
+    expect(screen.getByRole('group', { name: 'currency.gems' })).toHaveTextContent('5');
   });
 
   it('formats large numbers', () => {

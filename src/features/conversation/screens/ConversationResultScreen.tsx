@@ -5,6 +5,7 @@
  * LessonResultScreen'den bağımsız — kendi sonuç/ödül semantiğini kullanır.
  */
 
+import { useMotionPolicy } from '@hooks/useMotionPolicy';
 import type { ConversationResult } from '@/features/conversation/types/conversationSession';
 import { Button } from '@components/atoms/Button';
 import { Text } from '@components/atoms/Text';
@@ -18,7 +19,7 @@ import { recordSessionAndMaybePromptRating } from '@services/ratingService';
 import { useConversationStore } from '@stores/conversationStore';
 import { formatTime } from '@utils/time';
 import { motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -40,6 +41,7 @@ interface ScenarioSummary {
 
 export default function ConversationResultScreen() {
   const { t } = useTranslation('lesson');
+  const { canAnimate } = useMotionPolicy();
   const location = useLocation();
   const navigate = useNavigate();
   const xpResult = useConversationStore((s) => s.xpResult);
@@ -56,21 +58,29 @@ export default function ConversationResultScreen() {
 
   // Animate XP counter once xpResult arrives
   const [displayedXP, setDisplayedXP] = useState(0);
+  const counterComplete = useRef<typeof xpResult>(null);
   useEffect(() => {
     if (!xpResult) return;
     let start = 0;
     const end = xpResult.xpEarned;
-    if (end === 0) return;
+    if (!canAnimate || end === 0 || counterComplete.current === xpResult) {
+      counterComplete.current = xpResult;
+      setDisplayedXP(end);
+      return;
+    }
     const step = Math.ceil(end / 20);
     const timer = setInterval(() => {
       start = Math.min(start + step, end);
       setDisplayedXP(start);
-      if (start >= end) clearInterval(timer);
+      if (start >= end) {
+        counterComplete.current = xpResult;
+        clearInterval(timer);
+      }
     }, 40);
     return () => {
       clearInterval(timer);
     };
-  }, [xpResult]);
+  }, [xpResult, canAnimate]);
 
   // Rating prompt — after a good conversation result
   useEffect(() => {
@@ -297,10 +307,10 @@ export default function ConversationResultScreen() {
           </div>
         ) : saveError ? (
           <div className="bg-reward-soft rounded-2xl border border-orange-200 p-4 text-center">
-            <Text variant="bodySmall" className="font-semibold text-orange-600">
+            <Text variant="bodySmall" className="text-reward-ink font-semibold">
               {saveError === 'offline' ? '⚡️ İnternet bağlantısı kesildi' : '⚠️ Kaydedilemedi'}
             </Text>
-            <Text variant="caption" className="mt-0.5 block text-orange-400">
+            <Text variant="caption" className="text-reward-ink mt-0.5 block">
               {saveError === 'offline'
                 ? 'XP bağlantı geri geldiğinde otomatik kaydedilecek.'
                 : 'Bir sorun oluştu. Sonucun yerel olarak saklandı.'}
