@@ -325,5 +325,15 @@
       "cancel": "İptal",
       "complete": "Tüm kelimeleri buldun!"
     }
+  },
+  "dailyLimit": {
+    "title": "Bugünlük harika iş çıkardın!",
+    "message": "Bugünkü {{count}} dersini bitirdin. Yarın yeni dersler seni bekliyor. Bu arada bir hikâye okuyabilir ya da Nova ile konuşabilirsin.",
+    "stories": "📖 Hikâye oku",
+    "conversation": "🦉 Nova ile konuş",
+    "home": "Ana sayfaya dön",
+    "parentTitle": "Ebeveynler için",
+    "parentMessage": "NovaLingo Plus ile her gün sınırsız ders ve 12 dünyanın tamamı açılır.",
+    "parentCta": "Plus'a göz at"
   }
 }

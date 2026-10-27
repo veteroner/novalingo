@@ -103,7 +103,7 @@ describe('WorldMapScreen', () => {
     expect(screen.queryByRole('region', { name: 'path.lessonDetails' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Animals' })).toHaveFocus();
   });
-  it('redirects free users to subscription when the daily lesson limit is reached', () => {
+  it('sends free users to the child-facing daily limit screen, not straight to the paywall', () => {
     authState.user = { isPremium: false };
     const now = Date.now();
     mockUseLessonProgress.mockReturnValue({
@@ -112,8 +112,8 @@ describe('WorldMapScreen', () => {
     render(<WorldMapScreen />);
     selectFirstLesson();
     fireEvent.click(screen.getByRole('button', { name: 'path.dailyLimitCta' }));
-    expect(mockShowToast).toHaveBeenCalled();
-    expect(navigateMock).toHaveBeenCalledWith('/subscription');
+    expect(navigateMock).toHaveBeenCalledWith('/daily-limit');
+    expect(navigateMock).not.toHaveBeenCalledWith('/subscription');
   });
   it('explains a locked stop without allowing it to start', () => {
     render(<WorldMapScreen />);

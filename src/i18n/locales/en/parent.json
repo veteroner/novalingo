@@ -52,7 +52,11 @@
     "trialCta": "Try {{days}} Days Free",
     "subscribeCta": "Start Subscription",
     "renewalNotice": "The subscription renews automatically at {{price}}/{{period}}. You will be charged at the end of the period unless you cancel at least 24 hours before renewal. You can cancel anytime in your store account settings.",
-    "renewalNoticeTrial": "After the {{days}}-day free trial, the subscription renews automatically at {{price}}/{{period}}. You will be charged unless you cancel at least 24 hours before the trial ends. You can cancel anytime in your store account settings."
+    "renewalNoticeTrial": "After the {{days}}-day free trial, the subscription renews automatically at {{price}}/{{period}}. You will be charged unless you cancel at least 24 hours before the trial ends. You can cancel anytime in your store account settings.",
+    "redeemCta": "I have a gift code",
+    "redeemTitle": "Redeeming in the store",
+    "redeemMessage": "After entering the code, come back to the app; Plus unlocks within a few seconds. If it doesn't, tap \"Restore purchase history\".",
+    "trialEligibility": "The free trial is for accounts that haven't tried this subscription before. If your account isn't eligible, the store's payment sheet shows the actual price."
   },
   "settings": {
     "title": "⚙️ Settings",

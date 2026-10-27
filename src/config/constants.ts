@@ -31,6 +31,13 @@ export const IOS_MANAGE_SUBSCRIPTIONS_URL = 'itms-apps://apps.apple.com/account/
 export const ANDROID_MANAGE_SUBSCRIPTIONS_URL =
   'https://play.google.com/store/account/subscriptions?sku=com.novalingo.app.yearly&package=com.novalingo.app';
 
+// Hediye/teklif kodları mağazanın kendi kod ekranında kullanılır (App Store
+// Offer Codes / Google Play promo codes). App Store 3.1.1 uygulamaya özel kodla
+// içerik açmayı yasaklar; bu yüzden kod doğrulaması uygulamada yapılmaz.
+export const APP_STORE_APP_ID = '6815107546';
+export const IOS_REDEEM_OFFER_CODE_URL = `https://apps.apple.com/redeem?ctx=offercodes&id=${APP_STORE_APP_ID}`;
+export const ANDROID_REDEEM_CODE_URL = 'https://play.google.com/redeem';
+
 // ─── Age Groups ──────────────────────────────────────────────────
 export const AGE_GROUPS = {
   cubs: { min: 4, max: 6, label: 'Minikler' },

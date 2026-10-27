@@ -15,8 +15,10 @@
 
 import {
   ANDROID_MANAGE_SUBSCRIPTIONS_URL,
+  ANDROID_REDEEM_CODE_URL,
   IAP_PRODUCTS,
   IOS_MANAGE_SUBSCRIPTIONS_URL,
+  IOS_REDEEM_OFFER_CODE_URL,
   PRIVACY_POLICY_URL,
   TERMS_OF_SERVICE_URL,
 } from '@/config/constants';
@@ -184,6 +186,20 @@ export default function SubscriptionScreen() {
     } finally {
       setPurchasing(false);
     }
+  }
+
+  /** Hediye kodu mağazanın kendi kod ekranında kullanılır; işlem uygulamaya
+   * döndüğünde normal satın alma doğrulamasından geçer. */
+  function handleRedeemCode() {
+    window.open(
+      platform === 'ios' ? IOS_REDEEM_OFFER_CODE_URL : ANDROID_REDEEM_CODE_URL,
+      '_system',
+    );
+    showToast({
+      type: 'info',
+      title: t('subscription.redeemTitle'),
+      message: t('subscription.redeemMessage'),
+    });
   }
 
   async function handleRestore() {
@@ -366,6 +382,11 @@ export default function SubscriptionScreen() {
                 )}
               </Text>
             )}
+            {plansReady && trialDays != null && (
+              <Text variant="caption" align="center" className="text-text-secondary">
+                {t('subscription.trialEligibility')}
+              </Text>
+            )}
 
             {/* Restore */}
             <Button
@@ -377,6 +398,12 @@ export default function SubscriptionScreen() {
             >
               {restoring ? t('subscription.checking') : t('subscription.restoreCta')}
             </Button>
+
+            {isNativePlatform && (
+              <Button variant="ghost" size="sm" fullWidth onClick={handleRedeemCode}>
+                {t('subscription.redeemCta')}
+              </Button>
+            )}
           </motion.div>
         )}
 
