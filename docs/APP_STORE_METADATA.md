@@ -95,7 +95,7 @@ NovaLingo, Türkçe konuşan çocukların İngilizceyi oyun oynayarak öğrendi�
 Rehber karakter Nova ile çocuklar renkli dünyaları keşfeder; kelimeleri, kısa cümleleri ve günlük konuşma kalıplarını eşleştirme, dinleme, hikâye ve konuşma pratiği etkinlikleriyle öğrenir.
 
 Neler var?
-• 9 tematik dünya: Başlangıç Bahçesi, Gramer Kalesi, Hikâye Ormanı, Şehir Meydanı ve daha fazlası
+• 12 tematik dünya: Başlangıç Bahçesi, Gramer Kalesi, Hikâye Ormanı, Şehir Meydanı ve daha fazlası
 • Resimli İngilizce kelime kartları, dinle-seç, eşleştirme ve hikâye etkinlikleri
 • Nova ile konuşma pratiği
 • Akıllı tekrar sistemi: unutulmaya başlayan kelimeler doğru zamanda tekrar gelir
@@ -128,7 +128,7 @@ NovaLingo is an ad-free app where Turkish-speaking children learn English throug
 With Nova as their guide, children explore colourful worlds and learn words, short sentences and everyday phrases through matching, listening, story and speaking-practice activities.
 
 What's inside
-• 9 themed worlds: Beginner Garden, Grammar Castle, Story Forest, City Square and more
+• 12 themed worlds: Beginner Garden, Grammar Castle, Story Forest, City Square and more
 • Picture flashcards, listen-and-choose, matching and story activities
 • Speaking practice with Nova
 • Smart review: words come back right before they are forgotten

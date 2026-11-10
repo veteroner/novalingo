@@ -74,6 +74,7 @@ export default function LessonScreen() {
   const submitFallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasNavigatedToResultRef = useRef(false);
   const sessionRef = useRef<LessonSession | null>(null);
+  const sessionRouteIdRef = useRef<string | null>(null);
   const lessonTypeRef = useRef<'normal' | 'boss' | 'review' | 'bonus'>('normal');
 
   // Boss lesson state — 3 lives, wrong answer = lose a life
@@ -93,8 +94,11 @@ export default function LessonScreen() {
     void navigate('/daily-limit', { replace: true });
   }, [child, hasReachedDailyLimit, lessonId, navigate]);
 
-  // Compute lesson session ONCE per mount — never recompute mid-lesson
-  if (!sessionRef.current && lessonId) {
+  // Ders oturumu ders başına BİR kez hesaplanır — ders ortasında yeniden hesaplanmaz.
+  // Anahtar lessonId'dir: temizlikte ref'i boşaltmak her render'da yeni bir oturum
+  // nesnesi üretip başlatma effect'ini sonsuz döngüye sokuyordu.
+  if (lessonId && sessionRouteIdRef.current !== lessonId) {
+    sessionRouteIdRef.current = lessonId;
     const curLesson = getCurriculumLesson(lessonId);
     if (!curLesson) {
       // Fall back to handcrafted mock lessons
@@ -176,6 +180,12 @@ export default function LessonScreen() {
         setBossTimerActive(true);
       }
     }
+  }, [hasReachedDailyLimit, lessonId, lessonSession, startLesson]);
+
+  // Ekrandan çıkarken (veya ders değişince) zamanlayıcıları ve ders durumunu temizle.
+  // Başlatma effect'inden ayrı tutulur: onun bağımlılıkları ders ortasında değişirse
+  // (ör. günlük limit hesabı) ilerleme sıfırlanmamalı.
+  useEffect(() => {
     return () => {
       if (feedbackTimerRef.current) {
         clearTimeout(feedbackTimerRef.current);
@@ -190,11 +200,10 @@ export default function LessonScreen() {
         bossTimerRef.current = null;
       }
       useLessonStore.getState().reset();
-      sessionRef.current = null;
       hasStartedRef.current = false;
       hasNavigatedToResultRef.current = false;
     };
-  }, [hasReachedDailyLimit, lessonId, lessonSession, startLesson]);
+  }, [lessonId]);
 
   // Boss timer countdown
   useEffect(() => {
