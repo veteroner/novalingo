@@ -2,7 +2,7 @@
 
 > **İletişim tutarsızlığı:** [Web hesap silme sayfası](https://novalingo.teknovagroup.com/legal/delete-account) `privacy@novalingo.app`, [yayımdaki gizlilik politikası](https://teknovagroup.com/novalingo-gizlilik-politikasi) ise görev notuna göre `bilgi@teknovagroup.com` diyor. Eski alıcı desteği: **bilgi@teknovagroup.com**. Yasal sayfalar bu paket kapsamında değiştirilmedi. **DOĞRULANMALI:** Yayımdaki iki adresi ve her iki gelen kutusunun çalıştığını kontrol edin.
 
-> **DOĞRULANMALI — 1 yıllık vaat için yayın engeli:** [Play abonelik promosyon kodları](https://support.google.com/googleplay/android-developer/answer/6321495?hl=en) 3–90 günlük ücretsiz süre verir; yıllık temel planı seçmek promosyonu 12 aya çıkarmaz. [Geliştirici tarafından uygunluğu belirlenen abonelik teklifi](https://support.google.com/googleplay/android-developer/answer/12154973?hl=en) 12 aylık ücretsiz aşama için değerlendirilebilir; standart bir kod değildir ve mevcut hediye kodu akışıyla çalıştığı gösterilmemiştir. Ürün sahibi yöntemi seçene, destek ekibi gerçek uygunluk ve iade akışını onaylayana, son Android sürümünde ödeme ekranı bir yıl ücretsiz süre ve sonrasındaki ücretli yenilemeyi gösterene kadar aşağıdaki kod e-postalarını göndermeyin. Yöntem değişirse duyuru ve adımları birlikte güncelleyin.
+> **Karar (2026-11-10):** Eski alıcıya 90 günlük Plus promosyon kodu verilir; isteyen alıcıya ayrıca Order management'tan 139 TL iade edilir (kodu kullanmış olsa bile). [Play abonelik promosyon kodları](https://support.google.com/googleplay/android-developer/answer/6321495?hl=en) en çok 90 gün verir. Kodlar, Play'de abonelik ürünü açıldıktan sonra Monetize → Promosyon kodları'ndan oluşturulur. **DOĞRULANMALI:** İlk e-postayı göndermeden önce iç test kanalındaki sürümde bir kodu kullanıp Play ekranının 90 gün ücretsiz süreyi ve sonraki yenileme ücretini gösterdiğini kontrol edin.
 
 ## Kod e-postası — TR
 
@@ -10,18 +10,18 @@
 
 Merhaba [ad],
 
-NovaLingo’yu daha önce Google Play’den satın aldığınız için teşekkür ederiz. NovaLingo artık ücretsiz indiriliyor. Önceki satın alımınız için size 1 yıl NovaLingo Plus sunuyoruz.
+NovaLingo’yu daha önce Google Play’den satın aldığınız için teşekkür ederiz. NovaLingo artık ücretsiz indiriliyor. Önceki satın alımınız için size 90 gün NovaLingo Plus sunuyoruz.
 
 **Hediye kodunuz: [KOD]**
 
 1. Android cihazınızda doğru Google hesabıyla Google Play’e giriş yapın ve güncel NovaLingo’yu açın.
 2. NovaLingo’da **Abonelik → Hediye kodum var** seçeneğine dokunun. Ebeveyn doğrulaması istenirse tamamlayın.
-3. Google Play ekranına kodu girin. Onaylamadan önce 1 yıllık ücretsiz süreyi, sonraki yenileme tarihini ve Google Play’de gösterilen ücreti kontrol edin. Ücretsiz süre görünmüyorsa işlemi onaylamadan bize yazın.
+3. Google Play ekranına kodu girin. Onaylamadan önce 90 günlük ücretsiz süreyi, sonraki yenileme tarihini ve Google Play’de gösterilen ücreti kontrol edin. Ücretsiz süre görünmüyorsa işlemi onaylamadan bize yazın.
 4. NovaLingo’ya dönün. Plus görünmezse Abonelik ekranındaki **Satın alma geçmişini geri yükle** seçeneğini deneyin.
 
-**Ücretsiz yıl bitmeden iptal etmezseniz aboneliğiniz ücretli olarak otomatik yenilenir.** İptal etmek için Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo → Aboneliği iptal et yolunu izleyin.
+**90 günlük ücretsiz süre bitmeden iptal etmezseniz aboneliğiniz ücretli olarak otomatik yenilenir.** İptal etmek için Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo → Aboneliği iptal et yolunu izleyin.
 
-Kod yerine önceki ücretli uygulama satın alımınız için iade isterseniz kodu kullanmadan bu e-postayı yanıtlayın. İade talebinizi Google Play sipariş numaranız üzerinden işleme alalım.
+Ayrıca önceki satın alımınızın ücretini (139 TL) geri almak isterseniz bu e-postayı yanıtlamanız yeterli; kodu kullanmış olsanız da iadenizi Google Play sipariş numaranız üzerinden yaparız.
 
 NovaLingo Destek · bilgi@teknovagroup.com
 
@@ -31,18 +31,18 @@ NovaLingo Destek · bilgi@teknovagroup.com
 
 Hi [name],
 
-Thank you for buying NovaLingo on Google Play. NovaLingo is now free to download. As a previous buyer, you’re eligible for one year of NovaLingo Plus.
+Thank you for buying NovaLingo on Google Play. NovaLingo is now free to download. As a previous buyer, you’re eligible for 90 days of NovaLingo Plus.
 
 **Your gift code: [CODE]**
 
 1. On your Android device, sign in to the correct Google account in Google Play and open the latest version of NovaLingo.
 2. In NovaLingo, go to **Subscription → I have a gift code**. Complete the parental check if prompted.
-3. Enter the code on Google Play. Before confirming, check that Google Play shows one year at no charge, the next renewal date and the price that will apply. If the free year isn’t shown, contact us before confirming.
+3. Enter the code on Google Play. Before confirming, check that Google Play shows 90 days at no charge, the next renewal date and the price that will apply. If the free period isn’t shown, contact us before confirming.
 4. Return to NovaLingo. If Plus doesn’t appear, try **Restore purchase history** on the Subscription screen.
 
-**Your subscription will automatically renew at the price shown by Google Play unless you cancel before the free year ends.** To cancel, go to Google Play → Profile icon → Payments & subscriptions → Subscriptions → NovaLingo → Cancel subscription.
+**Your subscription will automatically renew at the price shown by Google Play unless you cancel before the 90-day free period ends.** To cancel, go to Google Play → Profile icon → Payments & subscriptions → Subscriptions → NovaLingo → Cancel subscription.
 
-If you’d prefer a refund for your original app purchase, reply to this email before redeeming the code. We’ll process your refund request using your Google Play order number.
+You can also get a refund for your original purchase (139 TRY): just reply to this email. Even if you’ve redeemed the code, we’ll process the refund using your Google Play order number.
 
 NovaLingo Support · bilgi@teknovagroup.com
 
