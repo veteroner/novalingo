@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /tanitim/
+Allow: /legal/
+Allow: /fonts/
+Allow: /nova/nova-celebrate.webp
+Allow: /icon-96x96.png
+Allow: /favicon.png
+Allow: /apple-touch-icon.png
+Disallow: /
+
+Sitemap: https://novalingo.teknovagroup.com/sitemap.xml
