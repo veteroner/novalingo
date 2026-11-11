@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Yalnız doğrula (--dry-run); hiçbir şey yayınlanmaz'
+        description: 'Doğrula (--dry-run): kurallar/indeksler yayımlanmaz; doğrulama hedef projenin API''leriyle görüşür ve eksik API''leri etkinleştirebilir'
         type: boolean
         default: true
       confirm:

@@ -8,14 +8,14 @@ Web uygulaması **Netlify'ın Git entegrasyonuyla** yayınlanır: `main` dalına
 
 - `firebase deploy --only firestore --project novalingo-app` komutunu çalıştırır. Bu komut kuralları ve indeksleri yayınlar; Hosting, Functions ve Storage'a dokunmaz.
 - Yalnız `main` dalından çalışır.
-- Varsayılan modda `dry_run: true` açıktır: kurallar doğrulanır, hiçbir şey yayınlanmaz.
+- Varsayılan modda `dry_run: true` açıktır: kurallar ve indeksler yayımlanmaz. Ancak doğrulama yerel ya da salt okunur değildir; firebase-tools hedef projenin API'leriyle konuşur ve eksik API'leri etkinleştirebilir (`firebase deploy --help`: "may still enable APIs on the target project").
 - Gerçek yayın için `dry_run`'ı kapatmak ve `confirm` alanına tam olarak `novalingo-app` yazmak gerekir.
 - `FIREBASE_SERVICE_ACCOUNT_PROD` secret'ı yoksa ilk adımda açık bir hata mesajıyla durur ve Firebase'e hiçbir istek gönderilmez.
 
 ## Kullanım
 
 1. GitHub → Actions → **Firestore kuralları ve indeksleri (manuel)** → **Run workflow**, dal: `main`.
-2. Önce `dry_run` açıkken çalıştır ve logda kuralların derlendiğini gör.
+2. Önce `dry_run` açıkken çalıştır ve logda kuralların derlendiğini gör. Bu adım da üretim projesine kimlik doğrulayıp bağlanır.
 3. Gerçek yayın için tekrar çalıştır: `dry_run` kapalı, `confirm` = `novalingo-app`.
 
 ## Gerekli kimlik bilgisi (şu an tanımlı değil)
