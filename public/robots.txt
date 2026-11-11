@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /tanitim/
+Allow: /legal/
+Disallow: /
+
+Sitemap: https://novalingo.teknovagroup.com/sitemap.xml
