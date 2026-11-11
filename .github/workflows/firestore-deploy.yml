@@ -1,0 +1,80 @@
+name: Firestore kuralları ve indeksleri (manuel)
+
+# Yalnız elle tetiklenir; push/PR/develop ile asla çalışmaz.
+# Ayrıntı: docs/FIRESTORE_DEPLOY.md
+#
+# Hedef bilerek yalnız üretim projesidir (novalingo-app). .firebaserc'deki
+# staging takma adı (novalingo-b0c92) gerçek staging olarak doğrulanana kadar
+# burada sunulmaz.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Doğrula (--dry-run): kurallar/indeksler yayımlanmaz; doğrulama hedef projenin API''leriyle görüşür ve eksik API''leri etkinleştirebilir'
+        type: boolean
+        default: true
+      confirm:
+        description: 'Gerçek yayın için tam olarak "novalingo-app" yaz (dry_run=false iken zorunlu)'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firestore-deploy
+  cancel-in-progress: false
+
+env:
+  FIREBASE_PROJECT: novalingo-app
+  FIREBASE_TOOLS_VERSION: 15.34.1
+
+jobs:
+  deploy:
+    name: Firestore ${{ inputs.dry_run && 'doğrulama' || 'yayını' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Ön koşulları denetle
+        env:
+          SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          CONFIRM: ${{ inputs.confirm }}
+          REF: ${{ github.ref }}
+        run: |
+          fail=0
+          if [ "$REF" != "refs/heads/main" ]; then
+            echo "::error title=Yanlış dal::Bu workflow yalnız main dalından çalıştırılabilir (şu an: $REF)."
+            fail=1
+          fi
+          if [ -z "$SA_KEY" ]; then
+            echo "::error title=Kimlik bilgisi yok::FIREBASE_SERVICE_ACCOUNT_PROD repository secret'ı tanımlı değil. Firestore'a hiçbir şey gönderilmedi. Kurulum için docs/FIRESTORE_DEPLOY.md dosyasına bakın."
+            fail=1
+          fi
+          if [ "$DRY_RUN" != "true" ] && [ "$CONFIRM" != "$FIREBASE_PROJECT" ]; then
+            echo "::error title=Onay eksik::Gerçek yayın için confirm alanına tam olarak '$FIREBASE_PROJECT' yazılmalı."
+            fail=1
+          fi
+          exit $fail
+
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Firebase'e kimlik doğrula
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
+
+      - name: firestore.rules + firestore.indexes.json
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args="deploy --only firestore --project $FIREBASE_PROJECT --non-interactive"
+          if [ "$DRY_RUN" = "true" ]; then args="$args --dry-run"; fi
+          npx --yes "firebase-tools@$FIREBASE_TOOLS_VERSION" $args
