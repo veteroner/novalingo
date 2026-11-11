@@ -86,6 +86,8 @@ interface PurchaseTransaction {
 
 interface PurchaseLoadedProduct {
   getOffer(): PurchaseOffer | undefined;
+  /** Google Play: kullanıcının uygun olduğu base plan ve teklifler (sırası garanti değil). */
+  offers?: PurchaseOffer[];
 }
 
 interface PurchaseStoreEvents {
@@ -290,8 +292,7 @@ export function purchaseSubscription(productId: IAPProductId): Promise<PurchaseR
 
     const { store, ErrorCode } = purchaseSdk;
 
-    const product = store.get(productId);
-    const offer = product?.getOffer();
+    const offer = selectOffer(store.get(productId));
 
     if (!offer) {
       resolve({
@@ -393,6 +394,20 @@ function isFreePhase(phase: PurchasePricingPhase): boolean {
 }
 
 /**
+ * Gösterilecek ve satın alınacak teklifi seçer.
+ *
+ * Google Play bir aboneliğin base plan'ını ve kullanıcının uygun olduğu teklifleri
+ * (ör. yıllık 7 gün deneme) birlikte döndürür; `getOffer()` ise yalnızca ilkini verir.
+ * Play uygun olmayan teklifi hiç döndürmediği için, ücretsiz deneme içeren bir teklif
+ * varsa onu seçmek doğrudur. Ödeme ekranı ile `order()` aynı teklifi kullanır.
+ */
+function selectOffer(product: PurchaseLoadedProduct | undefined): PurchaseOffer | undefined {
+  if (!product) return undefined;
+  const trialOffer = product.offers?.find((offer) => (offer.pricingPhases ?? []).some(isFreePhase));
+  return trialOffer ?? product.getOffer();
+}
+
+/**
  * Seçili ürünün mağaza fiyatını döndürür.
  * Ürün henüz yüklenmediyse (veya web'deysek) `null` döner.
  */
@@ -400,7 +415,7 @@ export function getProductPricing(productId: IAPProductId): ProductPricing | nul
   const purchaseSdk = getPurchaseSdk();
   if (!purchaseSdk) return null;
 
-  const offer = purchaseSdk.store.get(productId)?.getOffer();
+  const offer = selectOffer(purchaseSdk.store.get(productId));
   const phases = offer?.pricingPhases ?? [];
   if (phases.length === 0) return null;
 

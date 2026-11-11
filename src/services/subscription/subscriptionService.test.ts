@@ -217,6 +217,35 @@ describe('native subscription flow', () => {
     });
     expect(service.getProductPricing(IAP_PRODUCTS.YEARLY)?.trialDays).toBe(days);
   });
+  it('shows and orders the free-trial offer when Play returns it after the base plan', async () => {
+    const basePlan = {
+      pricingPhases: [{ price: '₺199,00', priceMicros: 199000000, billingPeriod: 'P1Y' }],
+    };
+    const trialOffer = {
+      pricingPhases: [
+        { price: 'Free', priceMicros: 0, billingPeriod: 'P7D', paymentMode: 'FreeTrial' },
+        { price: '₺199,00', priceMicros: 199000000, billingPeriod: 'P1Y' },
+      ],
+    };
+    store.get.mockReturnValue({ getOffer: () => basePlan, offers: [basePlan, trialOffer] });
+
+    expect(service.getProductPricing(IAP_PRODUCTS.YEARLY)).toMatchObject({
+      price: '₺199,00',
+      trialDays: 7,
+    });
+    await service.purchaseSubscription(IAP_PRODUCTS.YEARLY);
+    expect(store.order).toHaveBeenCalledWith(trialOffer, { applicationUsername: 'buyer' });
+  });
+  it('falls back to the default offer when no trial is offered', async () => {
+    const basePlan = {
+      pricingPhases: [{ price: '₺39,99', priceMicros: 39990000, billingPeriod: 'P1M' }],
+    };
+    store.get.mockReturnValue({ getOffer: () => basePlan, offers: [basePlan] });
+
+    expect(service.getProductPricing(IAP_PRODUCTS.MONTHLY)?.trialDays).toBeNull();
+    await service.purchaseSubscription(IAP_PRODUCTS.MONTHLY);
+    expect(store.order).toHaveBeenCalledWith(basePlan, { applicationUsername: 'buyer' });
+  });
   it('subscribes to price updates', () => {
     const cb = vi.fn();
     service.onProductsUpdated(cb);
