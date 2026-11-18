@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NovaLingo: Çocuklar için Oyunla İngilizce | Reklamsız Uygulama</title>
-  <meta name="description" content="NovaLingo, 4–12 yaş çocukların oyunlar, resimli hikâyeler ve Nova ile konuşarak İngilizce öğrendiği reklamsız uygulama. Ücretsiz başlayın; Google Play'de." />
+  <meta name="description" content="NovaLingo, 4–12 yaş çocukların oyunlar, resimli hikâyeler ve Nova ile konuşarak İngilizce öğrendiği reklamsız uygulama. Ücretsiz başlayın; App Store ve Google Play'de." />
   <link rel="canonical" href="https://novalingo.teknovagroup.com/tanitim/" />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#5145c8" />
@@ -33,12 +33,12 @@
       {
         "@type": "MobileApplication",
         "name": "NovaLingo",
-        "operatingSystem": "Android",
+        "operatingSystem": "Android, iOS",
         "applicationCategory": "EducationalApplication",
         "inLanguage": "tr",
         "description": "Türkçe konuşan çocuklar için oyunlarla, resimli hikâyelerle ve Nova ile konuşarak İngilizce öğrenme uygulaması.",
         "url": "https://novalingo.teknovagroup.com/tanitim/",
-        "installUrl": "https://play.google.com/store/apps/details?id=com.novalingo.app",
+        "installUrl": ["https://apps.apple.com/tr/app/id6815107546", "https://play.google.com/store/apps/details?id=com.novalingo.app"],
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
         "publisher": { "@type": "Organization", "name": "Teknova", "legalName": "Teknova Tarım Hayvancılık Bilişim Reklam Ltd. Şti.", "url": "https://teknovagroup.com" }
       },
@@ -48,7 +48,7 @@
           { "@type": "Question", "name": "NovaLingo ücretsiz mi?", "acceptedAnswer": { "@type": "Answer", "text": "Evet, ücretsiz indirilir. Ücretsiz planda 12 dünyanın ilk 4'ü ve günde 3 ders (tekrarlar dahil) vardır. Tüm dünyalar ve sınırsız ders için isteğe bağlı NovaLingo Plus aboneliği vardır." } },
           { "@type": "Question", "name": "Uygulamada reklam var mı?", "acceptedAnswer": { "@type": "Answer", "text": "Hayır. Ücretsiz planda da Plus'ta da reklam yoktur." } },
           { "@type": "Question", "name": "Hangi yaş için uygun?", "acceptedAnswer": { "@type": "Answer", "text": "4–12 yaş arası, Türkçe konuşan çocuklar için tasarlandı. Yönergeler Türkçe, öğretilen dil İngilizcedir." } },
-          { "@type": "Question", "name": "Aboneliği nasıl iptal ederim?", "acceptedAnswer": { "@type": "Answer", "text": "Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo yolundan, dönem bitmeden iptal edebilirsiniz. İptal sonrası Plus, geçerli erişim süresi bitene kadar devam eder; ardından ücretsiz plana dönülür." } }
+          { "@type": "Question", "name": "Aboneliği nasıl iptal ederim?", "acceptedAnswer": { "@type": "Answer", "text": "iPhone/iPad'de Ayarlar → adınız → Abonelikler → NovaLingo; Android'de Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo yolundan, dönem bitmeden iptal edebilirsiniz. İptal sonrası Plus, geçerli erişim süresi bitene kadar devam eder; ardından ücretsiz plana dönülür." } }
         ]
       }
     ]
@@ -144,6 +144,18 @@
     footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
     footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 
+    .stores { display: flex; flex-wrap: wrap; gap: 12px; }
+    .stores.center { justify-content: center; }
+
+    .consent { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 10; max-width: 640px; margin: 0 auto; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(20, 15, 60, .25); font-size: .95rem; }
+    .consent[hidden] { display: none; }
+    .consent p { margin: 0 0 12px; }
+    .consent .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn.ghost { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .btn.ghost:hover { background: var(--primary-soft); }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.ghost { color: var(--primary); } }
+    .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--primary); text-decoration: underline; cursor: pointer; }
+
     @media (max-width: 820px) {
       section { padding: 48px 0; }
       .hero .wrap, .features, .plans, .trust { grid-template-columns: 1fr; }
@@ -160,7 +172,7 @@
   <header class="top">
     <div class="wrap">
       <a class="brand" href="/tanitim/"><img src="/icon-96x96.png" alt="" width="36" height="36" />NovaLingo</a>
-      <a class="btn small" href="https://play.google.com/store/apps/details?id=com.novalingo.app" rel="noopener">Google Play'de indir</a>
+      <a class="btn small" href="#indir">Ücretsiz indir</a>
     </div>
   </header>
 
@@ -170,7 +182,10 @@
         <div>
           <h1>Çocuklar için oyunla İngilizce</h1>
           <p class="lead">NovaLingo'da çocuğunuz renkli dünyaları keşfederken İngilizce kelimeleri oyunlarla öğrenir, resimli hikâyeler dinler ve baykuş Nova ile İngilizce konuşur.</p>
-          <a class="btn" href="https://play.google.com/store/apps/details?id=com.novalingo.app" rel="noopener">Ücretsiz başlayın · Google Play</a>
+          <div class="stores">
+            <a class="btn store-link" data-store="appstore" href="https://apps.apple.com/tr/app/id6815107546" rel="noopener">App Store'dan indir</a>
+            <a class="btn store-link" data-store="play" href="https://play.google.com/store/apps/details?id=com.novalingo.app" rel="noopener">Google Play'den indir</a>
+          </div>
           <ul class="chips" aria-label="Öne çıkanlar">
             <li>4–12 yaş</li>
             <li>Hiç reklam yok</li>
@@ -249,7 +264,7 @@
             </ul>
           </div>
         </div>
-        <p class="fine">Deneme yalnızca yıllık planda ve daha önce NovaLingo aboneliği olmayan hesaplarda geçerlidir. Deneme bitiminde, iptal edilmezse yıllık 199 TL ücret alınır ve abonelik her yıl otomatik yenilenir. Geçerli fiyat satın almadan önce Google Play'de gösterilir. İptal: Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo. İptal sonrası Plus, geçerli erişim süresi bitene kadar devam eder; ardından ücretsiz plana dönülür.</p>
+        <p class="fine">Deneme yalnızca yıllık planda ve daha önce NovaLingo aboneliği olmayan hesaplarda geçerlidir. Deneme bitiminde, iptal edilmezse yıllık 199 TL ücret alınır ve abonelik her yıl otomatik yenilenir. Geçerli fiyat satın almadan önce App Store veya Google Play'de gösterilir. İptal: iPhone/iPad'de Ayarlar → adınız → Abonelikler → NovaLingo; Android'de Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo. İptal sonrası Plus, geçerli erişim süresi bitene kadar devam eder; ardından ücretsiz plana dönülür.</p>
       </div>
     </section>
 
@@ -285,7 +300,7 @@
         </details>
         <details>
           <summary>Aboneliği nasıl iptal ederim?</summary>
-          <p>Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo yolundan, dönem bitmeden iptal edebilirsiniz. İptal sonrası Plus, geçerli erişim süresi bitene kadar devam eder; ardından ücretsiz plana dönülür.</p>
+          <p>iPhone/iPad'de Ayarlar → adınız → Abonelikler → NovaLingo; Android'de Google Play → Profil simgesi → Ödemeler ve abonelikler → Abonelikler → NovaLingo yolundan, dönem bitmeden iptal edebilirsiniz. İptal sonrası Plus, geçerli erişim süresi bitene kadar devam eder; ardından ücretsiz plana dönülür.</p>
         </details>
         <details>
           <summary>NovaLingo'yu daha önce satın aldım. Ne olacak?</summary>
@@ -294,11 +309,14 @@
       </div>
     </section>
 
-    <section class="cta">
+    <section class="cta" id="indir">
       <div class="wrap">
         <h2>İngilizceye oyunla başlayın</h2>
         <p class="muted">Ücretsiz indirin, ilk dersi hemen deneyin.</p>
-        <a class="btn" href="https://play.google.com/store/apps/details?id=com.novalingo.app" rel="noopener">Google Play'de indir</a>
+        <div class="stores center">
+            <a class="btn store-link" data-store="appstore" href="https://apps.apple.com/tr/app/id6815107546" rel="noopener">App Store'dan indir</a>
+            <a class="btn store-link" data-store="play" href="https://play.google.com/store/apps/details?id=com.novalingo.app" rel="noopener">Google Play'den indir</a>
+          </div>
       </div>
     </section>
   </main>
@@ -311,8 +329,164 @@
         <a href="/legal/terms">Kullanım koşulları</a>
         <a href="/legal/delete-account">Hesap silme</a>
         <a href="mailto:bilgi@teknovagroup.com">İletişim</a>
+        <button type="button" class="linkish" id="consent-open" hidden>Çerez tercihleri</button>
       </nav>
     </div>
   </footer>
+  <div class="consent" id="consent" role="dialog" aria-live="polite" aria-labelledby="consent-title" hidden>
+    <p id="consent-title"><strong>Reklam ölçümü için çerez izni</strong></p>
+    <p>Bu sayfa ebeveynlere yöneliktir. Reklamlarımızın işe yarayıp yaramadığını ölçmek için, mağaza butonuna tıkladığınızı Google Ads'e bildiren çerezler kullanmak istiyoruz. Kişiselleştirilmiş reklam için kullanılmaz. Uygulamanın içinde reklam veya takip yoktur. Ayrıntılar: <a href="https://teknovagroup.com/novalingo-gizlilik-politikasi">Gizlilik politikası</a>.</p>
+    <div class="actions">
+      <button type="button" class="btn small" id="consent-accept">Kabul et</button>
+      <button type="button" class="btn small ghost" id="consent-decline">Reddet</button>
+    </div>
+  </div>
+
+  <script>
+  /*
+   * REKLAM ÖLÇÜMÜ — yalnız bu ebeveyn tanıtım sayfasında çalışır; uygulamaya girmez.
+   * Kurulum: docs/ADS_MEASUREMENT.md
+   *
+   * 1) Mağaza bağlantıları reklam parametreleriyle etiketlenir:
+   *    - Google Play: utm_source / utm_medium / utm_campaign / utm_content
+   *      (Play Console → Mağaza girişi edinme raporu, UTM kırılımı).
+   *    - App Store: pt + ct (App Store Connect → Analytics → Campaigns). pt boşsa etiket eklenmez.
+   * 2) Google Ads dönüşüm etiketi YALNIZCA ziyaretçi "Kabul et" derse yüklenir; ADS_ID boşsa
+   *    hiçbir Google betiği yüklenmez ve izin kutusu gösterilmez.
+   */
+  (function () {
+    var CONFIG = {
+      playUrl: 'https://play.google.com/store/apps/details?id=com.novalingo.app',
+      appStoreUrl: 'https://apps.apple.com/tr/app/id6815107546',
+      // App Store Connect → Analytics → Acquisition → Campaigns → "Generate a Campaign Link" içindeki pt= değeri.
+      appleProviderToken: '',
+      // Google Ads → Hedefler → Dönüşümler → Web sitesi dönüşümü: 'AW-XXXXXXXXXX'
+      adsId: '',
+      // Dönüşüm etiketleri (aynı etiket ikisine de yazılabilir).
+      adsLabelPlay: '',
+      adsLabelAppStore: ''
+    };
+    var CONSENT_KEY = 'novalingo_ads_consent';
+
+    function clean(value, fallback) {
+      var v = String(value || '').toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+      return v || fallback;
+    }
+
+    var params = new URLSearchParams(window.location.search);
+    var fromAds = params.has('gclid') || params.has('gbraid') || params.has('wbraid');
+    var tag = {
+      source: clean(params.get('utm_source'), fromAds ? 'google' : 'tanitim'),
+      medium: clean(params.get('utm_medium'), fromAds ? 'cpc' : 'web'),
+      campaign: clean(params.get('utm_campaign'), fromAds ? 'google-ads' : 'organik'),
+      content: clean(params.get('utm_content'), '')
+    };
+
+    function playHref() {
+      var u = new URL(CONFIG.playUrl);
+      u.searchParams.set('utm_source', tag.source);
+      u.searchParams.set('utm_medium', tag.medium);
+      u.searchParams.set('utm_campaign', tag.campaign);
+      if (tag.content) u.searchParams.set('utm_content', tag.content);
+      return u.toString();
+    }
+
+    function appStoreHref() {
+      var u = new URL(CONFIG.appStoreUrl);
+      if (CONFIG.appleProviderToken) {
+        u.searchParams.set('pt', CONFIG.appleProviderToken);
+        // Apple kampanya adı: kaynak_kampanya (App Store Connect raporunda bu adla görünür).
+        u.searchParams.set('ct', (tag.source + '_' + tag.campaign).slice(0, 40));
+        u.searchParams.set('mt', '8');
+      }
+      return u.toString();
+    }
+
+    var links = document.querySelectorAll('a.store-link');
+    links.forEach(function (a) {
+      a.href = a.getAttribute('data-store') === 'play' ? playHref() : appStoreHref();
+    });
+
+    // iPhone/iPad'de App Store, diğerlerinde Google Play önce gelsin.
+    var ua = navigator.userAgent;
+    var isApple = !/Android/.test(ua) && (/iPhone|iPad|iPod/.test(ua) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    if (!isApple) {
+      document.querySelectorAll('.stores').forEach(function (box) {
+        var play = box.querySelector('[data-store="play"]');
+        if (play) box.insertBefore(play, box.firstChild);
+      });
+    }
+
+    // ---- Google Ads dönüşümü (yalnız izinle) ----
+    if (!CONFIG.adsId) return;
+
+    var gtagLoaded = false;
+    var granted = false;
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+
+    function readConsent() {
+      try { return window.localStorage.getItem(CONSENT_KEY); } catch (e) { return null; }
+    }
+    function writeConsent(value) {
+      try { window.localStorage.setItem(CONSENT_KEY, value); } catch (e) { /* gizli sekme */ }
+    }
+
+    function loadGtag() {
+      if (gtagLoaded) {
+        gtag('consent', 'update', { ad_storage: 'granted', ad_user_data: 'granted' });
+        return;
+      }
+      gtagLoaded = true;
+      gtag('consent', 'default', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied'
+      });
+      gtag('js', new Date());
+      gtag('config', CONFIG.adsId, { allow_ad_personalization_signals: false });
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(CONFIG.adsId);
+      document.head.appendChild(s);
+    }
+
+    links.forEach(function (a) {
+      a.addEventListener('click', function () {
+        if (!gtagLoaded || !granted) return;
+        var label = a.getAttribute('data-store') === 'play' ? CONFIG.adsLabelPlay : CONFIG.adsLabelAppStore;
+        if (!label) return;
+        gtag('event', 'conversion', {
+          send_to: CONFIG.adsId + '/' + label,
+          transport_type: 'beacon'
+        });
+      });
+    });
+
+    var box = document.getElementById('consent');
+    var reopen = document.getElementById('consent-open');
+    reopen.hidden = false;
+
+    function decide(value) {
+      writeConsent(value);
+      box.hidden = true;
+      granted = value === 'granted';
+      if (granted) loadGtag();
+    }
+    document.getElementById('consent-accept').addEventListener('click', function () { decide('granted'); });
+    document.getElementById('consent-decline').addEventListener('click', function () {
+      // Daha önce kabul edilip yüklendiyse, sayfa yenilenene kadar ölçümü durdur.
+      if (gtagLoaded) gtag('consent', 'update', { ad_storage: 'denied', ad_user_data: 'denied' });
+      decide('denied');
+    });
+    reopen.addEventListener('click', function () { box.hidden = false; });
+
+    var saved = readConsent();
+    if (saved === 'granted') { granted = true; loadGtag(); }
+    else if (saved !== 'denied') box.hidden = false;
+  })();
+  </script>
 </body>
 </html>
