@@ -12,7 +12,7 @@ const shellFiles = [
   '/assets/lazy-current.js',
 ];
 
-function worker(options: { failInstall?: boolean; quota?: boolean } = {}) {
+function worker(options: { failInstall?: boolean; quota?: boolean; windows?: string[] } = {}) {
   const cachesByName = new Map<string, Map<string, Response>>();
   const listeners = new Map<string, (event: any) => void>();
   const network = new Map<string, Response>(
@@ -59,6 +59,12 @@ function worker(options: { failInstall?: boolean; quota?: boolean } = {}) {
   }
   const skipWaiting = vi.fn();
   const claim = vi.fn();
+  const navigate = vi.fn(async (url: string) => ({ url }));
+  const windows = (options.windows ?? []).map((url) => ({
+    url,
+    navigate: (to: string) => navigate(to),
+  }));
+  const matchAll = vi.fn(async () => windows);
   const deleteCache = vi.fn(async (name: string) => cachesByName.delete(name));
   runInNewContext(
     template
@@ -70,7 +76,7 @@ function worker(options: { failInstall?: boolean; quota?: boolean } = {}) {
         addEventListener: (event: string, listener: (event: any) => void) =>
           listeners.set(event, listener),
         skipWaiting,
-        clients: { claim },
+        clients: { claim, matchAll },
       },
       caches: {
         open: async (name: string) => cache(name),
@@ -112,6 +118,8 @@ function worker(options: { failInstall?: boolean; quota?: boolean } = {}) {
     deleteCache,
     skipWaiting,
     claim,
+    navigate,
+    matchAll,
     lifecycle,
     request,
     goOffline: () => {
@@ -132,6 +140,30 @@ describe('versioned offline shell', () => {
     expect(await (await w.request('/assets/lazy-current.js').response!).text()).toBe(
       'code:/assets/lazy-current.js',
     );
+  });
+  it('leaves the parent landing page (/tanitim/) and its images to the network', async () => {
+    const w = worker();
+    await w.lifecycle('install');
+    expect(w.request('/tanitim/', { navigate: true }).response).toBeUndefined();
+    expect(w.request('/tanitim/?utm_source=google', { navigate: true }).response).toBeUndefined();
+    expect(w.request('/tanitim', { navigate: true }).response).toBeUndefined();
+    expect(w.request('/tanitim/img/og.jpg').response).toBeUndefined();
+    // Uygulama rotaları kabuktan gelmeye devam eder.
+    expect(w.request('/home', { navigate: true }).response).toBeDefined();
+  });
+  it('reloads tabs on /tanitim once it takes over, so pages the old worker shelled come from the network', async () => {
+    const w = worker({
+      windows: [
+        'https://novalingo.test/tanitim/?utm_source=google',
+        'https://novalingo.test/home',
+        'https://novalingo.test/tanitimx',
+      ],
+    });
+    await w.lifecycle('install');
+    await w.lifecycle('activate');
+    expect(w.claim).toHaveBeenCalledOnce();
+    expect(w.matchAll).toHaveBeenCalledWith({ type: 'window' });
+    expect(w.navigate.mock.calls).toEqual([['https://novalingo.test/tanitim/?utm_source=google']]);
   });
   it('serves the precached manifest offline', async () => {
     const w = worker();
