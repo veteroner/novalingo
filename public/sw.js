@@ -11,6 +11,8 @@ const CACHE_NAME = 'novalingo-v3';
 const AUDIO_CACHE = 'novalingo-audio-v2';
 const MAX_AUDIO_ENTRIES = 200;
 const STATIC_PAGES = ['/tanitim'];
+const isStaticPage = (pathname) =>
+  STATIC_PAGES.some((page) => pathname === page || pathname.startsWith(page + '/'));
 const PRECACHE_URLS = APP_SHELL_FILES.length ? APP_SHELL_FILES : ['/index.html', '/manifest.json'];
 
 self.addEventListener('install', (event) => {
@@ -44,6 +46,14 @@ self.addEventListener('activate', (event) => {
           .map((key) => caches.delete(key)),
       );
       await self.clients.claim();
+      // Eski worker /tanitim/ açılışını uygulama kabuğuyla yanıtlamış olabilir: bu worker
+      // devraldıktan sonra o sekmeleri bir kez yeniden yükle ki sayfa ağdan gelsin.
+      const windows = await self.clients.matchAll({ type: 'window' });
+      await Promise.all(
+        windows
+          .filter((client) => isStaticPage(new URL(client.url).pathname))
+          .map((client) => client.navigate(client.url).catch(() => undefined)),
+      );
     })(),
   );
 });
@@ -73,8 +83,7 @@ self.addEventListener('fetch', (event) => {
 
   // Uygulama dışındaki statik sayfalar (ebeveyn tanıtım sayfası) ağdan gelir; aksi hâlde
   // web uygulamasını daha önce açmış ziyaretçi uygulama kabuğunu (yaş ekranını) görür.
-  if (STATIC_PAGES.some((page) => url.pathname === page || url.pathname.startsWith(page + '/')))
-    return;
+  if (isStaticPage(url.pathname)) return;
 
   if (request.mode === 'navigate') {
     // Always pair this worker's HTML with the fully installed matching chunks.
