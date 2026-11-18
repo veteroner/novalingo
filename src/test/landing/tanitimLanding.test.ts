@@ -54,6 +54,14 @@ function boot(search = '', config: Config = {}) {
   return { links, consent, appended, dataLayer, conversions };
 }
 
+/** Play bağlantısındaki kodlanmış `referrer` parametresinin içeriği. */
+function playReferrer(links: HTMLAnchorElement[]) {
+  const play = href(links, 'play');
+  // Yalnız id ve referrer: ham utm_* veya gclid mağaza URL'sine düz eklenmez.
+  expect([...play.searchParams.keys()].sort()).toEqual(['id', 'referrer']);
+  return new URLSearchParams(play.searchParams.get('referrer') ?? '');
+}
+
 function href(links: HTMLAnchorElement[], store: 'play' | 'appstore') {
   const link = links.find((a) => a.dataset.store === store);
   if (!link) throw new Error(`no ${store} link`);
@@ -79,8 +87,10 @@ describe('tanıtım sayfası — kimlikler boşken', () => {
 
     const play = href(page.links, 'play');
     expect(`${play.origin}${play.pathname}?id=${play.searchParams.get('id') ?? ''}`).toBe(PLAY);
-    expect(play.searchParams.get('utm_source')).toBe('tanitim');
-    expect(play.searchParams.get('utm_campaign')).toBe('organik');
+    expect(play.searchParams.get('referrer')).toBe(
+      'utm_source=tanitim&utm_medium=web&utm_campaign=organik',
+    );
+    expect(playReferrer(page.links).get('utm_campaign')).toBe('organik');
 
     // pt yokken App Store bağlantısı sade kalır (ct tek başına izlenmez).
     expect(href(page.links, 'appstore').toString()).toBe(APP_STORE);
@@ -107,11 +117,15 @@ describe('tanıtım sayfası — kampanya etiketleri', () => {
       '?utm_source=instagram&utm_medium=paid_social&utm_campaign=TR Reels Ebeveyn&utm_content=hook-a',
       { pt: '123456' },
     );
-    const play = href(page.links, 'play');
-    expect(play.searchParams.get('utm_source')).toBe('instagram');
-    expect(play.searchParams.get('utm_medium')).toBe('paid_social');
-    expect(play.searchParams.get('utm_campaign')).toBe('tr-reels-ebeveyn');
-    expect(play.searchParams.get('utm_content')).toBe('hook-a');
+    const ref = playReferrer(page.links);
+    expect(ref.get('utm_source')).toBe('instagram');
+    expect(ref.get('utm_medium')).toBe('paid_social');
+    expect(ref.get('utm_campaign')).toBe('tr-reels-ebeveyn');
+    expect(ref.get('utm_content')).toBe('hook-a');
+    // Ham bağlantıda referrer tek parametre olarak kodlanmış durur.
+    expect(href(page.links, 'play').search).toContain(
+      'referrer=utm_source%3Dinstagram%26utm_medium%3Dpaid_social',
+    );
 
     const apple = href(page.links, 'appstore');
     expect(apple.searchParams.get('pt')).toBe('123456');
@@ -120,9 +134,16 @@ describe('tanıtım sayfası — kampanya etiketleri', () => {
   });
 
   it('yalnız gclid ile gelen Google tıklamasını google/cpc olarak etiketler', () => {
-    const play = href(boot('?gclid=xyz').links, 'play');
-    expect(play.searchParams.get('utm_source')).toBe('google');
-    expect(play.searchParams.get('utm_medium')).toBe('cpc');
+    const page = boot('?gclid=xyz-secret&fbclid=abc');
+    const ref = playReferrer(page.links);
+    expect(ref.get('utm_source')).toBe('google');
+    expect(ref.get('utm_medium')).toBe('cpc');
+    // Tıklama kimlikleri hiçbir mağaza bağlantısına taşınmaz.
+    for (const link of page.links) {
+      expect(link.href).not.toContain('xyz-secret');
+      expect(link.href).not.toContain('gclid');
+      expect(link.href).not.toContain('fbclid');
+    }
   });
 });
 

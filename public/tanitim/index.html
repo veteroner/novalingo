@@ -348,8 +348,8 @@
    * Kurulum: docs/ADS_MEASUREMENT.md
    *
    * 1) Mağaza bağlantıları reklam parametreleriyle etiketlenir:
-   *    - Google Play: utm_source / utm_medium / utm_campaign / utm_content
-   *      (Play Console → Mağaza girişi edinme raporu, UTM kırılımı).
+   *    - Google Play: utm_source / utm_medium / utm_campaign / utm_content, kodlanmış tek
+   *      `referrer` parametresinde (Play Console → edinme raporu, Install Referrer).
    *    - App Store: pt + ct (App Store Connect → Analytics → Campaigns). pt boşsa etiket eklenmez.
    * 2) Google Ads dönüşüm etiketi YALNIZCA ziyaretçi "Kabul et" derse yüklenir; ADS_ID boşsa
    *    hiçbir Google betiği yüklenmez ve izin kutusu gösterilmez.
@@ -382,12 +382,16 @@
       content: clean(params.get('utm_content'), '')
     };
 
+    // Play: kampanya bilgisi kodlanmış tek bir `referrer` parametresinde gider (Install Referrer
+    // ve Play Console edinme raporu bunu okur). Ham gclid veya kişisel veri taşınmaz.
     function playHref() {
+      var ref = new URLSearchParams();
+      ref.set('utm_source', tag.source);
+      ref.set('utm_medium', tag.medium);
+      ref.set('utm_campaign', tag.campaign);
+      if (tag.content) ref.set('utm_content', tag.content);
       var u = new URL(CONFIG.playUrl);
-      u.searchParams.set('utm_source', tag.source);
-      u.searchParams.set('utm_medium', tag.medium);
-      u.searchParams.set('utm_campaign', tag.campaign);
-      if (tag.content) u.searchParams.set('utm_content', tag.content);
+      u.searchParams.set('referrer', ref.toString());
       return u.toString();
     }
 
