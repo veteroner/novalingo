@@ -133,6 +133,16 @@ describe('versioned offline shell', () => {
       'code:/assets/lazy-current.js',
     );
   });
+  it('leaves the parent landing page (/tanitim/) and its images to the network', async () => {
+    const w = worker();
+    await w.lifecycle('install');
+    expect(w.request('/tanitim/', { navigate: true }).response).toBeUndefined();
+    expect(w.request('/tanitim/?utm_source=google', { navigate: true }).response).toBeUndefined();
+    expect(w.request('/tanitim', { navigate: true }).response).toBeUndefined();
+    expect(w.request('/tanitim/img/og.jpg').response).toBeUndefined();
+    // Uygulama rotaları kabuktan gelmeye devam eder.
+    expect(w.request('/home', { navigate: true }).response).toBeDefined();
+  });
   it('serves the precached manifest offline', async () => {
     const w = worker();
     await w.lifecycle('install');

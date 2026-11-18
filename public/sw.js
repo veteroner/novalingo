@@ -10,6 +10,7 @@ const APP_SHELL_FILES = /* APP_SHELL_FILES */ [];
 const CACHE_NAME = 'novalingo-v3';
 const AUDIO_CACHE = 'novalingo-audio-v2';
 const MAX_AUDIO_ENTRIES = 200;
+const STATIC_PAGES = ['/tanitim'];
 const PRECACHE_URLS = APP_SHELL_FILES.length ? APP_SHELL_FILES : ['/index.html', '/manifest.json'];
 
 self.addEventListener('install', (event) => {
@@ -68,6 +69,11 @@ self.addEventListener('fetch', (event) => {
     url.origin !== self.location.origin ||
     request.headers.get('authorization')
   )
+    return;
+
+  // Uygulama dışındaki statik sayfalar (ebeveyn tanıtım sayfası) ağdan gelir; aksi hâlde
+  // web uygulamasını daha önce açmış ziyaretçi uygulama kabuğunu (yaş ekranını) görür.
+  if (STATIC_PAGES.some((page) => url.pathname === page || url.pathname.startsWith(page + '/')))
     return;
 
   if (request.mode === 'navigate') {
