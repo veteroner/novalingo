@@ -34,16 +34,18 @@ gerçek fatura kalemlerinden hesaplanır (%20 KDV yalnız örnek). iOS ve Androi
    - Etiket kimliği ve etiket(ler) `public/tanitim/index.html` içindeki `CONFIG.adsId`,
      `CONFIG.adsLabelPlay`, `CONFIG.adsLabelAppStore` alanlarına yazılır. Boş kaldıkça sayfa hiçbir
      Google betiği yüklemez ve izin kutusu göstermez.
-   - **Oluşturuldu (18 Kasım 2026), henüz sayfada ETKİN DEĞİL:** web dönüşümü, gelişmiş dönüşümler
-     **kapalı**. Ads ID `AW-17557137727`; Android/Google Play butonu etiketi `0KTjCPSfi7sdEL_S8rNB`;
-     iOS/App Store etiketi **bekleniyor**. Kimlik, gizlilik eki (madde 4) yayımlanınca ayrı küçük bir
-     PR ile `CONFIG`'e girilir; o zamana kadar alanlar boş kalır.
+   - **Sayfada etkin (18 Kasım 2026):** web dönüşümü, gelişmiş dönüşümler **kapalı**. Ads ID
+     `AW-17557137727`; Google Play butonu etiketi `0KTjCPSfi7sdEL_S8rNB`; App Store butonu etiketi
+     `j0K-CPCdg7sdEL_S8rNB`. Betik yine yalnız "Kabul et" sonrası yüklenir.
 3. **Apple sağlayıcı jetonu:** App Store Connect → Analytics → Acquisition → Campaigns →
    "Generate a Campaign Link" ekranındaki `pt=` değerini `CONFIG.appleProviderToken`'a yazın.
    **Bekleniyor:** Apple oturumu parola istiyor; değer gelene kadar alan boş kalır (sahte değer yazılmaz).
    Boşken App Store bağlantısı etiketsiz çalışır.
-4. **Gizlilik politikası:** teknovagroup.com'daki NovaLingo politikasına `docs/PRIVACY_LANDING_ADDENDUM.md`
-   taslağını hukuki incelemeden sonra ekleyin. Google Ads kimliği girilmeden önce yayımlanmış olmalı. Uygulama içi beyanlar (App Privacy, Play Veri Güvenliği) değişmez:
+4. **Gizlilik açıklaması:** Sayfaya özel, sade ebeveyn açıklaması `public/tanitim/gizlilik.html`
+   (`/tanitim/gizlilik.html`): açık izin, kabul öncesi betik yok, mağaza tıklaması kurulum/satın alma
+   değil, Google ile paylaşım, izni geri alma ve ana Teknova politikası bağlantısı. İzin kutusu ve
+   sayfa altı buna bağlanır. Hukuki onay iddiası yoktur. Ana politikaya eklenecek uzun ek taslağı
+   `docs/PRIVACY_LANDING_ADDENDUM.md` (hukuki inceleme bekliyor). Uygulama içi beyanlar (App Privacy, Play Veri Güvenliği) değişmez:
    uygulamada değişiklik yok.
 5. **Yayın:** Sayfa `novalingo.teknovagroup.com/tanitim/` adresinde Netlify ile yayınlanır
    (`novalingo` sitesi `main`'e Git ile bağlı; `public/` → `dist/`, statik dosya SPA yönlendirmesinden
