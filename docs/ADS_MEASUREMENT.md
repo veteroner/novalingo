@@ -17,13 +17,13 @@ gerçek fatura kalemlerinden hesaplanır (%20 KDV yalnız örnek). iOS ve Androi
 
 ## Ölçüm zinciri
 
-| Adım                          | Kaynak                                                   | Not                                                                                   |
-| ----------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Gösterim, tıklama, maliyet    | Google Ads                                               | Kesin                                                                                 |
-| Mağaza butonu tıklaması       | Google Ads dönüşümü (sayfadaki etiket)                   | Yalnız çerez iznini kabul edenler sayılır                                             |
-| Play mağaza ziyareti / edinme | Play Console → Mağaza girişi edinme raporu, UTM kırılımı | Sayfa `utm_*` parametrelerini Play bağlantısına ekler                                 |
-| App Store indirme             | App Store Connect → Analytics → Campaigns                | `pt` girilince `ct=google_<kampanya>` eklenir; 5'in altı gösterilmez, 1–2 gün gecikir |
-| Hesap → ders → abonelik       | `scripts/ad-funnel-report.mjs` (Firestore, yalnız okuma) | Kişi bazında eşleşmez; reklamlı/reklamsız dönem karşılaştırılır                       |
+| Adım                          | Kaynak                                                   | Not                                                                                                       |
+| ----------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Gösterim, tıklama, maliyet    | Google Ads                                               | Kesin                                                                                                     |
+| Mağaza butonu tıklaması       | Google Ads dönüşümü (sayfadaki etiket)                   | Yalnız çerez iznini kabul edenler sayılır                                                                 |
+| Play mağaza ziyareti / edinme | Play Console → Mağaza girişi edinme raporu, UTM kırılımı | Sayfa `utm_*` değerlerini kodlanmış tek `referrer` parametresiyle Play bağlantısına ekler; gclid taşınmaz |
+| App Store indirme             | App Store Connect → Analytics → Campaigns                | `pt` girilince `ct=google_<kampanya>` eklenir; 5'in altı gösterilmez, 1–2 gün gecikir                     |
+| Hesap → ders → abonelik       | `scripts/ad-funnel-report.mjs` (Firestore, yalnız okuma) | Kişi bazında eşleşmez; reklamlı/reklamsız dönem karşılaştırılır                                           |
 
 ## Yayına almadan önce yapılacaklar (sizde)
 
@@ -31,11 +31,17 @@ gerçek fatura kalemlerinden hesaplanır (%20 KDV yalnız örnek). iOS ve Androi
 2. NovaLingo için **yeni web sitesi dönüşümü** oluşturun (Hedefler → Dönüşümler → Yeni →
    Web sitesi → manuel, kategori "Diğer"/"İndirme"). Bilgoo'nun hesap varsayılanı dönüşümlerini
    NovaLingo kampanyasında **hedef dışı** bırakın.
-   - Etiket kimliği `AW-XXXXXXXXXX` ve etiket(ler)i `public/tanitim/index.html` içindeki
-     `CONFIG.adsId`, `CONFIG.adsLabelPlay`, `CONFIG.adsLabelAppStore` alanlarına yazın.
-     Boş kaldıkça sayfa hiçbir Google betiği yüklemez ve izin kutusu göstermez.
+   - Etiket kimliği ve etiket(ler) `public/tanitim/index.html` içindeki `CONFIG.adsId`,
+     `CONFIG.adsLabelPlay`, `CONFIG.adsLabelAppStore` alanlarına yazılır. Boş kaldıkça sayfa hiçbir
+     Google betiği yüklemez ve izin kutusu göstermez.
+   - **Oluşturuldu (18 Kasım 2026), henüz sayfada ETKİN DEĞİL:** web dönüşümü, gelişmiş dönüşümler
+     **kapalı**. Ads ID `AW-17557137727`; Android/Google Play butonu etiketi `0KTjCPSfi7sdEL_S8rNB`;
+     iOS/App Store etiketi **bekleniyor**. Kimlik, gizlilik eki (madde 4) yayımlanınca ayrı küçük bir
+     PR ile `CONFIG`'e girilir; o zamana kadar alanlar boş kalır.
 3. **Apple sağlayıcı jetonu:** App Store Connect → Analytics → Acquisition → Campaigns →
    "Generate a Campaign Link" ekranındaki `pt=` değerini `CONFIG.appleProviderToken`'a yazın.
+   **Bekleniyor:** Apple oturumu parola istiyor; değer gelene kadar alan boş kalır (sahte değer yazılmaz).
+   Boşken App Store bağlantısı etiketsiz çalışır.
 4. **Gizlilik politikası:** teknovagroup.com'daki NovaLingo politikasına `docs/PRIVACY_LANDING_ADDENDUM.md`
    taslağını hukuki incelemeden sonra ekleyin. Google Ads kimliği girilmeden önce yayımlanmış olmalı. Uygulama içi beyanlar (App Privacy, Play Veri Güvenliği) değişmez:
    uygulamada değişiklik yok.
@@ -52,15 +58,23 @@ gerçek fatura kalemlerinden hesaplanır (%20 KDV yalnız örnek). iOS ve Androi
 Web uygulamasını daha önce açmış tarayıcılarda eski service worker her sayfa gezintisini uygulama
 kabuğuyla (`/index.html` → yaş ekranı) yanıtlıyordu; `/tanitim/` da bundan etkileniyordu.
 `public/sw.js` artık `/tanitim` ve altını ağa bırakır (test: `src/services/pwa/offlineShell.test.ts`).
-Yeni worker yalnız deploy sonrası, ziyaretçinin bir sonraki yüklemesinde devreye girer; reklamdan gelen
-yeni ziyaretçilerde service worker bulunmaz.
+`sw.js` her derlemede bayt olarak değiştiği için tarayıcı yeni worker'ı ilk gezintide indirir;
+`install` → `skipWaiting()`, `activate` → `clients.claim()` ile hemen devralır. Eski worker o ilk
+`/tanitim/` açılışını yine uygulama kabuğuyla yanıtlamış olabileceği için yeni worker devraldığında
+`/tanitim` sekmelerini **bir kez** yeniden yükler (`client.navigate`). Sonuç: daha önce web
+uygulamasını açmış ziyaretçi birkaç saniye yaş ekranı görüp tanıtım sayfasına geçer; yeni
+ziyaretçilerde service worker yoktur.
 
 ### Instagram Reels
 
+- **Ayrı hesap:** Kullanıcı NovaLingo için **ayrı bir Instagram hesabı** istedi: `@novalingo.tr`
+  (kayıt kullanıcı tarafından tamamlanıyor). Meta reklam hesabı da yeni ve NovaLingo'ya özel; Ticari
+  Koşullar onayı hesap sahibinde. Eski **printworks** hesabından NovaLingo paylaşımı veya reklamı
+  **yapılmaz**.
 - Hedef: **Trafik** (uygulama yükleme hedefi Meta SDK ister; çocuk uygulamasında kullanılmaz).
   Meta pikseli eklenmez.
 - Bağlantı: `https://novalingo.teknovagroup.com/tanitim/?utm_source=instagram&utm_medium=paid_social&utm_campaign=tr-reels-ebeveyn&utm_content=hook-a`
-  (B kreatifi için `hook-b`). Sayfa etiketleri Play UTM ve App Store `ct` bağlantılarına taşır.
+  (B kreatifi için `hook-b`). Sayfa etiketleri Play `referrer` ve App Store `ct` bağlantılarına taşır.
 - Kreatifler: FINAL A ve FINAL B (gövde kare kare aynı, yalnız ilk 2,6 sn farklı).
 
 ## Kampanya ayarları
