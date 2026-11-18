@@ -25,16 +25,25 @@ const APP_STORE = 'https://apps.apple.com/tr/app/id6815107546';
 
 type Config = { adsId?: string; label?: string; pt?: string };
 
-function boot(search = '', config: Config = {}) {
+/** CONFIG alanını sayfa kaynağında verilen değerle değiştirir (alan bulunmazsa test kırılır). */
+function setField(script: string, field: string, value: string) {
+  const pattern = new RegExp(`${field}: '[^']*'`);
+  if (!pattern.test(script)) throw new Error(`CONFIG.${field} bulunamadı`);
+  return script.replace(pattern, `${field}: '${value}'`);
+}
+
+/**
+ * Sayfayı çalıştırır. `config` verilmezse yayımlanan CONFIG aynen kullanılır; verilirse kimlik
+ * alanları yalnız verilen değerlerle (eksikler boş) kurulur.
+ */
+function boot(search = '', config?: Config) {
   let script = inlineScript;
-  if (config.adsId) script = script.replace("adsId: ''", `adsId: '${config.adsId}'`);
-  if (config.label) {
-    script = script
-      .replace("adsLabelPlay: ''", `adsLabelPlay: '${config.label}'`)
-      .replace("adsLabelAppStore: ''", `adsLabelAppStore: '${config.label}'`);
+  if (config) {
+    script = setField(script, 'adsId', config.adsId ?? '');
+    script = setField(script, 'adsLabelPlay', config.label ?? '');
+    script = setField(script, 'adsLabelAppStore', config.label ?? '');
+    script = setField(script, 'appleProviderToken', config.pt ?? '');
   }
-  if (config.pt)
-    script = script.replace("appleProviderToken: ''", `appleProviderToken: '${config.pt}'`);
 
   window.history.replaceState(null, '', `/tanitim/${search}`);
   document.body.innerHTML = markup;
@@ -79,7 +88,7 @@ afterEach(() => {
 
 describe('tanıtım sayfası — kimlikler boşken', () => {
   it('Google betiği yüklemez, izin kutusu göstermez ve iki mağazaya da gider', () => {
-    const page = boot();
+    const page = boot('', {});
     expect(page.appended).toHaveLength(0);
     expect(page.consent.hidden).toBe(true);
     expect(page.dataLayer()).toHaveLength(0);
@@ -97,13 +106,13 @@ describe('tanıtım sayfası — kimlikler boşken', () => {
   });
 
   it('her indirme bölümünde iki mağaza bağlantısı var', () => {
-    const page = boot();
+    const page = boot('', {});
     expect(page.links.filter((a) => a.dataset.store === 'play')).toHaveLength(2);
     expect(page.links.filter((a) => a.dataset.store === 'appstore')).toHaveLength(2);
   });
 
   it('mağaza tıklaması hata atmaz ve hiçbir şey göndermez', () => {
-    const page = boot('?gclid=abc');
+    const page = boot('?gclid=abc', {});
     expect(() => {
       page.links[0]?.dispatchEvent(new MouseEvent('click', { cancelable: true }));
     }).not.toThrow();
@@ -191,6 +200,66 @@ describe('tanıtım sayfası — Google Ads izni', () => {
     expect(config?.[2]).toMatchObject({ allow_ad_personalization_signals: false });
     const consentDefault = page.dataLayer().find((entry) => entry[0] === 'consent');
     expect(consentDefault?.[2]).toMatchObject({ ad_personalization: 'denied' });
+  });
+});
+
+describe('tanıtım sayfası — yayımlanan yapılandırma', () => {
+  it('gerçek Google Ads kimliğini ve iki mağaza etiketini kullanır; Apple pt boş', () => {
+    const page = boot('?gclid=1');
+    expect(page.consent.hidden).toBe(false);
+    expect(page.appended).toHaveLength(0);
+    // pt boş: App Store bağlantısı etiketsiz kalır.
+    expect(href(page.links, 'appstore').toString()).toBe(APP_STORE);
+
+    (document.getElementById('consent-accept') as HTMLButtonElement).click();
+    expect(page.appended[0]?.src).toContain('gtag/js?id=AW-17557137727');
+
+    const play = page.links.find((a) => a.dataset.store === 'play');
+    const apple = page.links.find((a) => a.dataset.store === 'appstore');
+    play?.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+    apple?.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+    expect(page.conversions().map((entry) => (entry[2] as { send_to: string }).send_to)).toEqual([
+      'AW-17557137727/0KTjCPSfi7sdEL_S8rNB',
+      'AW-17557137727/j0K-CPCdg7sdEL_S8rNB',
+    ]);
+  });
+
+  it('izin kutusu reklam ölçümü açıklama sayfasına bağlanır', () => {
+    boot();
+    const link = document.querySelector<HTMLAnchorElement>('#consent a');
+    expect(link?.getAttribute('href')).toBe('/tanitim/gizlilik.html');
+    expect(document.querySelector('footer a[href="/tanitim/gizlilik.html"]')).not.toBeNull();
+  });
+});
+
+describe('reklam ölçümü açıklama sayfası (/tanitim/gizlilik.html)', () => {
+  const privacy = readFileSync(resolve(process.cwd(), 'public/tanitim/gizlilik.html'), 'utf8');
+
+  it('hiçbir reklam veya analitik betiği yüklemez', () => {
+    expect(privacy).not.toMatch(/googletagmanager|gtag\(|google-analytics|fbq\(/);
+    expect(privacy.match(/<script[^>]*src=/g)).toBeNull();
+  });
+
+  it('açık izin, mağaza tıklaması, Google paylaşımı ve geri alma açıklanır; hukuk onayı iddiası yok', () => {
+    expect(privacy).toContain('"Kabul et" seçmeden Google\'ın ölçüm betiği yüklenmez');
+    expect(privacy).toContain('uygulamayı yüklediğiniz veya satın aldığınız anlamına gelmez');
+    expect(privacy).toContain('Google ile paylaşılan veriler');
+    expect(privacy).toContain('İzninizi geri almak');
+    expect(privacy).toContain('https://teknovagroup.com/novalingo-gizlilik-politikasi');
+    expect(privacy.toLowerCase()).not.toMatch(/hukuk(en|i)? onay|avukat onay|kvkk uyumlu/);
+  });
+
+  it('"İzni geri al" tercihi reddedildi olarak kaydeder', () => {
+    const body = /<body>([\s\S]*)<\/body>/.exec(privacy)?.[1] ?? '';
+    const script = body.slice(body.lastIndexOf('<script>') + 8, body.lastIndexOf('</script>'));
+    document.body.innerHTML = body.slice(0, body.lastIndexOf('<script>'));
+    localStorage.setItem('novalingo_ads_consent', 'granted');
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    new Function(script)();
+    expect(document.getElementById('consent-status')?.textContent).toBe('izin verildi');
+    (document.getElementById('withdraw') as HTMLButtonElement).click();
+    expect(localStorage.getItem('novalingo_ads_consent')).toBe('denied');
+    expect(document.getElementById('consent-status')?.textContent).toBe('izin verilmedi');
   });
 });
 
